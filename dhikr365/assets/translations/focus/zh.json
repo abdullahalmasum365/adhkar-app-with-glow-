@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "万物非主唯有真主（认主独一）",
+      "frequency": "100次",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "除真主外，无当拜者。",
+      "benefit": "最佳念词——真主最喜爱的话语：赞主清净，赞主超绝，万物非主唯有真主，真主至大。",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "赞主清净并赞美他",
+      "frequency": "100次",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "赞主清净，赞美归他。",
+      "benefit": "即使罪恶多如海浪泡沫，亦可得到宽恕。充满善功的天秤。",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "求真主饶恕",
+      "frequency": "100次",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "我向真主求恕，并向他悔过。",
+      "benefit": "借此，罪过得到饶恕，并获得接近真主的机缘。",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "赞主清净",
+      "frequency": "33次",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "赞主清净。",
+      "benefit": "记录100件善功，消除100件罪过。",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "赞美归真主（一切赞美）",
+      "frequency": "33次",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "一切赞美归于真主。",
+      "benefit": "充满善功的天秤。",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "真主至大",
+      "frequency": "34次",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "真主至大。",
+      "benefit": "充满天地之间的空间。",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

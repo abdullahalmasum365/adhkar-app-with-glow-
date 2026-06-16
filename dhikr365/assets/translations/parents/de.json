@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "Die primäre Du'a für Barmherzigkeit",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbir-hamhuma kama rabbayani saghira.",
+      "translation": "Mein Herr, erbarme Dich ihrer, wie sie mich [als ich] klein [war] aufgezogen haben.",
+      "benefit": "Allah befiehlt den Gläubigen direkt in Sure Al-Isra, die Flügel der Demut vor ihren Eltern zu senken und diese Du'a zu rezitieren. Es ist die bekannteste Bittgebet für Eltern im Islam.",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "Für lebende oder verstorbene Eltern jederzeit rezitieren, besonders nach jedem Gebet.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "Du'a des Propheten Ibrahim um Vergebung",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "Rabbanaghfir li wa liwalidayya wa lilmu'minina yawma yaqumul-hisab.",
+      "translation": "Unser Herr, vergib mir und meinen Eltern und den Gläubigen an dem Tag, an dem die Abrechnung aufgestellt wird.",
+      "benefit": "Prophet Ibrahim (Friede sei mit ihm) machte diese umfassende Bitte und bat um Vergebung für sich, seine Eltern und die gesamte Umma am Tag des Gerichts.",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "Für sich selbst, seine Eltern und alle Gläubigen jederzeit rezitieren.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "Du'a des Propheten Noah um Vergebung",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "Rabbighfir li wa liwalidayya wa liman dakhala baytiya mu'minan wa lil-mu'minina wal-mu'minat.",
+      "translation": "Mein Herr, vergib mir, meinen Eltern und jedem, der als Gläubiger mein Haus betritt, und den gläubigen Männern und Frauen.",
+      "benefit": "Diese schöne Bitte von Prophet Noah erweitert den Kreis der Barmherzigkeit — einschließlich nicht nur der Eltern, sondern aller, die das Haus des Gläubigen im Glauben betreten.",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "Für seine Eltern, seinen Haushalt und alle Gläubigen jederzeit rezitieren.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "Du'a für Dankbarkeit und Rechtschaffenheit",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya...",
+      "translation": "Mein Herr, befähige mich dankbar zu sein für Deine Gunst, die Du mir und meinen Eltern geschenkt hast, und rechtschaffene Werke zu verrichten, die Du billigst, und mache meine Nachkommen rechtschaffen. Wahrlich, ich bereue vor Dir und bin von den Muslimen.",
+      "benefit": "Allah offenbarte diese Du'a speziell für eine Person, die das Erwachsenenalter erreicht. Es ist eine umfassende Bittgebet, die Dankbarkeit für elterliche Segnungen, Bitten um rechtschaffene Werke, Gebet für Kinder und Reuebekundung vereint.",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "Jederzeit rezitieren, besonders bedeutsam im Alter von vierzig Jahren.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

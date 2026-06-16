@@ -1,0 +1,34 @@
+{
+  "dhikrs": {
+    "grave_salaam_buraidah": {
+      "dhikr_no": 1,
+      "title": "Saluto al cimitero (narrazione di Buraidah)",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "السَّلَامُ عَلَيْكُمْ أَهْلَ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ، أَسْأَلُ اللَّهَ لَنَا وَلَكُمُ الْعَافِيَةَ",
+      "transliteration": "As-salamu 'alaykum ahlad-diyari minal-mu'minina wal-muslimeen, wa inna insha'Allahu bikum lahiqun. As'alullaha lana wa lakumul-'afiyah.",
+      "translation": "La pace sia su di voi, o abitanti delle dimore, credenti e musulmani. E in effetti noi, se Allah vuole, ci uniremo a voi. Chiedo ad Allah il benessere per noi e per voi.",
+      "benefit": "Questo è il saluto completo che il Profeta (ﷺ) era solito insegnare ai suoi compagni quando visitavano il cimitero. Saluta i defunti, riconosce la nostra mortalità e chiede ad Allah il benessere per i vivi e i morti.",
+      "reference": "Sahih Muslim 975",
+      "grading": "Sahih",
+      "occasion": "Recitare all'ingresso del cimitero.",
+      "category": "graveyard",
+      "audioPath": "assets/audio/grave_salaam_buraidah.mp3"
+    },
+    "grave_salaam_aisha": {
+      "dhikr_no": 2,
+      "title": "Saluto insegnato ad Aisha",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "السَّلَامُ عَلَىٰ أَهْلِ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَيَرْحَمُ اللَّهُ الْمُسْتَقْدِمِينَ مِنَّا وَالْمُسْتَأْخِرِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ",
+      "transliteration": "As-salamu 'ala ahlid-diyari minal-mu'minina wal-muslimeen, wa yarhamullahul-mustaqdimina minna wal-musta'khireen, wa inna insha'Allahu bikum lahiqun.",
+      "translation": "La pace sia sugli abitanti delle dimore, credenti e musulmani. Che Allah abbia misericordia di coloro che ci hanno preceduto e di coloro che verranno dopo, e in effetti noi, se Allah vuole, ci uniremo a voi.",
+      "benefit": "Aisha (che Allah sia soddisfatto di lei) chiese al Profeta (ﷺ) cosa dovesse dire quando visitava le tombe, e lui la istruì a recitare queste parole. Questa narrazione contiene una bella preghiera per tutte le generazioni.",
+      "reference": "Sahih Muslim 974",
+      "grading": "Sahih",
+      "occasion": "Recitare all'ingresso del cimitero.",
+      "category": "graveyard",
+      "audioPath": "assets/audio/grave_salaam_aisha.mp3"
+    }
+  }
+}

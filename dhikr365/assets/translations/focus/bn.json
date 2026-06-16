@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "লা ইলাহা ইল্লাল্লাহ (তাওহীদের ঘোষণা)",
+      "frequency": "১০০ বার",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "আল্লাহ ছাড়া কোনো সত্য ইলাহ নেই।",
+      "benefit": "সর্বোত্তম যিকর এবং আল্লাহর কাছে সবচেয়ে প্রিয় বাক্য: সুবহানাল্লাহ, আলহামদুলিল্লাহ, লা ইলাহা ইল্লাল্লাহ, আল্লাহু আকবার।",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "সুবহানাল্লাহি ওয়াবিহামদিহি",
+      "frequency": "১০০ বার",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "আল্লাহ পবিত্র এবং তাঁর প্রশংসা।",
+      "benefit": "সমুদ্রের ফেনার সমান হলেও গুনাহ ক্ষমা হয়। নেকির পাল্লা ভারী করে।",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "আস্তাগফিরুল্লাহ (ক্ষমা প্রার্থনা)",
+      "frequency": "১০০ বার",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "আমি আল্লাহর কাছে ক্ষমা চাই এবং তাঁর দিকে তওবা করি।",
+      "benefit": "এই যিকরের মাধ্যমে গুনাহ ক্ষমা হয় এবং আল্লাহর সান্নিধ্য অর্জিত হয়।",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "সুবহানাল্লাহ (আল্লাহ পবিত্র)",
+      "frequency": "৩৩ বার",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "আল্লাহ পবিত্র।",
+      "benefit": "একশোটি নেকি লেখা হয় এবং একশোটি গুনাহ মুছে দেওয়া হয়।",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "আলহামদুলিল্লাহ (সকল প্রশংসা আল্লাহর)",
+      "frequency": "৩৩ বার",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "সকল প্রশংসা আল্লাহর জন্য।",
+      "benefit": "নেকির পাল্লা পূর্ণ করে।",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "আল্লাহু আকবার (আল্লাহ সবচেয়ে মহান)",
+      "frequency": "৩৪ বার",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "আল্লাহ সবচেয়ে মহান।",
+      "benefit": "আকাশ ও পৃথিবীর মাঝখানের স্থান পূর্ণ করে।",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "protection_1": {
+      "dhikr_no": 1,
+      "title": "奉真主之名（早晚防护）",
+      "frequency": "3次（早晨和傍晚）",
+      "targetCount": 3,
+      "arabicText": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+      "transliteration": "Bismillāhil-ladhī lā yaḍurru ma'asmihi shay'un fil-arḍi walā fis-samā', wahuwaṣ-samī'ul-'alīm.",
+      "translation": "奉真主之名，凭此名号，大地和天空中的任何事物都无法造成伤害。他是全聪的、全知的。",
+      "benefit": "每天早晨念三遍、傍晚念三遍，任何事物都无法伤害他。",
+      "reference": "At-Tirmidhi, 3388; Ibn Majah, 3869.",
+      "category": "protection"
+    },
+    "protection_2": {
+      "dhikr_no": 2,
+      "title": "法莱格章（远离恶事）",
+      "frequency": "3次（早晨和傍晚）",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wamin sharri ghāsiqin idhā waqab. Wamin sharrin-naffāthāti fil-'uqad. Wamin sharri ḥāsidin idhā ḥasad.",
+      "translation": "说：我求黎明之主庇护，免受其所创造之物的祸害，免受黑暗笼罩时的祸害，免受结上吹气者的祸害，以及免受嫉妒者嫉妒时的祸害。",
+      "benefit": "早晚各念三遍法莱格章，足以防护一切受造之恶。",
+      "reference": "Abu Dawud, 5082; At-Tirmidhi, 3575.",
+      "category": "protection"
+    },
+    "protection_3": {
+      "dhikr_no": 3,
+      "title": "奈斯章（远离恶魔）",
+      "frequency": "3次（早晨和傍晚）",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "说：我求人类之主、人类之王、人类之神庇护，免受那退缩的诱惑者的祸害，他在人们心中低声诱惑，来自精灵和人类之中。",
+      "benefit": "早晚各念三遍奈斯章，足以防护恶魔在心中的低语。",
+      "reference": "Abu Dawud, 5082; At-Tirmidhi, 3575.",
+      "category": "protection"
+    },
+    "protection_4": {
+      "dhikr_no": 4,
+      "title": "以真主完善言辞求庇护",
+      "frequency": "3次（傍晚）",
+      "targetCount": 3,
+      "arabicText": "اعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "transliteration": "A'ūdhu bikalimātil-lāhit-tāmmāti min sharri mā khalaq.",
+      "translation": "我以真主完善的言辞，求庇护于其所创造之物的祸害。",
+      "benefit": "傍晚念三遍，当夜将不被任何毒物所伤。",
+      "reference": "Ahmad, 15709; Ibn Majah, 3518.",
+      "category": "protection"
+    },
+    "protection_5": {
+      "dhikr_no": 5,
+      "title": "库尔斯经文（宝座节）",
+      "frequency": "1次",
+      "targetCount": 1,
+      "arabicText": "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huw, al-ḥayyul-qayyūm, lā ta'khudhuhu sinatuw-walā nawm, lahū mā fis-samāwāti wamā fil-arḍ, man dhal-ladhī yashfa'u 'indahū illā bi-idhnih, ya'lamu mā bayna aydīhim wamā khalfahum, walā yuḥīṭūna bishay'im-min 'ilmihī illā bimā shā', wasi'a kursiyyuhus-samāwāti wal-arḍ, walā ya'ūduhū ḥifẓuhumā, wahuwal-'aliyyul-'aẓīm.",
+      "translation": "安拉——除祂外别无神灵，是永生的，是维系万物的。瞌睡和睡眠都不能降临于祂。天地间一切都属于祂。未经祂许可谁能在祂面前代为说情？祂知道在他们之前的和在他们之后的。除祂所意欲者外，他们不能窥测祂的知识。祂的宝座广及天地，保护天地对祂来说毫不费力。祂是至高无上的，至大无比的。",
+      "benefit": "每次法定拜功后诵读库尔斯经文者，除死亡外无任何阻碍其进入天堂。睡前诵读者，真主将为其派遣守护者，恶魔直至天亮都无法靠近。",
+      "reference": "Al-Bukhari, 2311; An-Nasa'i, 9928.",
+      "category": "protection"
+    }
+  }
+}

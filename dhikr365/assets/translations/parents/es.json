@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "La Du'a principal por la misericordia",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbir-hamhuma kama rabbayani saghira.",
+      "translation": "Mi Señor, apiádate de ellos como ellos me criaron [cuando era] pequeño.",
+      "benefit": "Allah ordena directamente a los creyentes en Surah Al-Isra que bajen sus alas de humildad ante sus padres y reciten esta du'a. Es la más famosa y frecuentemente recitada en el Islam.",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "Recitar por sus padres vivos o fallecidos en cualquier momento, especialmente después de cada oración.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "Du'a del Profeta Ibrahim por el perdón",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "Rabbanaghfir li wa liwalidayya wa lilmu'minina yawma yaqumul-hisab.",
+      "translation": "Señor nuestro, perdónanos a mí, a mis padres y a los creyentes el Día en que se establezca la cuenta.",
+      "benefit": "El Profeta Ibrahim (paz sobre él) hizo esta súplica completa pidiendo perdón para sí mismo, sus padres y toda la Umma el Día del Juicio.",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "Recitar por uno mismo, sus padres y todos los creyentes en cualquier momento.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "Du'a del Profeta Noé por el perdón",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "Rabbighfir li wa liwalidayya wa liman dakhala baytiya mu'minan wa lil-mu'minina wal-mu'minat.",
+      "translation": "Mi Señor, perdóname, a mis padres, a quienes entren en mi casa como creyentes, y a los creyentes y las creyentes.",
+      "benefit": "Esta hermosa súplica del Profeta Noé amplía el círculo de la misericordia — incluyendo no solo a los padres sino a cualquiera que entre en la casa del creyente con fe.",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "Recitar por sus padres, hogar y todos los creyentes en cualquier momento.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "Du'a por la gratitud y la rectitud",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya...",
+      "translation": "Mi Señor, capacítame para ser agradecido por Tu favor que has concedido a mí y a mis padres y para realizar obras justas de las que Tú apruebes, y hazme rectos a mis descendientes. En verdad me he arrepentido ante Ti y soy de los musulmanes.",
+      "benefit": "Allah reveló esta du'a específicamente para una persona que alcanza la madurez (cuarenta años). Es una súplica completa que combina gratitud por las bendiciones de los padres, solicitud de obras justas, oración por los hijos y declaración de arrepentimiento.",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "Recitar a cualquier edad, especialmente significativo a los cuarenta años.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dart analyze *)",
+      "Bash(flutter analyze *)",
+      "Bash(python -c ' *)",
+      "Bash(flutter build *)",
+      "Bash(flutter run *)",
+      "Bash(flutter pub *)",
+      "Read(//mnt/c/Users/UNSTOPPABLE/Music/apps/New folder/**)",
+      "Bash(python3 -c 'import json; json.load\\(open\\('\\\\''__TRACKED_VAR__'\\\\'', encoding='\\\\''utf-8'\\\\''\\)\\); print\\('\\\\''OK: __TRACKED_VAR__'\\\\''\\)')",
+      "Bash(python -c 'import json,sys; json.load\\(open\\('\\\\''__TRACKED_VAR__'\\\\'', encoding='\\\\''utf-8'\\\\''\\)\\); print\\('\\\\''OK: __TRACKED_VAR__'\\\\''\\)')",
+      "Bash(python -c \"import json, glob; [json.load\\(open\\(f, encoding='utf-8'\\)\\) for f in glob.glob\\(r'C:\\\\\\\\Users\\\\\\\\UNSTOPPABLE\\\\\\\\Music\\\\\\\\apps\\\\\\\\New folder\\\\\\\\dhikr365\\\\\\\\assets\\\\\\\\i18n\\\\\\\\*.json'\\)]; print\\('ALL OK'\\)\")",
+      "Bash(ls '/c/Users/UNSTOPPABLE/Downloads/'*.png 2>/dev/null | head -10; ls '/c/Users/UNSTOPPABLE/Downloads/'*.jpg 2>/dev/null | head -5)",
+      "Bash(ls '/c/Users/UNSTOPPABLE/Desktop/'*.png 2>/dev/null | head -10; ls '/c/Users/UNSTOPPABLE/Desktop/'*.jpg 2>/dev/null | head -5)",
+      "Bash(cp '/c/Users/UNSTOPPABLE/Downloads/Gemini_Generated_Image_ntfvtpntfvtpntfv.png' '/c/Users/UNSTOPPABLE/Music/apps/New folder/dhikr365/assets/images/logo.png' && echo \"Replaced OK\")",
+      "Bash(dart run *)",
+      "Bash(cp \"C:\\\\Users\\\\UNSTOPPABLE\\\\Downloads\\\\parents_duas_all_19_languages/\"*.json \"C:\\\\Users\\\\UNSTOPPABLE\\\\Music\\\\apps\\\\New folder\\\\dhikr365\\\\assets\\\\translations\\\\parents/\")",
+      "Bash(cp \"C:\\\\Users\\\\UNSTOPPABLE\\\\Downloads\\\\food_duas_all_19_languages/\"*.json \"C:\\\\Users\\\\UNSTOPPABLE\\\\Music\\\\apps\\\\New folder\\\\dhikr365\\\\assets\\\\translations\\\\food/\")",
+      "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices 2>&1)",
+      "WebSearch",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\UNSTOPPABLE\\\\Music\\\\apps\\\\New folder\\\\dhikr365\\\\assets\\\\audio\")",
+      "WebFetch(domain:archive.org)"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "慈悲を求める主要なドゥア",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "ラッビルハムフマー カマー ラッバヤーニー サギーラー",
+      "translation": "わが主よ、彼らが幼い私を育ててくださったように、彼らに御慈悲を与えてください。",
+      "benefit": "アッラーはスーラ・アル・イスラーで直接信者たちに、親に対して謙虚さの翼を低くし、このドゥアを唱えるよう命じています。イスラームで最も有名な両親のためのドゥアです。",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "生きている、または亡くなった両親のために、いつでも、特に毎礼拝後に唱える。",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "預言者イブラーヒームの許しを求めるドゥア",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "ラッバナグフィル リー ワ リワーリダイヤ ワ リルムウミニーナ ヤウマ ヤクームル・ヒサーブ",
+      "translation": "わが主よ、審判の日に私と私の両親と信者たちをお赦しください。",
+      "benefit": "預言者イブラーヒーム（平和あれ）は審判の日に自分自身、両親、そして全ウンマのために許しを求めるこの包括的な嘆願を行いました。",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "自分自身、両親、そすべての信者のためにいつでも唱える。",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "預言者ヌーフの許しを求めるドゥア",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "ラッビグフィル リー ワ リワーリダイヤ ワ リマン ダハラ バイティヤ ムウミナン ワ リル・ムウミニーナ ワル・ムウミナート",
+      "translation": "わが主よ、私と私の両親と、信者として私の家に入る者と、信者の男性たちと信者の女性たちをお赦しください。",
+      "benefit": "預言者ヌーフ（平和あれ）によるこの美しい嘆願は、慈悲の輪を広げます — 両親だけでなく、信仰を持って家に入るすべての人を含みます。",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "両親、家族、そすべての信者のためにいつでも唱える。",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "感謝と正義のためのドゥア",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "ラッビ アウズィウニー アン アシュクラ ニウマタカル・ラティー アンウァムタ アライヤ ワ アラー ワーリダイヤ...",
+      "translation": "わが主よ、あなたが私と私の両親に施された御恵みに感謝し、あなたが喜ばれる善行を行うことができるよう私を助け、私の子孫を善良にしてください。私はあなたに悔い改め、私はムスリムたちの一人です。",
+      "benefit": "アッラーはこのドゥアを特に成熟に達した人（伝統的に四十歳）のために啓示されました。親の恵みへの感謝、善行の要求、子供のための祈り、悔い改めの宣言を組み合わせた包括的な嘆願です。",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "どの年齢でも唱えられます。特に四十歳、または人生の大きな節目に特別な意味を持ちます。",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

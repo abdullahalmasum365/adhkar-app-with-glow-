@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "La ilaha illAllah (Geloofsbelijdenis)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "Er is geen godheid die aanbidding verdient behalve Allah.",
+      "benefit": "De beste dhikr — de meest geliefde uitspraak bij Allah. SubhanAllah, Alhamdulillah, La ilaha illAllah, Allahu Akbar.",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "SubhanAllahi wa Bihamdihi",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "Glorie zij Allah en lof zij Hem.",
+      "benefit": "Zonden worden vergeven zelfs als ze als het schuim van de zee zijn. Vult de weegschalen van goede daden.",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "Astaghfirullah (Vergeving Zoeken)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "Ik zoek vergiffenis bij Allah en keer mij in berouw tot Hem.",
+      "benefit": "Hierdoor worden zonden vergeven en wordt nabijheid tot Allah bereikt.",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "SubhanAllah (Glorie zij Allah)",
+      "frequency": "33x",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "Glorie zij Allah.",
+      "benefit": "100 goede daden worden geregistreerd, 100 zonden worden uitgewist.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "Alhamdulillah (Alle Lof aan Allah)",
+      "frequency": "33x",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "Alle lof behoort toe aan Allah.",
+      "benefit": "Vult de weegschaal van goede daden.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "Allahu Akbar (Allah is de Grootste)",
+      "frequency": "34x",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "Allah is de Grootste.",
+      "benefit": "Vult de ruimte tussen de hemelen en de aarde.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

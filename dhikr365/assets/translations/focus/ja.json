@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "ラー・イラーハ・イッラッラー（信仰告白）",
+      "frequency": "100回",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "アッラーのほかに礼拝に値する神はない。",
+      "benefit": "最良のズィクル、アッラーに最も愛される言葉。スブハーナッラー、アルハムドゥリッラー、ラー・イラーハ・イッラッラー、アッラーフ・アクバル。",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "スブハーナッラーヒ・ワビハムディヒ",
+      "frequency": "100回",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "アッラーを称え、その御名を讃える。",
+      "benefit": "罪が海の泡の数ほどあっても許される。善行の天秤を満たす。",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "アスタグフィルッラー（赦しを求める）",
+      "frequency": "100回",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "アッラーに赦しを求め、悔い改めてかれに立ち返る。",
+      "benefit": "これにより罪が赦され、アッラーへの近さが得られる。",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "スブハーナッラー（アッラーを称える）",
+      "frequency": "33回",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "アッラーを称える。",
+      "benefit": "百の善行が記録され、百の罪が消される。",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "アルハムドゥリッラー（全ての讃美はアッラーに）",
+      "frequency": "33回",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "全ての讃美はアッラーに属する。",
+      "benefit": "善行の天秤を満たす。",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "アッラーフ・アクバル（アッラーは最も偉大）",
+      "frequency": "34回",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "アッラーは最も偉大である。",
+      "benefit": "天と地の間の空間を満たす。",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

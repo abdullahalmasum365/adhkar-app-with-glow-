@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "லா இலாஹ இல்லல்லாஹ் (தவ்ஹீதின் சாட்சியம்)",
+      "frequency": "100 முறை",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "அல்லாஹ்வைத் தவிர வணக்கத்திற்குரிய இறைவன் யாரும் இல்லை.",
+      "benefit": "சிறந்த திக்ர் — அல்லாஹ்விற்கு மிகவும் பிரியமான வார்த்தை. சுப்ஹானல்லாஹ், அல்ஹம்துலில்லாஹ், லா இலாஹ இல்லல்லாஹ், அல்லாஹு அக்பர்.",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "சுப்ஹானல்லாஹி வபிஹம்திஹி",
+      "frequency": "100 முறை",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "அல்லாஹ் தூய்மையானவன், அவனுக்கே புகழனைத்தும்.",
+      "benefit": "கடல் நுரை அளவு பாவங்கள் இருந்தாலும் மன்னிக்கப்படும். நன்மைகளின் தராசை நிறைக்கும்.",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "அஸ்தஃபிரில்லாஹ் (மன்னிப்பு கோருதல்)",
+      "frequency": "100 முறை",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "அல்லாஹ்விடம் மன்னிப்புக் கோருகிறேன், அவனிடம் தவ்பா செய்கிறேன்.",
+      "benefit": "இதன் மூலம் பாவங்கள் மன்னிக்கப்பட்டு, அல்லாஹ்வின் நெருக்கம் பெறப்படும்.",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "சுப்ஹானல்லாஹ் (அல்லாஹ் தூய்மையானவன்)",
+      "frequency": "33 முறை",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "அல்லாஹ் தூய்மையானவன்.",
+      "benefit": "100 நன்மைகள் பதிவாகும், 100 பாவங்கள் அழிக்கப்படும்.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "அல்ஹம்துலில்லாஹ் (அனைத்து புகழும் அல்லாஹ்வுக்கே)",
+      "frequency": "33 முறை",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "அனைத்து புகழும் அல்லாஹ்வுக்கே உரியது.",
+      "benefit": "நன்மைகளின் தராசை நிறைக்கும்.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "அல்லாஹு அக்பர் (அல்லாஹ் மிகவும் மகத்தானவன்)",
+      "frequency": "34 முறை",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "அல்லாஹ் மிகவும் மகத்தானவன்.",
+      "benefit": "வானங்களுக்கும் பூமிக்கும் இடையேயுள்ள வெளியை நிறைக்கும்.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

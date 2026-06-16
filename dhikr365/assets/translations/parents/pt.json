@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "A Du'a principal pela misericórdia",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbir-hamhuma kama rabbayani saghira.",
+      "translation": "Meu Senhor, tem misericórdia deles como eles me criaram [quando eu era] pequeno.",
+      "benefit": "Allah ordena diretamente aos crentes na Surah Al-Isra que baixem suas asas de humildade diante dos pais e recitem esta du'a. É a mais famosa e frequentemente recitada no Islam.",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "Recitar pelos seus pais vivos ou falecidos a qualquer momento, especialmente após cada oração.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "Du'a do Profeta Ibrahim pelo perdão",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "Rabbanaghfir li wa liwalidayya wa lilmu'minina yawma yaqumul-hisab.",
+      "translation": "Senhor nosso, perdoa-me, aos meus pais e aos crentes no Dia em que a conta for estabelecida.",
+      "benefit": "O Profeta Ibrahim (paz sobre ele) fez esta súplica abrangente pedindo perdão para si mesmo, seus pais e toda a Ummah no Dia do Julgamento.",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "Recitar por si mesmo, seus pais e todos os crentes a qualquer momento.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "Du'a do Profeta Noé pelo perdão",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "Rabbighfir li wa liwalidayya wa liman dakhala baytiya mu'minan wa lil-mu'minina wal-mu'minat.",
+      "translation": "Meu Senhor, perdoa-me, aos meus pais e a quem entrar em minha casa como crente, e aos crentes e às crentes.",
+      "benefit": "Esta bela súplica do Profeta Noé amplia o círculo da misericórdia — incluindo não apenas os pais mas qualquer um que entre na casa do crente com fé.",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "Recitar pelos seus pais, lar e todos os crentes a qualquer momento.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "Du'a pela gratidão e retidão",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya...",
+      "translation": "Meu Senhor, capacita-me a ser grato pela Tua graça que concedeste a mim e aos meus pais e a realizar obras justas de que Te agrades, e torna retos para mim meus descendentes. Certamente me arrependi para Ti e sou dos muçulmanos.",
+      "benefit": "Allah revelou esta du'a especificamente para uma pessoa que atinge a maturidade. É uma súplica abrangente combinando gratidão pelas bênçãos dos pais, pedido de obras justas, oração pelos filhos e declaração de arrependimento.",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "Recitar em qualquer idade, especialmente significativo aos quarenta anos.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

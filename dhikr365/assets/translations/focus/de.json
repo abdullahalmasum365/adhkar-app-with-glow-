@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "La ilaha illAllah (Glaubensbekenntnis)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "Es gibt keine Gottheit, die der Anbetung würdig ist, außer Allah.",
+      "benefit": "Das beste Dhikr — die geliebteste Aussage bei Allah. SubhanAllah, Alhamdulillah, La ilaha illAllah, Allahu Akbar.",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "SubhanAllahi wa Bihamdihi",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "Gepriesen sei Allah und Lob sei Ihm.",
+      "benefit": "Sünden werden vergeben, selbst wenn sie so viel wie der Schaum des Meeres sind. Füllt die Waagschalen der guten Taten.",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "Astaghfirullah (Vergebung erbitten)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "Ich bitte Allah um Vergebung und wende mich ihm in Reue zu.",
+      "benefit": "Hierdurch werden Sünden vergeben und Nähe zu Allah erlangt.",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "SubhanAllah (Preis sei Allah)",
+      "frequency": "33x",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "Gepriesen sei Allah.",
+      "benefit": "100 gute Taten werden aufgezeichnet, 100 Sünden werden getilgt.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "Alhamdulillah (Alles Lob gebührt Allah)",
+      "frequency": "33x",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "Alles Lob gebührt Allah.",
+      "benefit": "Füllt die Waagschale der guten Taten.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "Allahu Akbar (Allah ist der Größte)",
+      "frequency": "34x",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "Allah ist der Größte.",
+      "benefit": "Füllt den Raum zwischen Himmel und Erde.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

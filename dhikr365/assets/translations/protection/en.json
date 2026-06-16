@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "protection_1": {
+      "dhikr_no": 1,
+      "title": "Bismillah (Morning & Evening Protection)",
+      "frequency": "3x (Morning & Evening)",
+      "targetCount": 3,
+      "arabicText": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+      "transliteration": "Bismillāhil-ladhī lā yaḍurru ma'asmihi shay'un fil-arḍi walā fis-samā', wahuwaṣ-samī'ul-'alīm.",
+      "translation": "In the name of Allah, with whose name nothing on earth or in the sky can cause harm. And He is the All-Hearing, the All-Knowing.",
+      "benefit": "Whoever says this three times in the morning and three times in the evening, nothing will harm him.",
+      "reference": "At-Tirmidhi, 3388; Ibn Majah, 3869.",
+      "category": "protection"
+    },
+    "protection_2": {
+      "dhikr_no": 2,
+      "title": "Surah Al-Falaq (Protection from Evil)",
+      "frequency": "3x (Morning & Evening)",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wamin sharri ghāsiqin idhā waqab. Wamin sharrin-naffāthāti fil-'uqad. Wamin sharri ḥāsidin idhā ḥasad.",
+      "translation": "Say: I seek refuge in the Lord of daybreak, from the evil of that which He created, and from the evil of darkness when it settles, and from the evil of the blowers in knots, and from the evil of an envier when he envies.",
+      "benefit": "Reciting Al-Falaq three times morning and evening suffices as protection from all forms of created evil.",
+      "reference": "Abu Dawud, 5082; At-Tirmidhi, 3575.",
+      "category": "protection"
+    },
+    "protection_3": {
+      "dhikr_no": 3,
+      "title": "Surah An-Nas (Protection from Shaytan)",
+      "frequency": "3x (Morning & Evening)",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "Say: I seek refuge in the Lord of mankind, the Sovereign of mankind, the God of mankind, from the evil of the retreating whisperer, who whispers into the breasts of mankind — from among the jinn and mankind.",
+      "benefit": "Reciting An-Nas three times morning and evening suffices as protection from Shaytan's whispers in the heart.",
+      "reference": "Abu Dawud, 5082; At-Tirmidhi, 3575.",
+      "category": "protection"
+    },
+    "protection_4": {
+      "dhikr_no": 4,
+      "title": "A'udhu Bikalimatillah (Refuge in Allah's Words)",
+      "frequency": "3x (Evening)",
+      "targetCount": 3,
+      "arabicText": "اعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "transliteration": "A'ūdhu bikalimātil-lāhit-tāmmāti min sharri mā khalaq.",
+      "translation": "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+      "benefit": "Whoever says this three times in the evening will not be harmed by any venomous creature that night.",
+      "reference": "Ahmad, 15709; Ibn Majah, 3518.",
+      "category": "protection"
+    },
+    "protection_5": {
+      "dhikr_no": 5,
+      "title": "Ayatul Kursi (Verse of the Throne)",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huw, al-ḥayyul-qayyūm, lā ta'khudhuhu sinatuw-walā nawm, lahū mā fis-samāwāti wamā fil-arḍ, man dhal-ladhī yashfa'u 'indahū illā bi-idhnih, ya'lamu mā bayna aydīhim wamā khalfahum, walā yuḥīṭūna bishay'im-min 'ilmihī illā bimā shā', wasi'a kursiyyuhus-samāwāti wal-arḍ, walā ya'ūduhū ḥifẓuhumā, wahuwal-'aliyyul-'aẓīm.",
+      "translation": "Allah — there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great.",
+      "benefit": "Whoever recites Ayatul Kursi after every obligatory prayer, nothing will prevent him from entering Paradise. And whoever recites it before sleeping, Allah will appoint a guardian over him and no Shaytan will approach him until morning.",
+      "reference": "Al-Bukhari, 2311; An-Nasa'i, 9928.",
+      "category": "protection"
+    }
+  }
+}

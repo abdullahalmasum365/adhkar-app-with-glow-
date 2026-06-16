@@ -1,0 +1,34 @@
+{
+  "dhikrs": {
+    "grave_salaam_buraidah": {
+      "dhikr_no": 1,
+      "title": "Gruß am Friedhof (Überlieferung von Buraidah)",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "السَّلَامُ عَلَيْكُمْ أَهْلَ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ، أَسْأَلُ اللَّهَ لَنَا وَلَكُمُ الْعَافِيَةَ",
+      "transliteration": "As-salamu 'alaykum ahlad-diyari minal-mu'minina wal-muslimeen, wa inna insha'Allahu bikum lahiqun. As'alullaha lana wa lakumul-'afiyah.",
+      "translation": "Friede sei auf euch, ihr Bewohner dieser Stätten, Gläubige und Muslime. Und wahrlich, wir werden, so Allah will, euch folgen. Ich bitte Allah um Wohlergehen für uns und für euch.",
+      "benefit": "Dies ist der umfassende Gruß, den der Prophet (ﷺ) seinen Gefährten beizubringen pflegte, wenn sie den Friedhof besuchten. Er grüßt die Verstorbenen, erkennt unsere eigene Sterblichkeit an und bittet Allah um Wohlergehen für Lebende und Tote.",
+      "reference": "Sahih Muslim 975",
+      "grading": "Sahih",
+      "occasion": "Beim Betreten des Friedhofs rezitieren.",
+      "category": "graveyard",
+      "audioPath": "assets/audio/grave_salaam_buraidah.mp3"
+    },
+    "grave_salaam_aisha": {
+      "dhikr_no": 2,
+      "title": "Gruß, den der Prophet Aisha lehrte",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "السَّلَامُ عَلَىٰ أَهْلِ الدِّيَارِ مِنَ الْمُؤْمِنِينَ وَالْمُسْلِمِينَ، وَيَرْحَمُ اللَّهُ الْمُسْتَقْدِمِينَ مِنَّا وَالْمُسْتَأْخِرِينَ، وَإِنَّا إِنْ شَاءَ اللَّهُ بِكُمْ لَاحِقُونَ",
+      "transliteration": "As-salamu 'ala ahlid-diyari minal-mu'minina wal-muslimeen, wa yarhamullahul-mustaqdimina minna wal-musta'khireen, wa inna insha'Allahu bikum lahiqun.",
+      "translation": "Friede sei auf den Bewohnern der Stätten, Gläubigen und Muslimen. Möge Allah Barmherzigkeit walten lassen über jene, die vor uns gegangen sind, und jene, die nach kommen werden. Und wahrlich, wir werden, so Allah will, euch folgen.",
+      "benefit": "Aisha (möge Allah mit ihr zufrieden sein) fragte den Propheten (ﷺ), was sie bei der Besichtigung von Gräbern sagen sollte, und er wies sie an, diese Worte zu rezitieren. Diese Überlieferung enthält eine schöne Bitte für alle Generationen.",
+      "reference": "Sahih Muslim 974",
+      "grading": "Sahih",
+      "occasion": "Beim Betreten des Friedhofs rezitieren.",
+      "category": "graveyard",
+      "audioPath": "assets/audio/grave_salaam_aisha.mp3"
+    }
+  }
+}

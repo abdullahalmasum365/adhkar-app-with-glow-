@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "La ilaha illAllah (Declaration of Faith)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "There is no deity worthy of worship except Allah.",
+      "benefit": "The best dhikr — the most beloved statement to Allah. SubhanAllah, Alhamdulillah, La ilaha illAllah, Allahu Akbar.",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "SubhanAllahi wa Bihamdihi",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "Glory be to Allah and praise be to Him.",
+      "benefit": "Sins forgiven even if they are like sea foam. Fills the scales of good deeds.",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "Astaghfirullah (Seeking Forgiveness)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "I seek forgiveness from Allah and turn to Him in repentance.",
+      "benefit": "Through this, sins are forgiven and closeness to Allah is attained.",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "SubhanAllah (Glory be to Allah)",
+      "frequency": "33x",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "Glory be to Allah.",
+      "benefit": "100 good deeds recorded, 100 sins erased.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "Alhamdulillah (All Praise)",
+      "frequency": "33x",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "All praise is due to Allah.",
+      "benefit": "Fills the scale of good deeds.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "Allahu Akbar (Allah is the Greatest)",
+      "frequency": "34x",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "Allah is the Greatest.",
+      "benefit": "Fills the space between the heavens and the earth.",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "dhikrs": {
+    "focus_1": {
+      "dhikr_no": 1,
+      "title": "ลา อิลาฮา อิลลัลลอฮ์ (การปฏิญาณตน)",
+      "frequency": "100 ครั้ง",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transliteration": "Lā ilāha illAllāh",
+      "translation": "ไม่มีพระเจ้าที่ควรแก่การเคารพสักการะนอกจากอัลลอฮ์",
+      "benefit": "ซิกรฺที่ดีที่สุด — คำพูดที่อัลลอฮ์ทรงรักมากที่สุด ซุบฮานัลลอฮ์ อัลฮัมดุลิลลาฮ์ ลา อิลาฮา อิลลัลลอฮ์ อัลลอฮุ อักบัร",
+      "reference": "At-Tirmidhi, 3383.",
+      "category": "focus"
+    },
+    "focus_2": {
+      "dhikr_no": 2,
+      "title": "ซุบฮานัลลอฮิ วะบิฮัมดิฮี",
+      "frequency": "100 ครั้ง",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+      "transliteration": "Subḥānallāhi wabiḥamdih.",
+      "translation": "มหาบริสุทธิ์แด่อัลลอฮ์และการสรรเสริญทั้งหมดเป็นของพระองค์",
+      "benefit": "บาปจะได้รับการอภัยแม้จะมากเท่าฟองทะเล เต็มเปี่ยมด้วยความดีในตาชั่ง",
+      "reference": "Muslim, 2692.",
+      "category": "focus"
+    },
+    "focus_3": {
+      "dhikr_no": 3,
+      "title": "อัสตัฆฟิรุลลอฮ์ (การขออภัยโทษ)",
+      "frequency": "100 ครั้ง",
+      "targetCount": 100,
+      "arabicText": "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ",
+      "transliteration": "Astaghfirullāha wa'atūbu ilayh.",
+      "translation": "ข้าพระองค์ขออภัยโทษจากอัลลอฮ์และขอกลับมาหาพระองค์",
+      "benefit": "ด้วยสิ่งนี้ บาปจะได้รับการอภัยและได้รับความใกล้ชิดกับอัลลอฮ์",
+      "reference": "Al-Bukhari, 6307; Muslim, 2702.",
+      "category": "focus"
+    },
+    "focus_4": {
+      "dhikr_no": 4,
+      "title": "ซุบฮานัลลอฮ์ (มหาบริสุทธิ์แด่อัลลอฮ์)",
+      "frequency": "33 ครั้ง",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللّهِ",
+      "transliteration": "Subḥānallāh.",
+      "translation": "มหาบริสุทธิ์แด่อัลลอฮ์",
+      "benefit": "บันทึกความดี 100 ข้อ ลบล้างบาป 100 ข้อ",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_5": {
+      "dhikr_no": 5,
+      "title": "อัลฮัมดุลิลลาฮ์ (การสรรเสริญทั้งหมด)",
+      "frequency": "33 ครั้ง",
+      "targetCount": 33,
+      "arabicText": "الْحَمْدُ لِلَّهِ",
+      "transliteration": "Alḥamdulillāh.",
+      "translation": "การสรรเสริญทั้งหมดเป็นของอัลลอฮ์",
+      "benefit": "เต็มเปี่ยมในตาชั่งแห่งความดี",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    },
+    "focus_6": {
+      "dhikr_no": 6,
+      "title": "อัลลอฮุ อักบัร (อัลลอฮ์ทรงยิ่งใหญ่ที่สุด)",
+      "frequency": "34 ครั้ง",
+      "targetCount": 34,
+      "arabicText": "اَللهُ أَكْبَرُ",
+      "transliteration": "Allāhu akbar.",
+      "translation": "อัลลอฮ์ทรงยิ่งใหญ่ที่สุด",
+      "benefit": "เต็มเปี่ยมในพื้นที่ระหว่างฟากฟ้าและแผ่นดิน",
+      "reference": "Muslim, 2691.",
+      "category": "focus"
+    }
+  }
+}

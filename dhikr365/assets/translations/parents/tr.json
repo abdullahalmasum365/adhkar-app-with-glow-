@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "Merhamet için Temel Dua",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbir-hamhuma kama rabbayani sağira.",
+      "translation": "Rabbim! Onlara küçükken beni terbiye ettikleri gibi sen de merhamet et.",
+      "benefit": "Allah, İsra Suresi'nde müminlere doğrudan anne babalarına karşı alçakgönüllülük kanatlarını indirmelerini ve bu duayı okumalarını emretmiştir. İslam'da ebeveynler için en meşhur duadır.",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "Hayatta olan veya vefat etmiş anne babanız için her zaman, özellikle her namazın ardından okuyun.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "Hz. İbrahim'in Bağışlanma Duası",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "Rabbenaghfir lî ve livâlideyye ve lil-mü'minîne yevme yekûmül-hisâb.",
+      "translation": "Rabbimiz! Hesap gününde beni, annemi, babamı ve bütün müminleri bağışla.",
+      "benefit": "Hz. İbrahim (as) kıyamet günü kendisi, anne-babası ve tüm ümmet için bağışlanma dileyen bu kapsamlı duayı yapmıştır.",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "Kendiniz, anne babanız ve tüm müminler için her zaman okuyun.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "Hz. Nuh'un Bağışlanma Duası",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "Rabbighfir lî ve livâlideyye ve limen dehale beytiye mü'minen ve lil-mü'minîne vel-mü'minât.",
+      "translation": "Rabbim! Beni, annemi, babamı, evime mümin olarak girenleri, mümin erkekleri ve mümin kadınları bağışla.",
+      "benefit": "Hz. Nuh'un (as) bu güzel duası rahmet dairesini genişletir — yalnızca anne babayı değil, evine iman ile giren herkesi ve tüm müminleri kapsar.",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "Anne babanız, ev halkınız ve tüm müminler için her zaman okuyun.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "Şükür ve Salihat için Dua",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Rabbi evziğni en eşküre nîmetekelleti en'amte aleyye ve alâ vâlideyye...",
+      "translation": "Rabbim! Bana ve ana babama verdiğin nimetlere şükretmemi, Senin razı olacağın iyi işler yapmamı nasip eyle, neslimi de ıslah eyle. Şüphesiz ben sana döndüm, şüphesiz ben Müslümanlardanım.",
+      "benefit": "Allah bu duayı özellikle olgunluk çağına (geleneksel olarak kırk yaş) ulaşan kişi için indirmiştir. Ebeveyn nimetlerine şükrü, salih amel talebini, çocuklara duayı ve tevbe beyanını birleştiren kapsamlı bir duadır.",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "Her yaşta okunabilir; özellikle kırk yaşında veya hayatın büyük dönüm noktalarında anlamlıdır.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

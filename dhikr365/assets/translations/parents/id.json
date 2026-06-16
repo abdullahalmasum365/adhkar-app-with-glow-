@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "Doa Utama Memohon Rahmat",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbir-hamhuma kama rabbayani saghira.",
+      "translation": "Wahai Tuhanku, sayangilah keduanya sebagaimana mereka mendidikku di waktu kecil.",
+      "benefit": "Allah secara langsung memerintahkan orang-orang beriman dalam Surah Al-Isra untuk merendahkan diri kepada orang tua dan membaca doa ini. Ini adalah doa paling terkenal untuk orang tua dalam Islam.",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "Dibaca untuk orang tua yang masih hidup atau telah meninggal kapan saja, terutama setelah setiap shalat.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "Doa Nabi Ibrahim Memohon Ampunan",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "Rabbanaghfir li wa liwalidayya wa lilmu'minina yawma yaqumul-hisab.",
+      "translation": "Wahai Tuhan kami, ampunilah aku, kedua orang tuaku, dan orang-orang beriman pada hari ditetapkannya hisab.",
+      "benefit": "Nabi Ibrahim (as) memanjatkan doa yang komprehensif ini memohon ampunan untuk dirinya, orang tuanya, dan seluruh umat pada hari kiamat.",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "Dibaca untuk diri sendiri, orang tua, dan semua orang beriman kapan saja.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "Doa Nabi Nuh Memohon Ampunan",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "Rabbighfir li wa liwalidayya wa liman dakhala baytiya mu'minan wa lil-mu'minina wal-mu'minat.",
+      "translation": "Wahai Tuhanku, ampunilah aku, kedua orang tuaku, siapa pun yang masuk ke rumahku dalam keadaan beriman, serta orang-orang mukmin laki-laki dan perempuan.",
+      "benefit": "Doa indah Nabi Nuh (as) ini memperluas lingkaran rahmat — mencakup bukan hanya orang tua tetapi siapa pun yang memasuki rumah orang beriman dengan iman.",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "Dibaca untuk orang tua, keluarga, dan semua orang beriman kapan saja.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "Doa Syukur dan Kebaikan",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya...",
+      "translation": "Wahai Tuhanku, ilhamkanlah aku untuk mensyukuri nikmat-Mu yang telah Engkau karuniakan kepadaku dan kepada orang tuaku, dan agar aku mengerjakan amal saleh yang Engkau ridai, dan berikanlah kebaikan kepadaku dengan menjadikan keturunanku orang-orang yang saleh. Sungguh aku bertaubat kepada-Mu dan sungguh aku termasuk orang-orang yang berserah diri.",
+      "benefit": "Allah menurunkan doa ini khusus untuk seseorang yang mencapai usia matang (empat puluh tahun). Ini adalah doa komprehensif yang menggabungkan syukur atas nikmat orang tua, permohonan amal saleh, doa untuk keturunan, dan pernyataan taubat.",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "Dibaca pada usia berapa pun, terutama bermakna saat usia empat puluh tahun atau saat mencapai tonggak kehidupan yang besar.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

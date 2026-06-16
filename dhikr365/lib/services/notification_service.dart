@@ -1,0 +1,634 @@
+// ============================================================================
+// lib/services/notification_service.dart
+//
+// LOCAL NOTIFICATION SYSTEM — Adhkaar 365
+//
+// Handles:
+//   [LOCAL]  Morning Adhkar  → scheduled at Sunrise  (adhan package)
+//   [LOCAL]  Evening Adhkar  → scheduled at Maghrib  (adhan package)
+//   [LOCAL]  Prayer time alerts → Fajr/Dhuhr/Asr/Maghrib/Isha (7-day rolling)
+//
+// Architecture: Singleton — NotificationService()
+// ============================================================================
+
+import 'dart:io';
+
+import 'package:adhan/adhan.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
+
+import '../models/dhikr.dart';
+import '../screens/dhikr_list_screen.dart';
+import '../utils/app_navigator.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Notification ID Registry
+// Keep these stable — changing IDs breaks existing scheduled notifications.
+// ─────────────────────────────────────────────────────────────────────────────
+class _IDs {
+  // Adhkar reminders
+  static const int morning = 1000; // 1000–1006
+  static const int evening = 1100; // 1100–1106, safe gap
+
+  // Prayer-time alerts — 7 slots per prayer (one per day in rolling window)
+  static const int fajrBase = 2000; // 2000–2006
+  static const int sunriseBase = 2010; // 2010–2016
+  static const int dhuhrBase = 2020; // 2020–2026
+  static const int asrBase = 2030; // 2030–2036
+  static const int maghribBase = 2040; // 2040–2046
+  static const int ishaBase = 2050; // 2050–2056
+
+  // Channel IDs
+  static const String adhkarChannelId = 'adhkaar_adhkar';
+  static const String prayerChannelId = 'adhkaar_prayer';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NotificationService — Singleton
+// ─────────────────────────────────────────────────────────────────────────────
+class NotificationService {
+  // Singleton boilerplate
+  static final NotificationService _instance = NotificationService._internal();
+  factory NotificationService() => _instance;
+  NotificationService._internal();
+
+  final FlutterLocalNotificationsPlugin _local =
+      FlutterLocalNotificationsPlugin();
+
+  bool _initialized = false;
+
+  // ── Public: called once from main() ────────────────────────────────────────
+  Future<void> init() async {
+    if (_initialized) return;
+    _initialized = true;
+
+    // 1. Timezone database
+    tz_data.initializeTimeZones();
+    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
+
+    // 2. Local notifications setup
+    await _initLocalNotifications();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // LOCAL NOTIFICATIONS — Setup
+  // ══════════════════════════════════════════════════════════════════════════
+
+  Future<void> _initLocalNotifications() async {
+    // ── Android settings ──
+    // ic_notification is a white monochrome vector (crescent + star).
+    // Android 5+ replaces any colour with white in the status bar, so the
+    // launcher icon (full colour) shows as a grey blob — we use the dedicated
+    // monochrome drawable instead.
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    // ── iOS / macOS settings ──
+    const darwin = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    const settings = InitializationSettings(android: android, iOS: darwin);
+
+    await _local.initialize(
+      settings,
+      // Called when user taps a local notification while app is open
+      onDidReceiveNotificationResponse: _onLocalNotificationTap,
+      // Called when user taps a background notification (Android)
+      onDidReceiveBackgroundNotificationResponse:
+          _onBackgroundLocalNotificationTap,
+    );
+
+    // Create Android notification channels
+    await _createChannels();
+  }
+
+  Future<void> _createChannels() async {
+    if (!Platform.isAndroid) return;
+
+    final androidPlugin = _local.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    // Adhkar reminders channel — high importance, custom sound
+    await androidPlugin?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _IDs.adhkarChannelId,
+        'Adhkar Reminders',
+        description: 'Morning and Evening Adhkar reminders',
+        importance: Importance.high,
+        playSound: true,
+        sound: null,
+        enableVibration: true,
+        enableLights: true,
+        ledColor: Color(0xFFEC7F13), // AppColors.primary
+      ),
+    );
+
+    // Prayer alerts channel — high importance
+    await androidPlugin?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _IDs.prayerChannelId,
+        'Prayer Time Alerts',
+        description: 'Alerts for each prayer time',
+        importance: Importance.high,
+        playSound: true,
+        sound: null,
+        enableVibration: true,
+      ),
+    );
+
+  }
+
+  // ── Notification tap handler (foreground) ──────────────────────────────────
+  static void _onLocalNotificationTap(NotificationResponse response) {
+    final payload = response.payload ?? '';
+    debugPrint('[Local] Tapped: id=${response.id}, payload=$payload');
+    _routeForPayload(payload);
+  }
+
+  // ── Notification tap handler (background) — must be top-level ─────────────
+  @pragma('vm:entry-point')
+  static void _onBackgroundLocalNotificationTap(NotificationResponse response) {
+    final payload = response.payload ?? '';
+    debugPrint('[Local BG] Tapped: id=${response.id}, payload=$payload');
+    _routeForPayload(payload);
+  }
+
+  // ── Shared routing logic ───────────────────────────────────────────────────
+  /// Pushes the appropriate screen for a given notification payload.
+  /// Safe to call from any context — uses the global [appNavigatorKey].
+  static void _routeForPayload(String payload) {
+    final nav = appNavigatorKey.currentState;
+    if (nav == null) return; // app not ready yet
+
+    if (payload == 'morning' || payload == 'prayer:fajr') {
+      // Morning adhkar fires at Fajr → open Morning Adhkar screen
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.morning),
+      ));
+    } else if (payload == 'evening' || payload == 'prayer:asr') {
+      // Evening adhkar fires at Asr → open Evening Adhkar screen
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.evening),
+      ));
+    }
+    // Other prayer alerts (Fajr, Dhuhr, Asr, Isha) just bring the app to
+    // foreground — the Dashboard already shows all prayer times.
+  }
+
+  // ── Cold-start: payload from the notification that launched the app ────────
+  /// Returns the payload string if the app was opened by tapping a notification
+  /// while it was completely closed. Returns null otherwise.
+  Future<String?> getLaunchPayload() async {
+    final details = await _local.getNotificationAppLaunchDetails();
+    if (details == null || !details.didNotificationLaunchApp) return null;
+    return details.notificationResponse?.payload;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // PERMISSIONS
+  // ══════════════════════════════════════════════════════════════════════════
+
+  static const _batteryChannel = MethodChannel('dhikr365/battery');
+
+  Future<bool> requestPermissions() async {
+    final androidPlugin = _local.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      // Android 13+ — request notification + exact alarm permissions
+      await androidPlugin.requestNotificationsPermission();
+      await androidPlugin.requestExactAlarmsPermission();
+      // Request battery optimization exemption so alarms fire even when the
+      // phone is idle or the system is aggressively killing background work.
+      await requestBatteryOptimizationExemption();
+      debugPrint('[Permissions] Android notification permissions requested');
+      return true;
+    }
+
+    // iOS — request via flutter_local_notifications
+    final iosPlugin = _local.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>();
+    final granted = await iosPlugin?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        ) ??
+        false;
+    debugPrint('[Permissions] iOS notifications granted: $granted');
+    return granted;
+  }
+
+  /// Asks Android to exclude this app from battery optimization.
+  /// Without this, the OS can kill scheduled alarms on Samsung/Xiaomi/Oppo
+  /// devices — exactly what Muslim Pro requests on first launch.
+  Future<void> requestBatteryOptimizationExemption() async {
+    if (!Platform.isAndroid) return;
+    try {
+      final bool alreadyExempt = await _batteryChannel
+          .invokeMethod<bool>('isIgnoringBatteryOptimizations') ?? false;
+      if (!alreadyExempt) {
+        await _batteryChannel.invokeMethod('requestIgnoreBatteryOptimizations');
+        debugPrint('[Battery] Requested battery optimization exemption');
+      } else {
+        debugPrint('[Battery] Already exempt from battery optimization');
+      }
+    } catch (e) {
+      debugPrint('[Battery] Could not request battery optimization: $e');
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // SCHEDULING — Morning & Evening Adhkar
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Main entry point called from NotificationProvider.
+  /// Schedules Morning (Sunrise) and Evening (Maghrib) reminders
+  /// for the next [daysAhead] days using real adhan calculations.
+  Future<void> scheduleAdhkarReminders(
+    double lat,
+    double lng, {
+    int daysAhead = 7,
+    CalculationMethod calculationMethod = CalculationMethod.muslim_world_league,
+    String madhab = 'shafii',
+  }) async {
+    // Cancel existing before rescheduling to avoid duplicates
+    await cancelMorningNotification();
+    await cancelEveningNotification();
+
+    final coords = Coordinates(lat, lng);
+    final params = calculationMethod.getParameters()
+      ..madhab =
+          madhab.toLowerCase() == 'hanafi' ? Madhab.hanafi : Madhab.shafi;
+
+    for (int i = 0; i < daysAhead; i++) {
+      final day = DateTime.now().add(Duration(days: i));
+      final dateComp = DateComponents.from(day);
+      final times = PrayerTimes(coords, dateComp, params);
+
+      // Morning adhkar starts at Fajr — the prescribed time begins at dawn.
+      // Evening adhkar starts at Asr — scholars agree the evening period
+      // begins from Asr until sunset.
+      final fajr = times.fajr.toLocal();
+      final asr  = times.asr.toLocal();
+
+      // Only schedule future times (skip if already passed today)
+      final now = DateTime.now();
+      if (fajr.isAfter(now)) {
+        await _scheduleLocalNotification(
+          id: _IDs.morning + i, // 1000–1006
+          title: '🌄 أذكار الصباح • Morning Adhkar',
+          body: 'Fajr has begun — read your morning adhkar now. '
+              '"وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ الشَّمْسِ"',
+          scheduledTime: fajr,
+          channelId: _IDs.adhkarChannelId,
+          channelName: 'Adhkar Reminders',
+          payload: 'morning',
+          sound: null,
+        );
+      }
+
+      if (asr.isAfter(now)) {
+        await _scheduleLocalNotification(
+          id: _IDs.evening + i, // 1100–1106
+          title: '🌆 أذكار المساء • Evening Adhkar',
+          body: 'Asr time — the evening adhkar period has begun. '
+              '"وَسَبِّحْ بِحَمْدِهِ قَبْلَ غُرُوبِهَا"',
+          scheduledTime: asr,
+          channelId: _IDs.adhkarChannelId,
+          channelName: 'Adhkar Reminders',
+          payload: 'evening',
+          sound: null,
+        );
+      }
+    }
+
+    debugPrint('[Scheduler] Adhkar reminders scheduled for $daysAhead days');
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // SCHEDULING — Prayer Time Alerts
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Schedule each prayer time alert for the next 7 days.
+  /// [enabledPrayers] map lets SettingsScreen toggle individual prayers.
+  Future<void> schedulePrayerTimes(
+    double lat,
+    double lng, {
+    Map<String, bool> enabledPrayers = const {
+      'Fajr': true,
+      'Sunrise': true,
+      'Dhuhr': true,
+      'Asr': true,
+      'Maghrib': true,
+      'Isha': true,
+    },
+    int daysAhead = 7,
+    CalculationMethod calculationMethod = CalculationMethod.muslim_world_league,
+    String madhab = 'shafii',
+  }) async {
+    await cancelAllPrayerNotifications();
+
+    final coords = Coordinates(lat, lng);
+    final params = calculationMethod.getParameters()
+      ..madhab =
+          madhab.toLowerCase() == 'hanafi' ? Madhab.hanafi : Madhab.shafi;
+    final now = DateTime.now();
+
+    final prayerConfig = [
+      const _PrayerConfig('Fajr', _IDs.fajrBase,
+          '🌄 الفجر • Fajr Prayer',
+          'Rise and pray Fajr — "الصَّلَاةُ خَيْرٌ مِنَ النَّوْمِ" Prayer is better than sleep.'),
+      const _PrayerConfig('Sunrise', _IDs.sunriseBase,
+          '🌅 الشروق • Sunrise',
+          'The sun has risen. Open Adhkaar 365 for your morning supplications.'),
+      const _PrayerConfig('Dhuhr', _IDs.dhuhrBase,
+          '☀️ الظهر • Dhuhr Prayer',
+          'Midday prayer time. Take a moment to stand before Allah.'),
+      const _PrayerConfig('Asr', _IDs.asrBase,
+          '🌤 العصر • Asr Prayer',
+          'Asr time has begun. "وَالْعَصْرِ ۙ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ"'),
+      const _PrayerConfig('Maghrib', _IDs.maghribBase,
+          '🌇 المغرب • Maghrib Prayer',
+          'Sunset — pray Maghrib and open your evening adhkar.'),
+      const _PrayerConfig('Isha', _IDs.ishaBase,
+          '🌙 العشاء • Isha Prayer',
+          'Night has come. End your day in the remembrance of Allah.'),
+    ];
+
+    for (int i = 0; i < daysAhead; i++) {
+      final day = now.add(Duration(days: i));
+      final dateComp = DateComponents.from(day);
+      final times = PrayerTimes(coords, dateComp, params);
+
+      for (final cfg in prayerConfig) {
+        if (!(enabledPrayers[cfg.name] ?? true)) continue;
+
+        final prayerTime = _getPrayerTime(times, cfg.name).toLocal();
+        if (prayerTime.isAfter(now)) {
+          await _scheduleLocalNotification(
+            id: cfg.baseId + i,
+            title: cfg.title,
+            body: cfg.body,
+            scheduledTime: prayerTime,
+            channelId: _IDs.prayerChannelId,
+            channelName: 'Prayer Alerts',
+            payload: 'prayer:${cfg.name.toLowerCase()}',
+            sound: null,
+          );
+        }
+      }
+    }
+
+    debugPrint('[Scheduler] Prayer times scheduled for $daysAhead days');
+  }
+
+  DateTime _getPrayerTime(PrayerTimes times, String name) {
+    switch (name) {
+      case 'Fajr':
+        return times.fajr;
+      case 'Sunrise':
+        return times.sunrise;
+      case 'Dhuhr':
+        return times.dhuhr;
+      case 'Asr':
+        return times.asr;
+      case 'Maghrib':
+        return times.maghrib;
+      case 'Isha':
+        return times.isha;
+      default:
+        return times.fajr;
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CORE — Schedule a single local notification at an exact time
+  // ══════════════════════════════════════════════════════════════════════════
+
+  Future<void> _scheduleLocalNotification({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledTime,
+    required String channelId,
+    required String channelName,
+    required String payload,
+    String? sound,
+  }) async {
+    // Convert to TZDateTime — required by flutter_local_notifications
+    final tzTime = tz.TZDateTime.from(scheduledTime, tz.local);
+
+    final androidDetails = AndroidNotificationDetails(
+      channelId,
+      channelName,
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: '@mipmap/ic_launcher',
+      // Custom Islamic tone — file must be in android/app/src/main/res/raw/
+      sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
+      playSound: true,
+      enableVibration: true,
+      // Show heads-up notification even when screen is off
+      fullScreenIntent: false,
+      ticker: title,
+      color: const Color(0xFFEC7F13), // AppColors.primary
+      ledColor: const Color(0xFFEC7F13),
+      ledOnMs: 1000,
+      ledOffMs: 500,
+      styleInformation: BigTextStyleInformation(
+        body,
+        htmlFormatBigText: true,
+        contentTitle: '<b>$title</b>',
+        htmlFormatContentTitle: true,
+        summaryText: 'Adhkaar 365',
+      ),
+    );
+
+    final iosDetails = DarwinNotificationDetails(
+      // Custom sound file must be in iOS/Runner/Resources/adhan_tone.aiff
+      sound: sound != null ? '$sound.aiff' : null,
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      interruptionLevel: InterruptionLevel.timeSensitive,
+    );
+
+    // Pick the best available schedule mode.
+    // alarmClock is exempt from all doze/battery restrictions but requires
+    // exact-alarm permission. If the device hasn't granted it, fall back to
+    // inexact so notifications still fire (within ~15 min window).
+    AndroidScheduleMode scheduleMode = AndroidScheduleMode.inexact;
+    if (Platform.isAndroid) {
+      try {
+        final androidPlugin = _local
+            .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin>();
+        final canExact =
+            await androidPlugin?.canScheduleExactNotifications() ?? false;
+        if (canExact) scheduleMode = AndroidScheduleMode.alarmClock;
+        debugPrint('[Scheduler] canExact=$canExact → mode=$scheduleMode');
+      } catch (_) {}
+    } else {
+      scheduleMode = AndroidScheduleMode.alarmClock;
+    }
+
+    try {
+      await _local.zonedSchedule(
+        id,
+        title,
+        body,
+        tzTime,
+        NotificationDetails(android: androidDetails, iOS: iosDetails),
+        androidScheduleMode: scheduleMode,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        payload: payload,
+      );
+      debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime');
+    } catch (e) {
+      debugPrint('[Scheduler] FAILED id=$id "$title": $e');
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // CANCEL — Granular controls for SettingsScreen toggles
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /// Cancel all morning adhkar reminders (7 days)
+  Future<void> cancelMorningNotification() async {
+    for (int i = 0; i < 7; i++) {
+      try { await _local.cancel(_IDs.morning + i); } catch (_) {}
+    }
+    debugPrint('[Cancel] Morning notifications cancelled');
+  }
+
+  /// Cancel all evening adhkar reminders (7 days)
+  Future<void> cancelEveningNotification() async {
+    for (int i = 0; i < 7; i++) {
+      try { await _local.cancel(_IDs.evening + i); } catch (_) {}
+    }
+    debugPrint('[Cancel] Evening notifications cancelled');
+  }
+
+  /// Cancel all prayer time alerts (all prayers, 7 days each)
+  Future<void> cancelAllPrayerNotifications() async {
+    final bases = [
+      _IDs.fajrBase,
+      _IDs.sunriseBase,
+      _IDs.dhuhrBase,
+      _IDs.asrBase,
+      _IDs.maghribBase,
+      _IDs.ishaBase,
+    ];
+    for (final base in bases) {
+      for (int i = 0; i < 7; i++) {
+        try { await _local.cancel(base + i); } catch (_) {}
+      }
+    }
+    debugPrint('[Cancel] All prayer notifications cancelled');
+  }
+
+  /// Cancel a specific prayer's alerts (e.g. just Fajr)
+  Future<void> cancelSpecificPrayer(String prayerName) async {
+    final base = _prayerBase(prayerName);
+    if (base == null) return;
+    for (int i = 0; i < 7; i++) {
+      try { await _local.cancel(base + i); } catch (_) {}
+    }
+    debugPrint('[Cancel] $prayerName notifications cancelled');
+  }
+
+  /// Cancel absolutely everything — useful on logout
+  Future<void> cancelAll() async {
+    try { await _local.cancelAll(); } catch (_) {}
+    debugPrint('[Cancel] ALL notifications cancelled');
+  }
+
+  int? _prayerBase(String name) {
+    switch (name) {
+      case 'Fajr':
+        return _IDs.fajrBase;
+      case 'Sunrise':
+        return _IDs.sunriseBase;
+      case 'Dhuhr':
+        return _IDs.dhuhrBase;
+      case 'Asr':
+        return _IDs.asrBase;
+      case 'Maghrib':
+        return _IDs.maghribBase;
+      case 'Isha':
+        return _IDs.ishaBase;
+      default:
+        return null;
+    }
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // DEBUG — List all pending notifications
+  // ══════════════════════════════════════════════════════════════════════════
+
+  Future<void> debugPrintPending() async {
+    final pending = await _local.pendingNotificationRequests();
+    debugPrint('[Debug] Pending notifications: ${pending.length}');
+    for (final n in pending) {
+      debugPrint('  id=${n.id}  title="${n.title}"  payload=${n.payload}');
+    }
+  }
+
+  /// FOR TESTING: Fires one notification immediately + one scheduled in 1 minute.
+  /// Use this to verify both instant and scheduled delivery work on the device.
+  Future<void> showInstantTestNotification() async {
+    const details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        _IDs.adhkarChannelId,
+        'Test Channel',
+        importance: Importance.max,
+        priority: Priority.max,
+        icon: '@mipmap/ic_launcher',
+        color: Color(0xFFEC7F13),
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+
+    // 1. Instant notification
+    await _local.show(
+      999,
+      '☪️ Adhkaar 365 — Instant OK',
+      'Instant delivery works. Now checking scheduled delivery in 1 minute…',
+      details,
+    );
+
+    // 2. Scheduled notification 1 minute from now — proves the scheduler works
+    await _scheduleLocalNotification(
+      id: 998,
+      title: '☪️ Adhkaar 365 — Scheduled OK',
+      body: 'بارك الله فيك — Scheduled delivery works! Prayer time notifications are active.',
+      scheduledTime: DateTime.now().add(const Duration(minutes: 1)),
+      channelId: _IDs.adhkarChannelId,
+      channelName: 'Adhkar Reminders',
+      payload: 'test',
+      sound: null,
+    );
+
+    debugPrint('[Test] Instant sent. Scheduled test fires in 1 minute.');
+  }
+}
+
+// ── Helper data class ──────────────────────────────────────────────────────────
+class _PrayerConfig {
+  final String name;
+  final int baseId;
+  final String title;
+  final String body;
+  const _PrayerConfig(this.name, this.baseId, this.title, this.body);
+}

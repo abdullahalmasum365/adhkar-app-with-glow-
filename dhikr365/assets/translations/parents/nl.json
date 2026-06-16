@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "parents_rabbir_hamhuma": {
+      "dhikr_no": 1,
+      "title": "De primaire du'a voor genade",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+      "transliteration": "Rabbir-hamhuma kama rabbayani saghira.",
+      "translation": "Mijn Heer, heb medelijden met hen zoals zij mij opvoedden [toen ik] klein [was].",
+      "benefit": "Allah beveelt gelovigen direct in Soera Al-Isra om hun vleugels van bescheidenheid te laten zakken voor hun ouders en deze du'a te reciteren. Het is de meest bekende smeekbede voor ouders in de Islam.",
+      "reference": "Surah Al-Isra (17:24)",
+      "grading": "Quran",
+      "occasion": "Reciteren voor levende of overleden ouders op elk moment, vooral na elk gebed.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbir_hamhuma.mp3"
+    },
+    "parents_rabbanaghfir": {
+      "dhikr_no": 2,
+      "title": "Du'a van de Profeet Ibrahim voor vergiffenis",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "transliteration": "Rabbanaghfir li wa liwalidayya wa lilmu'minina yawma yaqumul-hisab.",
+      "translation": "Onze Heer, vergeef mij en mijn ouders en de gelovigen op de Dag dat de rekening wordt opgemaakt.",
+      "benefit": "De Profeet Ibrahim (vrede zij met hem) deed deze alomvattende smeekbede om vergeving te vragen voor zichzelf, zijn ouders en de hele Umma op de Dag des Oordeels.",
+      "reference": "Surah Ibrahim (14:41)",
+      "grading": "Quran",
+      "occasion": "Reciteren voor jezelf, je ouders en alle gelovigen op elk moment.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbanaghfir.mp3"
+    },
+    "parents_rabbighfir_nuh": {
+      "dhikr_no": 3,
+      "title": "Du'a van de Profeet Noach voor vergiffenis",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ",
+      "transliteration": "Rabbighfir li wa liwalidayya wa liman dakhala baytiya mu'minan wa lil-mu'minina wal-mu'minat.",
+      "translation": "Mijn Heer, vergeef mij en mijn ouders en wie mijn huis als gelovige binnengaat, en de gelovige mannen en de gelovige vrouwen.",
+      "benefit": "Deze mooie smeekbede van Profeet Noach vergroot de kring van genade — inclusief niet alleen de ouders maar iedereen die het huis van de gelovige in geloof binnengaat.",
+      "reference": "Surah Nuh (71:28)",
+      "grading": "Quran",
+      "occasion": "Reciteren voor ouders, huishouden en alle gelovigen op elk moment.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbighfir_nuh.mp3"
+    },
+    "parents_rabbi_awzini": {
+      "dhikr_no": 4,
+      "title": "Du'a voor dankbaarheid en rechtschapenheid",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "transliteration": "Rabbi awzi'ni an ashkura ni'matakal-lati an'amta 'alayya wa 'ala walidayya...",
+      "translation": "Mijn Heer, stel mij in staat dankbaar te zijn voor Uw gunst die U mij en mijn ouders hebt betoond en rechtvaardige werken te doen die U goedkeurt, en maak mijn nageslacht rechtschapen. Voorwaar, ik heb mij tot U bekeerd en ik ben van de moslims.",
+      "benefit": "Allah openbaarde deze du'a specifiek voor een persoon die volwassenheid bereikt. Het is een uitgebreide smeekbede die dankbaarheid voor ouderlijke zegeningen, verzoek om rechtvaardige werken, gebed voor kinderen en berouwverklaring combineert.",
+      "reference": "Surah Al-Ahqaf (46:15)",
+      "grading": "Quran",
+      "occasion": "Op elke leeftijd reciteren, bijzonder betekenisvol op veertigjarige leeftijd.",
+      "category": "parents",
+      "audioPath": "assets/audio/parents_rabbi_awzini.mp3"
+    }
+  }
+}

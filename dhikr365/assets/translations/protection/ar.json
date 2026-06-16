@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "protection_1": {
+      "dhikr_no": 1,
+      "title": "بسم الله (حماية الصباح والمساء)",
+      "frequency": "3 مرات (صباحاً ومساءً)",
+      "targetCount": 3,
+      "arabicText": "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+      "transliteration": "Bismillāhil-ladhī lā yaḍurru ma'asmihi shay'un fil-arḍi walā fis-samā', wahuwaṣ-samī'ul-'alīm.",
+      "translation": "بِاسمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسمِهِ شَيءٌ فِي الأَرضِ وَلَا فِي السَّمَاءِ، وَهُوَ السَّمِيعُ الْعَلِيمُ.",
+      "benefit": "من قالها ثلاثاً صباحاً وثلاثاً مساءً لم يضره شيء.",
+      "reference": "At-Tirmidhi, 3388; Ibn Majah, 3869.",
+      "category": "protection"
+    },
+    "protection_2": {
+      "dhikr_no": 2,
+      "title": "سورة الفلق (الحماية من الشر)",
+      "frequency": "3 مرات (صباحاً ومساءً)",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wamin sharri ghāsiqin idhā waqab. Wamin sharrin-naffāthāti fil-'uqad. Wamin sharri ḥāsidin idhā ḥasad.",
+      "translation": "قُلْ: أَعُوذُ بِرَبِّ الفَلَقِ مِن شَرِّ مَا خَلَقَ، وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ، وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ، وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ.",
+      "benefit": "قراءة سورة الفلق ثلاث مرات صباحاً ومساءً تكفي قارئها من كل شر.",
+      "reference": "Abu Dawud, 5082; At-Tirmidhi, 3575.",
+      "category": "protection"
+    },
+    "protection_3": {
+      "dhikr_no": 3,
+      "title": "سورة الناس (الحماية من الشيطان)",
+      "frequency": "3 مرات (صباحاً ومساءً)",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "قُلْ: أَعُوذُ بِرَبِّ النَّاسِ، مَلِكِ النَّاسِ، إِلَهِ النَّاسِ، مِن شَرِّ الوَسْوَاسِ الخَنَّاسِ، الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ، مِنَ الجِنَّةِ وَالنَّاسِ.",
+      "benefit": "قراءة سورة الناس ثلاث مرات صباحاً ومساءً تكفي قارئها من وسوسة الشيطان.",
+      "reference": "Abu Dawud, 5082; At-Tirmidhi, 3575.",
+      "category": "protection"
+    },
+    "protection_4": {
+      "dhikr_no": 4,
+      "title": "أعوذ بكلمات الله (الالتجاء بكلمات الله)",
+      "frequency": "3 مرات (مساءً)",
+      "targetCount": 3,
+      "arabicText": "اعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "transliteration": "A'ūdhu bikalimātil-lāhit-tāmmāti min sharri mā khalaq.",
+      "translation": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِن شَرِّ مَا خَلَقَ.",
+      "benefit": "من قالها ثلاثاً حين يمسي لم تضره حُمَة تلك الليلة.",
+      "reference": "Ahmad, 15709; Ibn Majah, 3518.",
+      "category": "protection"
+    },
+    "protection_5": {
+      "dhikr_no": 5,
+      "title": "آية الكرسي",
+      "frequency": "مرة واحدة",
+      "targetCount": 1,
+      "arabicText": "اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huw, al-ḥayyul-qayyūm, lā ta'khudhuhu sinatuw-walā nawm, lahū mā fis-samāwāti wamā fil-arḍ, man dhal-ladhī yashfa'u 'indahū illā bi-idhnih, ya'lamu mā bayna aydīhim wamā khalfahum, walā yuḥīṭūna bishay'im-min 'ilmihī illā bimā shā', wasi'a kursiyyuhus-samāwāti wal-arḍ, walā ya'ūduhū ḥifẓuhumā, wahuwal-'aliyyul-'aẓīm.",
+      "translation": "اللهُ لا إلهَ إلا هو، الحيُّ القيُّوم، لا تأخذه سِنةٌ ولا نومٌ، له ما في السماوات وما في الأرض، من ذا الذي يشفع عنده إلا بإذنه، يعلم ما بين أيديهم وما خلفهم، ولا يحيطون بشيء من علمه إلا بما شاء، وسع كرسيُّه السماوات والأرض، ولا يؤوده حفظهما، وهو العليُّ العظيم.",
+      "benefit": "من قرأها دُبُرَ كل صلاة مكتوبة لم يمنعه من دخول الجنة إلا الموت. ومن قرأها حين يأوي إلى فراشه وكَّل الله به حافظاً ولم يقربه شيطان حتى يصبح.",
+      "reference": "Al-Bukhari, 2311; An-Nasa'i, 9928.",
+      "category": "protection"
+    }
+  }
+}
