@@ -64,11 +64,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   /// Stop audio when the user backgrounds the app so it doesn't keep playing.
+  /// On resume, re-check notification permissions and top up schedules —
+  /// this is what makes an "Alarms & Reminders" grant from system Settings
+  /// actually take effect without requiring an app restart.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       AudioService().stop();
+    } else if (state == AppLifecycleState.resumed) {
+      _refreshNotificationsOnResume();
+    }
+  }
+
+  Future<void> _refreshNotificationsOnResume() async {
+    // Providers live below this widget, so reach them through the navigator's
+    // context. Null until the MaterialApp has built — nothing to refresh then.
+    final ctx = appNavigatorKey.currentContext;
+    if (ctx == null) return;
+    try {
+      final np = Provider.of<NotificationProvider>(ctx, listen: false);
+      final up = Provider.of<UserProvider>(ctx, listen: false);
+      await np.refreshIfNeeded(up);
+    } catch (e) {
+      debugPrint('[main] Notification refresh on resume failed: $e');
     }
   }
 

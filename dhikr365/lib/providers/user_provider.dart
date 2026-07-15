@@ -13,6 +13,7 @@ class UserProvider extends ChangeNotifier {
   String? _country;
   double? _lat;
   double? _lng;
+  String? _timezone; // IANA name of the SELECTED location (e.g. "Asia/Dhaka")
   bool _hasDonated = false;
   bool _hasCompletedOnboarding = false;
 
@@ -23,6 +24,7 @@ class UserProvider extends ChangeNotifier {
   String? get country => _country;
   double? get lat => _lat;
   double? get lng => _lng;
+  String? get timezone => _timezone;
   bool get hasDonated => _hasDonated;
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
 
@@ -53,6 +55,7 @@ class UserProvider extends ChangeNotifier {
       final lngStr = prefs.getString('saved_lng');
       _lat = latStr != null ? double.tryParse(latStr) : null;
       _lng = lngStr != null ? double.tryParse(lngStr) : null;
+      _timezone = prefs.getString('saved_timezone');
       _hasDonated = prefs.getBool('has_donated') ?? false;
       _hasCompletedOnboarding = prefs.getBool('onboarding_done') ?? false;
     } catch (_) {
@@ -113,6 +116,15 @@ class UserProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('saved_lat', lat.toString());
     await prefs.setString('saved_lng', lng.toString());
+    notifyListeners();
+  }
+
+  /// IANA timezone of the selected location. Set from the city database on
+  /// manual selection, or from the device timezone when GPS is used.
+  Future<void> setTimezone(String tz) async {
+    _timezone = tz;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('saved_timezone', tz);
     notifyListeners();
   }
 

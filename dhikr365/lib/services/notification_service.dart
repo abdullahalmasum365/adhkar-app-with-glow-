@@ -31,16 +31,17 @@ import '../utils/app_navigator.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 class _IDs {
   // Adhkar reminders
-  static const int morning = 1000; // 1000–1006
-  static const int evening = 1100; // 1100–1106, safe gap
+  static const int morning = 1000; // 1000–1009
+  static const int evening = 1100; // 1100–1109, safe gap
 
-  // Prayer-time alerts — 7 slots per prayer (one per day in rolling window)
-  static const int fajrBase = 2000; // 2000–2006
-  static const int sunriseBase = 2010; // 2010–2016
-  static const int dhuhrBase = 2020; // 2020–2026
-  static const int asrBase = 2030; // 2030–2036
-  static const int maghribBase = 2040; // 2040–2046
-  static const int ishaBase = 2050; // 2050–2056
+  // Prayer-time alerts — one slot per day in the rolling window.
+  // Bases are 10 apart, so kDaysAhead must never exceed 10.
+  static const int fajrBase = 2000; // 2000–2009
+  static const int sunriseBase = 2010; // 2010–2019
+  static const int dhuhrBase = 2020; // 2020–2029
+  static const int asrBase = 2030; // 2030–2039
+  static const int maghribBase = 2040; // 2040–2049
+  static const int ishaBase = 2050; // 2050–2059
 
   // Channel IDs
   static const String adhkarChannelId = 'adhkaar_adhkar';
@@ -56,10 +57,24 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
+  /// Rolling scheduling window. Capped at 10 by the notification ID layout
+  /// (prayer ID bases are 10 apart — see [_IDs]).
+  static const int kDaysAhead = 10;
+
   final FlutterLocalNotificationsPlugin _local =
       FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
+
+  // Cached result of canScheduleExactNotifications() — avoids calling it once
+  // per notification in a loop (10 days × 8 prayers = 80 async calls otherwise).
+  bool? _cachedCanExact;
+
+  /// Whether the most recent scheduling session used exact (alarmClock) mode.
+  /// Compared against the live permission on app resume: if the user granted
+  /// "Alarms & Reminders" while we were backgrounded, everything must be
+  /// rescheduled in exact mode.
+  bool? lastScheduleUsedExact;
 
   // ── Public: called once from main() ────────────────────────────────────────
   Future<void> init() async {
@@ -85,7 +100,7 @@ class NotificationService {
     // Android 5+ replaces any colour with white in the status bar, so the
     // launcher icon (full colour) shows as a grey blob — we use the dedicated
     // monochrome drawable instead.
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const android = AndroidInitializationSettings('@drawable/ic_notification');
 
     // ── iOS / macOS settings ──
     const darwin = DarwinInitializationSettings(
@@ -167,19 +182,23 @@ class NotificationService {
     final nav = appNavigatorKey.currentState;
     if (nav == null) return; // app not ready yet
 
-    if (payload == 'morning' || payload == 'prayer:fajr') {
-      // Morning adhkar fires at Fajr → open Morning Adhkar screen
+    if (payload == 'morning' ||
+        payload == 'prayer:fajr' ||
+        payload == 'prayer:sunrise') {
+      // Morning adhkar period (Fajr → sunrise) → open Morning Adhkar screen
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.morning),
       ));
-    } else if (payload == 'evening' || payload == 'prayer:asr') {
-      // Evening adhkar fires at Asr → open Evening Adhkar screen
+    } else if (payload == 'evening' ||
+        payload == 'prayer:asr' ||
+        payload == 'prayer:maghrib') {
+      // Evening adhkar period (Asr → Maghrib) → open Evening Adhkar screen
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.evening),
       ));
     }
-    // Other prayer alerts (Fajr, Dhuhr, Asr, Isha) just bring the app to
-    // foreground — the Dashboard already shows all prayer times.
+    // Other prayer alerts (Dhuhr, Isha) just bring the app to foreground —
+    // the Dashboard already shows all prayer times.
   }
 
   // ── Cold-start: payload from the notification that launched the app ────────
@@ -197,15 +216,51 @@ class NotificationService {
 
   static const _batteryChannel = MethodChannel('dhikr365/battery');
 
+  /// Returns true if the device can schedule exact (alarm-clock) notifications.
+  /// Result is cached after the first call — call [invalidateExactAlarmCache]
+  /// after the user returns from the Settings page to force a re-check.
+  Future<bool> isExactAlarmGranted() async {
+    if (!Platform.isAndroid) return true;
+    if (_cachedCanExact != null) return _cachedCanExact!;
+    try {
+      final plugin = _local.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      _cachedCanExact = await plugin?.canScheduleExactNotifications() ?? false;
+    } catch (_) {
+      _cachedCanExact = false;
+    }
+    debugPrint('[Permissions] canScheduleExactNotifications=$_cachedCanExact');
+    return _cachedCanExact!;
+  }
+
+  /// Opens the Android "Alarms & Reminders" special-access settings page so
+  /// the user can grant SCHEDULE_EXACT_ALARM permission manually.
+  Future<void> openExactAlarmSettings() async {
+    if (!Platform.isAndroid) return;
+    _cachedCanExact = null; // invalidate so next schedule re-checks
+    try {
+      final plugin = _local.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      await plugin?.requestExactAlarmsPermission();
+    } catch (e) {
+      debugPrint('[Permissions] openExactAlarmSettings error: $e');
+    }
+  }
+
+  /// Call after the user returns from Settings to force a fresh permission check.
+  void invalidateExactAlarmCache() => _cachedCanExact = null;
+
   Future<bool> requestPermissions() async {
+    _cachedCanExact = null; // always re-check after a permission request cycle
     final androidPlugin = _local.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
-      // Android 13+ — request notification + exact alarm permissions
       await androidPlugin.requestNotificationsPermission();
-      await androidPlugin.requestExactAlarmsPermission();
-      // Request battery optimization exemption so alarms fire even when the
-      // phone is idle or the system is aggressively killing background work.
+      // NOTE: do NOT call requestExactAlarmsPermission() here. It fires the
+      // system Settings intent immediately (no dialog, no explanation), racing
+      // the POST_NOTIFICATIONS prompt and confusing users. The exact-alarm
+      // flow is owned by the explainer dialog in SplashScreen, and the app
+      // reschedules automatically on resume once the user grants it.
       await requestBatteryOptimizationExemption();
       debugPrint('[Permissions] Android notification permissions requested');
       return true;
@@ -253,7 +308,7 @@ class NotificationService {
   Future<void> scheduleAdhkarReminders(
     double lat,
     double lng, {
-    int daysAhead = 7,
+    int daysAhead = kDaysAhead,
     CalculationMethod calculationMethod = CalculationMethod.muslim_world_league,
     String madhab = 'shafii',
   }) async {
@@ -281,7 +336,7 @@ class NotificationService {
       final now = DateTime.now();
       if (fajr.isAfter(now)) {
         await _scheduleLocalNotification(
-          id: _IDs.morning + i, // 1000–1006
+          id: _IDs.morning + i, // 1000–1009
           title: '🌄 أذكار الصباح • Morning Adhkar',
           body: 'Fajr has begun — read your morning adhkar now. '
               '"وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ الشَّمْسِ"',
@@ -295,7 +350,7 @@ class NotificationService {
 
       if (asr.isAfter(now)) {
         await _scheduleLocalNotification(
-          id: _IDs.evening + i, // 1100–1106
+          id: _IDs.evening + i, // 1100–1109
           title: '🌆 أذكار المساء • Evening Adhkar',
           body: 'Asr time — the evening adhkar period has begun. '
               '"وَسَبِّحْ بِحَمْدِهِ قَبْلَ غُرُوبِهَا"',
@@ -328,7 +383,7 @@ class NotificationService {
       'Maghrib': true,
       'Isha': true,
     },
-    int daysAhead = 7,
+    int daysAhead = kDaysAhead,
     CalculationMethod calculationMethod = CalculationMethod.muslim_world_league,
     String madhab = 'shafii',
   }) async {
@@ -429,13 +484,17 @@ class NotificationService {
       channelName,
       importance: Importance.high,
       priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
+      icon: '@drawable/ic_notification',
       // Custom Islamic tone — file must be in android/app/src/main/res/raw/
       sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
       playSound: true,
       enableVibration: true,
       // Show heads-up notification even when screen is off
       fullScreenIntent: false,
+      // Marks these as time-critical reminders — OEM battery managers
+      // (Samsung/Xiaomi/OPPO) deprioritize uncategorized notifications.
+      category: AndroidNotificationCategory.alarm,
+      visibility: NotificationVisibility.public,
       ticker: title,
       color: const Color(0xFFEC7F13), // AppColors.primary
       ledColor: const Color(0xFFEC7F13),
@@ -459,38 +518,55 @@ class NotificationService {
       interruptionLevel: InterruptionLevel.timeSensitive,
     );
 
-    // Pick the best available schedule mode.
-    // alarmClock is exempt from all doze/battery restrictions but requires
-    // exact-alarm permission. If the device hasn't granted it, fall back to
-    // inexact so notifications still fire (within ~15 min window).
-    AndroidScheduleMode scheduleMode = AndroidScheduleMode.inexact;
+    // Use the CACHED exact-alarm capability (set once per scheduling session,
+    // not once per notification — avoids 80+ redundant async calls per refresh).
+    // alarmClock mode is Doze-exempt and fires precisely. The fallback MUST be
+    // inexactAllowWhileIdle — plain inexact does not fire during Doze at all,
+    // which on Samsung/Xiaomi/OPPO means "delayed by hours or never".
+    AndroidScheduleMode scheduleMode;
     if (Platform.isAndroid) {
-      try {
-        final androidPlugin = _local
-            .resolvePlatformSpecificImplementation<
-                AndroidFlutterLocalNotificationsPlugin>();
-        final canExact =
-            await androidPlugin?.canScheduleExactNotifications() ?? false;
-        if (canExact) scheduleMode = AndroidScheduleMode.alarmClock;
-        debugPrint('[Scheduler] canExact=$canExact → mode=$scheduleMode');
-      } catch (_) {}
+      final canExact = await isExactAlarmGranted();
+      lastScheduleUsedExact = canExact;
+      scheduleMode = canExact
+          ? AndroidScheduleMode.alarmClock
+          : AndroidScheduleMode.inexactAllowWhileIdle;
     } else {
       scheduleMode = AndroidScheduleMode.alarmClock;
     }
 
-    try {
-      await _local.zonedSchedule(
+    Future<void> doSchedule(AndroidScheduleMode mode) {
+      return _local.zonedSchedule(
         id,
         title,
         body,
         tzTime,
         NotificationDetails(android: androidDetails, iOS: iosDetails),
-        androidScheduleMode: scheduleMode,
+        androidScheduleMode: mode,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         payload: payload,
       );
-      debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime');
+    }
+
+    try {
+      await doSchedule(scheduleMode);
+      debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime ($scheduleMode)');
+    } on PlatformException catch (e) {
+      // The exact-alarm permission can be revoked between the cache check and
+      // the actual schedule call. Never drop the notification: fall back to
+      // inexactAllowWhileIdle so it still fires (slightly less precisely).
+      if (e.code == 'exact_alarms_not_permitted') {
+        _cachedCanExact = false;
+        lastScheduleUsedExact = false;
+        try {
+          await doSchedule(AndroidScheduleMode.inexactAllowWhileIdle);
+          debugPrint('[Scheduler] OK id=$id "$title" (fallback inexact)');
+        } catch (e2) {
+          debugPrint('[Scheduler] FAILED id=$id "$title": $e2');
+        }
+      } else {
+        debugPrint('[Scheduler] FAILED id=$id "$title": $e');
+      }
     } catch (e) {
       debugPrint('[Scheduler] FAILED id=$id "$title": $e');
     }
@@ -500,23 +576,23 @@ class NotificationService {
   // CANCEL — Granular controls for SettingsScreen toggles
   // ══════════════════════════════════════════════════════════════════════════
 
-  /// Cancel all morning adhkar reminders (7 days)
+  /// Cancel all morning adhkar reminders (whole rolling window)
   Future<void> cancelMorningNotification() async {
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < kDaysAhead; i++) {
       try { await _local.cancel(_IDs.morning + i); } catch (_) {}
     }
     debugPrint('[Cancel] Morning notifications cancelled');
   }
 
-  /// Cancel all evening adhkar reminders (7 days)
+  /// Cancel all evening adhkar reminders (whole rolling window)
   Future<void> cancelEveningNotification() async {
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < kDaysAhead; i++) {
       try { await _local.cancel(_IDs.evening + i); } catch (_) {}
     }
     debugPrint('[Cancel] Evening notifications cancelled');
   }
 
-  /// Cancel all prayer time alerts (all prayers, 7 days each)
+  /// Cancel all prayer time alerts (all prayers, whole rolling window)
   Future<void> cancelAllPrayerNotifications() async {
     final bases = [
       _IDs.fajrBase,
@@ -527,7 +603,7 @@ class NotificationService {
       _IDs.ishaBase,
     ];
     for (final base in bases) {
-      for (int i = 0; i < 7; i++) {
+      for (int i = 0; i < kDaysAhead; i++) {
         try { await _local.cancel(base + i); } catch (_) {}
       }
     }
@@ -538,7 +614,7 @@ class NotificationService {
   Future<void> cancelSpecificPrayer(String prayerName) async {
     final base = _prayerBase(prayerName);
     if (base == null) return;
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < kDaysAhead; i++) {
       try { await _local.cancel(base + i); } catch (_) {}
     }
     debugPrint('[Cancel] $prayerName notifications cancelled');
@@ -590,7 +666,7 @@ class NotificationService {
         'Test Channel',
         importance: Importance.max,
         priority: Priority.max,
-        icon: '@mipmap/ic_launcher',
+        icon: '@drawable/ic_notification',
         color: Color(0xFFEC7F13),
       ),
       iOS: DarwinNotificationDetails(

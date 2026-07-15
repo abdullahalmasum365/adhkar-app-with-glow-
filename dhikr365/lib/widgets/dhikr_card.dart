@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
@@ -14,33 +13,26 @@ import '../screens/dhikr_focus_screen.dart';
 
 class DhikrCard extends StatefulWidget {
   final Dhikr dhikr;
-  const DhikrCard({super.key, required this.dhikr});
+  /// Called when the user taps the play button on this card.
+  final void Function(Dhikr)? onPlayTapped;
+  /// True when this card's audio is loaded in the mini player.
+  final bool isActive;
+  /// True when this card's audio is actively playing (subset of isActive).
+  final bool isPlaying;
+
+  const DhikrCard({
+    super.key,
+    required this.dhikr,
+    this.onPlayTapped,
+    this.isActive = false,
+    this.isPlaying = false,
+  });
 
   @override
   State<DhikrCard> createState() => _DhikrCardState();
 }
 
 class _DhikrCardState extends State<DhikrCard> {
-  late AudioPlayer _audioPlayer;
-  bool _isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _audioPlayer = AudioPlayer();
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      if (mounted) setState(() => _isPlaying = state == PlayerState.playing);
-    });
-    _audioPlayer.onPlayerComplete.listen((_) {
-      if (mounted) setState(() => _isPlaying = false);
-    });
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
-  }
 
   /// Builds the plain-text blob that gets sent to the OS share sheet.
   String _buildShareText(LanguageProvider lp, bool showTranslit) {
@@ -242,30 +234,7 @@ class _DhikrCardState extends State<DhikrCard> {
     );
   }
 
-  Future<void> _toggleAudio() async {
-    final path = widget.dhikr.audioPath;
-    if (path == null || path.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No audio available for this dhikr.')),
-        );
-      }
-      return;
-    }
-    if (_isPlaying) {
-      await _audioPlayer.pause();
-    } else {
-      try {
-        await _audioPlayer.play(AssetSource(path.replaceFirst('assets/', '')));
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Audio not found: $path')),
-          );
-        }
-      }
-    }
-  }
+  void _onPlayTapped() => widget.onPlayTapped?.call(widget.dhikr);
 
   @override
   Widget build(BuildContext context) {
@@ -329,23 +298,26 @@ class _DhikrCardState extends State<DhikrCard> {
                 ),
                 SizedBox(width: R.px(8)),
                 GestureDetector(
-                  onTap: _toggleAudio,
+                  onTap: _onPlayTapped,
                   child: Container(
                     height: btnSize,
                     width: btnSize,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: ThemeProvider.divineAmber,
+                      color: widget.isActive
+                          ? ThemeProvider.divineAmber
+                          : ThemeProvider.divineAmber.withOpacity(0.72),
                       boxShadow: [
                         BoxShadow(
-                          color: ThemeProvider.divineAmber.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                          color: ThemeProvider.divineAmber
+                              .withOpacity(widget.isActive ? 0.55 : 0.22),
+                          blurRadius: widget.isActive ? 16 : 6,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: Icon(
-                      _isPlaying ? Icons.pause : Icons.play_arrow,
+                      widget.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                       color: Colors.white,
                       size: R.sp(18),
                     ),

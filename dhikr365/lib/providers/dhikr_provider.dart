@@ -332,12 +332,20 @@ class DhikrProvider extends ChangeNotifier {
         // When prefix is empty the key already contains the full ID (e.g.
       // parents_rabbir_hamhuma, food_bismillah).  Otherwise prepend the prefix.
       final id = prefix.isEmpty ? key : '${prefix}_$key';
+        // audioPath from JSON wins; otherwise check if a file named after the
+        // dhikr ID exists in assets/audio/ (auto-derive: audio/{id}.mp3).
+        final jsonAudioPath = entry['audioPath'] as String?;
+        final audioPath = (jsonAudioPath != null && jsonAudioPath.isNotEmpty)
+            ? jsonAudioPath
+            : null; // caller can check assets/audio/$id.mp3 at runtime
+
         list.add(Dhikr(
           id: id,
           title: entry['title'] as String? ?? '',
           arabicText: entry['arabicText'] as String? ?? '',
           translation: entry['translation'] as String? ?? '',
           transliteration: entry['transliteration'] as String?,
+          audioPath: audioPath,
           benefit: entry['benefit'] as String?,
           reference: entry['reference'] as String?,
           targetCount: (entry['targetCount'] as num?)?.toInt() ?? 1,

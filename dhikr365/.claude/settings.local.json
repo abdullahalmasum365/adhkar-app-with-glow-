@@ -20,7 +20,19 @@
       "PowerShell(& \"$env:LOCALAPPDATA\\\\Android\\\\Sdk\\\\platform-tools\\\\adb.exe\" devices 2>&1)",
       "WebSearch",
       "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\UNSTOPPABLE\\\\Music\\\\apps\\\\New folder\\\\dhikr365\\\\assets\\\\audio\")",
-      "WebFetch(domain:archive.org)"
+      "WebFetch(domain:archive.org)",
+      "WebFetch(domain:dn711002.ca.archive.org)",
+      "WebFetch(domain:www.peacefulmankind.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(python)",
+      "Bash(gh api *)",
+      "Bash(curl -s \"https://api.github.com/repos/wafaaelmaandy/Hisn-Muslim-Json/contents/\")",
+      "Bash(python -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(x['name']\\) for x in data]\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/wafaaelmaandy/Hisn-Muslim-Json/master/husn_en.json\")",
+      "Bash(curl -sI \"http://www.hisnmuslim.com/audio/ar/75.mp3\")",
+      "Bash(python -)",
+      "Bash(curl -s -L -A \"Mozilla/5.0\" --max-time 40 \"https://duas.com/search?q=protection+from+hellfire\")",
+      "Bash(curl -s -L -A \"Mozilla/5.0\" --max-time 40 \"https://duas.com/search?q=hellfire\")"
     ]
   }
 }

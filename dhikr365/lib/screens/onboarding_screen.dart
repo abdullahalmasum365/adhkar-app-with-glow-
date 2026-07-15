@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:provider/provider.dart';
 import '../providers/notification_provider.dart';
 import '../providers/user_provider.dart';
@@ -65,6 +66,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
         await up.setCoordinates(lat, lng);
         await up.setLocation(place.city, place.country);
+        // GPS pick → device timezone is the location's timezone.
+        try {
+          await up.setTimezone(await FlutterTimezone.getLocalTimezone());
+        } catch (_) {}
         if (!mounted) return;
 
         await NotificationService().requestPermissions();

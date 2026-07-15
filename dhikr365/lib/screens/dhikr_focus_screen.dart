@@ -1,12 +1,16 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/theme_provider.dart';
 import '../services/audio_service.dart';
+import '../services/tts_service.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
 
@@ -20,12 +24,98 @@ class DhikrFocusScreen extends StatefulWidget {
 class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
   int  _count   = 0;
   bool _pressed = false;
-  bool _audioOn = false;
+
+  // ── Mini player state ───────────────────────────────────────────────────
+  final AudioService _audio = AudioService();
+  final TtsService   _tts   = TtsService();
+  bool _showPlayer     = false;
+  bool _playerPlaying  = false;
+  bool _usingTts       = false;
+  Duration _position = Duration.zero;
+  Duration _duration  = Duration.zero;
+  static const _repeatOptions = [1, 2, 3, 5, 10, 0];
+  int _repeatIdx  = 0;
+  int _repeatsDone = 0;
+
+  String get _repeatLabel {
+    final t = _repeatOptions[_repeatIdx];
+    return t == 0 ? '∞' : '$t×';
+  }
 
   @override
   void initState() {
     super.initState();
     WakelockPlus.enable();
+    _audio.stateStream.listen((s) {
+      if (!mounted) return;
+      setState(() => _playerPlaying = s == PlayerState.playing);
+    });
+    _audio.positionStream.listen((p) {
+      if (!mounted) return;
+      setState(() => _position = p);
+    });
+    _audio.durationStream.listen((d) {
+      if (!mounted) return;
+      setState(() => _duration = d ?? Duration.zero);
+    });
+    _audio.onComplete.listen((_) {
+      if (!mounted) return;
+      _handleRepeatComplete();
+    });
+  }
+
+  String? _resolveAudioPath() {
+    final p = widget.dhikr.audioPath;
+    if (p != null && p.isNotEmpty) return p.replaceFirst('assets/', '');
+    return 'audio/${widget.dhikr.id}.mp3';
+  }
+
+  /// Shows why nothing is audible and resets the player — a playing state
+  /// with no sound is the worst possible feedback.
+  void _showTtsUnavailable() {
+    if (!mounted) return;
+    setState(() {
+      _playerPlaying = false;
+      _usingTts = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(
+          'No voice for this language is installed on your device.\n'
+          'Install it under device Settings → Text-to-Speech output.',
+        ),
+        backgroundColor: Colors.red.shade800,
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  Future<void> _startPlayback() async {
+    // Arabic recitation: MP3 first, Arabic TTS as fallback.
+    final path = _resolveAudioPath();
+    if (path != null) {
+      final ok = await _audio.playPath(path);
+      if (ok) { setState(() => _usingTts = false); return; }
+    }
+    if (widget.dhikr.arabicText.isNotEmpty) {
+      setState(() { _usingTts = true; _playerPlaying = true; });
+      final ok = await _tts.speak(widget.dhikr.arabicText, lang: 'ar-SA', onComplete: () {
+        if (mounted) _handleRepeatComplete();
+      });
+      if (!ok) _showTtsUnavailable();
+    } else {
+      setState(() => _showPlayer = false);
+    }
+  }
+
+  Future<void> _handleRepeatComplete() async {
+    _repeatsDone++;
+    final target = _repeatOptions[_repeatIdx];
+    if (target == 0 || _repeatsDone < target) {
+      await _startPlayback();
+    } else {
+      setState(() { _playerPlaying = false; _repeatsDone = 0; });
+    }
   }
 
   void _tap() {
@@ -50,23 +140,237 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
     }
   }
 
-  void _toggleAudio() {
-    final path = widget.dhikr.audioPath;
-    if (path == null || path.isEmpty) return;
-    if (_audioOn) {
-      AudioService().stop();
-      setState(() => _audioOn = false);
+  void _togglePlayer() {
+    if (_showPlayer) {
+      _audio.stop();
+      _tts.stop();
+      setState(() {
+        _showPlayer      = false;
+        _usingTts        = false;
+        _position        = Duration.zero;
+        _duration        = Duration.zero;
+        _repeatsDone     = 0;
+        _playerPlaying   = false;
+      });
     } else {
-      AudioService().play(path);
-      setState(() => _audioOn = true);
+      setState(() { _showPlayer = true; _repeatsDone = 0; _usingTts = false; });
+      _startPlayback();
+    }
+  }
+
+  void _onPlayPause() {
+    if (_playerPlaying) {
+      if (_usingTts) { _tts.pause(); }
+      else           { _audio.pause(); }
+      setState(() => _playerPlaying = false);
+    } else {
+      if (_usingTts) {
+        _tts.resume().then((ok) {
+          if (mounted && ok) setState(() => _playerPlaying = true);
+        });
+      } else if (_audio.isPaused) {
+        _audio.resume();
+      } else {
+        _startPlayback();
+      }
     }
   }
 
   @override
   void dispose() {
-    if (_audioOn) AudioService().stop();
+    _audio.stop();
+    _tts.stop();
     WakelockPlus.disable();
     super.dispose();
+  }
+
+  // ── Mini player (shown above the footer tap button) ──────────────────────
+
+  Widget _buildMiniPlayer() {
+    const amber = Color(0xFFF59E0B);
+    final progress = _duration.inMilliseconds > 0
+        ? (_position.inMilliseconds / _duration.inMilliseconds).clamp(0.0, 1.0)
+        : 0.0;
+
+    String fmt(Duration d) {
+      final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+      final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+      return '$m:$s';
+    }
+
+    return Positioned(
+      left: 0, right: 0, bottom: R.px(180),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: R.px(14)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF042F2E).withOpacity(0.93),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: amber.withOpacity(0.22)),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.4), blurRadius: 24),
+                ],
+              ),
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                // Title + close
+                Row(children: [
+                  Container(
+                    width: 30, height: 30,
+                    decoration: BoxDecoration(
+                      color: amber.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      _usingTts
+                          ? Icons.record_voice_over_rounded
+                          : Icons.music_note_rounded,
+                      color: amber, size: 15,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(widget.dhikr.title,
+                        maxLines: 1, overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w700,
+                            color: Colors.white)),
+                  ),
+                  GestureDetector(
+                    onTap: _togglePlayer,
+                    child: Container(
+                      width: 28, height: 28,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.07),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close_rounded,
+                          color: Colors.white54, size: 14),
+                    ),
+                  ),
+                ]),
+
+                // Seek bar (MP3) or TTS indicator
+                if (_usingTts)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.record_voice_over_rounded,
+                            color: amber, size: 14),
+                        const SizedBox(width: 6),
+                        Text(
+                          _playerPlaying ? 'RECITING ARABIC...' : 'PAUSED',
+                          style: const TextStyle(
+                            fontSize: 9, fontWeight: FontWeight.w800,
+                            letterSpacing: 1.4, color: amber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                else ...[
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 2.5,
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 4),
+                      overlayShape:
+                          const RoundSliderOverlayShape(overlayRadius: 10),
+                      activeTrackColor: amber,
+                      inactiveTrackColor: Colors.white12,
+                      thumbColor: amber,
+                      overlayColor: amber.withOpacity(0.15),
+                    ),
+                    child: Slider(
+                      value: progress,
+                      onChanged: (v) {
+                        final ms = (_duration.inMilliseconds * v).toInt();
+                        _audio.seek(Duration(milliseconds: ms));
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(fmt(_position),
+                          style: const TextStyle(
+                              fontSize: 10, color: Colors.white38)),
+                      Text(fmt(_duration),
+                          style: const TextStyle(
+                              fontSize: 10, color: Colors.white38)),
+                    ],
+                  ),
+                ],
+
+                const SizedBox(height: 10),
+
+                // Repeat controls + play/pause
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  _SmallBtn(Icons.remove, onTap: () => setState(() {
+                    _repeatIdx = (_repeatIdx - 1 + _repeatOptions.length)
+                        % _repeatOptions.length;
+                  })),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.07),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: Colors.white.withOpacity(0.1)),
+                    ),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      const Icon(Icons.repeat_rounded,
+                          color: amber, size: 12),
+                      const SizedBox(width: 5),
+                      Text(_repeatLabel,
+                          style: const TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.w700,
+                              color: Colors.white)),
+                    ]),
+                  ),
+                  const SizedBox(width: 8),
+                  _SmallBtn(Icons.add, onTap: () => setState(() {
+                    _repeatIdx = (_repeatIdx + 1) % _repeatOptions.length;
+                  })),
+                  const SizedBox(width: 22),
+                  GestureDetector(
+                    onTap: _onPlayPause,
+                    child: Container(
+                      width: 46, height: 46,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: amber,
+                        boxShadow: [
+                          BoxShadow(
+                              color: amber.withOpacity(0.35), blurRadius: 14),
+                        ],
+                      ),
+                      child: Icon(
+                        _playerPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: Colors.black, size: 26),
+                    ),
+                  ),
+                ]),
+              ]),
+            ),
+          ),
+        )
+            .animate()
+            .slideY(begin: 0.3, end: 0, duration: 300.ms,
+                curve: Curves.easeOutCubic)
+            .fadeIn(duration: 200.ms),
+      ),
+    );
   }
 
   @override
@@ -115,11 +419,17 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                     _Btn(Icons.refresh,
                         onTap: () => setState(() => _count = 0)),
                     SizedBox(width: R.px(8)),
-                    _Btn(_audioOn ? Icons.stop : Icons.play_arrow,
-                        color: AppColors.primary.withOpacity(0.2),
-                        border: AppColors.primary.withOpacity(0.3),
-                        iconColor: AppColors.primary,
-                        onTap: _toggleAudio),
+                    _Btn(
+                      _showPlayer ? Icons.music_note_rounded : Icons.play_arrow,
+                      color: _showPlayer
+                          ? AppColors.primary.withOpacity(0.25)
+                          : Colors.white.withOpacity(0.06),
+                      border: _showPlayer
+                          ? AppColors.primary.withOpacity(0.4)
+                          : Colors.white.withOpacity(0.1),
+                      iconColor: _showPlayer ? AppColors.primary : Colors.white70,
+                      onTap: _togglePlayer,
+                    ),
                   ]),
                 ]),
               ),
@@ -185,6 +495,9 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                 ),
               ),
             ]),
+
+            // ── Mini audio player ─────────────────────────────────────────────
+            if (_showPlayer) _buildMiniPlayer(),
 
             // ── Tap Button Footer ─────────────────────────────────────────────
             Positioned(
@@ -308,6 +621,28 @@ class _Btn extends StatelessWidget {
         child: Icon(icon,
             size: R.sp(17),
             color: iconColor ?? Colors.white.withOpacity(0.7)),
+      ),
+    );
+  }
+}
+
+class _SmallBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  const _SmallBtn(this.icon, {required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 32, height: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white.withOpacity(0.07),
+          border: Border.all(color: Colors.white.withOpacity(0.12)),
+        ),
+        child: Icon(icon, color: Colors.white70, size: 16),
       ),
     );
   }

@@ -183,9 +183,26 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   // ── Called from SplashScreen on every cold start ──────────────────────────
+
+  // Serialization chain: a refresh is cancel-everything-then-reschedule, so
+  // two refreshes running concurrently can interleave — one call's cancels
+  // land AFTER the other's schedules and silently wipe pending notifications.
+  // Every refresh therefore queues behind the previous one.
+  Future<void> _refreshChain = Future.value();
+
+  DateTime? _lastRefreshAt;
+
   /// Refreshes all scheduled notifications based on current settings.
   /// Call this whenever location changes or app restarts.
-  Future<void> refreshAllSchedules(UserProvider up) async {
+  /// Safe to call concurrently — calls are serialized internally.
+  Future<void> refreshAllSchedules(UserProvider up) {
+    final next =
+        _refreshChain.catchError((_) {}).then((_) => _doRefreshAll(up));
+    _refreshChain = next.catchError((_) {}); // keep chain alive on failure
+    return next;
+  }
+
+  Future<void> _doRefreshAll(UserProvider up) async {
     if (!up.hasSavedCoordinates) return;
 
     final svc = NotificationService();
@@ -208,6 +225,33 @@ class NotificationProvider extends ChangeNotifier {
     // Prayer alerts
     if (_prayerAlertsEnabled) {
       await _schedulePrayerAlertsIfReady(up);
+    }
+
+    _lastRefreshAt = DateTime.now();
+  }
+
+  // ── Called from main.dart on every app resume ─────────────────────────────
+  /// Re-checks the exact-alarm permission and refreshes schedules when needed:
+  ///  • the user just granted/revoked "Alarms & Reminders" in system Settings
+  ///    (everything must move between alarmClock and inexact mode), or
+  ///  • the last refresh is older than 12 h (keeps the rolling window topped
+  ///    up for users whose app stays alive in the background for days).
+  Future<void> refreshIfNeeded(UserProvider up) async {
+    if (!up.hasSavedCoordinates) return;
+
+    final svc = NotificationService();
+    final exactBefore = svc.lastScheduleUsedExact;
+    svc.invalidateExactAlarmCache();
+    final exactNow = await svc.isExactAlarmGranted();
+
+    final permissionChanged = exactBefore != null && exactBefore != exactNow;
+    final stale = _lastRefreshAt == null ||
+        DateTime.now().difference(_lastRefreshAt!) > const Duration(hours: 12);
+
+    if (permissionChanged || stale) {
+      debugPrint('[Notifications] Resume refresh '
+          '(permissionChanged=$permissionChanged, stale=$stale)');
+      await refreshAllSchedules(up);
     }
   }
 

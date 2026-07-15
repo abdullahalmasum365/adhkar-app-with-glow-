@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -27,12 +25,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with TickerProviderStateMixin {
-  // ── Pulse / Listening state ─────────────────────────────────────────────
   bool _isListening = false;
   late final AnimationController _pulseCtrl;
-
-  // ── Ambient aura background ──────────────────────────────────────────────
-  late final AnimationController _auraCtrl;
 
   @override
   void initState() {
@@ -41,16 +35,11 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2200),
     );
-    _auraCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 12),
-    )..repeat();
   }
 
   @override
   void dispose() {
     _pulseCtrl.dispose();
-    _auraCtrl.dispose();
     super.dispose();
   }
 
@@ -120,50 +109,23 @@ class _HomeScreenState extends State<HomeScreen>
     final vGap         = R.adaptive(12.0, 20.0, 28.0);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: const Color(0xFF0A1F1D),
       body: Stack(
         children: [
-          // ── Layer 1: drifting ambient blobs ───────────────────────────────
-          AnimatedBuilder(
-            animation: _auraCtrl,
-            builder: (_, __) {
-              final t = _auraCtrl.value * 2 * pi;
-              return Stack(children: [
-                // Top-left — Teal
-                Positioned(
-                  left: -80 + sin(t * 0.7) * 40,
-                  top:  -80 + cos(t * 0.5) * 40,
-                  child: const _AuraBlob(color: Color(0xFF00897B), size: 300),
-                ),
-                // Top-right — Deep Purple
-                Positioned(
-                  right: -60 + cos(t * 0.4) * 50,
-                  top:    80 + sin(t * 0.6) * 35,
-                  child: const _AuraBlob(color: Color(0xFF4A148C), size: 260),
-                ),
-                // Bottom-left — Ocean Blue
-                Positioned(
-                  left:   10 + sin(t * 0.35) * 40,
-                  bottom: 120 + cos(t * 0.8) * 30,
-                  child: const _AuraBlob(color: Color(0xFF01579B), size: 250),
-                ),
-                // Bottom-right — Forest Green
-                Positioned(
-                  right:  -50 + cos(t * 0.55) * 40,
-                  bottom: -60 + sin(t * 0.45) * 35,
-                  child: const _AuraBlob(color: Color(0xFF1B5E20), size: 270),
-                ),
-              ]);
-            },
-          ),
-          // ── Layer 2: blur melts blobs into a soft glowing gas ─────────────
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 90, sigmaY: 90),
-              child: const ColoredBox(color: Colors.transparent),
+          // ── Layer 1: green → dark-green → black radial background ────────
+          // Matches: radial-gradient(circle at top, #133a36 0%, #0a1f1d 70%,
+          //          #000000 100%)
+          Container(
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment.topCenter,
+                radius: 1.4,
+                colors: [Color(0xFF133A36), Color(0xFF0A1F1D), Color(0xFF000000)],
+                stops: [0.0, 0.7, 1.0],
+              ),
             ),
           ),
-          // ── Layer 3: foreground UI (crisp, above the blur layer) ──────────
+          // ── Layer 2: UI content ───────────────────────────────────────────
           SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(horizontal: hPad, vertical: R.px(12)),
@@ -522,29 +484,6 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
         ],
-      ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// _AuraBlob — single semi-transparent circle for the ambient background layer.
-// Stateless; all animation is driven by the parent AnimatedBuilder.
-// ══════════════════════════════════════════════════════════════════════════════
-
-class _AuraBlob extends StatelessWidget {
-  final Color color;
-  final double size;
-  const _AuraBlob({required this.color, required this.size});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: color.withOpacity(0.55),
       ),
     );
   }
