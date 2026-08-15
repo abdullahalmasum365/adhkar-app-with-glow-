@@ -21,6 +21,7 @@ import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 
+import '../constants/app_theme.dart';
 import '../models/dhikr.dart';
 import '../screens/dhikr_list_screen.dart';
 import '../utils/app_navigator.dart';
@@ -132,7 +133,7 @@ class NotificationService {
 
     // Adhkar reminders channel — high importance, custom sound
     await androidPlugin?.createNotificationChannel(
-      const AndroidNotificationChannel(
+      AndroidNotificationChannel(
         _IDs.adhkarChannelId,
         'Adhkar Reminders',
         description: 'Morning and Evening Adhkar reminders',
@@ -141,7 +142,7 @@ class NotificationService {
         sound: null,
         enableVibration: true,
         enableLights: true,
-        ledColor: Color(0xFFEC7F13), // AppColors.primary
+        ledColor: AppColors.primary, // follows the active theme
       ),
     );
 
@@ -256,12 +257,13 @@ class NotificationService {
         AndroidFlutterLocalNotificationsPlugin>();
     if (androidPlugin != null) {
       await androidPlugin.requestNotificationsPermission();
-      // NOTE: do NOT call requestExactAlarmsPermission() here. It fires the
-      // system Settings intent immediately (no dialog, no explanation), racing
-      // the POST_NOTIFICATIONS prompt and confusing users. The exact-alarm
-      // flow is owned by the explainer dialog in SplashScreen, and the app
-      // reschedules automatically on resume once the user grants it.
-      await requestBatteryOptimizationExemption();
+      // NOTE: do NOT call requestExactAlarmsPermission() or
+      // requestBatteryOptimizationExemption() here. Both fire a raw system
+      // Settings intent immediately with zero explanation, racing the
+      // POST_NOTIFICATIONS prompt and confusing users. Both flows are owned
+      // by explainer dialogs in SplashScreen (shown one after another, each
+      // explained in plain language before the system popup appears) — the
+      // same pattern Muslim Pro and other prayer apps use.
       debugPrint('[Permissions] Android notification permissions requested');
       return true;
     }
@@ -285,8 +287,7 @@ class NotificationService {
   Future<void> requestBatteryOptimizationExemption() async {
     if (!Platform.isAndroid) return;
     try {
-      final bool alreadyExempt = await _batteryChannel
-          .invokeMethod<bool>('isIgnoringBatteryOptimizations') ?? false;
+      final bool alreadyExempt = await isIgnoringBatteryOptimizations();
       if (!alreadyExempt) {
         await _batteryChannel.invokeMethod('requestIgnoreBatteryOptimizations');
         debugPrint('[Battery] Requested battery optimization exemption');
@@ -295,6 +296,46 @@ class NotificationService {
       }
     } catch (e) {
       debugPrint('[Battery] Could not request battery optimization: $e');
+    }
+  }
+
+  /// True when this app is already whitelisted from Android's Doze/App
+  /// Standby battery optimization. Used by the explainer dialog to skip
+  /// itself entirely when there's nothing left to ask for.
+  Future<bool> isIgnoringBatteryOptimizations() async {
+    if (!Platform.isAndroid) return true;
+    try {
+      return await _batteryChannel
+              .invokeMethod<bool>('isIgnoringBatteryOptimizations') ??
+          false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Returns 'xiaomi' / 'oppo' / 'vivo' / 'huawei' / 'honor' if this device's
+  /// manufacturer ships its own aggressive app-killer that standard Android's
+  /// battery-optimization whitelist does NOT reliably stop — these need a
+  /// separate manual "Autostart" toggle in the OEM's own settings. Returns
+  /// null on Pixel/most Samsung/OnePlus devices, where nothing extra is needed.
+  Future<String?> getAutostartBrand() async {
+    if (!Platform.isAndroid) return null;
+    try {
+      return await _batteryChannel.invokeMethod<String>('getAutostartBrand');
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Opens the manufacturer's own Autostart/Startup-manager screen so the
+  /// user can manually allow this app to run in the background. Falls back
+  /// to the app's system Settings page if no known screen is found.
+  Future<void> openAutostartSettings() async {
+    if (!Platform.isAndroid) return;
+    try {
+      await _batteryChannel.invokeMethod('openAutostartSettings');
+    } catch (e) {
+      debugPrint('[Battery] openAutostartSettings error: $e');
     }
   }
 
@@ -345,6 +386,7 @@ class NotificationService {
           channelName: 'Adhkar Reminders',
           payload: 'morning',
           sound: null,
+          subText: 'Morning Adhkar',
         );
       }
 
@@ -359,6 +401,7 @@ class NotificationService {
           channelName: 'Adhkar Reminders',
           payload: 'evening',
           sound: null,
+          subText: 'Evening Adhkar',
         );
       }
     }
@@ -435,6 +478,7 @@ class NotificationService {
             channelName: 'Prayer Alerts',
             payload: 'prayer:${cfg.name.toLowerCase()}',
             sound: null,
+            subText: 'Prayer Time',
           );
         }
       }
@@ -475,6 +519,7 @@ class NotificationService {
     required String channelName,
     required String payload,
     String? sound,
+    String? subText,
   }) async {
     // Convert to TZDateTime — required by flutter_local_notifications
     final tzTime = tz.TZDateTime.from(scheduledTime, tz.local);
@@ -485,6 +530,12 @@ class NotificationService {
       importance: Importance.high,
       priority: Priority.high,
       icon: '@drawable/ic_notification',
+      // Full-colour APP LOGO on the right side of the notification —
+      // makes it instantly recognizable as Adhkaar 365 at first glance.
+      largeIcon: const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
+      // Small category label in the notification header (next to app name),
+      // e.g. "Prayer Time" / "Adhkar Reminder".
+      subText: subText,
       // Custom Islamic tone — file must be in android/app/src/main/res/raw/
       sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
       playSound: true,
@@ -496,16 +547,20 @@ class NotificationService {
       category: AndroidNotificationCategory.alarm,
       visibility: NotificationVisibility.public,
       ticker: title,
-      color: const Color(0xFFEC7F13), // AppColors.primary
-      ledColor: const Color(0xFFEC7F13),
+      // Accent follows the active theme (amber, purple, gold, rose…).
+      // Baked in at schedule time — ThemeProvider triggers a reschedule
+      // on theme change so pending notifications adopt the new color.
+      color: AppColors.primary,
+      ledColor: AppColors.primary,
       ledOnMs: 1000,
       ledOffMs: 500,
+      // Plain text, NOT html-formatted: Android's Html.fromHtml drops or
+      // mangles emoji (🌇 🌄 ☀️) and mixed Arabic on many devices. Titles
+      // are bold by default anyway, so HTML bought nothing and broke emoji.
       styleInformation: BigTextStyleInformation(
         body,
-        htmlFormatBigText: true,
-        contentTitle: '<b>$title</b>',
-        htmlFormatContentTitle: true,
-        summaryText: 'Adhkaar 365',
+        contentTitle: title,
+        summaryText: 'Adhkaar 365 ☪',
       ),
     );
 
@@ -660,16 +715,23 @@ class NotificationService {
   /// FOR TESTING: Fires one notification immediately + one scheduled in 1 minute.
   /// Use this to verify both instant and scheduled delivery work on the device.
   Future<void> showInstantTestNotification() async {
-    const details = NotificationDetails(
+    final details = NotificationDetails(
       android: AndroidNotificationDetails(
         _IDs.adhkarChannelId,
         'Test Channel',
         importance: Importance.max,
         priority: Priority.max,
         icon: '@drawable/ic_notification',
-        color: Color(0xFFEC7F13),
+        largeIcon:
+            const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
+        subText: 'Test',
+        color: AppColors.primary, // follows the active theme
+        styleInformation: const BigTextStyleInformation(
+          'Instant delivery works. Now checking scheduled delivery in 1 minute…',
+          summaryText: 'Adhkaar 365 ☪',
+        ),
       ),
-      iOS: DarwinNotificationDetails(
+      iOS: const DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,

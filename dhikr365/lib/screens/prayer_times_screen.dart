@@ -286,7 +286,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                             border: Border.all(
                                 color: AppColors.primary.withOpacity(0.3)),
                           ),
-                          child: const Icon(Icons.mosque,
+                          child: Icon(Icons.mosque,
                               color: AppColors.primary, size: 34),
                         ),
                         const SizedBox(height: 24),
@@ -326,8 +326,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.location_on,
-                                    color: Colors.white, size: 18),
+                                Icon(Icons.location_on,
+                                    color: AppColors.textPrimary, size: 18),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Set Location',
@@ -421,7 +421,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                   Text(lp.getText('prayer_times'),
                       style: AppText.heading(titleSize)),
                   Row(children: [
-                    const Icon(Icons.location_on,
+                    Icon(Icons.location_on,
                         size: 13, color: AppColors.textSlate400),
                     const SizedBox(width: 4),
                     Flexible(
@@ -440,12 +440,12 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                   padding: const EdgeInsets.only(right: 16),
                   child: IconButton(
                     icon: _loading
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 18,
                             height: 18,
                             child: CircularProgressIndicator(
                                 strokeWidth: 2, color: AppColors.primary))
-                        : const Icon(Icons.refresh, color: AppColors.primary),
+                        : Icon(Icons.refresh, color: AppColors.primary),
                     onPressed: _loading
                         ? null
                         : () => _fetchPrayerTimes(forceGPS: true),
@@ -479,7 +479,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(color: AppColors.primary),
+          CircularProgressIndicator(color: AppColors.primary),
           const SizedBox(height: 20),
           Text(lp.getText('getting_location'),
               style:
@@ -617,7 +617,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
         return Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
           child: Row(children: [
-            const Icon(Icons.info_outline,
+            Icon(Icons.info_outline,
                 size: 12, color: AppColors.textSlate500),
             const SizedBox(width: 6),
             Flexible(
@@ -698,7 +698,7 @@ class _SunPath extends StatelessWidget {
             clipBehavior: Clip.none,
             alignment: Alignment.bottomCenter,
             children: [
-              Container(height: 1, color: Colors.white.withOpacity(0.08)),
+              Container(height: 1, color: AppColors.ink(0.08)),
               Positioned(
                   bottom: 0,
                   left: 0,
@@ -723,7 +723,7 @@ class _SunPath extends StatelessWidget {
                             blurRadius: 12)
                       ],
                     ),
-                    child: const Icon(Icons.light_mode,
+                    child: Icon(Icons.light_mode,
                         color: AppColors.primary, size: 16),
                   ),
                   const SizedBox(height: 2),
@@ -762,7 +762,7 @@ class _ArcPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color       = Colors.white.withOpacity(0.08)
+      ..color       = AppColors.ink(0.08)
       ..style       = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     final path = Path();
@@ -849,7 +849,7 @@ class _HeroCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Row(children: [
-            const Icon(Icons.schedule, color: AppColors.primary, size: 15),
+            Icon(Icons.schedule, color: AppColors.primary, size: 15),
             const SizedBox(width: 6),
             Text(
               '${next.label} $inLabel $countdown', // "Dhuhr in 2h 30m"
@@ -900,12 +900,12 @@ class _PrayerRowState extends State<_PrayerRow> {
           decoration: BoxDecoration(
             color: widget.isNow
                 ? AppColors.primary.withOpacity(0.14)
-                : Colors.white.withOpacity(0.03),
+                : AppColors.ink(0.03),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: widget.isNow
                   ? AppColors.primary.withOpacity(0.6)
-                  : Colors.white.withOpacity(0.07),
+                  : AppColors.ink(0.07),
               width: widget.isNow ? 1.5 : 1,
             ),
           ),
@@ -934,7 +934,7 @@ class _PrayerRowState extends State<_PrayerRow> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5, vertical: 2),
                         decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.08),
+                            color: AppColors.ink(0.08),
                             borderRadius: BorderRadius.circular(4)),
                         child: Text(widget.nextLabel, // translated "NEXT"
                             style: AppText.label(color: AppColors.primary)
@@ -973,7 +973,7 @@ class _PrayerRowState extends State<_PrayerRow> {
                             ? AppColors.primary
                             : (isEnabled
                                 ? AppColors.primary.withOpacity(0.4)
-                                : Colors.white.withOpacity(0.1)),
+                                : AppColors.ink(0.1)),
                       ),
                     ),
                     child: Icon(

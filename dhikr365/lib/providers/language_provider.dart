@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,14 @@ class LanguageProvider extends ChangeNotifier {
   String _transliterationCode  = 'en';
   final Map<String, Map<String, String>> _cache = {};
   bool _loaded = false;
+
+  final _loadCompleter = Completer<void>();
+  /// Resolves once the saved language/translation/transliteration codes have
+  /// been read from storage. Callers that need the REAL saved values (not
+  /// the 'en' constructor default) must await this first — see
+  /// SplashScreen, which uses it to re-sync DhikrProvider's content language
+  /// on every cold start.
+  Future<void> get loadFuture => _loadCompleter.future;
 
   Locale get locale              => _locale;
   String get translationCode     => _translationCode;
@@ -54,6 +63,7 @@ class LanguageProvider extends ChangeNotifier {
       await _load(_transliterationCode);
     }
     _loaded = true;
+    if (!_loadCompleter.isCompleted) _loadCompleter.complete();
     notifyListeners();
   }
 

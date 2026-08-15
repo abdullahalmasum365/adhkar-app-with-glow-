@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "サラームの後の赦しの祈り",
+      "frequency": "毎礼拝後に3回",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "アッラーに赦しを求めます(3回)。アッラーよ、あなたこそ平安であり、平安はあなたから来ます。威厳と栄誉の主よ、あなたは祝福に満ちておられます。",
+      "benefit": "預言者(ﷺ)は毎回の義務の礼拝の後、まず3回アッラーに赦しを求め、それから平安の源であるアッラーを讃えて唱念を始められました。",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "アッラーの唯一性の宣言",
+      "frequency": "毎礼拝後に1回",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "アッラーのほかに崇拝に値するものはなく、アッラーは唯一で、並ぶものはありません。主権は彼のものであり、称賛も彼のものであり、彼はすべてのことに全能であられます。アッラーよ、あなたが与えるものを妨げる者はなく、あなたが妨げるものを与える者もありません。権勢ある者の権勢も、あなたの御前では何の役にも立ちません。",
+      "benefit": "預言者(ﷺ)は毎回の義務の礼拝の後にこれを唱え、アッラーが与えるものを誰も妨げられず、妨げるものを誰も与えられないという、その唯一性を確認されました。",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "力はアッラーによってのみ",
+      "frequency": "毎礼拝後に1回",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "アッラーのほかに崇拝に値するものはなく、アッラーは唯一で、並ぶものはありません。主権は彼のものであり、称賛も彼のものであり、彼はすべてのことに全能であられます。アッラーによらなければ、いかなる力も権能もありません。アッラーのほかに崇拝に値するものはなく、私たちは彼のほかの何ものも崇拝しません。恩恵は彼のものであり、恵みも彼のものであり、最も美しい称賛も彼のものです。アッラーのほかに崇拝に値するものはありません。不信仰者が嫌おうとも、私たちは信仰を彼のみに純粋に捧げます。",
+      "benefit": "預言者(ﷺ)は毎回の礼拝の後、すべての力と恩恵と美しい称賛はアッラーのみに属し、不信仰者が嫌おうとも誠実に彼を崇拝することを宣言されました。",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "礼拝後のタスビーフ(各33回)",
+      "frequency": "毎礼拝後に各33回",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "アッラーに栄光あれ、称賛はアッラーのものであり、アッラーは最も偉大であられます(各33回)。アッラーのほかに崇拝に値するものはなく、アッラーは唯一で、並ぶものはありません。主権は彼のものであり、称賛も彼のものであり、彼はすべてのことに全能であられます。",
+      "benefit": "預言者(ﷺ)は言われました:毎回の礼拝の後にこれを唱える者は、たとえ海の泡ほどの罪があっても赦されます。",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "スーラ・アル＝イフラース（純粋）",
+      "frequency": "礼拝の後に1回",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "クル・フワッラーフ・アハド。アッラーフッサマド。ラム・ヤリド・ワ・ラム・ユーラド。ワ・ラム・ヤクン・ラフー・クフワン・アハド。",
+      "translation": "言え：彼はアッラー、唯一の神。アッラーは何者にも頼らず全てのものが頼る方。彼は生まれず、生まれ出ることもなかった。そして誰も彼に等しい者はない。",
+      "benefit": "預言者(ة)は、これら3つの守護章を礼拝の後に読誦するよう指示した。ファジュルとマグリブの後はそれぞれ3回読誦する。",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "スーラ・アル＝ファラク（夜明け）",
+      "frequency": "礼拝の後に1回（ファジュルとマグリブの後は3回）",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "クル・アウーズ・ビラッビル＝ファラク。ミン・シャッリ・マー・ハラク。ワ・ミン・シャッリ・ガースィキン・イザー・ワカブ。ワ・ミン・シャッリン＝ナッファーサーティ・フィル＝ウカド。ワ・ミン・シャッリ・ハースィディン・イザー・ハサド。",
+      "translation": "言え：私は夜明けの主に守護を求める。彼が創られたものの悪から。夜が暗くなる時の悪から。結び目に吹きかける者たちの悪から。そして嫉妬する者が嫉妬するときの悪から。",
+      "benefit": "預言者(ة)は、これら3つの守護章を礼拝の後に読誦するよう指示した。ファジュルとマグリブの後はそれぞれ3回読誦する。",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "スーラ・アン＝ナース（人類）",
+      "frequency": "礼拝の後に1回（ファジュルとマグリブの後は3回）",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "クル・アウーズ・ビラッビン＝ナース。マーリキン＝ナース。イラーヒン＝ナース。ミン・シャッリル＝ワスワースィル＝ハンナース。アッラジー・ユワスウィス・フィー・スドゥーリン＝ナース。ミナル＝ジンナティ・ワン＝ナース。",
+      "translation": "言え：私は人々の主に守護を求める。人々の王。人々の神。ひそひそと悪を吹き込む者の悪から。人々の胸にひそかに吹き込む者から。ジンと人の中から。",
+      "benefit": "預言者(ة)は、これら3つの守護章を礼拝の後に読誦するよう指示した。ファジュルとマグリブの後はそれぞれ3回読誦する。",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "アーヤトゥル・クルシー",
+      "frequency": "毎礼拝後に1回",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "アッラー、彼のほかに崇拝に値するものはありません。永生し、万有を保持される御方。まどろみも眠りも彼を捉えません。天にあるものも地にあるものも彼のものです。彼の許しなくして、誰が彼の御許で執り成しできましょうか。彼は人々の前にあるものも後ろにあるものも知っておられます。人々は彼が望まれるもののほか、彼の知識の何ものをも把握できません。彼の玉座は天と地を覆い、その両方を守ることに疲れを覚えられません。彼こそは至高にして偉大なる御方です。",
+      "benefit": "預言者(ﷺ)は言われました:毎回の義務の礼拝の後にアーヤトゥル・クルシーを読誦する者を楽園から隔てるものは、死のほかにありません。",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "ファジュルとマグリブ後に10回",
+      "frequency": "ファジュルとマグリブの礼拝後に10回",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "アッラーのほかに崇拝に値するものはなく、アッラーは唯一で、並ぶものはありません。主権は彼のものであり、称賛も彼のものです。彼は生を与え、死を与え、すべてのことに全能であられます。",
+      "benefit": "預言者(ﷺ)は、生を与え死を与えるアッラーの唯一性のこの宣言を、マグリブとファジュルの礼拝の後に10回繰り返すよう教えられました。",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "有益な知識を求める祈り",
+      "frequency": "ファジュルの礼拝後に1回",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "アッラーよ、私はあなたに有益な知識と、良い糧と、受け入れられる行いを求めます。",
+      "benefit": "預言者(ﷺ)はファジュルの礼拝のサラームの後にこの祈りを唱え、一日の始まりに有益な知識、良い糧、受け入れられる行いをアッラーに願われました。",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "dhikrs": {
+    "sleep_ikhlas": {
+      "dhikr_no": 1,
+      "title": "Sura Al-Ikhlas — 1.º de los Tres Qul",
+      "frequency": "3x antes de dormir",
+      "targetCount": 3,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Qul huwa Allāhu aḥad. Allāhu aṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan aḥad.",
+      "translation": "Di: Él es Allah, Uno. Allah, el Absoluto (del que todo depende y que no depende de nada). No engendró ni fue engendrado. Y no hay nadie semejante a Él.",
+      "benefit": "Se recita en las palmas de las manos juntas, se sopla suavemente sobre ellas y luego se pasan por todo el cuerpo que se pueda alcanzar, comenzando por la cabeza y el rostro; este proceso se repite tres veces antes de dormir.",
+      "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 9/62; Muslim 4/1723 | Hisnul Muslim 99",
+      "category": "before_sleep"
+    },
+    "sleep_falaq": {
+      "dhikr_no": 2,
+      "title": "Sura Al-Falaq — 2.º de los Tres Qul",
+      "frequency": "3x antes de dormir",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-rabb al-falaq. Min sharri mā khalaq. Wa min sharri ghāsiqin idhā waqab. Wa min sharri an-naffāthāti fī al-'uqad. Wa min sharri ḥāsidin idhā ḥasad.",
+      "translation": "Di: Me refugio en el Señor del amanecer, del mal de lo que Él ha creado, del mal de la oscuridad cuando se extiende, del mal de las que soplan en los nudos, y del mal del envidioso cuando envidia.",
+      "benefit": "Se recita junto con Al-Ikhlas y An-Nas en las palmas de las manos, se sopla y se pasa por el cuerpo, tres veces antes de dormir, para protección durante toda la noche.",
+      "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 9/62; Muslim 4/1723 | Hisnul Muslim 99",
+      "category": "before_sleep"
+    },
+    "sleep_nas": {
+      "dhikr_no": 3,
+      "title": "Sura An-Nas — 3.º de los Tres Qul",
+      "frequency": "3x antes de dormir",
+      "targetCount": 3,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-rabb an-nās. Malik an-nās. Ilāh an-nās. Min sharri al-waswāsi al-khannās. Alladhī yuwaswisu fī ṣudūr an-nās. Min al-jinnati wa an-nās.",
+      "translation": "Di: Me refugio en el Señor de los hombres, el Soberano de los hombres, el Dios de los hombres, del mal del susurrador furtivo, que susurra en los pechos de los hombres, ya sea de los genios o de los hombres.",
+      "benefit": "La última de los Tres Qul, recitada en las palmas, soplada y pasada por el cuerpo tres veces antes de dormir, completando la protección nocturna que enseñó el Profeta ﷺ.",
+      "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 9/62; Muslim 4/1723 | Hisnul Muslim 99",
+      "category": "before_sleep"
+    },
+    "sleep_ayatul_kursi": {
+      "dhikr_no": 4,
+      "title": "Ayat al-Kursi (El Versículo del Trono)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "اَللّٰهُ لَاۤ اِلٰهَ اِلَّا هُوَۚ اَلۡحَیُّ الۡقَیُّوۡمُ ۬ۚ لَا تَاۡخُذُهٗ سِنَۃٌ وَّ لَا نَوۡمٌ ؕ لَهٗ مَا فِی السَّمٰوٰتِ وَ مَا فِی الۡاَرۡضِ ؕ مَنۡ ذَا الَّذِیۡ یَشۡفَعُ عِنۡدَهٗۤ اِلَّا بِاِذۡنِهٖ ؕ یَعۡلَمُ مَا بَیۡنَ اَیۡدِیۡهِمۡ وَ مَا خَلۡفَهُمۡ ۚ وَ لَا یُحِیۡطُوۡنَ بِشَیۡءٍ مِّنۡ عِلۡمِهٖۤ اِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرۡسِیُّهُ السَّمٰوٰتِ وَ الۡاَرۡضَ ۚ وَ لَا یَـُٔوۡدُهٗ حِفۡظُهُمَا ۚ وَ هُوَ الۡعَلِیُّ الۡعَظِیۡمُ",
+      "transliteration": "Allāhu lā ilāha illā huw, al-ḥayyu al-qayyūm, lā ta'khudhuhū sinatun wa lā nawm, lahū mā fī as-samāwāti wa mā fī al-arḍ, man dhā alladhī yashfa'u 'indahū illā bi-idhnih, ya'lamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shay'in min 'ilmihī illā bimā shā'a, wasi'a kursiyyuhū as-samāwāti wa al-arḍa, wa lā ya'ūduhū ḥifẓuhumā, wa huwa al-'aliyyu al-'aẓīm.",
+      "translation": "Allah, no hay más dios que Él, el Viviente, el Sustentador de la existencia. Ni la somnolencia ni el sueño se apoderan de Él. Suyo es cuanto hay en los cielos y en la tierra. ¿Quién puede interceder ante Él sin Su permiso? Conoce lo que hay ante ellos y lo que hay detrás de ellos, y ellos no abarcan nada de Su conocimiento excepto lo que Él quiere. Su Trono (Kursí) abarca los cielos y la tierra, y no le resulta pesado custodiarlos. Y Él es el Altísimo, el Grandioso.",
+      "benefit": "Quien la recite al acostarse tendrá junto a él un guardián enviado por Allah, y Satanás no podrá acercarse a él hasta que despierte por la mañana.",
+      "reference": "Surah Al-Baqarah 2:255. Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 4/487 | Hisnul Muslim 100",
+      "category": "before_sleep"
+    },
+    "sleep_last_two_ayat_baqarah": {
+      "dhikr_no": 5,
+      "title": "Los Dos Últimos Versículos de la Sura Al-Baqara",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "ءَامَنَ الرَّسُولُ بِمَا أُنزِلَ إِلَيْهِ مِن رَّبِّهِ وَالْمُؤْمِنُونَ كُلٌّ آمَنَ بِاللهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ لَا نُفَرِّقُ بَيْنَ أَحَدٍ مِّن رُّسُلِهِ وَقَالُوا سَمِعْنَا وَأَطَعْنَا غُفْرَانَكَ رَبَّنَا وَإِلَيْكَ الْمَصِيرُ {285} لَا يُكَلِّفُ اللهُ نَفْسًا إِلَّا وُسْعَهَا لَهَا مَا كَسَبَتْ وَعَلَيْهَا مَا اكْتَسَبَتْ رَبَّنَا لَا تُؤَاخِذْنَا إِن نَّسِينَا أَوْ أَخْطَأْنَا رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِن قَبْلِنَا رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا أَنتَ مَوْلَانَا فَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ {286}",
+      "transliteration": "Āmanar-Rasūlu bimā unzila ilaihi mir-Rabbihi wa al-mu'minūn. Kullun āmana billāhi wa malā'ikatihi wa kutubihi wa rusulih. Lā nufarriqu bayna aḥadim-mir-rusulih. Wa qālū sami'nā wa aṭa'nā, ghufrānaka Rabbanā wa ilayka al-maṣīr. Lā yukallifu Allāhu nafsan illā wus'ahā. Lahā mā kasabat wa 'alayhā mak-tasabat. Rabbanā lā tu'ākhidhnā in nasīnā aw akhṭa'nā. Rabbanā wa lā taḥmil 'alaynā iṣran kamā ḥamaltahu 'alal-ladhīna min qablinā. Rabbanā wa lā tuḥammilnā mā lā ṭāqata lanā bih. Wa'fu 'annā, waghfir lanā, warḥamnā. Anta mawlānā fanṣurnā 'alā al-qawmi al-kāfirīn.",
+      "translation": "El Mensajero cree en lo que le ha sido revelado por su Señor, y también los creyentes. Todos creen en Allah, en Sus ángeles, en Sus libros y en Sus mensajeros, sin hacer distinción entre ninguno de Sus mensajeros. Y dicen: 'Oímos y obedecemos. Tu perdón, Señor nuestro, y hacia Ti es el retorno.' Allah no impone a ningún alma más de lo que puede soportar. Tendrá lo que se haya ganado y cargará con lo que haya cometido. Señor nuestro, no nos castigues si olvidamos o erramos. Señor nuestro, no nos impongas una carga pesada como la impusiste a quienes nos precedieron. Señor nuestro, no nos cargues con lo que no podemos soportar. Perdónanos, absuélvenos y ten misericordia de nosotros. Tú eres nuestro Protector, socórrenos pues contra el pueblo incrédulo.",
+      "benefit": "El Profeta ﷺ dijo que estos dos versículos son suficientes para quien los recite por la noche.",
+      "reference": "Surah Al-Baqarah 2:285-286. Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 9/94; Muslim 1/554 | Hisnul Muslim 101",
+      "category": "before_sleep"
+    },
+    "sleep_bismika_wadatu_janbi": {
+      "dhikr_no": 6,
+      "title": "Bismika Rabbi Wada'tu Janbi (En Tu nombre me acuesto)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "بِاسْمِكَ رَبِّي وَضَعْتُ جَنْبِي وَبِكَ أَرْفَعُهُ فَإِنْ أَمْسَكْتَ نَفْسِي فَارْحَمْهَا وَإِنْ أَرْسَلْتَهَا فَاحْفَظْهَا بِمَا تَحْفَظُ بِهِ عِبَادَكَ الصَّالِحِينَ",
+      "transliteration": "Bismika Rabbī waḍa'tu janbī, wa bika arfa'uh. Fa in amsakta nafsī farḥamhā, wa in arsaltahā faḥfaẓhā bimā taḥfaẓu bihi 'ibādakaṣ-ṣāliḥīn.",
+      "translation": "En Tu nombre, Señor mío, me acuesto, y en Tu nombre me levanto. Si retienes mi alma, ten misericordia de ella, y si la envías de vuelta, protégela como proteges a Tus siervos justos.",
+      "benefit": "Se recita al acostarse, tras sacudir la cama tres veces, encomendando el alma a Allah, ya sea que se tome durante el sueño o se devuelva por la mañana.",
+      "reference": "Al-Bukhari 11/126; Muslim 4/2084 | Hisnul Muslim 102",
+      "category": "before_sleep"
+    },
+    "sleep_allahumma_khalaqta_nafsi": {
+      "dhikr_no": 7,
+      "title": "Allahumma Innaka Khalaqta Nafsi (Oh Allah, Tú creaste mi alma)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنَّكَ خَلَقْتَ نَفْسِي وَأَنْتَ تَوَفَّاهَا لَكَ مَمَاتُهَا وَمَحْيَاهَا إِنْ أَحْيَيْتَهَا فَاحْفَظْهَا وَإِنْ أَمَتَّهَا فَاغْفِرْ لَهَا اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ",
+      "transliteration": "Allāhumma innaka khalaqta nafsī wa anta tawaffāhā, laka mamātuhā wa maḥyāhā. In aḥyaytahā faḥfaẓhā, wa in amattahā faghfir lahā. Allāhumma innī as'aluka al-'āfiyah.",
+      "translation": "Oh Allah, Tú has creado mi alma y Tú la haces morir; a Ti pertenecen su muerte y su vida. Si la mantienes con vida, protégela, y si la haces morir, perdónala. Oh Allah, Te pido bienestar.",
+      "benefit": "Un reconocimiento antes de dormir de que solo Allah posee la vida y la muerte, concluyendo con una petición de bienestar en ambas.",
+      "reference": "Muslim 4/2083; Ahmad 2/79 | Hisnul Muslim 103",
+      "category": "before_sleep"
+    },
+    "sleep_allahumma_qini_adhabaka": {
+      "dhikr_no": 8,
+      "title": "Allahumma Qini Adhabaka (Oh Allah, presérvame de Tu castigo)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ",
+      "transliteration": "Allāhumma qinī 'adhābaka yawma tab'athu 'ibādak.",
+      "translation": "Oh Allah, presérvame de Tu castigo el Día en que resucites a Tus siervos.",
+      "benefit": "El Profeta ﷺ colocaba su mano derecha bajo la mejilla antes de dormir y pronunciaba esta breve súplica, pidiendo seguridad para el Día del Juicio.",
+      "reference": "Abu Dawud 4/311; Al-Albani, Sahih At-Tirmidhi 3/143 | Hisnul Muslim 104",
+      "category": "before_sleep"
+    },
+    "sleep_bismika_amutu_wa_ahya": {
+      "dhikr_no": 9,
+      "title": "Bismika Allahumma Amutu wa Ahya (En Tu nombre muero y vivo)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+      "transliteration": "Bismika Allāhumma amūtu wa aḥyā.",
+      "translation": "En Tu nombre, oh Allah, muero y vivo.",
+      "benefit": "Un breve recuerdo recitado antes de dormir, que compara el sueño con la muerte y el despertar con la vida, ambos confiados por completo al Nombre de Allah.",
+      "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 11/113; Muslim 4/2083 | Hisnul Muslim 105",
+      "category": "before_sleep"
+    },
+    "sleep_tasbih_fatimi": {
+      "dhikr_no": 10,
+      "title": "Tasbih de Fátima (33x Subhanallah, 33x Alhamdulillah, 34x Allahu Akbar)",
+      "frequency": "33x, 33x, luego 34x antes de dormir",
+      "targetCount": 33,
+      "arabicText": "سُبْحَانَ اللَّهِ (ثَلَاثاً وَثَلَاثِينَ) وَالْحَمْدُ لِلَّهِ (ثَلَاثاً وَثَلَاثِينَ) وَاللَّهُ أَكْبَرُ (أَرْبَعاً وَثَلَاثِينَ)",
+      "transliteration": "Subḥānallāh (33 times). Wal-ḥamdu lillāh (33 times). Wallāhu akbar (34 times).",
+      "translation": "Glorificado sea Allah (treinta y tres veces), alabado sea Allah (treinta y tres veces), y Allah es el Más Grande (treinta y cuatro veces).",
+      "benefit": "El Profeta ﷺ enseñó este tasbih a su hija Fátima (que Allah esté complacido con ella) antes de dormir, diciéndole que era mejor para ella que un sirviente.",
+      "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 7/71; Muslim 4/2091 | Hisnul Muslim 106",
+      "category": "before_sleep"
+    },
+    "sleep_allahumma_rabbas_samawati": {
+      "dhikr_no": 11,
+      "title": "Allahumma Rabbas-Samawatis-Sab' (Oh Allah, Señor de los siete cielos)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ رَبَّ السَّمَاوَاتِ السَّبْعِ وَرَبَّ الْعَرْشِ الْعَظِيمِ رَبَّنَا وَرَبَّ كُلِّ شَيْءٍ فَالِقَ الْحَبِّ وَالنَّوَى وَمُنَزِّلَ التَّوْرَاةِ وَالْإِنْجِيلِ وَالْفُرْقَانِ أَعُوذُ بِكَ مِنْ شَرِّ كُلِّ شَيْءٍ أَنْتَ آخِذٌ بِنَاصِيَتِهِ اللَّهُمَّ أَنْتَ الْأَوَّلُ فَلَيْسَ قَبْلَكَ شَيْءٌ وَأَنْتَ الْآخِرُ فَلَيْسَ بَعْدَكَ شَيْءٌ وَأَنْتَ الظَّاهِرُ فَلَيْسَ فَوْقَكَ شَيْءٌ وَأَنْتَ الْبَاطِنُ فَلَيْسَ دُونَكَ شَيْءٌ اقْضِ عَنَّا الدَّيْنَ وَأَغْنِنَا مِنَ الْفَقْرِ",
+      "transliteration": "Allāhumma Rabbas-samāwātis-sab'i wa Rabba al-'Arshi al-'Aẓīm. Rabbanā wa Rabba kulli shay', fāliqa al-ḥabbi wan-nawā, wa munzilat-Tawrāti wal-Injīli wal-Furqān. A'ūdhu bika min sharri kulli shay'in anta ākhidhun bināṣiyatih. Allāhumma anta al-awwalu falaysa qablaka shay', wa anta al-ākhiru falaysa ba'daka shay', wa anta aẓ-ẓāhiru falaysa fawqaka shay', wa anta al-bāṭinu falaysa dūnaka shay'. Iqḍi 'annad-dayn, wa aghninā minal-faqr.",
+      "translation": "Oh Allah, Señor de los siete cielos y Señor del Trono inmenso, Señor nuestro y Señor de todas las cosas, que hiende el grano y el hueso del dátil, que reveló la Torá, el Evangelio y el Discernimiento (el Corán), me refugio en Ti del mal de todo aquello cuyo copete Tú sostienes. Oh Allah, Tú eres el Primero, nada hay antes de Ti, y Tú eres el Último, nada hay después de Ti. Tú eres el Manifiesto, nada hay por encima de Ti, y Tú eres el Oculto, nada hay más cercano que Tú. Salda nuestras deudas y líbranos de la pobreza.",
+      "benefit": "Una súplica integral que reconoce el dominio total de Allah sobre la creación, busca refugio de todo mal y pide el saldo de las deudas y la liberación de la pobreza.",
+      "reference": "Muslim 4/2084 | Hisnul Muslim 107",
+      "category": "before_sleep"
+    },
+    "sleep_alhamdulillah_atamana": {
+      "dhikr_no": 12,
+      "title": "Alhamdulillahil-ladhi At'amana (Alabanza por el alimento, la bebida y el refugio)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَكَفَانَا وَآوَانَا فَكَمْ مِمَّنْ لَا كَافِيَ لَهُ وَلَا مُؤْوِيَ",
+      "transliteration": "Alḥamdu lillāhil-ladhī aṭ'amanā wa saqānā, wa kafānā, wa āwānā, fakam mimman lā kāfiya lahu wa lā mu'wī.",
+      "translation": "Alabado sea Allah, que nos ha alimentado, nos ha dado de beber, nos ha bastado y nos ha dado cobijo, pues cuántos son los que no tienen quien les baste ni quien les cobije.",
+      "benefit": "Un agradecido reconocimiento antes de dormir de la provisión de Allah de alimento, bebida y refugio, bendiciones de las que muchas personas carecen.",
+      "reference": "Muslim 4/2085 | Hisnul Muslim 108",
+      "category": "before_sleep"
+    },
+    "sleep_allahumma_alimal_ghaybi": {
+      "dhikr_no": 13,
+      "title": "Allahumma 'Alimal-Ghaybi wash-Shahadah (Oh Allah, Conocedor de lo oculto y lo manifiesto)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي وَمِنْ شَرِّ الشَّيْطَانِ وَشِرْكِهِ وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءاً أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ",
+      "transliteration": "Allāhumma 'ālimal-ghaybi wash-shahādah, fāṭiras-samāwāti wal-arḍ, Rabba kulli shay'in wa malīkah, ash-hadu an lā ilāha illā ant. A'ūdhu bika min sharri nafsī, wa min sharrish-shayṭāni wa shirkih, wa an aqtarifa 'alā nafsī sū'an aw ajurrahu ilā Muslim.",
+      "translation": "Oh Allah, Conocedor de lo oculto y lo manifiesto, Creador de los cielos y la tierra, Señor y Dueño de todas las cosas, atestiguo que no hay más dios que Tú. Me refugio en Ti del mal de mi alma, del mal de Satanás y sus aliados, y de cometer un mal contra mí mismo o de causárselo a algún musulmán.",
+      "benefit": "Un testimonio de fe protector recitado antes de dormir, buscando refugio del mal de la propia alma, de Satanás y de sus aliados.",
+      "reference": "Abu Dawud 4/317; Al-Albani, Sahih At-Tirmidhi 3/142 | Hisnul Muslim 109",
+      "category": "before_sleep"
+    },
+    "sleep_allahumma_aslamtu_nafsi": {
+      "dhikr_no": 14,
+      "title": "Allahumma Aslamtu Nafsi Ilayk (Oh Allah, Te entrego mi alma)",
+      "frequency": "1x antes de dormir",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ أَسْلَمْتُ نَفْسِي إِلَيْكَ وَفَوَّضْتُ أَمْرِي إِلَيْكَ وَوَجَّهْتُ وَجْهِي إِلَيْكَ وَأَلْجَأْتُ ظَهْرِي إِلَيْكَ رَغْبَةً وَرَهْبَةً إِلَيْكَ لَا مَلْجَأَ وَلَا مَنْجَا مِنْكَ إِلَّا إِلَيْكَ آمَنْتُ بِكِتَابِكَ الَّذِي أَنْزَلْتَ وَبِنَبِيِّكَ الَّذِي أَرْسَلْتَ",
+      "transliteration": "Allāhumma aslamtu nafsī ilayk, wa fawwaḍtu amrī ilayk, wa wajjahtu wajhī ilayk, wa alja'tu ẓahrī ilayk, raghbatan wa rahbatan ilayk. Lā malja'a wa lā manjā minka illā ilayk. Āmantu bikitābika al-ladhī anzalt, wa bi-nabiyyika al-ladhī arsalt.",
+      "translation": "Oh Allah, Te entrego mi alma, Te confío mi asunto, hacia Ti vuelvo mi rostro, y en Ti recuesto mi espalda, con anhelo y temor de Ti. No hay refugio ni salvación de Ti excepto en Ti. Creo en Tu Libro que has revelado y en Tu Profeta que has enviado.",
+      "benefit": "El Profeta ﷺ dijo que quien lo recite después de hacer la ablución y acostarse sobre su lado derecho, y muera esa noche, muere en el estado natural de fe pura (fitra).",
+      "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 11/113; Muslim 4/2081 | Hisnul Muslim 111",
+      "category": "before_sleep"
+    }
+  }
+}

@@ -36,7 +36,7 @@ class CustomizePlanScreen extends StatelessWidget {
         elevation: 0,
         title: Text(lp.getText('customize'), style: AppText.heading(18)),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -106,7 +106,7 @@ class _Tile extends StatelessWidget {
         value: checked,
         onChanged: (_) => cp.toggleDhikr(dhikr.id, !checked),
         activeColor: AppColors.primary,
-        checkColor: Colors.white,
+        checkColor: AppColors.textPrimary,
         title: Text(dhikr.title,
             style: AppText.manrope(fontSize: 14, fontWeight: FontWeight.w600)),
         subtitle: Text(dhikr.translation,

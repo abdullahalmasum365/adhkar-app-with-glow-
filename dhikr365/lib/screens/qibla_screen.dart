@@ -90,11 +90,11 @@ class _QiblaScreenState extends State<QiblaScreen>
     return Scaffold(
       backgroundColor: AppColors.bgDark,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topCenter,
             radius: 1.5,
-            colors: [Color(0xFF0D2D2A), AppColors.bgDark],
+            colors: [AppColors.bgTeal, AppColors.bgDark],
           ),
         ),
         child: SafeArea(
@@ -108,8 +108,8 @@ class _QiblaScreenState extends State<QiblaScreen>
                   children: [
                     IconButton(
                       onPressed: () => Navigator.maybePop(context),
-                      icon: const Icon(Icons.arrow_back_ios_new,
-                          color: Colors.white, size: 20),
+                      icon: Icon(Icons.arrow_back_ios_new,
+                          color: AppColors.textPrimary, size: 20),
                     ),
                     Expanded(
                       child: Text(
@@ -119,7 +119,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                           fontSize: 14,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 2.0,
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                     ),
@@ -134,21 +134,21 @@ class _QiblaScreenState extends State<QiblaScreen>
                 padding: const EdgeInsets.symmetric(
                     horizontal: 14, vertical: 7),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.06),
+                  color: AppColors.ink(0.06),
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(color: AppColors.ink(0.1)),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.location_on,
+                    Icon(Icons.location_on,
                         color: AppColors.primary, size: 14),
                     const SizedBox(width: 6),
                     Text(
                       cityLabel,
                       style: AppText.manrope(
                           fontSize: 12,
-                          color: Colors.white70,
+                          color: AppColors.ink(0.70),
                           fontWeight: FontWeight.w600),
                     ),
                   ],
@@ -209,7 +209,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                         'Masjid Al-Haram, Mecca',
                         style: AppText.manrope(
                             fontSize: 13,
-                            color: Colors.white54,
+                            color: AppColors.ink(0.54),
                             fontWeight: FontWeight.w600),
                       ),
                     ],
@@ -315,12 +315,12 @@ class _QiblaScreenState extends State<QiblaScreen>
           decoration: BoxDecoration(
             color: aligned
                 ? const Color(0xFF10B981).withOpacity(0.12)
-                : Colors.white.withOpacity(0.05),
+                : AppColors.ink(0.05),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: aligned
                   ? const Color(0xFF10B981).withOpacity(0.35)
-                  : Colors.white.withOpacity(0.08),
+                  : AppColors.ink(0.08),
             ),
           ),
           child: aligned
@@ -348,7 +348,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                       style: AppText.manrope(
                         fontSize: 22,
                         fontWeight: FontWeight.w900,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -357,7 +357,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                       style: AppText.manrope(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Colors.white54,
+                        color: AppColors.ink(0.54),
                       ),
                     ),
                   ],
@@ -393,22 +393,22 @@ class _QiblaScreenState extends State<QiblaScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.location_off_rounded,
-            color: Colors.white24, size: 64),
+        Icon(Icons.location_off_rounded,
+            color: AppColors.ink(0.24), size: 64),
         const SizedBox(height: 16),
         Text(
           'Location Not Set',
           style: AppText.manrope(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Colors.white70),
+              color: AppColors.ink(0.70)),
         ),
         const SizedBox(height: 8),
         Text(
           'Set your location in Settings\nto use the Qibla compass.',
           textAlign: TextAlign.center,
           style: AppText.manrope(
-              fontSize: 14, color: Colors.white38),
+              fontSize: 14, color: AppColors.ink(0.38)),
         ),
       ],
     );
@@ -428,22 +428,22 @@ class _QiblaScreenState extends State<QiblaScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Icon(Icons.compass_calibration_outlined,
-            color: Colors.white24, size: 64),
+        Icon(Icons.compass_calibration_outlined,
+            color: AppColors.ink(0.24), size: 64),
         const SizedBox(height: 16),
         Text(
           'Compass Not Available',
           style: AppText.manrope(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: Colors.white70),
+              color: AppColors.ink(0.70)),
         ),
         const SizedBox(height: 8),
         Text(
           'This device does not have a\nmagnetometer sensor.',
           textAlign: TextAlign.center,
           style: AppText.manrope(
-              fontSize: 14, color: Colors.white38),
+              fontSize: 14, color: AppColors.ink(0.38)),
         ),
       ],
     );
@@ -475,17 +475,17 @@ class _CompassRosePainter extends CustomPainter {
 
     // ── Outer ring ────────────────────────────────────────────────────
     final ringPaint = Paint()
-      ..color = Colors.white.withOpacity(0.12)
+      ..color = AppColors.ink(0.12)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.5;
     canvas.drawCircle(Offset(cx, cy), r * 0.92, ringPaint);
 
     // ── Tick marks ────────────────────────────────────────────────────
     final majorPaint = Paint()
-      ..color = Colors.white.withOpacity(0.35)
+      ..color = AppColors.ink(0.35)
       ..strokeWidth = 1.5;
     final minorPaint = Paint()
-      ..color = Colors.white.withOpacity(0.15)
+      ..color = AppColors.ink(0.15)
       ..strokeWidth = 1.0;
 
     for (int i = 0; i < 72; i++) {
@@ -502,7 +502,7 @@ class _CompassRosePainter extends CustomPainter {
 
     // ── Inner decorative ring ─────────────────────────────────────────
     final innerRing = Paint()
-      ..color = Colors.white.withOpacity(0.06)
+      ..color = AppColors.ink(0.06)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     canvas.drawCircle(Offset(cx, cy), r * 0.72, innerRing);
@@ -531,7 +531,7 @@ class _CompassRosePainter extends CustomPainter {
             fontWeight: FontWeight.w900,
             color: isNorth
                 ? const Color(0xFFEF4444)
-                : Colors.white.withOpacity(0.7),
+                : AppColors.ink(0.7),
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -555,7 +555,7 @@ class _CompassRosePainter extends CustomPainter {
           style: TextStyle(
             fontSize: r * 0.07,
             fontWeight: FontWeight.w600,
-            color: Colors.white.withOpacity(0.35),
+            color: AppColors.ink(0.35),
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -626,7 +626,7 @@ class _NeedlePainter extends CustomPainter {
 
     // ── Tail dot ──────────────────────────────────────────────────────
     final tailPaint = Paint()
-      ..color = Colors.white.withOpacity(0.25)
+      ..color = AppColors.ink(0.25)
       ..style = PaintingStyle.fill;
     canvas.drawCircle(Offset(cx, cy + r * 0.22), 5, tailPaint);
   }

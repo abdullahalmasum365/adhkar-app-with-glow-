@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:provider/provider.dart';
@@ -8,8 +9,8 @@ import '../providers/language_provider.dart';
 import '../services/location_service.dart';
 import '../services/notification_service.dart';
 import 'dart:math' as math;
-import 'dashboard_screen.dart';
 import 'location_setup_screen.dart';
+import '../utils/first_launch_navigation.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -81,10 +82,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
 
     if (!mounted) return;
-    nav.pushReplacement(MaterialPageRoute(
-      builder: (_) =>
-          gpsSucceeded ? const DashboardScreen() : const LocationSetupScreen(),
-    ));
+    if (gpsSucceeded) {
+      await enterAppForFirstTime(context);
+    } else {
+      nav.pushReplacement(
+        MaterialPageRoute(builder: (_) => const LocationSetupScreen()),
+      );
+    }
   }
 
   // ── shared dot indicator ──────────────────────────────────────────────────
@@ -115,7 +119,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: Colors.white.withOpacity(0.4),
+        color: AppColors.ink(0.4),
       ),
     ),
   );
@@ -132,8 +136,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: InkWell(
         onTap: _isLoading ? null : onTap,
         borderRadius: BorderRadius.circular(100),
-        splashColor: Colors.white.withOpacity(0.15),
-        highlightColor: Colors.white.withOpacity(0.08),
+        splashColor: AppColors.ink(0.15),
+        highlightColor: AppColors.ink(0.08),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           width: double.infinity,
@@ -144,27 +148,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             boxShadow: [BoxShadow(color: color.withOpacity(0.25), blurRadius: 8)],
           ),
           child: _isLoading && _currentPage == _totalPages - 1
-              ? const Row(
+              ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       width: 22, height: 22,
                       child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2.5,
+                        color: AppColors.onPrimary, strokeWidth: 2.5,
                       ),
                     ),
                     SizedBox(width: 12),
                     Text('Setting up…',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                   ],
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(text,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                     const SizedBox(width: 8),
-                    const Icon(Icons.arrow_forward, color: Colors.white, size: 20),
+                    Icon(Icons.arrow_forward, color: AppColors.textPrimary, size: 20),
                   ],
                 ),
         ),
@@ -205,8 +209,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // ══════════════════════════════════════════════════════════════════════════
   Widget _page0(LanguageProvider lp) {
     const primaryColor = Color(0xFFF49D25);
-    const bgDark = Color(0xFF020617);
-    const bgTeal = Color(0xFF134E4A);
+    final bgDark = AppColors.bgDeep;
+    final bgTeal = AppColors.bgTeal;
 
     return LayoutBuilder(builder: (context, constraints) {
       final h = constraints.maxHeight;
@@ -217,7 +221,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final iconSize = ringSize * 0.185;
 
       return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topCenter, radius: 1.2,
             colors: [bgTeal, bgDark],
@@ -235,7 +239,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox(width: 48),
                     Text('1 / $_totalPages',
                         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                            letterSpacing: 2.0, color: Colors.white.withOpacity(0.4))),
+                            letterSpacing: 2.0, color: AppColors.ink(0.4))),
                     _skipBtn(lp),
                   ],
                 ),
@@ -322,12 +326,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Text(lp.getText('onboarding_title_1'), textAlign: TextAlign.center,
                             style: TextStyle(fontSize: isSmall ? 26 : 32, fontWeight: FontWeight.w800,
-                                color: Colors.white, height: 1.2, letterSpacing: -0.5))
+                                color: AppColors.textPrimary, height: 1.2, letterSpacing: -0.5))
                             .animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 8 : 16),
                         Text(lp.getText('onboarding_desc_1'), textAlign: TextAlign.center,
                             style: TextStyle(fontSize: isSmall ? 13 : 16,
-                                color: Colors.white.withOpacity(0.7), height: 1.5))
+                                color: AppColors.ink(0.7), height: 1.5))
                             .animate().fadeIn(delay: 500.ms).moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 16 : 32),
                         _dots(primaryColor),
@@ -352,7 +356,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // ══════════════════════════════════════════════════════════════════════════
   Widget _page1(LanguageProvider lp) {
     const primaryColor = Color(0xFFEC7F13);
-    const bgDark = Color(0xFF0A0A0A);
+    final bgDark = AppColors.bgDark;
     const bgTeal = Color(0xFF002B2B);
 
     return LayoutBuilder(builder: (context, constraints) {
@@ -360,7 +364,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final isSmall = h < 700;
 
       return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter, end: Alignment.bottomCenter,
             colors: [bgTeal, bgDark],
@@ -384,12 +388,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           shape: BoxShape.circle,
                           color: primaryColor.withOpacity(0.1),
                         ),
-                        child: const Icon(Icons.chevron_left, color: Colors.white),
+                        child: Icon(Icons.chevron_left, color: AppColors.textPrimary),
                       ),
                     ),
                     Text('2 / $_totalPages',
                         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                            letterSpacing: 2.0, color: Colors.white.withOpacity(0.4))),
+                            letterSpacing: 2.0, color: AppColors.ink(0.4))),
                     _skipBtn(lp),
                   ],
                 ),
@@ -410,15 +414,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Container(
                       width: 220, height: 220,
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: AppColors.shadow(0.3),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(color: primaryColor.withOpacity(0.35), blurRadius: 10),
                           const BoxShadow(color: Color(0xFFFF9D3F), blurRadius: 8),
                         ],
                       ),
-                      child: const Center(
-                        child: Icon(Icons.mosque, color: Colors.white, size: 110),
+                      child: Center(
+                        child: Icon(Icons.mosque, color: AppColors.textPrimary, size: 110),
                       ),
                     ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.9, 0.9)),
                   ],
@@ -435,12 +439,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Text(lp.getText('onboarding_title_2'), textAlign: TextAlign.center,
                             style: TextStyle(fontSize: isSmall ? 26 : 32, fontWeight: FontWeight.w800,
-                                color: Colors.white, height: 1.2, letterSpacing: -0.5))
+                                color: AppColors.textPrimary, height: 1.2, letterSpacing: -0.5))
                             .animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 8 : 16),
                         Text(lp.getText('onboarding_desc_2'), textAlign: TextAlign.center,
                             style: TextStyle(fontSize: isSmall ? 14 : 16,
-                                color: Colors.white.withOpacity(0.7), height: 1.5))
+                                color: AppColors.ink(0.7), height: 1.5))
                             .animate().fadeIn(delay: 500.ms).moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 16 : 32),
                         _dots(primaryColor),
@@ -493,12 +497,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           shape: BoxShape.circle,
                           color: primaryColor.withOpacity(0.1),
                         ),
-                        child: const Icon(Icons.chevron_left, color: Colors.white),
+                        child: Icon(Icons.chevron_left, color: AppColors.textPrimary),
                       ),
                     ),
-                    const Text('3 / 3',
+                    Text('3 / 3',
                         style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                            letterSpacing: 2.0, color: Colors.white)),
+                            letterSpacing: 2.0, color: AppColors.textPrimary)),
                     // Empty space where skip was — keeps title centred
                     const SizedBox(width: 48),
                   ],
@@ -532,8 +536,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
                                       colors: [Color(0xFF1E293B), Color(0xFF0F172A)]),
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: Colors.white.withOpacity(0.1)),
-                                  boxShadow: const [BoxShadow(color: Colors.black54, blurRadius: 8)],
+                                  border: Border.all(color: AppColors.ink(0.1)),
+                                  boxShadow: [BoxShadow(color: AppColors.shadow(0.54), blurRadius: 8)],
                                 ),
                                 padding: const EdgeInsets.all(16),
                                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -541,10 +545,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     decoration: BoxDecoration(color: primaryColor.withOpacity(0.4), borderRadius: BorderRadius.circular(4))),
                                   const SizedBox(height: 16),
                                   Container(width: 150, height: 16,
-                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(8))),
+                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
                                   const SizedBox(height: 8),
                                   Container(width: 100, height: 16,
-                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(8))),
+                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
                                   const Spacer(),
                                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                                     Container(width: 32, height: 32,
@@ -569,7 +573,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       colors: [Color(0xFF1E293B), Color(0xFF0F172A)]),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(color: primaryColor.withOpacity(0.3)),
-                                  boxShadow: const [BoxShadow(color: Colors.black54, blurRadius: 8)],
+                                  boxShadow: [BoxShadow(color: AppColors.shadow(0.54), blurRadius: 8)],
                                 ),
                                 padding: const EdgeInsets.all(16),
                                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -580,13 +584,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   ]),
                                   const SizedBox(height: 16),
                                   Container(width: double.infinity, height: 16,
-                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(8))),
+                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
                                   const SizedBox(height: 8),
                                   Container(width: 200, height: 16,
-                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(8))),
+                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
                                   const SizedBox(height: 8),
                                   Container(width: 150, height: 16,
-                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.1), borderRadius: BorderRadius.circular(8))),
+                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
                                   const Spacer(),
                                   Row(children: [
                                     Container(width: 48, height: 24,
@@ -608,7 +612,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 4))],
                               ),
-                              child: const Icon(Icons.tune, color: Colors.white, size: 32),
+                              child: Icon(Icons.tune, color: AppColors.textPrimary, size: 32),
                             ).animate().fadeIn(duration: 600.ms, delay: 400.ms),
                           ),
                         ],
@@ -628,12 +632,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       children: [
                         Text(lp.getText('onboarding_title_3'), textAlign: TextAlign.center,
                             style: TextStyle(fontSize: isSmall ? 26 : 32, fontWeight: FontWeight.w800,
-                                color: Colors.white, height: 1.2, letterSpacing: -0.5))
+                                color: AppColors.textPrimary, height: 1.2, letterSpacing: -0.5))
                             .animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 8 : 16),
                         Text(lp.getText('onboarding_desc_3'), textAlign: TextAlign.center,
                             style: TextStyle(fontSize: isSmall ? 13 : 16,
-                                color: Colors.white.withOpacity(0.7), height: 1.5))
+                                color: AppColors.ink(0.7), height: 1.5))
                             .animate().fadeIn(delay: 500.ms).moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 16 : 32),
                         _dots(primaryColor),

@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "Pedir perdón después del salam",
+      "frequency": "3x después de cada oración",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "Pido perdón a Allah (tres veces). Oh Allah, Tú eres la Paz y de Ti proviene la paz. Bendito seas, oh Poseedor de la majestad y el honor.",
+      "benefit": "El Profeta (ﷺ) comenzaba su recuerdo tras cada oración prescrita pidiendo perdón a Allah tres veces y glorificándolo luego como la Fuente de la paz.",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "Declaración de la unicidad de Allah",
+      "frequency": "1x después de cada oración",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "Nadie tiene derecho a ser adorado excepto Allah, Único, sin asociado. Suyo es el dominio y Suya es la alabanza, y Él es Capaz de todas las cosas. Oh Allah, nadie puede retener lo que Tú das, ni dar lo que Tú retienes, y de nada le sirve al poderoso su poder frente a Ti.",
+      "benefit": "El Profeta (ﷺ) decía esto tras cada oración prescrita, afirmando la unicidad de Allah: nadie puede retener lo que Él da ni dar lo que Él retiene.",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "No hay poder salvo en Allah",
+      "frequency": "1x después de cada oración",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "Nadie tiene derecho a ser adorado excepto Allah, Único, sin asociado. Suyo es el dominio y Suya es la alabanza, y Él es Capaz de todas las cosas. No hay poder ni fuerza salvo en Allah. Nadie tiene derecho a ser adorado excepto Allah, y no adoramos a nadie más que a Él. Suya es la gracia, Suyo es el favor y Suya es la más hermosa alabanza. Nadie tiene derecho a ser adorado excepto Allah; Le consagramos sinceramente la religión, aunque les disguste a los incrédulos.",
+      "benefit": "El Profeta (ﷺ) declaraba tras cada oración que todo poder, gracia y hermosa alabanza pertenecen solo a Allah, adorándolo con sinceridad aunque les disguste a los incrédulos.",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "Tasbih después de la oración (33x cada uno)",
+      "frequency": "33x cada uno después de cada oración",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Gloria a Allah, la alabanza es para Allah, y Allah es el Más Grande (cada uno treinta y tres veces). Nadie tiene derecho a ser adorado excepto Allah, Único, sin asociado. Suyo es el dominio y Suya es la alabanza, y Él es Capaz de todas las cosas.",
+      "benefit": "El Profeta (ﷺ) dijo: A quien diga esto después de cada oración se le perdonarán sus pecados, aunque sean como la espuma del mar.",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "Sūrat al-Ikhlāṣ (La Sinceridad) — 1.° de los tres Qul",
+      "frequency": "1x después de cada oración",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Qul Huwa llāhu Aḥad. Allāhu ṣ-Ṣamad. Lam yalid wa-lam yūlad. Wa-lam yakun lahu kufuwan aḥad.",
+      "translation": "Di: Él es Allāh, el Único. Allāh, el Refugio Eterno. No engendró ni fue engendrado. Y nadie es comparable a Él.",
+      "benefit": "El Profeta (ة) ordenó que estas tres suras protectoras se recitaran después de cada oración; después de Fajr y Magrib se recitan tres veces cada una.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "Sūrat al-Falaq (El Amanecer) — 2.° de los tres Qul",
+      "frequency": "1x después de cada oración (3x después de Fajr y Magrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-Rabbi l-falaq. Min sharri mā khalaq. Wa-min sharri ghāsiqin idhā waqab. Wa-min sharri n-naffāthāti fi l-'uqad. Wa-min sharri ḥāsidin idhā ḥasad.",
+      "translation": "Di: Busco refugio en el Señor del amanecer, del mal de lo que ha creado, del mal de la oscuridad cuando se extiende, del mal de las que soplan en los nudos y del mal del envidioso cuando envidia.",
+      "benefit": "El Profeta (ة) ordenó que estas tres suras protectoras se recitaran después de cada oración; después de Fajr y Magrib se recitan tres veces cada una.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "Sūrat an-Nās (La Humanidad) — 3.° de los tres Qul",
+      "frequency": "1x después de cada oración (3x después de Fajr y Magrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-Rabbi n-nās. Maliki n-nās. Ilāhi n-nās. Min sharri l-waswāsi l-khannās. Alladhī yuwaswisu fī ṣudūri n-nās. Mina l-jinnati wa-n-nās.",
+      "translation": "Di: Busco refugio en el Señor de la humanidad, el Rey de la humanidad, el Dios de la humanidad, del mal del susurrador que se retira, que susurra en los pechos de la humanidad — entre los yinn y los hombres.",
+      "benefit": "El Profeta (ة) ordenó que estas tres suras protectoras se recitaran después de cada oración; después de Fajr y Magrib se recitan tres veces cada una.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "Ayatul Kursi",
+      "frequency": "1x después de cada oración",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "¡Allah! No hay nadie digno de adoración excepto Él, el Viviente, el Sustentador de todo lo que existe. No Le afectan ni la somnolencia ni el sueño. Suyo es cuanto hay en los cielos y en la tierra. ¿Quién puede interceder ante Él si no es con Su permiso? Conoce lo que les sucede en esta vida y lo que les sucederá en la Otra. Y ellos no abarcan nada de Su conocimiento, salvo lo que Él quiere. Su Trono se extiende sobre los cielos y la tierra, y su preservación no Le fatiga. Y Él es el Altísimo, el Grandioso.",
+      "benefit": "El Profeta (ﷺ) dijo: A quien recite Ayatul Kursi después de cada oración prescrita, nada le impedirá entrar al Paraíso excepto la muerte.",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "Diez veces tras Fajr y Maghrib",
+      "frequency": "10x después de Fajr y Maghrib",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Nadie tiene derecho a ser adorado excepto Allah, Único, sin asociado. Suyo es el dominio y Suya es la alabanza. Él da la vida y da la muerte, y Él es Capaz de todas las cosas.",
+      "benefit": "El Profeta (ﷺ) enseñó a repetir diez veces, después de las oraciones de Maghrib y Fajr, esta declaración de la unicidad de Allah, Quien da la vida y la muerte.",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "Súplica por un conocimiento beneficioso",
+      "frequency": "1x después de la oración del Fajr",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "Oh Allah, Te pido un conocimiento beneficioso, un sustento bueno y obras aceptadas.",
+      "benefit": "El Profeta (ﷺ) decía esto tras el salam de la oración del Fajr, pidiendo a Allah conocimiento beneficioso, buen sustento y obras aceptadas para comenzar el día.",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

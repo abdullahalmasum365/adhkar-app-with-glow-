@@ -41,6 +41,13 @@ class _DuaScreenState extends State<DuaScreen> {
         color: Color(0xFF6366F1),
         category: DhikrCategory.evening),
     _Cat(
+        icon: Icons.mosque_outlined,
+        titleKey: 'after_salah',
+        title: 'After Salah',
+        count: 10,
+        color: Color(0xFF14B8A6),
+        category: DhikrCategory.afterSalah),
+    _Cat(
         icon: Icons.shield_outlined,
         titleKey: 'protection',
         title: 'Daily Protection',
@@ -58,14 +65,14 @@ class _DuaScreenState extends State<DuaScreen> {
         icon: Icons.restaurant_outlined,
         titleKey: 'food_eating',
         title: 'Food & Eating',
-        count: 7,
+        count: 9,
         color: Color(0xFFF59E0B),
         category: DhikrCategory.food),
     _Cat(
         icon: Icons.family_restroom_outlined,
         titleKey: 'parents',
         title: 'Duas for Parents',
-        count: 2,
+        count: 4,
         color: Color(0xFFEC4899),
         category: DhikrCategory.parents),
     _Cat(
@@ -75,6 +82,13 @@ class _DuaScreenState extends State<DuaScreen> {
         count: 1,
         color: Color(0xFF64748B),
         category: DhikrCategory.graveyard),
+    _Cat(
+        icon: Icons.bedtime_outlined,
+        titleKey: 'before_sleep',
+        title: 'Before Sleep',
+        count: 14,
+        color: Color(0xFF6366F1),
+        category: DhikrCategory.beforeSleep),
   ];
 
   @override
@@ -90,6 +104,8 @@ class _DuaScreenState extends State<DuaScreen> {
       DhikrCategory.parents: dp.getParentsDhikrs().length,
       DhikrCategory.graveyard: dp.getGraveyardDhikrs().length,
       DhikrCategory.food: dp.getFoodDhikrs().length,
+      DhikrCategory.afterSalah: dp.getAfterSalahDhikrs().length,
+      DhikrCategory.beforeSleep: dp.getBeforeSleepDhikrs().length,
     };
 
     // Pre-resolve translated strings once — passed down to cards
@@ -171,7 +187,7 @@ class _DuaScreenState extends State<DuaScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     decoration: AppDeco.glassCard(),
                     child: Row(children: [
-                      const Icon(Icons.search,
+                      Icon(Icons.search,
                           color: AppColors.textSlate500, size: 20),
                       const SizedBox(width: 10),
                       Expanded(
@@ -196,7 +212,7 @@ class _DuaScreenState extends State<DuaScreen> {
                             _searchController.clear();
                             setState(() => _query = '');
                           },
-                          child: const Icon(Icons.close_rounded,
+                          child: Icon(Icons.close_rounded,
                               color: AppColors.textSlate500, size: 18),
                         ),
                     ]),
@@ -240,7 +256,7 @@ class _DuaScreenState extends State<DuaScreen> {
                                 .shimmer(
                                   delay: Duration(milliseconds: 200 + i * 60),
                                   duration: const Duration(milliseconds: 600),
-                                  color: Colors.white.withOpacity(0.18),
+                                  color: AppColors.ink(0.18),
                                   angle: 0.3,
                                 );
                           },
@@ -316,7 +332,7 @@ class _NoteSheet extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: bottom),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.bgTeal,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
@@ -334,7 +350,7 @@ class _NoteSheet extends StatelessWidget {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: AppColors.ink(0.24),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -375,7 +391,7 @@ class _NoteSheet extends StatelessWidget {
                 // ── Divider ───────────────────────────────────────────────────
                 Container(
                   height: 1,
-                  color: Colors.white.withOpacity(0.08),
+                  color: AppColors.ink(0.08),
                 ),
 
                 const SizedBox(height: 16),
@@ -395,8 +411,8 @@ class _NoteSheet extends StatelessWidget {
                   height: 52,
                   child: ElevatedButton.icon(
                     onPressed: onContinue,
-                    icon: const Icon(Icons.arrow_forward_rounded,
-                        color: Colors.white, size: 18),
+                    icon: Icon(Icons.arrow_forward_rounded,
+                        color: AppColors.textPrimary, size: 18),
                     label: Text(
                       buttonLabel,
                       style: AppText.manrope(
@@ -406,7 +422,7 @@ class _NoteSheet extends StatelessWidget {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: color,
-                      foregroundColor: Colors.white,
+                      foregroundColor: AppColors.onPrimary,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -522,7 +538,8 @@ class _CatCard extends StatelessWidget {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('$resolvedTitle — $comingSoon'),
+          content: Text('$resolvedTitle — $comingSoon',
+              style: TextStyle(color: AppColors.onPrimary)),
           backgroundColor: AppColors.primary,
           behavior: SnackBarBehavior.floating,
         ),
@@ -538,7 +555,7 @@ class _CatCard extends StatelessWidget {
         // FIX: padding uses EdgeInsets not const so it can adapt if needed
         padding: EdgeInsets.all(isSmall ? 10 : 14),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
+          color: AppColors.ink(0.03),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: cat.color.withOpacity(0.2)),
         ),

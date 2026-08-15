@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_theme.dart';
 import 'package:provider/provider.dart';
 import '../models/dhikr.dart';
 import '../providers/custom_plan_provider.dart';
@@ -70,11 +71,11 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: isEnabled
-            ? Colors.white.withOpacity(0.03)
-            : Colors.white.withOpacity(0.01),
+            ? AppColors.ink(0.03)
+            : AppColors.ink(0.01),
         borderRadius: BorderRadius.circular(12),
         border:
-            Border.all(color: Colors.white.withOpacity(isEnabled ? 0.1 : 0.05)),
+            Border.all(color: AppColors.ink(isEnabled ? 0.1 : 0.05)),
       ),
       child: child,
     );
@@ -83,17 +84,17 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
   @override
   Widget build(BuildContext context) {
     const primaryOrange = Color(0xFFF49D25);
-    const bgDark = Color(0xFF0A0F12);
+    final bgDark = AppColors.bgDark;
 
     return Scaffold(
       backgroundColor: bgDark,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topRight,
             radius: 1.5,
             colors: [
-              Color(0xFF1A2E35),
+              AppColors.bgTeal,
               bgDark,
             ],
             stops: [0.0, 1.0],
@@ -112,20 +113,20 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                       color: bgDark.withOpacity(0.8),
                       border: Border(
                           bottom: BorderSide(
-                              color: Colors.white.withOpacity(0.05))),
+                              color: AppColors.ink(0.05))),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_new,
-                              color: Colors.white, size: 20),
+                          icon: Icon(Icons.arrow_back_ios_new,
+                              color: AppColors.textPrimary, size: 20),
                           onPressed: () => Navigator.pop(context),
                         ),
                         Text(
                           _getTitle(),
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             letterSpacing: -0.5,
@@ -164,7 +165,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                   color: primaryOrange.withOpacity(0.2)),
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            child: const Row(
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Icon(Icons.info_outline,
@@ -178,7 +179,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                       Text(
                                         "Modify the standard set of supplications to fit your time.",
                                         style: TextStyle(
-                                          color: Colors.white,
+                                          color: AppColors.textPrimary,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500,
                                           height: 1.4,
@@ -208,7 +209,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                           ),
 
                           // List Header
-                          const Padding(
+                          Padding(
                             padding:
                                 EdgeInsets.only(bottom: 8.0, left: 4, right: 4),
                             child: Row(
@@ -217,7 +218,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                 Text(
                                   "SEQUENCE & TOGGLES",
                                   style: TextStyle(
-                                    color: Colors.white54,
+                                    color: AppColors.ink(0.54),
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: 1.5,
@@ -226,7 +227,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                 Text(
                                   "Hold handle to reorder",
                                   style: TextStyle(
-                                    color: Colors.white38,
+                                    color: AppColors.ink(0.38),
                                     fontSize: 12,
                                   ),
                                 ),
@@ -250,8 +251,8 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                   // Drag Handle
                                   ReorderableDragStartListener(
                                     index: index,
-                                    child: const Icon(Icons.drag_indicator,
-                                        color: Colors.white38),
+                                    child: Icon(Icons.drag_indicator,
+                                        color: AppColors.ink(0.38)),
                                   ),
                                   const SizedBox(width: 16),
 
@@ -265,8 +266,8 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                         children: [
                                           Text(
                                             dhikr.title,
-                                            style: const TextStyle(
-                                              color: Colors.white,
+                                            style: TextStyle(
+                                              color: AppColors.textPrimary,
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -274,8 +275,8 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                           const SizedBox(height: 2),
                                           Text(
                                             dhikr.translation,
-                                            style: const TextStyle(
-                                              color: Colors.white54,
+                                            style: TextStyle(
+                                              color: AppColors.ink(0.54),
                                               fontSize: 12,
                                             ),
                                             maxLines: 1,
@@ -297,11 +298,11 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                               horizontal: 4, vertical: 2),
                                           decoration: BoxDecoration(
                                             color:
-                                                Colors.white.withOpacity(0.05),
+                                                AppColors.ink(0.05),
                                             borderRadius:
                                                 BorderRadius.circular(8),
                                             border: Border.all(
-                                                color: Colors.white
+                                                color: AppColors.textPrimary
                                                     .withOpacity(0.1)),
                                           ),
                                           child: Row(
@@ -312,7 +313,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                                 color: isEnabled
                                                     ? primaryOrange
                                                         .withOpacity(0.8)
-                                                    : Colors.white54,
+                                                    : AppColors.ink(0.54),
                                                 padding: EdgeInsets.zero,
                                                 constraints:
                                                     const BoxConstraints(),
@@ -325,8 +326,8 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                                         horizontal: 8.0),
                                                 child: Text(
                                                   "${dhikr.targetCount}x",
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
+                                                  style: TextStyle(
+                                                    color: AppColors.textPrimary,
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -338,7 +339,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                                 color: isEnabled
                                                     ? primaryOrange
                                                         .withOpacity(0.8)
-                                                    : Colors.white54,
+                                                    : AppColors.ink(0.54),
                                                 padding: EdgeInsets.zero,
                                                 constraints:
                                                     const BoxConstraints(),
@@ -353,10 +354,10 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                         // Toggle Switch
                                         Switch(
                                           value: isEnabled,
-                                          activeColor: Colors.white,
+                                          activeColor: AppColors.textPrimary,
                                           activeTrackColor: primaryOrange,
                                           inactiveThumbColor: Colors.grey,
-                                          inactiveTrackColor: Colors.white10,
+                                          inactiveTrackColor: AppColors.ink(0.10),
                                           onChanged: (val) {
                                             setState(() {
                                               _enabledStatus[dhikr.id] = val;
@@ -387,7 +388,7 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                   decoration: BoxDecoration(
                     color: bgDark.withOpacity(0.9),
                     border: Border(
-                        top: BorderSide(color: Colors.white.withOpacity(0.1))),
+                        top: BorderSide(color: AppColors.ink(0.1))),
                   ),
                   child: Column(
                     children: [
@@ -420,15 +421,15 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                           elevation: 8,
                           shadowColor: primaryOrange.withOpacity(0.5),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.save, color: Colors.white),
+                            Icon(Icons.save, color: AppColors.textPrimary),
                             SizedBox(width: 8),
                             Text(
                               "Save Morning Plan",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -448,21 +449,21 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                         },
                         style: OutlinedButton.styleFrom(
                           side:
-                              BorderSide(color: Colors.white.withOpacity(0.1)),
+                              BorderSide(color: AppColors.ink(0.1)),
                           minimumSize: const Size(double.infinity, 48),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.restart_alt,
-                                color: Colors.white54, size: 18),
+                                color: AppColors.ink(0.54), size: 18),
                             SizedBox(width: 8),
                             Text(
                               "Reset to Default",
                               style: TextStyle(
-                                color: Colors.white54,
+                                color: AppColors.ink(0.54),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                               ),

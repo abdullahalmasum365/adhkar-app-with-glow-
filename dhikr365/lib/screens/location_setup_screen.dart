@@ -31,7 +31,7 @@ import '../providers/user_provider.dart';
 import '../services/city_database.dart';
 import '../services/location_service.dart';
 import '../services/notification_service.dart';
-import 'dashboard_screen.dart';
+import '../utils/first_launch_navigation.dart';
 
 class LocationSetupScreen extends StatefulWidget {
   const LocationSetupScreen({super.key});
@@ -258,10 +258,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
     await np.refreshAllSchedules(up);
 
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const DashboardScreen()),
-      (_) => false,
-    );
+    await enterAppForFirstTime(context);
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -275,7 +272,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgDark,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topCenter,
             radius: 1.4,
@@ -343,7 +340,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
           style: TextStyle(
             fontSize: isSmall ? 22 : 26,
             fontWeight: FontWeight.w800,
-            color: Colors.white,
+            color: AppColors.textPrimary,
             letterSpacing: -0.3,
           ),
         ),
@@ -353,7 +350,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: isSmall ? 13 : 15,
-            color: Colors.white.withOpacity(0.5),
+            color: AppColors.ink(0.5),
             height: 1.5,
           ),
         ),
@@ -368,11 +365,11 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
       child: ElevatedButton.icon(
         onPressed: (detecting || _saving) ? null : _useGps,
         icon: detecting
-            ? const SizedBox(
+            ? SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
-                    color: Colors.white, strokeWidth: 2.5),
+                    color: AppColors.onPrimary, strokeWidth: 2.5),
               )
             : const Icon(Icons.my_location_rounded, size: 22),
         label: Text(
@@ -381,9 +378,9 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.onPrimary,
           disabledBackgroundColor: AppColors.primary.withOpacity(0.5),
-          disabledForegroundColor: Colors.white70,
+          disabledForegroundColor: AppColors.ink(0.70),
           elevation: 0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -423,9 +420,9 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   onPressed: () => Geolocator.openAppSettings(),
-                  icon: const Icon(Icons.settings_rounded,
+                  icon: Icon(Icons.settings_rounded,
                       size: 16, color: AppColors.primary),
-                  label: const Text(
+                  label: Text(
                     'Open Settings',
                     style: TextStyle(
                         fontSize: 13,
@@ -444,7 +441,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
   Widget _buildDivider() {
     return Row(
       children: [
-        Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+        Expanded(child: Divider(color: AppColors.ink(0.1))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14),
           child: Text(
@@ -453,11 +450,11 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
               fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.5,
-              color: Colors.white.withOpacity(0.3),
+              color: AppColors.ink(0.3),
             ),
           ),
         ),
-        Expanded(child: Divider(color: Colors.white.withOpacity(0.1))),
+        Expanded(child: Divider(color: AppColors.ink(0.1))),
       ],
     );
   }
@@ -469,31 +466,31 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
       enabled: !_saving,
       textInputAction: TextInputAction.search,
       onChanged: _onSearchChanged,
-      style: const TextStyle(
-          fontSize: 16, color: Colors.white, fontWeight: FontWeight.w500),
+      style: TextStyle(
+          fontSize: 16, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
       cursorColor: AppColors.primary,
       decoration: InputDecoration(
         hintText: 'Type your city… e.g. Dhaka, London',
         hintStyle:
-            TextStyle(fontSize: 15, color: Colors.white.withOpacity(0.3)),
+            TextStyle(fontSize: 15, color: AppColors.ink(0.3)),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.06),
+        fillColor: AppColors.ink(0.06),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.12)),
+          borderSide: BorderSide(color: AppColors.ink(0.12)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+          borderSide: BorderSide(color: AppColors.primary, width: 1.5),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.06)),
+          borderSide: BorderSide(color: AppColors.ink(0.06)),
         ),
         prefixIcon: Icon(Icons.search_rounded,
-            color: Colors.white.withOpacity(0.4), size: 20),
+            color: AppColors.ink(0.4), size: 20),
         suffixIcon: _searchingOnline
             ? Padding(
                 padding: const EdgeInsets.all(14),
@@ -509,7 +506,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
             : (_cityController.text.isNotEmpty
                 ? IconButton(
                     icon: Icon(Icons.close_rounded,
-                        color: Colors.white.withOpacity(0.4), size: 18),
+                        color: AppColors.ink(0.4), size: 18),
                     onPressed: () {
                       _cityController.clear();
                       _onlineDebounce?.cancel();
@@ -525,12 +522,12 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
     return Container(
       margin: const EdgeInsets.only(top: 6),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D3330),
+        color: AppColors.surfaceElevated,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: AppColors.ink(0.1)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.4),
+            color: AppColors.shadow(0.4),
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),
@@ -544,7 +541,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
           itemCount: _results.length,
           separatorBuilder: (_, __) => Divider(
               height: 1,
-              color: Colors.white.withOpacity(0.06),
+              color: AppColors.ink(0.06),
               indent: 48,
               endIndent: 16),
           itemBuilder: (context, i) {
@@ -565,7 +562,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
                         color: AppColors.primary.withOpacity(0.12),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.location_city_rounded,
+                      child: Icon(Icons.location_city_rounded,
                           color: AppColors.primary, size: 16),
                     ),
                     const SizedBox(width: 12),
@@ -576,10 +573,10 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
                         children: [
                           Text(
                             c.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -588,7 +585,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
                               c.country,
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.white.withOpacity(0.5),
+                                color: AppColors.ink(0.5),
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -596,7 +593,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
                       ),
                     ),
                     Icon(Icons.north_west_rounded,
-                        size: 14, color: Colors.white.withOpacity(0.25)),
+                        size: 14, color: AppColors.ink(0.25)),
                   ],
                 ),
               ),
@@ -611,13 +608,13 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
     return TextButton.icon(
       onPressed: _saving ? null : _useMecca,
       icon: Icon(Icons.mosque_rounded,
-          color: Colors.white.withOpacity(0.4), size: 17),
+          color: AppColors.ink(0.4), size: 17),
       label: Text(
         'Skip — use Mecca as default',
         style: TextStyle(
           fontSize: 13,
           fontWeight: FontWeight.w500,
-          color: Colors.white.withOpacity(0.4),
+          color: AppColors.ink(0.4),
         ),
       ),
     );
@@ -631,7 +628,7 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
       textAlign: TextAlign.center,
       style: TextStyle(
         fontSize: 11,
-        color: Colors.white.withOpacity(0.3),
+        color: AppColors.ink(0.3),
         height: 1.5,
       ),
     );

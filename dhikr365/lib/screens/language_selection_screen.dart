@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/language_provider.dart';
@@ -66,8 +67,8 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFFF48C25);
-    const bgDark = Color(0xFF0A1A1A);
-    const bgMeshLight = Color(0xFF1A2E2E);
+    final bgDark = AppColors.bgDark;
+    final bgMeshLight = AppColors.bgTeal;
     final lp = Provider.of<LanguageProvider>(context);
 
     final languagesToShow = LanguageProvider.supportedLanguages
@@ -103,7 +104,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.topRight,
                 radius: 1.5,
@@ -134,11 +135,11 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                             height: 40,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.05),
+                              color: AppColors.ink(0.05),
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.arrow_back_ios_new,
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                               size: 20,
                             ),
                           ),
@@ -167,11 +168,11 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                 const SizedBox(height: 16),
                 Text(
                   lp.getText('select_language'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                   ),
                 ).animate().fadeIn().moveY(begin: -20, end: 0),
                 const SizedBox(height: 12),
@@ -182,7 +183,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white.withOpacity(0.6),
+                      color: AppColors.ink(0.6),
                       height: 1.5,
                     ),
                   ),
@@ -208,12 +209,12 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           duration: const Duration(milliseconds: 300),
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.03),
+                            color: AppColors.ink(0.03),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: isSelected
                                   ? primaryColor
-                                  : Colors.white.withOpacity(0.08),
+                                  : AppColors.ink(0.08),
                               width: 1,
                             ),
                             boxShadow: isSelected
@@ -226,7 +227,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                                   ]
                                 : [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: AppColors.shadow(0.2),
                                       blurRadius: 10,
                                     )
                                   ],
@@ -239,10 +240,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: Colors.white.withOpacity(0.1),
+                                    color: AppColors.ink(0.1),
                                     width: 1,
                                   ),
-                                  color: Colors.white.withOpacity(0.05),
+                                  color: AppColors.ink(0.05),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -264,10 +265,10 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                                   children: [
                                     Text(
                                       lang['name']!,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: AppColors.textPrimary,
                                         height: 1.2,
                                       ),
                                     ),
@@ -277,7 +278,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
-                                        color: Colors.white.withOpacity(0.6),
+                                        color: AppColors.ink(0.6),
                                       ),
                                     ),
                                   ],
@@ -294,7 +295,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                                       : Colors.transparent,
                                 ),
                                 child: isSelected
-                                    ? const Icon(
+                                    ? Icon(
                                         Icons.check,
                                         color: bgDark,
                                         size: 16,
@@ -372,14 +373,14 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           children: [
                             Text(
                               lp.getText('continue'),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
                                 color: bgDark,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Icon(
+                            Icon(
                               Icons.chevron_right,
                               color: bgDark,
                             ),
@@ -404,7 +405,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           width: 6,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: AppColors.ink(0.2),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -413,7 +414,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
                           width: 6,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: AppColors.ink(0.2),
                             shape: BoxShape.circle,
                           ),
                         ),

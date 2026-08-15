@@ -72,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             decoration: BoxDecoration(
               color: AppColors.bgDark.withOpacity(0.92),
               border: Border(
-                  top: BorderSide(color: Colors.white.withOpacity(0.05))),
+                  top: BorderSide(color: AppColors.ink(0.05))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

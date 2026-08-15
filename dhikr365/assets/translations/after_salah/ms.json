@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "Istighfar Selepas Salam",
+      "frequency": "3x selepas setiap solat",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "Aku memohon keampunan Allah (tiga kali). Ya Allah, Engkaulah As-Salam (Maha Sejahtera) dan daripada-Mu datangnya kesejahteraan. Maha Berkat Engkau, wahai Pemilik keagungan dan kemuliaan.",
+      "benefit": "Nabi (ﷺ) memulakan zikirnya selepas setiap solat fardu dengan memohon keampunan Allah tiga kali, kemudian mengagungkan-Nya sebagai Sumber kesejahteraan.",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "Pengisytiharan Keesaan Allah",
+      "frequency": "1x selepas setiap solat",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "Tiada tuhan yang berhak disembah melainkan Allah semata-mata, tiada sekutu bagi-Nya. Milik-Nya kerajaan dan bagi-Nya segala pujian, dan Dia Maha Berkuasa atas segala sesuatu. Ya Allah, tiada siapa yang dapat menghalang apa yang Engkau berikan, dan tiada siapa yang dapat memberikan apa yang Engkau halang, dan tidak berguna kekayaan dan kemuliaan seseorang di hadapan-Mu.",
+      "benefit": "Nabi (ﷺ) mengucapkan ini selepas setiap solat fardu, menegaskan keesaan Allah: tiada siapa dapat menghalang apa yang Dia beri, atau memberi apa yang Dia halang.",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "Tiada Daya Melainkan dengan Allah",
+      "frequency": "1x selepas setiap solat",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "Tiada tuhan yang berhak disembah melainkan Allah semata-mata, tiada sekutu bagi-Nya. Milik-Nya kerajaan dan bagi-Nya segala pujian, dan Dia Maha Berkuasa atas segala sesuatu. Tiada daya dan tiada kekuatan melainkan dengan pertolongan Allah. Tiada tuhan yang berhak disembah melainkan Allah, dan kami tidak menyembah melainkan Dia. Milik-Nya segala nikmat, milik-Nya segala kurnia, dan bagi-Nya pujian yang terindah. Tiada tuhan yang berhak disembah melainkan Allah; kami mengikhlaskan agama hanya untuk-Nya, walaupun orang-orang kafir membencinya.",
+      "benefit": "Nabi (ﷺ) mengisytiharkan selepas setiap solat bahawa segala daya, nikmat dan pujian terindah hanyalah milik Allah, yang disembah dengan ikhlas walaupun orang kafir membencinya.",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "Tasbih Selepas Solat (33x setiap satu)",
+      "frequency": "33x setiap satu selepas setiap solat",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Maha Suci Allah, segala puji bagi Allah, dan Allah Maha Besar (setiap satu tiga puluh tiga kali). Tiada tuhan yang berhak disembah melainkan Allah semata-mata, tiada sekutu bagi-Nya. Milik-Nya kerajaan dan bagi-Nya segala pujian, dan Dia Maha Berkuasa atas segala sesuatu.",
+      "benefit": "Nabi (ﷺ) bersabda: Sesiapa yang mengucapkannya selepas setiap solat, diampunkan dosa-dosanya walaupun sebanyak buih di lautan.",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "Surah Al-Ikhlas (Keikhlasan)",
+      "frequency": "1x selepas setiap solat",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Qul huwa Allāhu ahad. Allāhus-shamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan ahad.",
+      "translation": "Katakanlah: Dialah Allah Yang Maha Esa. Allah tempat bergantung (keperluan seluruh makhluk). Dia tidak beranak dan tidak pula diperanakkan. Dan tidak ada sesiapa pun yang setara dengan-Nya.",
+      "benefit": "Nabi (ة) mengarahkan agar tiga surah perlindungan ini dibaca selepas setiap solat; selepas Subuh dan Maghrib dibaca tiga kali setiap satu.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "Surah Al-Falaq (Waktu Subuh)",
+      "frequency": "1x selepas setiap solat (3x selepas Subuh & Maghrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdzu bi-rabbil-falaq. Min syarri mā khalaq. Wa min syarri ghāsiqin idzā waqab. Wa min syarrin-naffātsāti fil-'uqad. Wa min syarri hāsidin idzā hasad.",
+      "translation": "Katakanlah: Aku berlindung kepada Tuhan yang menguasai waktu subuh. Daripada kejahatan makhluk yang diciptakan-Nya. Dan daripada kejahatan malam apabila gelap gulita. Dan daripada kejahatan perempuan-perempuan tukang sihir yang meniup pada buhul-buhul. Dan daripada kejahatan orang yang dengki apabila dia dengki.",
+      "benefit": "Nabi (ة) mengarahkan agar tiga surah perlindungan ini dibaca selepas setiap solat; selepas Subuh dan Maghrib dibaca tiga kali setiap satu.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "Surah An-Nas (Manusia)",
+      "frequency": "1x selepas setiap solat (3x selepas Subuh & Maghrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdzu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min syarril-waswāsil-khannās. Alladhī yuwaswisu fī shudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "Katakanlah: Aku berlindung kepada Tuhan manusia. Raja manusia. Sembahan manusia. Daripada kejahatan syaitan yang suka membisik. Yang membisikkan (kejahatan) dalam dada manusia. Daripada golongan jin dan manusia.",
+      "benefit": "Nabi (ة) mengarahkan agar tiga surah perlindungan ini dibaca selepas setiap solat; selepas Subuh dan Maghrib dibaca tiga kali setiap satu.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "Ayat Kursi",
+      "frequency": "1x selepas setiap solat",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "Allah, tiada tuhan yang berhak disembah melainkan Dia, Yang Maha Hidup, Yang sentiasa mentadbir makhluk-Nya. Dia tidak mengantuk dan tidak tidur. Milik-Nya apa yang ada di langit dan apa yang ada di bumi. Tiada siapa yang dapat memberi syafaat di sisi-Nya melainkan dengan izin-Nya. Dia mengetahui apa yang di hadapan mereka dan apa yang di belakang mereka. Dan mereka tidak meliputi sesuatu pun daripada ilmu-Nya melainkan apa yang Dia kehendaki. Kursi-Nya meliputi langit dan bumi, dan Dia tidak merasa berat memelihara kedua-duanya. Dan Dialah Yang Maha Tinggi, lagi Maha Besar.",
+      "benefit": "Nabi (ﷺ) bersabda: Sesiapa yang membaca Ayat Kursi selepas setiap solat fardu, tiada yang menghalangnya masuk syurga melainkan kematian.",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "Sepuluh Kali Selepas Subuh & Maghrib",
+      "frequency": "10x selepas solat Subuh & Maghrib",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Tiada tuhan yang berhak disembah melainkan Allah semata-mata, tiada sekutu bagi-Nya. Milik-Nya kerajaan dan bagi-Nya segala pujian. Dia yang menghidupkan dan mematikan, dan Dia Maha Berkuasa atas segala sesuatu.",
+      "benefit": "Nabi (ﷺ) mengajarkan supaya pengisytiharan keesaan Allah ini — Dia yang menghidupkan dan mematikan — diulang sepuluh kali selepas solat Maghrib dan Subuh.",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "Doa Ilmu yang Bermanfaat",
+      "frequency": "1x selepas solat Subuh",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "Ya Allah, sesungguhnya aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amalan yang diterima.",
+      "benefit": "Nabi (ﷺ) mengucapkan doa ini selepas salam solat Subuh, memohon kepada Allah ilmu yang bermanfaat, rezeki yang baik dan amalan yang diterima untuk memulakan hari.",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

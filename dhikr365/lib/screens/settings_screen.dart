@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/theme_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/user_provider.dart';
+import '../providers/auth_provider.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
+import 'account_screen.dart';
 import 'edit_profile_screen.dart';
 import 'splash_screen.dart';
 import '../providers/notification_provider.dart';
-import '../services/notification_service.dart';
+import '../widgets/battery_reliability_dialogs.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -29,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (_) => Container(
         constraints:
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.bgTeal,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -39,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppColors.ink(0.24),
                   borderRadius: BorderRadius.circular(2))),
           Padding(
               padding: const EdgeInsets.all(20),
@@ -54,14 +57,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               return ListTile(
                 leading: Text(sel ? '●' : '○',
                     style: TextStyle(
-                        color: sel ? AppColors.primary : Colors.white24,
+                        color: sel ? AppColors.primary : AppColors.ink(0.24),
                         fontSize: 16)),
                 title: Text(lang['nativeName']!,
                     style: AppText.manrope(
                         fontWeight: sel ? FontWeight.w700 : FontWeight.w400,
-                        color: sel ? Colors.white : Colors.white70)),
+                        color: sel ? AppColors.textPrimary : AppColors.ink(0.70))),
                 subtitle: Text(lang['name']!,
-                    style: AppText.body(color: Colors.white38)),
+                    style: AppText.body(color: AppColors.ink(0.38))),
                 onTap: () {
                   onPick(lang['code']!);
                   Navigator.pop(context);
@@ -115,6 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final tp = Provider.of<ThemeProvider>(context);
     final up = Provider.of<UserProvider>(context);
     final np = Provider.of<NotificationProvider>(context);
+    final ap = Provider.of<AuthProvider>(context);
 
     final name = (up.userName?.isNotEmpty == true)
         ? up.userName!
@@ -187,6 +191,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ]),
               )),
+              const SizedBox(height: 22),
+
+              // ── Account & Sync ──
+              _Lbl(lp.getText('account_title')),
+              _Card(
+                child: _Tile(
+                  icon: ap.isSignedIn
+                      ? Icons.cloud_done_rounded
+                      : Icons.cloud_outlined,
+                  color: ap.isSignedIn ? Colors.greenAccent : Colors.blueAccent,
+                  title: ap.isSignedIn
+                      ? (ap.displayName.isNotEmpty
+                          ? ap.displayName
+                          : lp.getText('account_title'))
+                      : lp.getText('account_signed_out_title'),
+                  subtitle: ap.isSignedIn
+                      ? lp.getText('account_sync_active')
+                      : lp.getText('account_tile_subtitle'),
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const AccountScreen())),
+                ),
+              ),
               const SizedBox(height: 22),
 
               // ── Notifications ──
@@ -348,35 +374,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ])),
               const SizedBox(height: 22),
 
-              // ── Test Notification ──
+              // ── Notification Reliability Tips ──
+              // Re-runnable any time — battery-optimization + OEM Autostart
+              // explainers, the same dialogs shown once automatically at
+              // first launch. Nothing here is forced; the user opts in.
               _Card(
                 child: _Tile(
-                  icon: Icons.notifications_active,
-                  color: Colors.greenAccent,
-                  title: 'Test Notification',
-                  subtitle: 'Send one now to verify notifications work',
-                  onTap: () async {
-                    try {
-                      await NotificationService().showInstantTestNotification();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Notification sent — check your notification bar'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Failed: $e'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    }
-                  },
+                  icon: Icons.shield_moon_rounded,
+                  color: Colors.lightBlueAccent,
+                  title: 'Notification Reliability Tips',
+                  subtitle: 'Make sure reminders never get delayed',
+                  onTap: () => runNotificationReliabilityTips(context),
                 ),
               ),
               const SizedBox(height: 22),
@@ -385,6 +393,52 @@ class _SettingsScreenState extends State<SettingsScreen> {
               _Lbl(lp.getText('appearance')),
               _Card(
                 child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+                    child: Row(children: [
+                      Icon(Icons.palette_rounded,
+                          color: AppColors.primary, size: 20),
+                      const SizedBox(width: 10),
+                      Text('App Theme',
+                          style: AppText.manrope(
+                              fontSize: 14, fontWeight: FontWeight.w700)),
+                    ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    child: Column(children: [
+                      // Two theme cards per row, generated from the palette
+                      // registry — adding a palette adds a card automatically.
+                      // After a switch, notifications are re-scheduled so
+                      // their accent color follows the new theme too.
+                      for (int i = 0; i < AppPalettes.all.length; i += 2)
+                        Padding(
+                          padding: EdgeInsets.only(
+                              bottom:
+                                  i + 2 < AppPalettes.all.length ? 12 : 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                  child: _ThemeChoice.fromPalette(
+                                      AppPalettes.all[i], tp,
+                                      onSelected: () =>
+                                          np.refreshAllSchedules(up))),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: i + 1 < AppPalettes.all.length
+                                    ? _ThemeChoice.fromPalette(
+                                        AppPalettes.all[i + 1], tp,
+                                        onSelected: () =>
+                                            np.refreshAllSchedules(up))
+                                    : const SizedBox(),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ]),
+                  ),
+                  _div(),
                   _Tile(
                     icon: Icons.spellcheck_rounded,
                     color: Colors.tealAccent,
@@ -406,7 +460,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     icon: Icons.policy_outlined,
                     color: AppColors.textSlate400,
                     title: lp.getText('privacy_policy'),
-                    onTap: () {}),
+                    onTap: () => launchUrl(
+                        Uri.parse(
+                            'https://abdullahalmasum365.github.io/adhkar-app-with-glow-/privacy-policy.html'),
+                        mode: LaunchMode.externalApplication)),
                 _div(),
                 _Tile(
                     icon: Icons.logout,
@@ -437,9 +494,147 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _div() => Divider(
       height: 1,
       thickness: 1,
-      color: Colors.white.withOpacity(0.05),
+      color: AppColors.ink(0.05),
       indent: 14,
       endIndent: 14);
+}
+
+/// A tappable theme preview card: three color swatches, name, and a
+/// check ring when active. Designed to sell the theme at a glance.
+class _ThemeChoice extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final bool selected;
+  final List<Color> swatches; // [background, surface, accent]
+  final Color previewText;
+  final VoidCallback onTap;
+
+  const _ThemeChoice({
+    required this.title,
+    required this.subtitle,
+    required this.selected,
+    required this.swatches,
+    required this.previewText,
+    required this.onTap,
+  });
+
+  /// Builds a preview card directly from a palette definition.
+  /// [onSelected] runs after the palette is applied (e.g. rescheduling
+  /// notifications so their accent color matches the new theme).
+  factory _ThemeChoice.fromPalette(
+    AppPalette p,
+    ThemeProvider tp, {
+    Future<void> Function()? onSelected,
+  }) {
+    return _ThemeChoice(
+      title: p.label,
+      subtitle: p.tagline,
+      selected: tp.paletteId == p.id,
+      swatches: [p.homeGradient[0], p.homeGradient[1], p.primary],
+      previewText: p.textPrimary,
+      onTap: () async {
+        if (tp.paletteId == p.id) return;
+        await tp.setPalette(p.id);
+        await onSelected?.call();
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.primary.withOpacity(0.10)
+              : AppColors.ink(0.03),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: selected ? AppColors.primary : AppColors.ink(0.10),
+            width: selected ? 1.6 : 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Mini mockup: background with a floating accent pill
+            Container(
+              height: 64,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [swatches[0], swatches[1]],
+                ),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.ink(0.08)),
+              ),
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 7,
+                    decoration: BoxDecoration(
+                      color: previewText.withOpacity(0.75),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  Row(children: [
+                    Container(
+                      width: 26,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: swatches[2],
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Container(
+                      width: 12,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: previewText.withOpacity(0.25),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ]),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(children: [
+              Expanded(
+                child: Text(title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppText.manrope(
+                        fontSize: 12.5, fontWeight: FontWeight.w800)),
+              ),
+              Icon(
+                selected
+                    ? Icons.check_circle_rounded
+                    : Icons.circle_outlined,
+                size: 16,
+                color: selected ? AppColors.primary : AppColors.ink(0.25),
+              ),
+            ]),
+            const SizedBox(height: 2),
+            Text(subtitle,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.body(color: AppColors.textSlate400)
+                    .copyWith(fontSize: 10.5)),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _Lbl extends StatelessWidget {
@@ -501,7 +696,7 @@ class _Tile extends StatelessWidget {
             style: AppText.manrope(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: titleColor ?? Colors.white)),
+                color: titleColor ?? AppColors.textPrimary)),
         subtitle: subtitle != null
             ? Text(subtitle!,
                 style: AppText.body(color: AppColors.textSlate400)
@@ -509,7 +704,7 @@ class _Tile extends StatelessWidget {
             : null,
         trailing: trailing ??
             (onTap != null
-                ? const Icon(Icons.chevron_right,
+                ? Icon(Icons.chevron_right,
                     color: AppColors.textSlate500, size: 20)
                 : null),
         onTap: onTap,

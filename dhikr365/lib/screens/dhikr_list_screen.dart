@@ -1,5 +1,7 @@
 import 'dart:ui';
+import '../constants/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -10,6 +12,7 @@ import '../providers/language_provider.dart';
 import '../models/dhikr.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/dhikr_card.dart';
+import '../widgets/repeat_picker.dart';
 import '../utils/responsive.dart';
 import '../services/audio_service.dart';
 import '../services/tts_service.dart';
@@ -43,13 +46,92 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   bool   _usingTts         = false;
   Duration _position = Duration.zero;
   Duration _duration  = Duration.zero;
-  static const _repeatOptions = [1, 2, 3, 5, 10, 0];
-  int _repeatIdx  = 0;
+  int _repeatTarget = 1; // how many times to play (0 = infinite)
   int _repeatsDone = 0;
+  bool _completed = false; // finished all repeats — next play restarts at 0
+  double? _dragProgress; // non-null while the user drags the seek bar
+  bool _autoNext = false; // continuous play: auto-advance to the next dhikr
+  List<Dhikr>? _navList; // currently displayed list, for prev/next
 
+  static const _speeds = [0.75, 1.0, 1.25, 1.5];
+
+  String get _speedLabel {
+    final r = _audio.rate;
+    return r == 1.0 ? '1×' : '$r×';
+  }
+
+  void _cycleSpeed() {
+    HapticFeedback.selectionClick();
+    final i = _speeds.indexOf(_audio.rate);
+    final next = _speeds[(i + 1) % _speeds.length];
+    _audio.setRate(next);
+    setState(() {});
+  }
+
+  /// Jump ±[secs] within the current track (like the 10-second skips in
+  /// every podcast/audio app). No-op for TTS playback.
+  void _skipBy(int secs) {
+    if (_usingTts || _duration == Duration.zero) return;
+    HapticFeedback.selectionClick();
+    var t = _position + Duration(seconds: secs);
+    if (t < Duration.zero) t = Duration.zero;
+    if (t > _duration) t = _duration;
+    _audio.seek(t);
+  }
+
+  /// Play the previous (-1) or next (+1) dhikr in the visible list.
+  Future<void> _playRelative(int dir) async {
+    final list = _navList;
+    if (list == null || list.isEmpty || _activeDhikr == null) return;
+    final i = list.indexWhere((d) => d.id == _activeDhikr!.id);
+    final j = i + dir;
+    if (i == -1 || j < 0 || j >= list.length) return;
+    HapticFeedback.lightImpact();
+    await _audio.stop();
+    await _tts.stop();
+    setState(() {
+      _activeDhikr   = list[j];
+      _repeatsDone   = 0;
+      _position      = Duration.zero;
+      _duration      = Duration.zero;
+      _usingTts      = false;
+      _playerPlaying = false;
+      _completed     = false;
+    });
+    await _startPlayback(list[j]);
+  }
+
+  /// Whether a prev/next neighbour exists — used to dim the buttons.
+  bool _hasNeighbour(int dir) {
+    final list = _navList;
+    if (list == null || _activeDhikr == null) return false;
+    final i = list.indexWhere((d) => d.id == _activeDhikr!.id);
+    final j = i + dir;
+    return i != -1 && j >= 0 && j < list.length;
+  }
+
+  /// "5×" normally; live progress "2/5×" while a multi-repeat runs.
   String get _repeatLabel {
-    final t = _repeatOptions[_repeatIdx];
-    return t == 0 ? '∞' : '$t×';
+    if (_repeatTarget == 0) {
+      return _repeatsDone > 0 ? '${_repeatsDone + 1}∞' : '∞';
+    }
+    if (_repeatTarget > 1 && (_playerPlaying || _repeatsDone > 0)) {
+      return '${(_repeatsDone + 1).clamp(1, _repeatTarget)}/$_repeatTarget×';
+    }
+    return '$_repeatTarget×';
+  }
+
+  void _repeatMinus() => setState(() {
+        _repeatTarget = _repeatTarget == 0 ? 1 : (_repeatTarget - 1).clamp(1, 999);
+      });
+
+  void _repeatPlus() => setState(() {
+        _repeatTarget = _repeatTarget == 0 ? 1 : (_repeatTarget + 1).clamp(1, 999);
+      });
+
+  Future<void> _pickRepeatCount() async {
+    final v = await showRepeatPicker(context, _repeatTarget);
+    if (v != null && mounted) setState(() => _repeatTarget = v);
   }
 
   @override
@@ -126,6 +208,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
         return lp.getText('parents');
       case DhikrCategory.graveyard:
         return lp.getText('graveyard');
+      case DhikrCategory.afterSalah:
+        return lp.getText('after_salah');
+      case DhikrCategory.beforeSleep:
+        return lp.getText('before_sleep');
       default:
         return 'Dhikr';
     }
@@ -138,7 +224,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.4),
+      barrierColor: AppColors.shadow(0.4),
       builder: (BuildContext context) {
         final langProvider = Provider.of<LanguageProvider>(context, listen: false);
         String selectedAppLang = LanguageProvider.supportedLanguages.firstWhere((l) => l['code'] == langProvider.locale.languageCode)['name']!;
@@ -161,14 +247,14 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(32),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF042F2E).withOpacity(0.85),
+                      color: AppColors.playerSurface.withOpacity(0.85),
                       borderRadius: BorderRadius.circular(40),
                       border: Border.all(
                         color: const Color(0xFFF59E0B).withOpacity(0.3),
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
+                          color: AppColors.shadow(0.5),
                           blurRadius: 40,
                         ),
                         BoxShadow(
@@ -185,7 +271,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           width: 48,
                           height: 4,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: AppColors.ink(0.2),
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
@@ -196,16 +282,16 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           children: [
                             Text(
                               langProvider.getText('settings').toUpperCase(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 2.0,
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             IconButton(
                               onPressed: () => Navigator.pop(context),
-                              icon: const Icon(Icons.close, color: Colors.white54),
+                              icon: Icon(Icons.close, color: AppColors.ink(0.54)),
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                             ),
@@ -253,28 +339,40 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
+                            color: AppColors.ink(0.05),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            border: Border.all(color: AppColors.ink(0.1)),
                           ),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(children: [
-                                const Icon(Icons.spellcheck_rounded,
-                                    color: Color(0xFFF59E0B), size: 18),
-                                const SizedBox(width: 10),
-                                Text(
-                                  langProvider.getText('show_transliteration').toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.w900,
-                                    letterSpacing: 1.2, color: Color(0xFF94A3B8),
+                              // Expanded + ellipsis: the label shrinks
+                              // instead of overflowing past the Switch on
+                              // narrow screens or longer translated strings.
+                              Expanded(
+                                child: Row(children: [
+                                  Icon(Icons.spellcheck_rounded,
+                                      color: AppColors.accent, size: 18),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      langProvider
+                                          .getText('show_transliteration')
+                                          .toUpperCase(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w900,
+                                        letterSpacing: 1.2,
+                                        color: AppColors.textSlate400,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ]),
+                                ]),
+                              ),
                               Switch(
                                 value: themeProvider.showTransliteration,
-                                activeColor: const Color(0xFFF59E0B),
+                                activeColor: AppColors.accent,
                                 onChanged: (v) {
                                   themeProvider.toggleTransliteration(v);
                                   setModalState(() {});
@@ -319,11 +417,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             child: Center(
                               child: Text(
                                 langProvider.getText('save_changes').toUpperCase(),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 2.0,
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                             ),
@@ -373,20 +471,20 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: AppColors.ink(0.05),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: AppColors.ink(0.1)),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               isExpanded: true,
               value: value,
               icon: const Icon(Icons.unfold_more, color: Color(0xFFF59E0B), size: 20),
-              dropdownColor: const Color(0xFF042F2E),
-              style: const TextStyle(
+              dropdownColor: AppColors.playerSurface,
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
               onChanged: onChanged,
               items: LanguageProvider.supportedLanguages.map((lang) {
@@ -439,7 +537,9 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   }
 
   Future<void> _startPlayback(Dhikr dhikr) async {
+    _completed = false;
     // Arabic recitation: MP3 first, Arabic TTS as fallback.
+    // playPath stops any previous playback and starts fresh from 0:00.
     final path = _resolveAudioPath(dhikr);
     if (path != null) {
       final ok = await _audio.playPath(path);
@@ -468,8 +568,16 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
       if (_usingTts) {
         final ok = await _tts.resume();
         if (ok) setState(() => _playerPlaying = true);
-      } else {
+      } else if (_audio.isPaused && !_completed) {
+        // Paused mid-track → continue where it was.
         await _audio.resume();
+      } else {
+        // Track finished (or player stopped) → restart from the beginning.
+        setState(() {
+          _repeatsDone = 0;
+          _position = Duration.zero;
+        });
+        await _startPlayback(dhikr);
       }
       return;
     }
@@ -488,12 +596,22 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
 
   Future<void> _handleRepeatComplete() async {
     _repeatsDone++;
-    final target = _repeatOptions[_repeatIdx];
-    if ((target == 0 || _repeatsDone < target) && _activeDhikr != null) {
+    if ((_repeatTarget == 0 || _repeatsDone < _repeatTarget) &&
+        _activeDhikr != null) {
       await _startPlayback(_activeDhikr!);
-    } else {
-      setState(() { _playerPlaying = false; _repeatsDone = 0; });
+      return;
     }
+    // All repeats done. Continuous mode advances through the list —
+    // repeating each dhikr its set number of times along the way.
+    if (_autoNext && _hasNeighbour(1)) {
+      await _playRelative(1);
+      return;
+    }
+    setState(() {
+      _playerPlaying = false;
+      _repeatsDone = 0;
+      _completed = true; // next play tap restarts from 0:00
+    });
   }
 
   void _closePlayer() {
@@ -506,6 +624,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
       _position        = Duration.zero;
       _duration        = Duration.zero;
       _repeatsDone     = 0;
+      _completed       = false;
+      _dragProgress    = null;
     });
   }
 
@@ -520,7 +640,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
       return '$m:$s';
     }
 
-    const amber = Color(0xFFF59E0B);
+    final amber = AppColors.accent;
 
     return Positioned(
       bottom: 0, left: 0, right: 0,
@@ -534,12 +654,12 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
               margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
               decoration: BoxDecoration(
-                color: const Color(0xFF042F2E).withOpacity(0.93),
+                color: AppColors.playerSurface.withOpacity(0.93),
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(color: amber.withOpacity(0.22)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.55),
+                    color: AppColors.shadow(0.55),
                     blurRadius: 32,
                     offset: const Offset(0, -6),
                   ),
@@ -553,7 +673,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                     width: 36, height: 3,
                     margin: const EdgeInsets.only(bottom: 14),
                     decoration: BoxDecoration(
-                      color: Colors.white24,
+                      color: AppColors.ink(0.24),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -580,15 +700,15 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         children: [
                           Text(
                             _usingTts ? 'VOICE RECITATION' : 'NOW PLAYING',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 9, fontWeight: FontWeight.w900,
-                                letterSpacing: 1.6, color: Colors.white38)),
+                                letterSpacing: 1.6, color: AppColors.ink(0.38))),
                           const SizedBox(height: 1),
                           Text(dhikr.title,
                               maxLines: 1, overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w700,
-                                  color: Colors.white)),
+                                  color: AppColors.textPrimary)),
                         ],
                       ),
                     ),
@@ -599,12 +719,12 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       child: Container(
                         width: 32, height: 32,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.07),
+                          color: AppColors.ink(0.07),
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white.withOpacity(0.1)),
+                          border: Border.all(color: AppColors.ink(0.1)),
                         ),
-                        child: const Icon(Icons.close_rounded,
-                            color: Colors.white54, size: 16),
+                        child: Icon(Icons.close_rounded,
+                            color: AppColors.ink(0.54), size: 16),
                       ),
                     ),
                   ]),
@@ -618,12 +738,12 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.record_voice_over_rounded,
+                          Icon(Icons.record_voice_over_rounded,
                               color: amber, size: 16),
                           const SizedBox(width: 8),
                           Text(
                             _playerPlaying ? 'RECITING ARABIC...' : 'PAUSED',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 10, fontWeight: FontWeight.w800,
                               letterSpacing: 1.6, color: amber,
                             ),
@@ -638,15 +758,22 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
                         overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
                         activeTrackColor: amber,
-                        inactiveTrackColor: Colors.white12,
+                        inactiveTrackColor: AppColors.ink(0.12),
                         thumbColor: amber,
                         overlayColor: amber.withOpacity(0.18),
                       ),
+                      // Drag anywhere on the bar: thumb follows the finger
+                      // (no fighting with the live position stream) and the
+                      // actual seek fires once, when the finger lifts.
                       child: Slider(
-                        value: progress,
-                        onChanged: (v) {
+                        value: _dragProgress ?? progress,
+                        onChangeStart: (v) =>
+                            setState(() => _dragProgress = v),
+                        onChanged: (v) => setState(() => _dragProgress = v),
+                        onChangeEnd: (v) async {
                           final ms = (_duration.inMilliseconds * v).toInt();
-                          _audio.seek(Duration(milliseconds: ms));
+                          await _audio.seek(Duration(milliseconds: ms));
+                          if (mounted) setState(() => _dragProgress = null);
                         },
                       ),
                     ),
@@ -655,66 +782,51 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(fmt(_position),
-                              style: const TextStyle(fontSize: 11, color: Colors.white38)),
+                          Text(
+                              fmt(_dragProgress != null
+                                  ? Duration(
+                                      milliseconds: (_duration.inMilliseconds *
+                                              _dragProgress!)
+                                          .toInt())
+                                  : _position),
+                              style: TextStyle(fontSize: 11, color: AppColors.ink(0.38))),
                           Text(fmt(_duration),
-                              style: const TextStyle(fontSize: 11, color: Colors.white38)),
+                              style: TextStyle(fontSize: 11, color: AppColors.ink(0.38))),
                         ],
                       ),
                     ),
                   ],
 
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 12),
 
-                  // ── Controls: repeat − | count | +    play/pause ──────
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  // ── Transport: prev | −10s | PLAY | +10s | next ───────
+                  // FittedBox scales the row down instead of overflowing
+                  // on narrow screens.
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Repeat −
                       _CircleBtn(
-                        icon: Icons.remove,
-                        onTap: () => setState(() {
-                          _repeatIdx = (_repeatIdx - 1 + _repeatOptions.length)
-                              % _repeatOptions.length;
-                        }),
+                        icon: Icons.skip_previous_rounded,
+                        dimmed: !_hasNeighbour(-1),
+                        onTap: () => _playRelative(-1),
                       ),
-                      const SizedBox(width: 8),
-                      // Repeat count chip
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.07),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color: Colors.white.withOpacity(0.12)),
-                        ),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          const Icon(Icons.repeat_rounded,
-                              color: amber, size: 14),
-                          const SizedBox(width: 6),
-                          Text(_repeatLabel,
-                              style: const TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.w700,
-                                  color: Colors.white)),
-                        ]),
-                      ),
-                      const SizedBox(width: 8),
-                      // Repeat +
+                      const SizedBox(width: 10),
                       _CircleBtn(
-                        icon: Icons.add,
-                        onTap: () => setState(() {
-                          _repeatIdx = (_repeatIdx + 1) % _repeatOptions.length;
-                        }),
+                        icon: Icons.replay_10_rounded,
+                        dimmed: _usingTts,
+                        onTap: () => _skipBy(-10),
                       ),
-
-                      const SizedBox(width: 28),
-
+                      const SizedBox(width: 14),
                       // Play / Pause (main button)
                       GestureDetector(
-                        onTap: () => _onPlayTapped(dhikr),
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          _onPlayTapped(dhikr);
+                        },
                         child: Container(
-                          width: 54, height: 54,
+                          width: 56, height: 56,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: amber,
@@ -729,12 +841,145 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             _playerPlaying
                                 ? Icons.pause_rounded
                                 : Icons.play_arrow_rounded,
-                            color: Colors.black,
-                            size: 30,
+                            color: AppColors.onAccent,
+                            size: 32,
                           ),
                         ),
                       ),
+                      const SizedBox(width: 14),
+                      _CircleBtn(
+                        icon: Icons.forward_10_rounded,
+                        dimmed: _usingTts,
+                        onTap: () => _skipBy(10),
+                      ),
+                      const SizedBox(width: 10),
+                      _CircleBtn(
+                        icon: Icons.skip_next_rounded,
+                        dimmed: !_hasNeighbour(1),
+                        onTap: () => _playRelative(1),
+                      ),
                     ],
+                  ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // ── Options: repeat − count + | speed | autoplay ──────
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Repeat − (steps down by 1, minimum 1)
+                      _CircleBtn(
+                        icon: Icons.remove,
+                        small: true,
+                        onTap: _repeatMinus,
+                      ),
+                      const SizedBox(width: 6),
+                      // Repeat count chip — tap to TYPE an exact number
+                      GestureDetector(
+                        onTap: _pickRepeatCount,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: AppColors.ink(0.07),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: AppColors.ink(0.12)),
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Icon(Icons.repeat_rounded,
+                                color: amber, size: 13),
+                            const SizedBox(width: 5),
+                            Text(_repeatLabel,
+                                style: TextStyle(
+                                    fontSize: 12, fontWeight: FontWeight.w700,
+                                    color: AppColors.textPrimary)),
+                            const SizedBox(width: 4),
+                            Icon(Icons.edit_rounded,
+                                color: AppColors.ink(0.35), size: 10),
+                          ]),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      // Repeat + (steps up by 1, max 999)
+                      _CircleBtn(
+                        icon: Icons.add,
+                        small: true,
+                        onTap: _repeatPlus,
+                      ),
+
+                      const SizedBox(width: 16),
+
+                      // Playback speed (0.75× → 1× → 1.25× → 1.5×)
+                      GestureDetector(
+                        onTap: _cycleSpeed,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: _audio.rate != 1.0
+                                ? amber.withOpacity(0.15)
+                                : AppColors.ink(0.07),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: _audio.rate != 1.0
+                                  ? amber.withOpacity(0.5)
+                                  : AppColors.ink(0.12),
+                            ),
+                          ),
+                          child: Text(_speedLabel,
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w800,
+                                  color: _audio.rate != 1.0
+                                      ? amber
+                                      : AppColors.textPrimary)),
+                        ),
+                      ),
+
+                      const SizedBox(width: 16),
+
+                      // Continuous play: keep going through the whole list
+                      GestureDetector(
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          setState(() => _autoNext = !_autoNext);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: _autoNext
+                                ? amber.withOpacity(0.15)
+                                : AppColors.ink(0.07),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: _autoNext
+                                  ? amber.withOpacity(0.5)
+                                  : AppColors.ink(0.12),
+                            ),
+                          ),
+                          child: Row(mainAxisSize: MainAxisSize.min, children: [
+                            Icon(Icons.playlist_play_rounded,
+                                color: _autoNext
+                                    ? amber
+                                    : AppColors.ink(0.55),
+                                size: 16),
+                            const SizedBox(width: 4),
+                            Text('AUTO',
+                                style: TextStyle(
+                                    fontSize: 10, fontWeight: FontWeight.w800,
+                                    letterSpacing: 0.8,
+                                    color: _autoNext
+                                        ? amber
+                                        : AppColors.ink(0.55))),
+                          ]),
+                        ),
+                      ),
+                    ],
+                  ),
                   ),
                 ],
               ),
@@ -784,12 +1029,12 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
+                      Text(
                         'Session Complete!',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -799,13 +1044,13 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             : 'Day 1 streak started — keep it up!',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withOpacity(0.88),
+                          color: AppColors.ink(0.88),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Icon(Icons.close, color: Colors.white.withOpacity(0.6), size: 18),
+                Icon(Icons.close, color: AppColors.ink(0.6), size: 18),
               ],
             ),
           )
@@ -836,7 +1081,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
         children: [
           // ── Main content ──────────────────────────────────────────────────
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -855,7 +1100,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       color: ThemeProvider.deepTeal.withOpacity(0.4),
                       border: Border(
                         bottom: BorderSide(
-                          color: Colors.white.withOpacity(0.05),
+                          color: AppColors.ink(0.05),
                         ),
                       ),
                     ),
@@ -867,11 +1112,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           children: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),
-                              icon: const Icon(Icons.arrow_back_ios_new,
-                                  color: Colors.white, size: 20),
+                              icon: Icon(Icons.arrow_back_ios_new,
+                                  color: AppColors.textPrimary, size: 20),
                               style: IconButton.styleFrom(
-                                backgroundColor: Colors.white.withOpacity(0.0),
-                                hoverColor: Colors.white.withOpacity(0.1),
+                                backgroundColor: AppColors.ink(0.0),
+                                hoverColor: AppColors.ink(0.1),
                               ),
                             ),
                             Expanded(
@@ -879,11 +1124,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                 builder: (context, lp, _) => Text(
                                   _getTitle(lp).toUpperCase(),
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w900,
                                     letterSpacing: 2.0,
-                                    color: Colors.white,
+                                    color: AppColors.textPrimary,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -904,15 +1149,15 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                                 EditPlanScreen(category: widget.category)),
                                       );
                                     },
-                                    icon: const Icon(Icons.edit_document,
+                                    icon: Icon(Icons.edit_document,
                                         color: ThemeProvider.divineAmber, size: 22),
                                   ),
                                 IconButton(
                                   onPressed: () {
                                     _showSettingsModal(context);
                                   },
-                                  icon: const Icon(Icons.settings_input_component,
-                                      color: Colors.white, size: 22),
+                                  icon: Icon(Icons.settings_input_component,
+                                      color: AppColors.textPrimary, size: 22),
                                 ),
                               ],
                             ),
@@ -935,6 +1180,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             dhikrs = provider.getGraveyardDhikrs();
                           } else if (widget.category == DhikrCategory.food) {
                             dhikrs = provider.getFoodDhikrs();
+                          } else if (widget.category == DhikrCategory.afterSalah) {
+                            dhikrs = provider.getAfterSalahDhikrs();
+                          } else if (widget.category == DhikrCategory.beforeSleep) {
+                            dhikrs = provider.getBeforeSleepDhikrs();
                           } else {
                             dhikrs = provider.getProtectionDhikrs();
                           }
@@ -964,11 +1213,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                   Flexible(
                                     child: Text(
                                       lp.getText('your_progress').toUpperCase(),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 1.5,
-                                        color: Colors.white60,
+                                        color: AppColors.ink(0.60),
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -977,7 +1226,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                   Flexible(
                                     child: Text(
                                       "$completedDhikrs / $totalDhikrs ${lp.getText('completed').toUpperCase()}",
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                         letterSpacing: 1.0,
@@ -993,7 +1242,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                 height: 6,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
+                                  color: AppColors.ink(0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: FractionallySizedBox(
@@ -1038,6 +1287,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         dhikrs = provider.getGraveyardDhikrs();
                       } else if (widget.category == DhikrCategory.food) {
                         dhikrs = provider.getFoodDhikrs();
+                      } else if (widget.category == DhikrCategory.afterSalah) {
+                        dhikrs = provider.getAfterSalahDhikrs();
+                      } else if (widget.category == DhikrCategory.beforeSleep) {
+                        dhikrs = provider.getBeforeSleepDhikrs();
                       } else {
                         dhikrs = provider.getProtectionDhikrs();
                       }
@@ -1055,23 +1308,23 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.inventory_2_outlined,
-                                  size: 60, color: Colors.white.withOpacity(0.2)),
+                                  size: 60, color: AppColors.ink(0.2)),
                               const SizedBox(height: 16),
                               Text(
                                 lp.getText('plan_empty'),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white70,
+                                  color: AppColors.ink(0.70),
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 lp.getText('plan_empty_desc'),
                                 textAlign: TextAlign.center,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.white38,
+                                  color: AppColors.ink(0.38),
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -1098,6 +1351,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         ).animate().fadeIn().slideY(begin: 0.2, end: 0);
                       }
 
+                      // Snapshot for the mini player's prev/next navigation.
+                      _navList = displayList;
                       return ListView.builder(
                         padding: EdgeInsets.only(
                             bottom: _activeDhikr != null ? R.px(240) : R.px(100),
@@ -1138,20 +1393,29 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
 class _CircleBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
-  const _CircleBtn({required this.icon, required this.onTap});
+  final bool dimmed; // visually disabled (e.g. no next track)
+  final bool small;
+  const _CircleBtn(
+      {required this.icon,
+      required this.onTap,
+      this.dimmed = false,
+      this.small = false});
 
   @override
   Widget build(BuildContext context) {
+    final size = small ? 30.0 : 38.0;
     return GestureDetector(
-      onTap: onTap,
+      onTap: dimmed ? null : onTap,
       child: Container(
-        width: 36, height: 36,
+        width: size, height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.07),
-          border: Border.all(color: Colors.white.withOpacity(0.12)),
+          color: AppColors.ink(dimmed ? 0.03 : 0.07),
+          border: Border.all(color: AppColors.ink(dimmed ? 0.06 : 0.12)),
         ),
-        child: Icon(icon, color: Colors.white70, size: 18),
+        child: Icon(icon,
+            color: AppColors.ink(dimmed ? 0.20 : 0.70),
+            size: small ? 16 : 20),
       ),
     );
   }

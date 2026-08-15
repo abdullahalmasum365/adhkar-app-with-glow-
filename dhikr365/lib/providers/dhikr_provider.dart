@@ -214,6 +214,12 @@ class DhikrProvider extends ChangeNotifier {
   List<Dhikr> getFoodDhikrs() =>
       _dhikrs.where((d) => d.category == DhikrCategory.food).toList();
 
+  List<Dhikr> getAfterSalahDhikrs() =>
+      _dhikrs.where((d) => d.category == DhikrCategory.afterSalah).toList();
+
+  List<Dhikr> getBeforeSleepDhikrs() =>
+      _dhikrs.where((d) => d.category == DhikrCategory.beforeSleep).toList();
+
   Future reloadDhikrs({
     required String uiLanguageCode,
     required String transliterationCode,
@@ -309,6 +315,22 @@ class DhikrProvider extends ChangeNotifier {
     result.addAll(await _parseDhikrFile(
       assetPath: 'assets/translations/graveyard/$lang.json',
       category: DhikrCategory.graveyard,
+      prefix: '',
+    ));
+
+    // Load after-salah adhkar (Hisnul Muslim, "After salam" chapter;
+    // keys carry 'salah_' prefix)
+    result.addAll(await _parseDhikrFile(
+      assetPath: 'assets/translations/after_salah/$lang.json',
+      category: DhikrCategory.afterSalah,
+      prefix: '',
+    ));
+
+    // Load before-sleep adhkar (Hisnul Muslim, "Before sleeping" chapter;
+    // keys carry 'sleep_' prefix)
+    result.addAll(await _parseDhikrFile(
+      assetPath: 'assets/translations/before_sleep/$lang.json',
+      category: DhikrCategory.beforeSleep,
       prefix: '',
     ));
 

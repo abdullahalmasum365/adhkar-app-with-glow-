@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/dhikr.dart';
+import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
 import '../constants/app_theme.dart';
@@ -12,6 +13,7 @@ import 'dhikr_list_screen.dart';
 import 'language_selection_screen.dart';
 import 'onboarding_screen.dart';
 import '../providers/notification_provider.dart';
+import '../widgets/battery_reliability_dialogs.dart';
 import 'location_setup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,6 +40,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final notificationProvider =
         Provider.of<NotificationProvider>(context, listen: false);
+    final languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    final dhikrProvider = Provider.of<DhikrProvider>(context, listen: false);
 
     // Step 1 — Wait for providers to finish loading their state from storage.
     // Timeout so a storage failure never hangs the splash forever.
@@ -45,6 +50,31 @@ class _SplashScreenState extends State<SplashScreen> {
         .timeout(const Duration(seconds: 5), onTimeout: () {});
     await notificationProvider.loadFuture
         .timeout(const Duration(seconds: 5), onTimeout: () {});
+    await languageProvider.loadFuture
+        .timeout(const Duration(seconds: 5), onTimeout: () {});
+
+    // Step 1b — DhikrProvider's constructor always loads its FIRST batch of
+    // dua content in English (a hardcoded default, since it can't await
+    // LanguageProvider from its own constructor). Every cold start therefore
+    // showed English dua text/translation/transliteration for one frame —
+    // and on devices where the OS kills the process in the background, the
+    // user would see it revert to English every time the app reopens or
+    // resumes from being swiped away, even though their language/translation/
+    // transliteration CHOICE was correctly saved and reloaded above. Re-sync
+    // the dua content to the just-loaded saved language now, once, up front.
+    if (languageProvider.locale.languageCode != 'en' ||
+        languageProvider.translationCode != 'en' ||
+        languageProvider.transliterationCode != 'en') {
+      try {
+        await dhikrProvider.reloadDhikrs(
+          uiLanguageCode: languageProvider.locale.languageCode,
+          transliterationCode: languageProvider.transliterationCode,
+          translationCode: languageProvider.translationCode,
+        );
+      } catch (e) {
+        debugPrint('[Splash] dua content language re-sync failed: $e');
+      }
+    }
 
     // Step 2 — Request permissions FIRST.
     await NotificationService().requestPermissions();
@@ -66,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen> {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20)),
           title: Row(children: [
-            const Icon(Icons.alarm_on, color: AppColors.primary, size: 22),
+            Icon(Icons.alarm_on, color: AppColors.primary, size: 22),
             const SizedBox(width: 10),
             Text('Enable Precise Alarms',
                 style: AppText.heading(16)),
@@ -88,7 +118,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.onPrimary,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10))),
               onPressed: () {
@@ -107,6 +137,21 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       );
+    }
+
+    if (!mounted) return;
+
+    // Step 3b-2 — Battery-optimization + OEM Autostart explainers, shown
+    // automatically ONLY ONCE ever (never nags on later launches — after
+    // this, it's reachable any time via Settings → Notification Reliability
+    // Tips). Each dialog explains itself in plain language before the real
+    // system/OEM settings screen opens, matching the flow top prayer apps
+    // (Muslim Pro, Athan) use instead of a raw unexplained popup.
+    final reliabilityPrefs = await SharedPreferences.getInstance();
+    if (!(reliabilityPrefs.getBool('battery_tips_shown') ?? false)) {
+      await reliabilityPrefs.setBool('battery_tips_shown', true);
+      if (mounted) await showBatteryExplainerDialog(context);
+      if (mounted) await showAutostartTipDialog(context);
     }
 
     if (!mounted) return;
@@ -180,7 +225,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgDark,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topCenter,
             radius: 1.4,
@@ -203,7 +248,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           color: AppColors.primary.withOpacity(0.3),
                           width: 1.5),
                     ),
-                    child: const Icon(Icons.mosque,
+                    child: Icon(Icons.mosque,
                         size: 52, color: AppColors.primary),
                   )
                       .animate()

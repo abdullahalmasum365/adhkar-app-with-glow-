@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "出salam后的求恕词",
+      "frequency": "每次礼拜后念3遍",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "我向安拉求饶恕(三遍)。安拉啊,你是和平,和平来自于你。你是吉庆的,尊严与恩荣的主啊。",
+      "benefit": "先知(ﷺ)在每次主命拜之后,先三次向安拉求饶恕,然后赞颂安拉是和平之源,以此开始他的记念。",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "宣认安拉独一",
+      "frequency": "每次礼拜后念1遍",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "除独一的安拉外,绝无应受崇拜者,他绝无伙伴。主权归他,赞颂归他,他对万事是全能的。安拉啊,你所赐予的无人能阻拦,你所阻拦的无人能赐予;有权势者的权势在你面前对他毫无裨益。",
+      "benefit": "先知(ﷺ)在每次主命拜后诵念此词,宣认安拉的独一:他所赐予的无人能阻拦,他所阻拦的无人能赐予。",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "无法无力,唯凭安拉",
+      "frequency": "每次礼拜后念1遍",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "除独一的安拉外,绝无应受崇拜者,他绝无伙伴。主权归他,赞颂归他,他对万事是全能的。无法无力,唯凭安拉。除安拉外,绝无应受崇拜者,我们只崇拜他。恩典归他,恩惠归他,最美的赞颂归他。除安拉外,绝无应受崇拜者;我们虔诚地为他持守宗教,即使不信道者厌恶。",
+      "benefit": "先知(ﷺ)在每次礼拜后宣告:一切力量、恩典和最美的赞颂只归安拉;即使不信道者厌恶,也要虔诚地崇拜他。",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "拜后赞词(各33遍)",
+      "frequency": "每次礼拜后各念33遍",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "赞美安拉超绝万物,一切赞颂全归安拉,安拉至大(各三十三遍)。除独一的安拉外,绝无应受崇拜者,他绝无伙伴。主权归他,赞颂归他,他对万事是全能的。",
+      "benefit": "先知(ﷺ)说:凡在每次礼拜后诵念此词者,他的罪过必蒙饶恕,即使多如海里的泡沫。",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "苏拉·伊赫拉斯（纯洁章）",
+      "frequency": "每次礼拜后一次",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Qul huwa Allāhu aḥad. Allāhuṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan aḥad.",
+      "translation": "你说：祂是安拉，独一的主。安拉是大家所仰赖的。祂没有生育，也没有被生育。没有任何物可以和祂相比。",
+      "benefit": "先知（ة）指示在每次礼拜后诵读这三章保护性经文；晨礼和昏礼后各诵读三次。",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "苏拉·法拉格（黎明章）",
+      "frequency": "每次礼拜后一次（晨礼和昏礼后各三次）",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-rabbil-falaq. Min sharri mā khalaq. Wa min sharri ghāsiqin idhā waqab. Wa min sharrin-naffāthāti fil-'uqad. Wa min sharri ḥāsidin idhā ḥasad.",
+      "translation": "你说：我求黎明的主保护我。免遭祂所创造的一切邪恶。免遭黑夜的邪恶，当它降临时。免遭在绳结上吹气者的邪恶。免遭嫉妒者嫉妒时的邪恶。",
+      "benefit": "先知（ة）指示在每次礼拜后诵读这三章保护性经文；晨礼和昏礼后各诵读三次。",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "苏拉·纳斯（众人章）",
+      "frequency": "每次礼拜后一次（晨礼和昏礼后各三次）",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "你说：我求众人之主保护我。众人的君王。众人的主宰。免遭退缩的诱惑者的邪恶。他在众人的心胸里低语诱惑。来自精灵与众人中间的。",
+      "benefit": "先知（ة）指示在每次礼拜后诵读这三章保护性经文；晨礼和昏礼后各诵读三次。",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "库尔西经文(宝座之节)",
+      "frequency": "每次礼拜后念1遍",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "安拉,除他外绝无应受崇拜者;他是永生不灭的,是维护万物的。瞌睡不能侵犯他,睡眠不能克服他。天地万物都是他的。不经他的许可,谁能在他那里替人说情呢?他知道他们面前的事和他们身后的事。除他所启示的外,他们绝不能窥测他的玄妙。他的宝座包罗天地,天地的维持不能使他疲倦。他确是至高的,确是至大的。",
+      "benefit": "先知(ﷺ)说:凡在每次主命拜后诵读库尔西经文者,除死亡外,没有任何东西能阻止他进入乐园。",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "晨礼与昏礼后念十遍",
+      "frequency": "晨礼和昏礼后念10遍",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "除独一的安拉外,绝无应受崇拜者,他绝无伙伴。主权归他,赞颂归他。他使人生,使人死,他对万事是全能的。",
+      "benefit": "先知(ﷺ)教导:在昏礼和晨礼之后,将这段宣认安拉独一——使人生、使人死的主——的赞词重复十遍。",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "祈求有益知识的祷词",
+      "frequency": "晨礼后念1遍",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "安拉啊,我祈求你赐予我有益的知识、佳美的给养和被接受的善功。",
+      "benefit": "先知(ﷺ)在晨礼出salam后诵念此祷词,在一天之始祈求安拉赐予有益的知识、佳美的给养和被接受的善功。",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

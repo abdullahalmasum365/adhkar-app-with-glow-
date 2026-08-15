@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "Um Vergebung bitten nach dem Salam",
+      "frequency": "3x nach jedem Gebet",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "Ich bitte Allah um Vergebung (dreimal). O Allah, Du bist der Frieden und von Dir kommt der Frieden. Segensreich bist Du, o Besitzer der Majestät und der Ehre.",
+      "benefit": "Der Prophet (ﷺ) begann sein Gedenken nach jedem Pflichtgebet damit, Allah dreimal um Vergebung zu bitten und Ihn dann als Quelle des Friedens zu preisen.",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "Bekenntnis der Einheit Allahs",
+      "frequency": "1x nach jedem Gebet",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "Niemand hat das Recht, angebetet zu werden außer Allah allein, Er hat keinen Partner. Ihm gehört die Herrschaft und Ihm gebührt das Lob, und Er hat Macht über alle Dinge. O Allah, niemand kann zurückhalten, was Du gibst, und niemand kann geben, was Du zurückhältst, und dem Mächtigen nützt seine Macht nichts gegen Dich.",
+      "benefit": "Der Prophet (ﷺ) sprach dies nach jedem Pflichtgebet und bekräftigte die Einheit Allahs: Niemand kann zurückhalten, was Er gibt, noch geben, was Er zurückhält.",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "Keine Kraft außer durch Allah",
+      "frequency": "1x nach jedem Gebet",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "Niemand hat das Recht, angebetet zu werden außer Allah allein, Er hat keinen Partner. Ihm gehört die Herrschaft und Ihm gebührt das Lob, und Er hat Macht über alle Dinge. Es gibt keine Kraft und keine Macht außer durch Allah. Niemand hat das Recht, angebetet zu werden außer Allah, und wir beten niemanden an außer Ihm. Ihm gehört die Gnade und Ihm gehört die Huld, und Ihm gebührt das schönste Lob. Niemand hat das Recht, angebetet zu werden außer Allah; wir sind Ihm aufrichtig im Glauben ergeben, auch wenn es den Ungläubigen zuwider ist.",
+      "benefit": "Der Prophet (ﷺ) erklärte nach jedem Gebet, dass alle Kraft, Gnade und das schönste Lob Allah allein gehören, Dem man aufrichtig dient, auch wenn es den Ungläubigen missfällt.",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "Tasbih nach dem Gebet (je 33x)",
+      "frequency": "je 33x nach jedem Gebet",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Gepriesen sei Allah, und alles Lob gebührt Allah, und Allah ist der Größte (jeweils dreiunddreißigmal). Niemand hat das Recht, angebetet zu werden außer Allah allein, Er hat keinen Partner. Ihm gehört die Herrschaft und Ihm gebührt das Lob, und Er hat Macht über alle Dinge.",
+      "benefit": "Der Prophet (ﷺ) sagte: Wem dies nach jedem Gebet spricht, dem werden seine Sünden vergeben, auch wenn sie so zahlreich wären wie der Schaum des Meeres.",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "Sure Al-Ikhlas (Die Aufrichtigkeit)",
+      "frequency": "1x nach jedem Gebet",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Qul huwa Allāhu aḥad. Allāhus-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahū kufuwan aḥad.",
+      "translation": "Sprich: Er ist Allah, der Einzige. Allah, die ewige Zuflucht. Er zeugt nicht und wurde nicht gezeugt. Und niemand ist Ihm ebenbürtig.",
+      "benefit": "Der Prophet (ة) wies an, diese drei schützenden Suren nach jedem Gebet zu rezitieren; nach Fajr und Maghrib werden sie je dreimal rezitiert.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "Sure Al-Falaq (Der Morgengrauen)",
+      "frequency": "1x nach jedem Gebet (3x nach Fajr & Maghrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-rabbil-falaq. Min scharri mā chalaq. Wa min scharri ghāsiqin idhā waqab. Wa min scharrin-naffāthāti fil-'uqad. Wa min scharri ḥāsidin idhā ḥasad.",
+      "translation": "Sprich: Ich suche Zuflucht beim Herrn des Morgengrauens. Vor dem Bösen dessen, was Er erschaffen hat. Und vor dem Bösen der Dunkelheit, wenn sie sich ausbreitet. Und vor dem Bösen der Knotenbläserinnen. Und vor dem Bösen des Neiders, wenn er neidet.",
+      "benefit": "Der Prophet (ة) wies an, diese drei schützenden Suren nach jedem Gebet zu rezitieren; nach Fajr und Maghrib werden sie je dreimal rezitiert.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "Sure An-Nas (Die Menschen)",
+      "frequency": "1x nach jedem Gebet (3x nach Fajr & Maghrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-rabbin-nās. Malikin-nās. Ilāhin-nās. Min scharril-waswāsil-channās. Alladhī yuwaswisu fī ṣudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "Sprich: Ich suche Zuflucht beim Herrn der Menschen. Dem König der Menschen. Dem Gott der Menschen. Vor dem Bösen des sich zurückziehenden Einflüsterers. Der in die Herzen der Menschen einflüstert. Aus den Dschinn und den Menschen.",
+      "benefit": "Der Prophet (ة) wies an, diese drei schützenden Suren nach jedem Gebet zu rezitieren; nach Fajr und Maghrib werden sie je dreimal rezitiert.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "Ayatul Kursi",
+      "frequency": "1x nach jedem Gebet",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "Allah! Es gibt keinen Gott außer Ihm, dem Lebendigen, dem Beständigen. Ihn überkommt weder Schlummer noch Schlaf. Ihm gehört, was in den Himmeln und was auf der Erde ist. Wer könnte bei Ihm Fürsprache einlegen außer mit Seiner Erlaubnis? Er weiß, was vor ihnen und was hinter ihnen liegt. Sie aber umfassen nichts von Seinem Wissen, außer was Er will. Sein Thron umspannt die Himmel und die Erde, und ihre Bewahrung ermüdet Ihn nicht. Und Er ist der Erhabene, der Gewaltige.",
+      "benefit": "Der Prophet (ﷺ) sagte: Wer Ayatul Kursi nach jedem Pflichtgebet rezitiert, den trennt nichts vom Paradies außer dem Tod.",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "Zehnmal nach Fadschr und Maghrib",
+      "frequency": "10x nach Fadschr und Maghrib",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Niemand hat das Recht, angebetet zu werden außer Allah allein, Der keinen Partner hat. Ihm gehört die Herrschaft und Ihm gebührt das Lob. Er gibt Leben und lässt sterben, und Er hat Macht über alle Dinge.",
+      "benefit": "Der Prophet (ﷺ) lehrte, dieses Bekenntnis der Einheit Allahs — Der Leben gibt und sterben lässt — zehnmal nach dem Maghrib- und dem Fadschr-Gebet zu wiederholen.",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "Bittgebet um nützliches Wissen",
+      "frequency": "1x nach dem Fadschr-Gebet",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "O Allah, ich bitte Dich um nützliches Wissen, um gute Versorgung und um angenommene Taten.",
+      "benefit": "Der Prophet (ﷺ) sprach dies nach dem Salam des Fadschr-Gebets und bat Allah um nützliches Wissen, gute Versorgung und angenommene Taten zum Beginn des Tages.",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

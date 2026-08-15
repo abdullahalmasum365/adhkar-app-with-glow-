@@ -70,9 +70,9 @@ class _DhikrCardState extends State<DhikrCard> {
       builder: (_) => Container(
         margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
         decoration: BoxDecoration(
-          color: const Color(0xFF042F2E),
+          color: AppColors.playerSurface,
           borderRadius: BorderRadius.circular(28),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: AppColors.ink(0.1)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -83,7 +83,7 @@ class _DhikrCardState extends State<DhikrCard> {
               child: Container(
                 width: 40, height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.white24,
+                  color: AppColors.ink(0.24),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -96,42 +96,42 @@ class _DhikrCardState extends State<DhikrCard> {
                   Container(
                     width: 34, height: 34,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF59E0B).withOpacity(0.15),
+                      color: AppColors.accent.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.share_rounded,
-                        color: Color(0xFFF59E0B), size: 18),
+                    child: Icon(Icons.share_rounded,
+                        color: AppColors.accent, size: 18),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       lp.getText('share_dhikr'),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Colors.white10),
+            Divider(height: 1, color: AppColors.ink(0.10)),
             // ── Preview ──────────────────────────────────────────────
             Container(
               width: double.infinity,
               margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.04),
+                color: AppColors.ink(0.04),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white.withOpacity(0.08)),
+                border: Border.all(color: AppColors.ink(0.08)),
               ),
               child: Text(
                 shareText,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white70,
+                  color: AppColors.ink(0.70),
                   height: 1.6,
                 ),
                 maxLines: 10,
@@ -156,7 +156,7 @@ class _DhikrCardState extends State<DhikrCard> {
                               lp.getText('copied'),
                               style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            backgroundColor: const Color(0xFF042F2E),
+                            backgroundColor: AppColors.playerSurface,
                             behavior: SnackBarBehavior.floating,
                             duration: const Duration(milliseconds: 1600),
                           ),
@@ -165,21 +165,21 @@ class _DhikrCardState extends State<DhikrCard> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.07),
+                          color: AppColors.ink(0.07),
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.white.withOpacity(0.1)),
+                          border: Border.all(color: AppColors.ink(0.1)),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.copy_rounded,
-                                color: Colors.white70, size: 18),
+                            Icon(Icons.copy_rounded,
+                                color: AppColors.ink(0.70), size: 18),
                             const SizedBox(width: 8),
                             Text(lp.getText('copy'),
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white70)),
+                                    color: AppColors.ink(0.70))),
                           ],
                         ),
                       ),
@@ -197,13 +197,13 @@ class _DhikrCardState extends State<DhikrCard> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFF97316), Color(0xFFEA580C)],
+                          gradient: LinearGradient(
+                            colors: [AppColors.primary, AppColors.accent],
                           ),
                           borderRadius: BorderRadius.circular(14),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFFF97316).withOpacity(0.35),
+                              color: AppColors.primary.withOpacity(0.35),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
@@ -212,14 +212,14 @@ class _DhikrCardState extends State<DhikrCard> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.share_rounded,
-                                color: Colors.white, size: 18),
+                            Icon(Icons.share_rounded,
+                                color: AppColors.textPrimary, size: 18),
                             const SizedBox(width: 8),
                             Text(lp.getText('share_dhikr'),
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w700,
-                                    color: Colors.white)),
+                                    color: AppColors.textPrimary)),
                           ],
                         ),
                       ),
@@ -262,12 +262,12 @@ class _DhikrCardState extends State<DhikrCard> {
       child: Container(
       margin: EdgeInsets.symmetric(vertical: R.px(10), horizontal: R.px(14)),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: AppColors.ink(0.03),
         borderRadius: BorderRadius.circular(R.px(20)),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: AppColors.ink(0.08)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: AppColors.shadow(0.2),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -290,44 +290,50 @@ class _DhikrCardState extends State<DhikrCard> {
                       fontWeight: FontWeight.w900,
                       fontSize: R.sp(11),
                       letterSpacing: 1.6,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
                 ),
-                SizedBox(width: R.px(8)),
-                GestureDetector(
-                  onTap: _onPlayTapped,
-                  child: Container(
-                    height: btnSize,
-                    width: btnSize,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: widget.isActive
-                          ? ThemeProvider.divineAmber
-                          : ThemeProvider.divineAmber.withOpacity(0.72),
-                      boxShadow: [
-                        BoxShadow(
-                          color: ThemeProvider.divineAmber
-                              .withOpacity(widget.isActive ? 0.55 : 0.22),
-                          blurRadius: widget.isActive ? 16 : 6,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      widget.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                      color: Colors.white,
-                      size: R.sp(18),
+                // Audio is only available for Morning/Evening Adhkar —
+                // every other category has no recording, so the play
+                // button is hidden entirely there instead of doing nothing.
+                if (widget.dhikr.category == DhikrCategory.morning ||
+                    widget.dhikr.category == DhikrCategory.evening) ...[
+                  SizedBox(width: R.px(8)),
+                  GestureDetector(
+                    onTap: _onPlayTapped,
+                    child: Container(
+                      height: btnSize,
+                      width: btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: widget.isActive
+                            ? ThemeProvider.divineAmber
+                            : ThemeProvider.divineAmber.withOpacity(0.72),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ThemeProvider.divineAmber
+                                .withOpacity(widget.isActive ? 0.55 : 0.22),
+                            blurRadius: widget.isActive ? 16 : 6,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        widget.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                        color: AppColors.textPrimary,
+                        size: R.sp(18),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
 
             SizedBox(height: R.px(14)),
-            Divider(color: Colors.white.withOpacity(0.05)),
+            Divider(color: AppColors.ink(0.05)),
             SizedBox(height: R.px(14)),
 
             // ── Arabic Text ──────────────────────────────────────────────────
@@ -340,7 +346,7 @@ class _DhikrCardState extends State<DhikrCard> {
                   fontSize: arabicSize,
                   height: 1.6,
                   fontWeight: FontWeight.w600,
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ),
@@ -354,7 +360,7 @@ class _DhikrCardState extends State<DhikrCard> {
                   textAlign: TextAlign.center,
                   style: AppText.transliteration(
                     fontSize: R.sp(12),
-                    color: Colors.white60,
+                    color: AppColors.ink(0.60),
                   ),
                 ),
               ),
@@ -384,7 +390,7 @@ class _DhikrCardState extends State<DhikrCard> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.auto_stories, size: R.sp(13), color: Colors.white54),
+                    Icon(Icons.auto_stories, size: R.sp(13), color: AppColors.ink(0.54)),
                     SizedBox(width: R.px(6)),
                     Flexible(
                       child: Text(
@@ -394,7 +400,7 @@ class _DhikrCardState extends State<DhikrCard> {
                         maxLines: 2,
                         style: TextStyle(
                           fontSize: R.sp(9),
-                          color: Colors.white54,
+                          color: AppColors.ink(0.54),
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1.2,
                         ),
@@ -411,16 +417,16 @@ class _DhikrCardState extends State<DhikrCard> {
                 padding: EdgeInsets.symmetric(
                     vertical: R.px(14), horizontal: R.px(16)),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.03),
+                  color: AppColors.ink(0.03),
                   borderRadius: BorderRadius.circular(R.px(14)),
-                  border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  border: Border.all(color: AppColors.ink(0.08)),
                 ),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.stars, size: R.sp(14), color: Colors.white),
+                        Icon(Icons.stars, size: R.sp(14), color: AppColors.textPrimary),
                         SizedBox(width: R.px(6)),
                         Text(
                           lp.getText('benefit').toUpperCase(),
@@ -428,7 +434,7 @@ class _DhikrCardState extends State<DhikrCard> {
                             fontSize: R.sp(9),
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.8,
-                            color: Colors.white54,
+                            color: AppColors.ink(0.54),
                           ),
                         ),
                       ],
@@ -441,7 +447,7 @@ class _DhikrCardState extends State<DhikrCard> {
                         // System font — benefit text can be in any language.
                         fontSize: R.sp(12),
                         height: 1.4,
-                        color: Colors.white.withOpacity(0.8),
+                        color: AppColors.ink(0.8),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -464,21 +470,21 @@ class _DhikrCardState extends State<DhikrCard> {
                 decoration: BoxDecoration(
                   gradient: isDone
                       ? null
-                      : const LinearGradient(
-                          colors: [Color(0xFFF97316), Color(0xFFEA580C)],
+                      : LinearGradient(
+                          colors: [AppColors.primary, AppColors.accent],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
-                  color: isDone ? Colors.white.withOpacity(0.05) : null,
+                  color: isDone ? AppColors.ink(0.05) : null,
                   borderRadius: BorderRadius.circular(R.px(18)),
                   border: isDone
-                      ? Border.all(color: Colors.white.withOpacity(0.1))
+                      ? Border.all(color: AppColors.ink(0.1))
                       : null,
                   boxShadow: isDone
                       ? []
                       : [
                           BoxShadow(
-                            color: const Color(0xFFEA580C).withOpacity(0.3),
+                            color: AppColors.accent.withOpacity(0.3),
                             blurRadius: 30,
                             offset: const Offset(0, 8),
                           ),
@@ -495,8 +501,8 @@ class _DhikrCardState extends State<DhikrCard> {
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.8,
                         color: isDone
-                            ? Colors.white54
-                            : Colors.white.withOpacity(0.7),
+                            ? AppColors.ink(0.54)
+                            : AppColors.ink(0.7),
                       ),
                     ),
                     SizedBox(height: R.px(6)),
@@ -518,7 +524,7 @@ class _DhikrCardState extends State<DhikrCard> {
                                 height: 1.0,
                                 color: isDone
                                     ? ThemeProvider.divineAmber
-                                    : Colors.white,
+                                    : AppColors.textPrimary,
                               ),
                             ),
                           ),
@@ -529,7 +535,7 @@ class _DhikrCardState extends State<DhikrCard> {
                           style: TextStyle(
                             fontSize: R.sp(13),
                             fontWeight: FontWeight.bold,
-                            color: Colors.white
+                            color: AppColors.textPrimary
                                 .withOpacity(isDone ? 0.3 : 0.5),
                           ),
                         ),
@@ -546,7 +552,7 @@ class _DhikrCardState extends State<DhikrCard> {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.white.withOpacity(0.05)),
+                  top: BorderSide(color: AppColors.ink(0.05)),
                 ),
               ),
               padding: EdgeInsets.only(top: R.px(14)),
@@ -561,12 +567,12 @@ class _DhikrCardState extends State<DhikrCard> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.filter_center_focus,
-                        color: Colors.white54, size: R.sp(17)),
+                        color: AppColors.ink(0.54), size: R.sp(17)),
                     SizedBox(width: R.px(8)),
                     Text(
                       lp.getText('focus_mode').toUpperCase(),
                       style: TextStyle(
-                        color: Colors.white54,
+                        color: AppColors.ink(0.54),
                         fontSize: R.sp(10),
                         fontWeight: FontWeight.w900,
                         letterSpacing: 1.8,

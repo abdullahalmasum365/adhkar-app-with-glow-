@@ -45,7 +45,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(lp.getText('edit_profile').toUpperCase(),
@@ -93,12 +93,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _buildTextField(TextEditingController controller) {
     return TextField(
       controller: controller,
-      style: AppText.manrope(fontSize: 16, color: Colors.white),
+      style: AppText.manrope(fontSize: 16, color: AppColors.textPrimary),
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
         ),
-        focusedBorder: const UnderlineInputBorder(
+        focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primary),
         ),
         isDense: true,

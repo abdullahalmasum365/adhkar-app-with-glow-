@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "watermark-remover",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "C:/Users/UNSTOPPABLE/Music/watermark remover"],
+      "port": 8765,
+      "autoPort": false
+    }
+  ]
+}

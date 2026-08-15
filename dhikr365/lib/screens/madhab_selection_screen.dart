@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/language_provider.dart';
@@ -31,15 +32,15 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
   Widget build(BuildContext context) {
     final lp = Provider.of<LanguageProvider>(context);
     const primaryColor = Color(0xFFF48C25);
-    const bgDark = Color(0xFF0A1A1A);
-    const bgMeshLight = Color(0xFF1A2E2E);
+    final bgDark = AppColors.bgDark;
+    final bgMeshLight = AppColors.bgTeal;
 
     return Scaffold(
       backgroundColor: bgDark,
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.topRight,
                 radius: 1.5,
@@ -69,11 +70,11 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.05),
+                            color: AppColors.ink(0.05),
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.arrow_back_ios_new,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             size: 20,
                           ),
                         ),
@@ -100,11 +101,11 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                 const SizedBox(height: 16),
                 Text(
                   lp.getText('prayer_calculation'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                   ),
                 ).animate().fadeIn().moveY(begin: -20, end: 0),
                 const SizedBox(height: 12),
@@ -115,7 +116,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white.withOpacity(0.6),
+                      color: AppColors.ink(0.6),
                       height: 1.5,
                     ),
                   ),
@@ -208,14 +209,14 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                           children: [
                             Text(
                               lp.getText('continue'),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,
                                 color: bgDark,
                               ),
                             ),
                             const SizedBox(width: 8),
-                            const Icon(
+                            Icon(
                               Icons.chevron_right,
                               color: bgDark,
                             ),
@@ -231,7 +232,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                           width: 6,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: AppColors.ink(0.2),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -249,7 +250,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                           width: 6,
                           height: 6,
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: AppColors.ink(0.2),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -271,7 +272,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
   }) {
     final isSelected = _selectedMadhab == id;
     const primaryColor = Color(0xFFF48C25);
-    const bgDark = Color(0xFF0A1A1A);
+    final bgDark = AppColors.bgDark;
 
     return GestureDetector(
       onTap: () {
@@ -283,7 +284,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.03),
+          color: AppColors.ink(0.03),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? primaryColor : Colors.transparent,
@@ -299,7 +300,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
+                    color: AppColors.shadow(0.2),
                     blurRadius: 10,
                   )
                 ],
@@ -310,10 +311,10 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: AppColors.ink(0.05),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.1),
+                  color: AppColors.ink(0.1),
                   width: 1,
                 ),
               ),
@@ -330,10 +331,10 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       height: 1.2,
                     ),
                   ),
@@ -343,7 +344,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white.withOpacity(0.6),
+                      color: AppColors.ink(0.6),
                     ),
                   ),
                 ],
@@ -358,7 +359,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                 color: isSelected ? primaryColor : Colors.transparent,
               ),
               child: isSelected
-                  ? const Icon(
+                  ? Icon(
                       Icons.check,
                       color: bgDark,
                       size: 16,

@@ -151,7 +151,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             _Stat(
                                 R.localizeDigits('$sets', langCode),
                                 lp.getText('sets_done').toUpperCase(),
-                                Colors.white),
+                                AppColors.textPrimary),
                             SizedBox(width: R.px(10)),
                             _Stat(
                                 R.localizeDigits('$streak', langCode),
@@ -376,7 +376,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     child: BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
                       child: Container(
-                        color: Colors.black.withOpacity(0.5),
+                        color: AppColors.shadow(0.5),
                         padding: EdgeInsets.all(R.px(24)),
                         alignment: Alignment.center,
                         child: Container(
@@ -432,7 +432,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                       style: AppText.manrope(
                                         fontSize: R.sp(14),
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                        color: AppColors.textPrimary,
                                       ),
                                     ),
                                   ),
@@ -494,11 +494,11 @@ class _Badge extends StatelessWidget {
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.03),
+            color: AppColors.ink(0.03),
             border: Border.all(
                 color: unlocked
                     ? AppColors.primary.withOpacity(0.4)
-                    : Colors.white.withOpacity(0.1)),
+                    : AppColors.ink(0.1)),
             boxShadow: unlocked
                 ? [
                     BoxShadow(
@@ -518,7 +518,7 @@ class _Badge extends StatelessWidget {
                 style: AppText.manrope(
                     fontSize: R.adaptive(9, 10, 12),
                     fontWeight: FontWeight.w600,
-                    color: unlocked ? Colors.white : AppColors.textSlate500),
+                    color: unlocked ? AppColors.textPrimary : AppColors.textSlate500),
                 textAlign: TextAlign.center)),
       ]),
     );

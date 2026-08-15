@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "Selamdan Sonra İstiğfar",
+      "frequency": "Her namazdan sonra 3 kez",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "Allah'tan bağışlanma dilerim (üç kez). Allah'ım, Sen Selam'sın ve selamet Sendendir. Sen yücesin, ey celal ve ikram sahibi.",
+      "benefit": "Peygamber (ﷺ) her farz namazdan sonra zikrine üç kez istiğfar ederek başlar, ardından selametin kaynağı olan Allah'ı yüceltirdi.",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "Allah'ın Birliğinin İlanı",
+      "frequency": "Her namazdan sonra 1 kez",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "Allah'tan başka ibadete layık hiçbir ilah yoktur, O tektir, ortağı yoktur. Mülk O'nundur, hamd O'nadır ve O her şeye kadirdir. Allah'ım, Senin verdiğine engel olacak yoktur, Senin engellediğini de verecek yoktur; güç sahibine gücü Sana karşı fayda vermez.",
+      "benefit": "Peygamber (ﷺ) her farz namazdan sonra bunu söyler, Allah'ın birliğini ve O'nun verdiğini kimsenin engelleyemeyeceğini, engellediğini de kimsenin veremeyeceğini ilan ederdi.",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "Güç ve Kuvvet Yalnız Allah'tandır",
+      "frequency": "Her namazdan sonra 1 kez",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "Allah'tan başka ibadete layık hiçbir ilah yoktur, O tektir, ortağı yoktur. Mülk O'nundur, hamd O'nadır ve O her şeye kadirdir. Güç ve kuvvet ancak Allah iledir. Allah'tan başka ilah yoktur ve biz yalnız O'na ibadet ederiz. Nimet O'nundur, fazilet O'nundur ve en güzel övgü O'nadır. Allah'tan başka ilah yoktur; kâfirler hoşlanmasa da dini yalnız O'na halis kılarız.",
+      "benefit": "Peygamber (ﷺ) her namazdan sonra bütün gücün, nimetin ve en güzel övgünün yalnız Allah'a ait olduğunu, kâfirler hoşlanmasa da O'na ihlasla ibadet edildiğini ilan ederdi.",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "Namaz Sonrası Tesbihat (33'er kez)",
+      "frequency": "Her namazdan sonra 33'er kez",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Allah her türlü eksiklikten münezzehtir, hamd Allah'adır ve Allah en büyüktür (her biri otuz üçer kez). Allah'tan başka ibadete layık hiçbir ilah yoktur, O tektir, ortağı yoktur. Mülk O'nundur, hamd O'nadır ve O her şeye kadirdir.",
+      "benefit": "Peygamber (ﷺ) buyurdu: Kim her namazdan sonra bunu söylerse, günahları deniz köpüğü kadar olsa bile bağışlanır.",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "Sûre el-İhlâs (İhlas) — Üç Kul'ün 1.'si",
+      "frequency": "Her namazdan sonra 1x",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Kul Hüvallâhü Ehad. Allâhü's-Samed. Lem yelid ve lem yûled. Ve lem yekün lehû küfüven ehad.",
+      "translation": "De ki: O Allah'tır, bir tektir. Allah Samed'dir. Doğurmamış ve doğurulmamıştır. Hiçbir şey O'nun dengi değildir.",
+      "benefit": "Peygamber (ة) bu üç koruyucu sureyi her namazdan sonra okumayı emretti; Sabah ve Akşam namazlarından sonra üçer kez okunur.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "Sûre el-Felak (Sabah Aydınlığı) — Üç Kul'ün 2.'si",
+      "frequency": "Her namazdan sonra 1x (Sabah ve Akşam'dan sonra 3x)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Kul e'ûzü bi-Rabb'il-felak. Min şerri mâ halak. Ve min şerri ğâsıkın izâ vakab. Ve min şerri'n-neffâsâti fi'l-ukad. Ve min şerri hâsidin izâ hasad.",
+      "translation": "De ki: Sabahın Rabbine sığınırım — yarattıklarının şerrinden, bastığında karanlığın şerrinden, düğümlere üfleyenlerin şerrinden ve haset ettiğinde hasetçinin şerrinden.",
+      "benefit": "Peygamber (ة) bu üç koruyucu sureyi her namazdan sonra okumayı emretti; Sabah ve Akşam namazlarından sonra üçer kez okunur.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "Sûre en-Nâs (İnsanlar) — Üç Kul'ün 3.'sü",
+      "frequency": "Her namazdan sonra 1x (Sabah ve Akşam'dan sonra 3x)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Kul e'ûzü bi-Rabb'in-nâs. Mâlik'in-nâs. İlâh'in-nâs. Min şerri'l-vesvâs'il-hannâs. Ellezî yüvesvisu fî sudûr'in-nâs. Mine'l-cinnet'i ven-nâs.",
+      "translation": "De ki: İnsanların Rabbine sığınırım, insanların melikine, insanların ilahına — içlere vesvese veren sinsi vesvesecinin şerrinden; o ki insanların göğüslerine vesvese verir — gerek cinlerden gerekse insanlardan.",
+      "benefit": "Peygamber (ة) bu üç koruyucu sureyi her namazdan sonra okumayı emretti; Sabah ve Akşam namazlarından sonra üçer kez okunur.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "Ayetel Kürsi",
+      "frequency": "Her namazdan sonra 1 kez",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "Allah! O'ndan başka ibadete layık hiçbir ilah yoktur. O Hayy'dır (diridir), Kayyum'dur (her şeyi ayakta tutandır). O'nu ne uyuklama tutar ne de uyku. Göklerde ve yerde ne varsa hepsi O'nundur. O'nun izni olmadan katında kim şefaat edebilir? O, kullarının önlerindekini ve arkalarındakini bilir. Onlar O'nun ilminden, ancak dilediği kadarını kavrayabilirler. O'nun Kürsüsü gökleri ve yeri kaplamıştır; onları korumak O'na ağır gelmez. O yücedir, büyüktür.",
+      "benefit": "Peygamber (ﷺ) buyurdu: Kim her farz namazdan sonra Ayetel Kürsi'yi okursa, onun cennete girmesine ölümden başka bir engel kalmaz.",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "Sabah ve Akşam Sonrası On Kez",
+      "frequency": "Sabah ve akşam namazlarından sonra 10 kez",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Allah'tan başka ibadete layık hiçbir ilah yoktur, O tektir, ortağı yoktur. Mülk O'nundur, hamd O'nadır. O diriltir ve öldürür ve O her şeye kadirdir.",
+      "benefit": "Peygamber (ﷺ), dirilten ve öldüren Allah'ın birliğini ilan eden bu zikrin akşam ve sabah namazlarından sonra on kez tekrarlanmasını öğretti.",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "Faydalı İlim Duası",
+      "frequency": "Sabah namazından sonra 1 kez",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "Allah'ım, Senden faydalı ilim, temiz rızık ve kabul edilmiş amel isterim.",
+      "benefit": "Peygamber (ﷺ) sabah namazının selamından sonra bu duayı yapar; güne başlarken Allah'tan faydalı ilim, temiz rızık ve kabul olunan ameller isterdi.",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

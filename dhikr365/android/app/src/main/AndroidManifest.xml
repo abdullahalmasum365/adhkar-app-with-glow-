@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     
     <application
-        android:label="dhikr365"
+        android:label="Adhkaar 365"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         
@@ -73,6 +73,13 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- Required so url_launcher can detect a browser is available on
+             Android 11+ (package visibility) — used for the Privacy Policy
+             link in Settings. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
         </intent>
     </queries>
 </manifest>

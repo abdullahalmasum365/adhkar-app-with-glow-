@@ -68,7 +68,7 @@ class _ShaderBackgroundState extends State<ShaderBackground>
     final shader = _shader;
     if (shader == null) {
       // Static fallback in the same palette (also the pre-load frame).
-      return const DecoratedBox(
+      return DecoratedBox(
         decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topCenter,

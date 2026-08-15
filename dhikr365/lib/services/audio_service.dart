@@ -15,6 +15,19 @@ class AudioService {
   PlayerState _state = PlayerState.stopped;
   DhikrCategory? _currentCategory;
   String? _currentPath;
+  double _rate = 1.0;
+
+  /// Playback speed (0.5–2.0). Persists across tracks for the session.
+  double get rate => _rate;
+
+  Future<void> setRate(double r) async {
+    _rate = r.clamp(0.5, 2.0);
+    try {
+      await _player.setPlaybackRate(_rate);
+    } catch (e) {
+      debugPrint('[Audio] setRate: $e');
+    }
+  }
 
   DhikrCategory? get currentCategory => _currentCategory;
   String? get currentPath => _currentPath;
@@ -35,6 +48,8 @@ class AudioService {
       case DhikrCategory.parents:    return 'audio/parents.mp3';
       case DhikrCategory.food:       return 'audio/food.mp3';
       case DhikrCategory.graveyard:  return 'audio/graveyard.mp3';
+      case DhikrCategory.afterSalah: return 'audio/after_salah.mp3';
+      case DhikrCategory.beforeSleep: return 'audio/before_sleep.mp3';
     }
   }
 
@@ -49,6 +64,8 @@ class AudioService {
       await _player.stop();
       await _player.setReleaseMode(ReleaseMode.release);
       await _player.play(AssetSource(cleanPath));
+      // Re-apply the session playback speed — a fresh source resets it.
+      if (_rate != 1.0) await _player.setPlaybackRate(_rate);
       return true;
     } catch (e) {
       debugPrint('[Audio] playPath: asset not found or playback failed — $e');

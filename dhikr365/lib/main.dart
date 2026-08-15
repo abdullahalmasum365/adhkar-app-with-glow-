@@ -2,16 +2,19 @@
 // lib/main.dart — Adhkaar 365
 // ============================================================================
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/app_theme.dart';
+import 'providers/auth_provider.dart';
 import 'providers/custom_plan_provider.dart';
 import 'providers/dhikr_provider.dart';
 import 'providers/language_provider.dart';
 import 'providers/notification_provider.dart';
+import 'providers/purchase_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/user_provider.dart';
 import 'screens/splash_screen.dart';
@@ -26,6 +29,10 @@ import 'utils/responsive.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Apply the user's saved color theme before the first frame so Royal
+  // White users never see a dark flash on startup.
+  await ThemeProvider.applySavedPalette();
+
   // 3. Initialize the full notification system
   //    (local channels + timezone db)
   //    Wrapped in try-catch: a timezone lookup failure must never crash the app
@@ -34,6 +41,19 @@ void main() async {
     await NotificationService().init();
   } catch (e) {
     debugPrint('[main] NotificationService init failed: $e');
+  }
+
+  // 4. Initialize Firebase for account sign-in + cloud plan sync.
+  //    Wrapped in try-catch: until the Firebase project is configured
+  //    (google-services.json / GoogleService-Info.plist added), this throws
+  //    — and the app must keep working fully offline exactly as before,
+  //    not crash on a black screen. AuthService checks Firebase.apps before
+  //    touching any Firebase API, so a failed init here just means the
+  //    Account screen shows "not configured" and everything else is normal.
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('[main] Firebase init skipped (not configured yet): $e');
   }
 
   runApp(const MyApp());
@@ -63,14 +83,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  /// Stop audio when the user backgrounds the app so it doesn't keep playing.
-  /// On resume, re-check notification permissions and top up schedules —
-  /// this is what makes an "Alarms & Reminders" grant from system Settings
-  /// actually take effect without requiring an app restart.
+  /// Like every top audio app, recitation KEEPS PLAYING when the user
+  /// switches apps or locks the screen — audio only stops when the app is
+  /// actually closed (detached). On resume, re-check notification
+  /// permissions and top up schedules — this is what makes an "Alarms &
+  /// Reminders" grant from system Settings take effect without a restart.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
+    if (state == AppLifecycleState.detached) {
       AudioService().stop();
     } else if (state == AppLifecycleState.resumed) {
       _refreshNotificationsOnResume();
@@ -99,8 +119,21 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => CustomPlanProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        // Linked to AuthProvider: whenever the signed-in account changes,
+        // the plan/favorites are merged with (and then kept in sync with)
+        // that account's cloud copy. Untouched (stays local-only) for
+        // users who never sign in.
+        ChangeNotifierProxyProvider<AuthProvider, CustomPlanProvider>(
+          create: (_) => CustomPlanProvider(),
+          update: (_, auth, previous) {
+            final plan = previous ?? CustomPlanProvider();
+            plan.attachUser(auth.user?.uid);
+            return plan;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => PurchaseProvider()),
       ],
       child: Consumer2<ThemeProvider, LanguageProvider>(
         builder: (context, themeProvider, langProvider, child) {
@@ -117,23 +150,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               navigatorKey: appNavigatorKey,
               themeMode: themeProvider.themeMode,
               // ── Light theme ────────────────────────────────────────────────
-              // Used when the user toggles dark mode OFF in Settings.
-              // Keeps the Islamic aesthetic (teal + amber) on a light background.
+              // Built from the ACTIVE palette (Royal White / Rose Dawn /
+              // Desert Mushaf) — only used when a light palette is selected,
+              // so AppColors always matches.
               theme: ThemeData(
                 useMaterial3: true,
                 brightness: Brightness.light,
-                colorScheme: const ColorScheme.light(
+                colorScheme: ColorScheme.light(
                   primary: AppColors.primary,
-                  surface: Color(0xFFF0F4F4),
-                  onSurface: Color(0xFF1A2E2E),
+                  secondary: AppColors.accent,
+                  surface: AppColors.bgDark,
+                  onSurface: AppColors.textPrimary,
                 ),
-                scaffoldBackgroundColor: const Color(0xFFF0F4F4),
-                appBarTheme: const AppBarTheme(
-                  backgroundColor: Color(0xFFE0ECEC),
-                  foregroundColor: Color(0xFF1A2E2E),
+                scaffoldBackgroundColor: AppColors.bgDark,
+                appBarTheme: AppBarTheme(
+                  backgroundColor: AppColors.bgDeep,
+                  foregroundColor: AppColors.textPrimary,
                   elevation: 0,
                 ),
-                cardColor: const Color(0xFFE4EFEF),
+                cardColor: AppColors.bgTeal,
                 switchTheme: SwitchThemeData(
                   thumbColor: WidgetStateProperty.resolveWith(
                     (s) => s.contains(WidgetState.selected)
@@ -156,11 +191,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 GlobalCupertinoLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
               ],
+              // ── Dark theme ─────────────────────────────────────────────────
+              // Built from the ACTIVE palette (Emerald Night / Sapphire Gold /
+              // Midnight Black) — only used when a dark palette is selected.
               darkTheme: ThemeData(
                 useMaterial3: true,
                 brightness: Brightness.dark,
-                colorScheme: const ColorScheme.dark(
+                colorScheme: ColorScheme.dark(
                   primary: AppColors.primary,
+                  secondary: AppColors.accent,
                   surface: AppColors.bgDark,
                 ),
                 scaffoldBackgroundColor: AppColors.bgDark,

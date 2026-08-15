@@ -1,0 +1,12 @@
+morning_m_alhamdulillah: OK (14544 bytes) len=17 chars
+evening_e_alhamdulillah: OK (14544 bytes) len=17 chars
+focus_5: OK (14544 bytes) len=17 chars
+evening_e_allahumma_bika_amsayna: OK (56736 bytes) len=103 chars
+evening_e_allahumma_inni_amsaytu: OK (95472 bytes) len=215 chars
+evening_e_amsayna_ala_fitrah: OK (95328 bytes) len=231 chars
+morning_m_salawat_alan_nabi: OK (26784 bytes) len=53 chars
+evening_e_salawat_alan_nabi: OK (26784 bytes) len=53 chars
+evening_e_evening_prayer_good_night: OK (101520 bytes) len=236 chars
+focus_2: OK (19440 bytes) len=30 chars
+grave_salaam_aisha: OK (76464 bytes) len=186 chars
+parents_rabbighfir_nuh: OK (43920 bytes) len=102 chars

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_theme.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '../providers/theme_provider.dart';
 
@@ -18,7 +19,7 @@ class DhikrProgressRing extends StatelessWidget {
         children: [
           Text(
             '${(progress * 100).toInt()}%',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 28.0,
               color: ThemeProvider.pearlWhite,
@@ -35,7 +36,7 @@ class DhikrProgressRing extends StatelessWidget {
         ],
       ),
       progressColor: ThemeProvider.divineAmber,
-      backgroundColor: Colors.white.withOpacity(0.1),
+      backgroundColor: AppColors.ink(0.1),
       circularStrokeCap: CircularStrokeCap.round,
       animation: true,
       animationDuration: 1200,

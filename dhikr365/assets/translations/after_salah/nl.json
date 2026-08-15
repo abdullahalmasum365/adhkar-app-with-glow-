@@ -1,0 +1,124 @@
+{
+  "dhikrs": {
+    "salah_astaghfirullah_salam": {
+      "dhikr_no": 1,
+      "title": "Vergeving vragen na de salam",
+      "frequency": "3x na elk gebed",
+      "targetCount": 3,
+      "arabicText": "أَسْـتَغْفِرُ الله (ثَلاثاً) اللّهُـمَّ أَنْـتَ السَّلامُ وَمِـنْكَ السَّلام تَبارَكْتَ يا ذا الجَـلالِ وَالإِكْـرام",
+      "transliteration": "Astaghfirullāh (three times). Allāhumma antas-salām, wa minkas-salām, tabārakta yā dhal-jalāli wal-ikrām.",
+      "translation": "Ik vraag Allah om vergeving (drie keer). O Allah, U bent de Vrede en van U komt de vrede. Gezegend bent U, o Bezitter van majesteit en eer.",
+      "benefit": "De Profeet (ﷺ) begon zijn gedenken na elk verplicht gebed door Allah drie keer om vergeving te vragen en Hem daarna te verheerlijken als de Bron van vrede.",
+      "reference": "Muslim 1/414 | Hisnul Muslim 66",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_wahdahu": {
+      "dhikr_no": 2,
+      "title": "Verklaring van de eenheid van Allah",
+      "frequency": "1x na elk gebed",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّهُ وحدَهُ لا شريكَ لهُ لهُ المُـلْكُ ولهُ الحَمْد وهوَ على كلّ شَيءٍ قَدير اللّهُـمَّ لا مانِعَ لِما أَعْطَـيْت وَلا مُعْطِـيَ لِما مَنَـعْت وَلا يَنْفَـعُ ذا الجَـدِّ مِنْـكَ الجَـد",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Allāhumma lā māniʿa limā aʿṭayt, wa lā muʿṭiya limā manaʿt, wa lā yanfaʿu dhal-jaddi minkal-jadd.",
+      "translation": "Niemand heeft het recht aanbeden te worden behalve Allah alleen, Hij heeft geen deelgenoot. Aan Hem behoort de heerschappij en aan Hem behoort de lof, en Hij is tot alles in staat. O Allah, niemand kan tegenhouden wat U geeft, en niemand kan geven wat U tegenhoudt, en de macht van de machtige baat hem niet tegen U.",
+      "benefit": "De Profeet (ﷺ) zei dit na elk verplicht gebed, en bevestigde de eenheid van Allah: niemand kan tegenhouden wat Hij geeft, noch geven wat Hij tegenhoudt.",
+      "reference": "Al-Bukhari 1/255, Muslim 1/414 | Hisnul Muslim 67",
+      "category": "after_salah"
+    },
+    "salah_la_hawla": {
+      "dhikr_no": 3,
+      "title": "Geen kracht behalve bij Allah",
+      "frequency": "1x na elk gebed",
+      "targetCount": 1,
+      "arabicText": "لا إلهَ إلاّ اللّه وحدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمد وهوَ على كلّ شيءٍ قدير لا حَـوْلَ وَلا قـوَّةَ إِلاّ بِاللهِ لا إلهَ إلاّ اللّـه وَلا نَعْـبُـدُ إِلاّ إيّـاه لَهُ النِّعْـمَةُ وَلَهُ الفَضْل وَلَهُ الثَّـناءُ الحَـسَن لا إلهَ إلاّ اللّهُ مخْلِصـينَ لَـهُ الدِّينَ وَلَوْ كَـرِهَ الكـافِرون",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr. Lā ḥawla wa lā quwwata illā billāh, lā ilāha illallāh, wa lā naʿbudu illā iyyāh, lahun-niʿmatu wa lahul-faḍl, wa lahuth-thanāʾul-ḥasan, lā ilāha illallāhu mukhliṣīna lahud-dīn, wa law karihal-kāfirūn.",
+      "translation": "Niemand heeft het recht aanbeden te worden behalve Allah alleen, Hij heeft geen deelgenoot. Aan Hem behoort de heerschappij en aan Hem behoort de lof, en Hij is tot alles in staat. Er is geen kracht en geen macht behalve bij Allah. Niemand heeft het recht aanbeden te worden behalve Allah, en wij aanbidden niemand behalve Hem. Aan Hem behoort de genade, aan Hem behoort de gunst, en aan Hem behoort de schoonste lof. Niemand heeft het recht aanbeden te worden behalve Allah; wij zijn Hem oprecht toegewijd in de godsdienst, ook al haten de ongelovigen het.",
+      "benefit": "De Profeet (ﷺ) verklaarde na elk gebed dat alle kracht, genade en schone lof alleen aan Allah toebehoren, Die oprecht aanbeden wordt, ook al staat het de ongelovigen tegen.",
+      "reference": "Muslim 1/415 | Hisnul Muslim 68",
+      "category": "after_salah"
+    },
+    "salah_tasbih_after_prayer": {
+      "dhikr_no": 4,
+      "title": "Tasbih na het gebed (33x elk)",
+      "frequency": "33x elk na elk gebed",
+      "targetCount": 33,
+      "arabicText": "سُـبْحانَ اللهِ والحَمْـدُ لله واللهُ أكْـبَر (ثلاثاً وثلاثين) لا إلهَ إلاّ اللّهُ وَحْـدَهُ لا شريكَ لهُ لهُ الملكُ ولهُ الحَمْد وهُوَ على كُلّ شَيءٍ قَـدير",
+      "transliteration": "Subḥānallāh, walḥamdu lillāh, wallāhu akbar (each 33 times). Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Glorie zij Allah, en alle lof zij Allah, en Allah is de Grootste (elk drieëndertig keer). Niemand heeft het recht aanbeden te worden behalve Allah alleen, Hij heeft geen deelgenoot. Aan Hem behoort de heerschappij en aan Hem behoort de lof, en Hij is tot alles in staat.",
+      "benefit": "De Profeet (ﷺ) zei: Wie dit na elk gebed zegt, diens zonden worden vergeven, al waren ze als het schuim van de zee.",
+      "reference": "Muslim 1/418 | Hisnul Muslim 69",
+      "category": "after_salah"
+    },
+    "salah_ikhlas": {
+      "dhikr_no": 5,
+      "title": "Soera al-Ichlaas (Oprechtheid) — 1e van de drie Qoel",
+      "frequency": "1x na elk gebed",
+      "targetCount": 1,
+      "arabicText": "قُلْ هُوَ اللَّهُ أَحَدٌ۔ اللَّهُ الصَّمَدُ۔ لَمْ يَلِدْ وَلَمْ يُولَدْ۔ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ",
+      "transliteration": "Qul Huwal-lāhu Ahad. Allāhus-Samad. Lam yalid wa-lam yūlad. Wa-lam yakul-lahu kufuwan ahad.",
+      "translation": "Zeg: Hij is Allah, de Enige. Allah, de Eeuwige Toevlucht. Hij heeft niet verwekt en is niet verwekt. En er is niemand aan Hem gelijk.",
+      "benefit": "De Profeet (ة) gaf de opdracht deze drie beschermende soera's na elk gebed te reciteren; na Fajr en Maghrib worden ze elk drie keer gereciteerd.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_falaq": {
+      "dhikr_no": 6,
+      "title": "Soera al-Falaq (Het Morgenlicht) — 2e van de drie Qoel",
+      "frequency": "1x na elk gebed (3x na Fajr & Maghrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ۔ مِن شَرِّ مَا خَلَقَ۔ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ۔ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ۔ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ",
+      "transliteration": "Qul a'ūdhu bi-Rabbil-falaq. Min sharri mā khalaq. Wa-min sharri ghāsiqin idhā waqab. Wa-min sharrin-naffāthāti fil-'uqad. Wa-min sharri hāsidin idhā hasad.",
+      "translation": "Zeg: Ik zoek bescherming bij de Heer van het morgenlicht, van het kwaad van wat Hij heeft geschapen, van het kwaad van de duisternis als zij neerdaalt, van het kwaad van degenen die in knopen blazen en van het kwaad van de afgunstige als hij afgunstig is.",
+      "benefit": "De Profeet (ة) gaf de opdracht deze drie beschermende soera's na elk gebed te reciteren; na Fajr en Maghrib worden ze elk drie keer gereciteerd.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_nas": {
+      "dhikr_no": 7,
+      "title": "Soera an-Naas (De Mensen) — 3e van de drie Qoel",
+      "frequency": "1x na elk gebed (3x na Fajr & Maghrib)",
+      "targetCount": 1,
+      "arabicText": "قُلْ أَعُوذُ بِرَبِّ النَّاسِ۔ مَلِكِ النَّاسِ۔ إِلَهِ النَّاسِ۔ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ۔ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ۔ مِنَ الْجِنَّةِ وَالنَّاسِ",
+      "transliteration": "Qul a'ūdhu bi-Rabbin-nās. Mālikin-nās. Ilāhin-nās. Min sharril-waswāsil-khannās. Alladhī yuwaswisu fī sudūrin-nās. Minal-jinnati wan-nās.",
+      "translation": "Zeg: Ik zoek bescherming bij de Heer van de mensen, de Koning van de mensen, de God van de mensen — van het kwaad van de terugwijkende influisteraar, die in de harten van de mensen influistert — zowel djinn als mensen.",
+      "benefit": "De Profeet (ة) gaf de opdracht deze drie beschermende soera's na elk gebed te reciteren; na Fajr en Maghrib worden ze elk drie keer gereciteerd.",
+      "reference": "Abu Dawud 2/86, An-Nasa'i 3/68; Al-Albani, Sahih At-Tirmidhi 2/8 | Hisnul Muslim 70",
+      "category": "after_salah"
+    },
+    "salah_ayatul_kursi": {
+      "dhikr_no": 8,
+      "title": "Ayatul Kursi",
+      "frequency": "1x na elk gebed",
+      "targetCount": 1,
+      "arabicText": "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ لَّهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الأَرْضِ مَن ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلاَّ بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلاَ يُحِيطُونَ بِشَيْءٍ مِّنْ عِلْمِهِ إِلاَّ بِمَا شَاء وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالأَرْضَ وَلاَ يَؤُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ",
+      "transliteration": "Allāhu lā ilāha illā huwal-ḥayyul-qayyūm, lā taʾkhudhuhu sinatun wa lā nawm, lahu mā fis-samāwāti wa mā fil-arḍ, man dhal-ladhī yashfaʿu ʿindahu illā bi-idhnih, yaʿlamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shayʾin min ʿilmihi illā bimā shāʾ, wasiʿa kursiyyuhus-samāwāti wal-arḍ, wa lā yaʾūduhu ḥifẓuhumā, wa huwal-ʿaliyyul-ʿaẓīm.",
+      "translation": "Allah! Er is geen god dan Hij, de Levende, de Zelfstandige. Sluimer noch slaap overmant Hem. Aan Hem behoort wat in de hemelen en wat op de aarde is. Wie kan bij Hem bemiddelen zonder Zijn toestemming? Hij weet wat vóór hen is en wat achter hen is. En zij omvatten niets van Zijn kennis, behalve wat Hij wil. Zijn Troon strekt zich uit over de hemelen en de aarde, en het behoeden ervan vermoeit Hem niet. En Hij is de Verhevene, de Geweldige.",
+      "benefit": "De Profeet (ﷺ) zei: Wie Ayatul Kursi na elk verplicht gebed reciteert, niets scheidt hem van het Paradijs behalve de dood.",
+      "reference": "An-Nasa'i, 'Amalul-Yawm wal-Laylah 100, Ibn As-Sunni 121; Al-Albani, Sahihul-Jami' 5/339 | Hisnul Muslim 71",
+      "category": "after_salah"
+    },
+    "salah_la_ilaha_yuhyi": {
+      "dhikr_no": 9,
+      "title": "Tien keer na Fajr en Maghrib",
+      "frequency": "10x na Fajr en Maghrib",
+      "targetCount": 10,
+      "arabicText": "لاَ إِلَهَ إِلاَّ اللَّهُ وَحْدَهُ لاَ شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahu lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ʿalā kulli shayʾin qadīr.",
+      "translation": "Niemand heeft het recht aanbeden te worden behalve Allah alleen, Die geen deelgenoot heeft. Aan Hem behoort de heerschappij en aan Hem behoort de lof. Hij geeft leven en doet sterven, en Hij is tot alles in staat.",
+      "benefit": "De Profeet (ﷺ) leerde deze verklaring van de eenheid van Allah — Die leven geeft en doet sterven — tien keer te herhalen na het Maghrib- en Fajr-gebed.",
+      "reference": "At-Tirmidhi 5/515, Ahmad 4/227; Zadul-Ma'ad 1/300 | Hisnul Muslim 72",
+      "category": "after_salah"
+    },
+    "salah_ilman_nafian": {
+      "dhikr_no": 10,
+      "title": "Smeekbede om nuttige kennis",
+      "frequency": "1x na het Fajr-gebed",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نافِعاً وَرِزْقاً طَيِّباً وَعَمَلاً مُتَقَبَّلاً",
+      "transliteration": "Allāhumma innī asʾaluka ʿilman nāfiʿan, wa rizqan ṭayyiban, wa ʿamalan mutaqabbalan.",
+      "translation": "O Allah, ik vraag U om nuttige kennis, goede voorziening en aanvaarde daden.",
+      "benefit": "De Profeet (ﷺ) zei dit na de salam van het Fajr-gebed, en vroeg Allah om nuttige kennis, goede voorziening en aanvaarde daden om de dag te beginnen.",
+      "reference": "Ibn Majah; Sahih Ibn Majah 1/152, Majma' Az-Zawa'id 10/111 | Hisnul Muslim 73",
+      "category": "after_salah"
+    }
+  }
+}

@@ -109,19 +109,19 @@ class _HomeScreenState extends State<HomeScreen>
     final vGap         = R.adaptive(12.0, 20.0, 28.0);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A1F1D),
+      backgroundColor: AppColors.bgDark,
       body: Stack(
         children: [
           // ── Layer 1: green → dark-green → black radial background ────────
           // Matches: radial-gradient(circle at top, #133a36 0%, #0a1f1d 70%,
           //          #000000 100%)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
                 center: Alignment.topCenter,
                 radius: 1.4,
-                colors: [Color(0xFF133A36), Color(0xFF0A1F1D), Color(0xFF000000)],
-                stops: [0.0, 0.7, 1.0],
+                colors: AppColors.homeGradient,
+                stops: const [0.0, 0.7, 1.0],
               ),
             ),
           ),
@@ -177,16 +177,16 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Container(
                         width: avatarSize, height: avatarSize,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
+                          color: AppColors.ink(0.05),
                           borderRadius: BorderRadius.circular(R.px(10)),
-                          border: Border.all(color: Colors.white.withOpacity(0.08)),
+                          border: Border.all(color: AppColors.ink(0.08)),
                         ),
                         child: Icon(Icons.volunteer_activism,
                             color: AppColors.primary, size: R.sp(18)),
                       ),
                     ).animate().fadeIn()
                      .animate(onPlay: (controller) => controller.repeat())
-                     .shimmer(duration: 2000.ms, color: Colors.white.withOpacity(0.2), delay: 1500.ms),
+                     .shimmer(duration: 2000.ms, color: AppColors.ink(0.2), delay: 1500.ms),
                   ],
                 ).animate().fadeIn(),
 
@@ -278,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 style: AppText.manrope(
                                   fontSize: 15,
                                   fontWeight: FontWeight.w900,
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                 ),
                               ),
                               const SizedBox(width: 4),
@@ -287,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen>
                                 style: AppText.manrope(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white.withOpacity(0.85),
+                                  color: AppColors.ink(0.85),
                                 ),
                               ),
                             ],
@@ -302,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Container(
                     padding: EdgeInsets.all(R.px(4)),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.05),
+                      color: AppColors.ink(0.05),
                       borderRadius: BorderRadius.circular(R.px(30)),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -335,8 +335,8 @@ class _HomeScreenState extends State<HomeScreen>
                           CircularProgressIndicator(
                             value: progress,
                             strokeWidth: ringStroke,
-                            backgroundColor: Colors.white.withOpacity(0.05),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
+                            backgroundColor: AppColors.ink(0.05),
+                            valueColor: AlwaysStoppedAnimation<Color>(
                                 AppColors.primary),
                           ),
                           Column(
@@ -435,8 +435,13 @@ class _HomeScreenState extends State<HomeScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // onPrimary (not textPrimary): this row sits on a
+                        // solid AppColors.primary fill. On monochrome themes
+                        // (E Ink Reader, Pencil Sketch) primary and
+                        // textPrimary are both near-black, so textPrimary
+                        // renders invisible text on a black button.
                         Icon(isMorning ? Icons.wb_sunny : Icons.nights_stay,
-                            color: Colors.white, size: R.sp(18)),
+                            color: AppColors.onPrimary, size: R.sp(18)),
                         SizedBox(width: R.px(8)),
                         Text(
                           // Use morning_adhkar / evening_adhkar — these keys
@@ -448,14 +453,15 @@ class _HomeScreenState extends State<HomeScreen>
                               : lp.getText('evening_adhkar'),
                           style: AppText.manrope(
                               fontSize: R.adaptive(14, 16, 18),
-                              fontWeight: FontWeight.w700),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.onPrimary),
                         ),
                       ],
                     ),
                   ),
                 ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2)
                  .animate(onPlay: (controller) => controller.repeat())
-                 .shimmer(duration: 2500.ms, color: Colors.white.withOpacity(0.3), delay: 1000.ms),
+                 .shimmer(duration: 2500.ms, color: AppColors.ink(0.3), delay: 1000.ms),
 
                 SizedBox(height: R.px(12)),
 
@@ -724,7 +730,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
     return Padding(
       padding: EdgeInsets.only(bottom: bottom),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.bgTeal,
           borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
         ),
@@ -741,7 +747,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                   child: Container(
                     width: R.px(40), height: R.px(4),
                     decoration: BoxDecoration(
-                        color: Colors.white24,
+                        color: AppColors.ink(0.24),
                         borderRadius: BorderRadius.circular(2)),
                   ),
                 ),
@@ -787,11 +793,11 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           : const LinearGradient(
                               colors: [Color(0xFFF97316), Color(0xFFEA580C)]),
                       color: _loading
-                          ? Colors.white.withOpacity(0.05)
+                          ? AppColors.ink(0.05)
                           : null,
                       borderRadius: BorderRadius.circular(R.px(14)),
                       border: _loading
-                          ? Border.all(color: Colors.white12)
+                          ? Border.all(color: AppColors.ink(0.12))
                           : null,
                     ),
                     child: Row(
@@ -800,12 +806,12 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                         if (_loading)
                           SizedBox(
                             width: R.sp(16), height: R.sp(16),
-                            child: const CircularProgressIndicator(
+                            child: CircularProgressIndicator(
                                 strokeWidth: 2, color: AppColors.primary),
                           )
                         else
                           Icon(Icons.my_location,
-                              color: Colors.white, size: R.sp(17)),
+                              color: AppColors.textPrimary, size: R.sp(17)),
                         SizedBox(width: R.px(8)),
                         Text(
                           _loading
@@ -823,14 +829,14 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
 
                 // ── Divider ───────────────────────────────────────────────────
                 Row(children: [
-                  Expanded(child: Divider(color: Colors.white.withOpacity(0.08))),
+                  Expanded(child: Divider(color: AppColors.ink(0.08))),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: R.px(12)),
                     child: Text(lp.getText('or_enter_manually'),
                         style: AppText.label(color: AppColors.textSlate500)
                             .copyWith(fontSize: R.sp(9))),
                   ),
-                  Expanded(child: Divider(color: Colors.white.withOpacity(0.08))),
+                  Expanded(child: Divider(color: AppColors.ink(0.08))),
                 ]),
 
                 SizedBox(height: R.px(20)),
@@ -897,9 +903,9 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: R.px(14)),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.06),
+                          color: AppColors.ink(0.06),
                           borderRadius: BorderRadius.circular(R.px(14)),
-                          border: Border.all(color: Colors.white12),
+                          border: Border.all(color: AppColors.ink(0.12)),
                         ),
                         child: Center(
                           child: Text(lp.getText('cancel'),
@@ -980,16 +986,16 @@ class _Field extends StatelessWidget {
             prefixIcon: Icon(icon,
                 color: AppColors.textSlate500, size: R.sp(17)),
             filled: true,
-            fillColor: Colors.white.withOpacity(0.05),
+            fillColor: AppColors.ink(0.05),
             contentPadding: EdgeInsets.symmetric(
                 horizontal: R.px(16), vertical: R.px(14)),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+              borderSide: BorderSide(color: AppColors.ink(0.1)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
-              borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+              borderSide: BorderSide(color: AppColors.ink(0.1)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
@@ -1020,14 +1026,14 @@ class _Tab extends StatelessWidget {
         padding: EdgeInsets.symmetric(
             horizontal: R.px(16), vertical: R.px(8)),
         decoration: BoxDecoration(
-          color: isActive ? Colors.white.withOpacity(0.1) : Colors.transparent,
+          color: isActive ? AppColors.ink(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(R.px(20)),
         ),
         child: Text(label,
             style: AppText.manrope(
               fontSize: R.adaptive(12, 13, 15),
               fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-              color: isActive ? Colors.white : AppColors.textSlate400,
+              color: isActive ? AppColors.textPrimary : AppColors.textSlate400,
             )),
       ),
     );

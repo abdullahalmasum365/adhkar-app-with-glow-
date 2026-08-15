@@ -1,4 +1,4 @@
-enum DhikrCategory { morning, evening, protection, focus, parents, graveyard, food }
+enum DhikrCategory { morning, evening, protection, focus, parents, graveyard, food, afterSalah, beforeSleep }
 
 class Dhikr {
   final String id;
