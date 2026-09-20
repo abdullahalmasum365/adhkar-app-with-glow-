@@ -162,12 +162,7 @@ class NotificationService {
   // ══════════════════════════════════════════════════════════════════════════
 
   Future<void> _initLocalNotifications() async {
-    // ── Android settings ──
-    // ic_notification is a white monochrome vector (crescent + star).
-    // Android 5+ replaces any colour with white in the status bar, so the
-    // launcher icon (full colour) shows as a grey blob — we use the dedicated
-    // monochrome drawable instead.
-    const android = AndroidInitializationSettings('@drawable/ic_notification');
+    const android = AndroidInitializationSettings('@mipmap/launcher_icon');
 
     // ── iOS / macOS settings ──
     const darwin = DarwinInitializationSettings(
@@ -607,7 +602,7 @@ class NotificationService {
       channelName,
       importance: Importance.max,
       priority: Priority.max,
-      icon: '@drawable/ic_notification',
+      icon: '@mipmap/launcher_icon',
       // Full-colour APP LOGO on the right side of the notification —
       // makes it instantly recognizable as Adhkaar 365 at first glance.
       largeIcon: const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
@@ -651,20 +646,18 @@ class NotificationService {
       interruptionLevel: InterruptionLevel.timeSensitive,
     );
 
-    // Use the CACHED exact-alarm capability (set once per scheduling session,
-    // not once per notification — avoids 80+ redundant async calls per refresh).
-    // alarmClock mode is Doze-exempt and fires precisely. The fallback MUST be
-    // inexactAllowWhileIdle — plain inexact does not fire during Doze at all,
-    // which on Samsung/Xiaomi/OPPO means "delayed by hours or never".
+    // Standard Android alarm mode used by top prayer apps (Muslim Pro / Pillars).
+    // exactAllowWhileIdle fires precisely even when the device is in deep Doze / locked.
+    // If not granted, falls back to inexactAllowWhileIdle.
     AndroidScheduleMode scheduleMode;
     if (Platform.isAndroid) {
       final canExact = await isExactAlarmGranted();
       lastScheduleUsedExact = canExact;
       scheduleMode = canExact
-          ? AndroidScheduleMode.alarmClock
+          ? AndroidScheduleMode.exactAllowWhileIdle
           : AndroidScheduleMode.inexactAllowWhileIdle;
     } else {
-      scheduleMode = AndroidScheduleMode.alarmClock;
+      scheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
     }
 
     Future<void> doSchedule(AndroidScheduleMode mode) {
@@ -685,9 +678,9 @@ class NotificationService {
       await doSchedule(scheduleMode);
       debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime ($scheduleMode)');
     } catch (e) {
-      // If exact alarmClock fails for ANY reason (permission revoked, OEM security policy, etc.),
+      // If exact scheduling fails for ANY reason (permission revoked, OEM security policy, etc.),
       // fall back to inexactAllowWhileIdle so the user never loses the reminder.
-      if (scheduleMode == AndroidScheduleMode.alarmClock) {
+      if (scheduleMode != AndroidScheduleMode.inexactAllowWhileIdle) {
         _cachedCanExact = false;
         lastScheduleUsedExact = false;
         try {
@@ -796,7 +789,7 @@ class NotificationService {
         'Adhkar Reminders',
         importance: Importance.max,
         priority: Priority.max,
-        icon: '@drawable/ic_notification',
+        icon: '@mipmap/launcher_icon',
         largeIcon:
             const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
         subText: 'Test',

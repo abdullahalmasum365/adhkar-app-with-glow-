@@ -13,7 +13,6 @@ import 'dhikr_list_screen.dart';
 import 'language_selection_screen.dart';
 import 'onboarding_screen.dart';
 import '../providers/notification_provider.dart';
-import '../widgets/battery_reliability_dialogs.dart';
 import 'location_setup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -76,86 +75,14 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     }
 
-    // Step 2 — Request permissions FIRST.
+    // Step 2 — Request system notification permissions.
     await NotificationService().requestPermissions();
 
     // Step 3 — Wait for the splash animation.
     await Future.delayed(const Duration(milliseconds: 2500));
     if (!mounted) return;
 
-    // Step 3b — If exact alarm permission was not granted, show a clear dialog.
-    // Without it every notification falls back to inexact mode which is silently
-    // dropped by Samsung/Xiaomi/OPPO battery managers — "not working at all".
-    final exactGranted = await NotificationService().isExactAlarmGranted();
-    if (!exactGranted && mounted) {
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: AppColors.bgTeal,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(children: [
-            Icon(Icons.alarm_on, color: AppColors.primary, size: 22),
-            const SizedBox(width: 10),
-            Text('Enable Precise Alarms', style: AppText.heading(16)),
-          ]),
-          content: Text(
-            'For prayer time notifications to arrive at the exact correct '
-            'moment, please enable "Alarms & Reminders" on the next screen '
-            'and tap Allow.\n\n'
-            'Without this, notifications may be delayed or never arrive.',
-            style: AppText.body(color: AppColors.textSlate300)
-                .copyWith(height: 1.5),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('Later',
-                  style: AppText.body(color: AppColors.textSlate500)),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.onPrimary,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10))),
-              onPressed: () {
-                Navigator.pop(ctx);
-                // Fires the system Settings intent and returns immediately.
-                // Do NOT reschedule here — the app's resume handler
-                // (main.dart) detects the permission change when the user
-                // comes back and reschedules everything in exact mode.
-                // Rescheduling here raced the step-3c refresh below and
-                // could wipe pending notifications.
-                NotificationService().openExactAlarmSettings();
-              },
-              child: Text('Open Settings',
-                  style: AppText.manrope(fontWeight: FontWeight.w700)),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (!mounted) return;
-
-    // Step 3b-2 — Battery-optimization + OEM Autostart explainers, shown
-    // automatically ONLY ONCE ever (never nags on later launches — after
-    // this, it's reachable any time via Settings → Notification Reliability
-    // Tips). Each dialog explains itself in plain language before the real
-    // system/OEM settings screen opens, matching the flow top prayer apps
-    // (Muslim Pro, Athan) use instead of a raw unexplained popup.
-    final reliabilityPrefs = await SharedPreferences.getInstance();
-    if (!(reliabilityPrefs.getBool('battery_tips_shown') ?? false)) {
-      await reliabilityPrefs.setBool('battery_tips_shown', true);
-      if (mounted) await showBatteryExplainerDialog(context);
-      if (mounted) await showAutostartTipDialog(context);
-    }
-
-    if (!mounted) return;
-
-    // Step 3c — Schedule notifications NOW that permissions are confirmed.
+    // Step 3b — Schedule notifications seamlessly.
     try {
       await notificationProvider.refreshAllSchedules(userProvider);
     } catch (e) {
