@@ -240,5 +240,21 @@
   "donation_not_available_short": "Henüz kullanılamıyor",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Bildirimleri Etkinleştir",
+  "notif_permission_body": "Adhkaar 365'in namaz vakti uyarıları ve sabah/akşam zikir hatırlatıcıları göndermesine izin verin. Bunu Ayarlar'dan istediğiniz zaman değiştirebilirsiniz.",
+  "notif_permission_allow": "İzin Ver",
+  "notif_battery_title": "Hatırlatıcıları Güvenilir Tut",
+  "notif_battery_body": "Bazı telefonlar pili korumak için arka plan uygulamalarını engeller. Namaz uyarılarını kaçırmamak için Adhkaar 365'in arka planda çalışmasına izin verin.",
+  "notif_battery_allow": "Arka Planda İzin Ver",
+  "notif_battery_skip": "Şimdilik Atla",
+  "notif_status_disabled": "Bildirimler kapalı",
+  "notif_status_disabled_sub": "Namaz ve zikir hatırlatıcılarını açmak için dokunun",
+  "notif_fix_btn": "Bildirimleri Düzelt",
+  "notif_battery_fix": "Bildirim Pil Düzeltmesi",
+  "notif_battery_fix_sub": "Samsung/Xiaomi'nin hatırlatıcıları kapatmasını önle",
+  "notif_battery_fixed": "Pil optimizasyonu düzeltildi!",
+  "notif_test_btn": "Test Bildirimi Gönder",
+  "notif_test_sub": "Anında uyarı ve 10s zamanlı alarm testi",
+  "notif_test_sent": "Test gönderildi! Anında bildirim ve 10s alarm gelecek."
 }

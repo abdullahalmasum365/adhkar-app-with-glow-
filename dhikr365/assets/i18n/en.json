@@ -260,5 +260,21 @@
   "preview_certificate": "Preview Du'a Certificate",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Enable Notifications",
+  "notif_permission_body": "Allow Adhkaar 365 to send prayer time alerts and morning/evening adhkar reminders. You can change this anytime in Settings.",
+  "notif_permission_allow": "Allow",
+  "notif_battery_title": "Keep Reminders Reliable",
+  "notif_battery_body": "Some phones block background apps to save battery. Allow Adhkaar 365 to run in the background so your prayer alerts are never missed.",
+  "notif_battery_allow": "Allow in Background",
+  "notif_battery_skip": "Skip for Now",
+  "notif_status_disabled": "Notifications are off",
+  "notif_status_disabled_sub": "Tap to enable prayer & adhkar reminders",
+  "notif_fix_btn": "Fix Notifications",
+  "notif_battery_fix": "Notification Battery Fix",
+  "notif_battery_fix_sub": "Prevent Samsung/Xiaomi from killing reminders",
+  "notif_battery_fixed": "Battery optimization fixed!",
+  "notif_test_btn": "Send Test Notification",
+  "notif_test_sub": "Test instant alert & 10s scheduled alarm",
+  "notif_test_sent": "Test sent! Instant notification and a 10s scheduled alarm will arrive."
 }

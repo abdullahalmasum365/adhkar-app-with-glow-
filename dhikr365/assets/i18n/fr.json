@@ -240,5 +240,21 @@
   "donation_not_available_short": "Pas encore disponible",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Activer les notifications",
+  "notif_permission_body": "Autorisez Adhkaar 365 à envoyer des alertes d'horaires de prière et des rappels d'adhkar matin/soir. Vous pouvez modifier cela dans Paramètres.",
+  "notif_permission_allow": "Autoriser",
+  "notif_battery_title": "Garder les rappels fiables",
+  "notif_battery_body": "Certains téléphones bloquent les applications en arrière-plan pour économiser la batterie. Autorisez Adhkaar 365 à s'exécuter en arrière-plan pour ne pas manquer les alertes de prière.",
+  "notif_battery_allow": "Autoriser en arrière-plan",
+  "notif_battery_skip": "Ignorer pour l'instant",
+  "notif_status_disabled": "Les notifications sont désactivées",
+  "notif_status_disabled_sub": "Appuyez pour activer les rappels de prière et d'adhkar",
+  "notif_fix_btn": "Réparer les notifications",
+  "notif_battery_fix": "Correction batterie notifications",
+  "notif_battery_fix_sub": "Empêcher Samsung/Xiaomi de tuer les rappels",
+  "notif_battery_fixed": "Optimisation de la batterie corrigée !",
+  "notif_test_btn": "Envoyer une notification de test",
+  "notif_test_sub": "Tester une alerte instantanée et une alarme à 10s",
+  "notif_test_sent": "Test envoyé ! Une notification instantanée et une alarme à 10s arriveront."
 }

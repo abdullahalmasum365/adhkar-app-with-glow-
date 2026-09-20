@@ -240,5 +240,21 @@
   "donation_not_available_short": "ยังไม่พร้อมใช้งาน",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "เปิดการแจ้งเตือน",
+  "notif_permission_body": "อนุญาตให้ Adhkaar 365 ส่งการแจ้งเตือนเวลาละหมาดและการเตือนอัซการตอนเช้า/เย็น คุณสามารถเปลี่ยนได้ในการตั้งค่า",
+  "notif_permission_allow": "อนุญาต",
+  "notif_battery_title": "รักษาการแจ้งเตือนให้น่าเชื่อถือ",
+  "notif_battery_body": "บางโทรศัพท์บล็อกแอปพื้นหลังเพื่อประหยัดแบตเตอรี่ อนุญาตให้ Adhkaar 365 ทำงานในพื้นหลังเพื่อไม่พลาดการแจ้งเตือนละหมาด",
+  "notif_battery_allow": "อนุญาตในพื้นหลัง",
+  "notif_battery_skip": "ข้ามตอนนี้",
+  "notif_status_disabled": "การแจ้งเตือนถูกปิดอยู่",
+  "notif_status_disabled_sub": "แตะเพื่อเปิดการเตือนละหมาดและอัซการ",
+  "notif_fix_btn": "แก้ไขการแจ้งเตือน",
+  "notif_battery_fix": "แก้ไขแบตเตอรี่การแจ้งเตือน",
+  "notif_battery_fix_sub": "ป้องกัน Samsung/Xiaomi ปิดการเตือน",
+  "notif_battery_fixed": "แก้ไขการปรับแบตเตอรี่แล้ว!",
+  "notif_test_btn": "ส่งการแจ้งเตือนทดสอบ",
+  "notif_test_sub": "ทดสอบการแจ้งเตือนทันทีและสัญญาณเตือน 10 วินาที",
+  "notif_test_sent": "ส่งทดสอบแล้ว! จะได้รับการแจ้งเตือนทันทีและสัญญาณเตือนหลัง 10 วินาที"
 }

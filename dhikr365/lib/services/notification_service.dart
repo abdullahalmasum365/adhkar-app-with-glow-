@@ -44,9 +44,12 @@ class _IDs {
   static const int maghribBase = 2040; // 2040–2049
   static const int ishaBase = 2050; // 2050–2059
 
-  // Channel IDs
-  static const String adhkarChannelId = 'adhkaar_adhkar';
-  static const String prayerChannelId = 'adhkaar_prayer';
+  // Channel IDs — v2 forces fresh channel creation on install.
+  // Android ignores createNotificationChannel() if the ID already exists,
+  // so old corrupted channels (from the previous ic_notification crash) are
+  // bypassed permanently. User MUST uninstall old app before installing this.
+  static const String adhkarChannelId = 'adhkaar_adhkar_v2';
+  static const String prayerChannelId = 'adhkaar_prayer_v2';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -162,7 +165,11 @@ class NotificationService {
   // ══════════════════════════════════════════════════════════════════════════
 
   Future<void> _initLocalNotifications() async {
-    const android = AndroidInitializationSettings('@mipmap/launcher_icon');
+    // '@drawable/ic_stat_notification' is a monochrome white crescent/star.
+    // Android 5+ REQUIRES status-bar icons to be white-only — a full-colour
+    // launcher icon renders as a white rectangle blob. This dedicated white
+    // drawable is the correct approach used by Muslim Pro and all major apps.
+    const android = AndroidInitializationSettings('@drawable/ic_stat_notification');
 
     // ── iOS / macOS settings ──
     const darwin = DarwinInitializationSettings(
@@ -306,6 +313,17 @@ class NotificationService {
       await plugin?.requestExactAlarmsPermission();
     } catch (e) {
       debugPrint('[Permissions] openExactAlarmSettings error: $e');
+    }
+  }
+
+  /// Opens the system Notification settings page for this app so user
+  /// can turn notifications back ON if they tapped "Don't allow" earlier.
+  Future<void> openNotificationSettings() async {
+    if (!Platform.isAndroid) return;
+    try {
+      await _batteryChannel.invokeMethod('openNotificationSettings');
+    } catch (e) {
+      debugPrint('[Permissions] openNotificationSettings error: $e');
     }
   }
 
@@ -602,9 +620,12 @@ class NotificationService {
       channelName,
       importance: Importance.max,
       priority: Priority.max,
-      icon: '@mipmap/launcher_icon',
-      // Full-colour APP LOGO on the right side of the notification —
-      // makes it instantly recognizable as Adhkaar 365 at first glance.
+      // Status-bar small icon MUST be monochrome white (Android 5+ rule).
+      // Full-colour launcher icons appear as a grey blob on the status bar.
+      icon: '@drawable/ic_stat_notification',
+      // Full-colour app logo shown on the RIGHT side of the notification panel —
+      // this is the "large icon" slot which DOES accept colour. Makes the
+      // notification instantly recognisable as Adhkaar 365.
       largeIcon: const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
       // Small category label in the notification header (next to app name),
       // e.g. "Prayer Time" / "Adhkar Reminder".
@@ -789,7 +810,7 @@ class NotificationService {
         'Adhkar Reminders',
         importance: Importance.max,
         priority: Priority.max,
-        icon: '@mipmap/launcher_icon',
+        icon: '@drawable/ic_stat_notification',
         largeIcon:
             const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
         subText: 'Test',

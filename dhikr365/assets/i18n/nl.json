@@ -240,5 +240,21 @@
   "donation_not_available_short": "Nog niet beschikbaar",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Meldingen inschakelen",
+  "notif_permission_body": "Geef Adhkaar 365 toestemming om gebedstijdwaarschuwingen en ochtend-/avondadhkar-herinneringen te sturen. U kunt dit altijd wijzigen in Instellingen.",
+  "notif_permission_allow": "Toestaan",
+  "notif_battery_title": "Herinneringen betrouwbaar houden",
+  "notif_battery_body": "Sommige telefoons blokkeren achtergrond-apps om batterij te sparen. Geef Adhkaar 365 toestemming om op de achtergrond te draaien zodat u geen gebedswaarschuwingen mist.",
+  "notif_battery_allow": "Toestaan op achtergrond",
+  "notif_battery_skip": "Nu overslaan",
+  "notif_status_disabled": "Meldingen zijn uitgeschakeld",
+  "notif_status_disabled_sub": "Tik om gebed- en adhkar-herinneringen in te schakelen",
+  "notif_fix_btn": "Meldingen repareren",
+  "notif_battery_fix": "Melding batterij fix",
+  "notif_battery_fix_sub": "Voorkom dat Samsung/Xiaomi herinneringen stopt",
+  "notif_battery_fixed": "Batterijoptimalisatie gerepareerd!",
+  "notif_test_btn": "Testmelding sturen",
+  "notif_test_sub": "Directe waarschuwing en 10s gepland alarm testen",
+  "notif_test_sent": "Test verzonden! Een directe melding en 10s alarm zullen aankomen."
 }

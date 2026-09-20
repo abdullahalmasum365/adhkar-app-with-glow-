@@ -240,5 +240,21 @@
   "donation_not_available_short": "Noch nicht verfügbar",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Benachrichtigungen aktivieren",
+  "notif_permission_body": "Erlauben Sie Adhkaar 365, Gebetszeitenbenachrichtigungen und Morgen-/Abendedhkar-Erinnerungen zu senden. Sie können dies jederzeit in den Einstellungen ändern.",
+  "notif_permission_allow": "Erlauben",
+  "notif_battery_title": "Zuverlässige Erinnerungen sicherstellen",
+  "notif_battery_body": "Einige Telefone blockieren Hintergrund-Apps zum Batteriesparen. Erlauben Sie Adhkaar 365, im Hintergrund zu laufen, damit Sie keine Gebetsbenachrichtigungen verpassen.",
+  "notif_battery_allow": "Im Hintergrund erlauben",
+  "notif_battery_skip": "Jetzt überspringen",
+  "notif_status_disabled": "Benachrichtigungen sind deaktiviert",
+  "notif_status_disabled_sub": "Tippen, um Gebets- & Adhkar-Erinnerungen zu aktivieren",
+  "notif_fix_btn": "Benachrichtigungen reparieren",
+  "notif_battery_fix": "Benachrichtigungs-Akku-Fix",
+  "notif_battery_fix_sub": "Samsung/Xiaomi am Beenden von Erinnerungen hindern",
+  "notif_battery_fixed": "Akkuoptimierung behoben!",
+  "notif_test_btn": "Testbenachrichtigung senden",
+  "notif_test_sub": "Sofortige Benachrichtigung & 10-Sekunden-Alarm testen",
+  "notif_test_sent": "Test gesendet! Sofortige Benachrichtigung und 10-Sekunden-Alarm werden eintreffen."
 }

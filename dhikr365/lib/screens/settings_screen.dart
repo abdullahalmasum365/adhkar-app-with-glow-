@@ -12,7 +12,6 @@ import 'account_screen.dart';
 import 'edit_profile_screen.dart';
 import 'splash_screen.dart';
 import '../providers/notification_provider.dart';
-import '../widgets/battery_reliability_dialogs.dart';
 import '../services/notification_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -220,6 +219,64 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               // ── Notifications ──
               _Lbl(lp.getText('notifications')),
+              FutureBuilder<bool>(
+                future: NotificationService().areNotificationsEnabled(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data == false) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 14),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade900.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.amber.shade700, width: 1.2),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.warning_amber_rounded, color: Colors.amberAccent, size: 28),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lp.getText('notif_status_disabled'),
+                                  style: AppText.body(color: Colors.amberAccent)
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  lp.getText('notif_status_disabled_sub'),
+                                  style: AppText.manrope(
+                                      fontSize: 12, color: Colors.white70),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () async {
+                              await NotificationService().openNotificationSettings();
+                              if (context.mounted) setState(() {});
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                            child: Text(
+                              lp.getText('notif_fix_btn'),
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
               _Card(
                   child: Column(children: [
                 _Tile(
@@ -252,12 +309,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _Tile(
                     icon: Icons.notifications_active_rounded,
                     color: Colors.tealAccent,
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'টেস্ট নোটিফিকেশন পাঠান'
-                        : 'Send Test Notification',
-                    subtitle: lp.locale.languageCode == 'bn'
-                        ? 'নোটিফিকেশন ও সাউন্ড টেস্ট করুন (১০ সেকেন্ডের টেস্ট)'
-                        : 'Test instant alert & 10s scheduled alarm',
+                    title: lp.getText('notif_test_btn'),
+                    subtitle: lp.getText('notif_test_sub'),
                     onTap: () async {
                       final svc = NotificationService();
                       final hasPermission = await svc.areNotificationsEnabled();
@@ -273,9 +326,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                             content: Text(
-                              lp.locale.languageCode == 'bn'
-                                  ? 'টেস্ট পাঠানো হয়েছে! এখনই নোটিফিকেশন আসবে এবং ১০ সেকেন্ড পর শিডিউল অ্যালার্ম বাজবে।'
-                                  : 'Test sent! Instant notification and a 10s scheduled alarm will arrive.',
+                              lp.getText('notif_test_sent'),
                               style: AppText.body(color: AppColors.onPrimary),
                             ),
                           ),
@@ -286,13 +337,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _Tile(
                     icon: Icons.battery_saver_rounded,
                     color: Colors.amberAccent,
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'নোটিফিকেশন রিলায়েবিলিটি ফিক্স'
-                        : 'Notification Reliability Fix',
-                    subtitle: lp.locale.languageCode == 'bn'
-                        ? 'স্যামসাং, শাওমি বা অপ্পো ফোনে অ্যালার্ম ড্রপ বন্ধ করুন'
-                        : 'Keep reminders reliable on Xiaomi/Samsung/Oppo',
-                    onTap: () => runNotificationReliabilityTips(context)),
+                    title: lp.getText('notif_battery_fix'),
+                    subtitle: lp.getText('notif_battery_fix_sub'),
+                    onTap: () async {
+                      final svc = NotificationService();
+                      // 1. Request battery optimization exemption (system dialog)
+                      await svc.requestBatteryOptimizationExemption();
+                      // 2. Request exact alarm permission (system dialog)
+                      await svc.openExactAlarmSettings();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green.shade700,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            content: Text(
+                              lp.getText('notif_battery_fixed'),
+                              style: AppText.body(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      }
+                    }),
               ])),
               const SizedBox(height: 22),
 
@@ -424,18 +491,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               // ── Notification Reliability Tips ──
               // Re-runnable any time — battery-optimization + OEM Autostart
-              // explainers, the same dialogs shown once automatically at
-              // first launch. Nothing here is forced; the user opts in.
-              _Card(
-                child: _Tile(
-                  icon: Icons.shield_moon_rounded,
-                  color: Colors.lightBlueAccent,
-                  title: 'Notification Reliability Tips',
-                  subtitle: 'Make sure reminders never get delayed',
-                  onTap: () => runNotificationReliabilityTips(context),
-                ),
-              ),
-              const SizedBox(height: 22),
+
 
               // ── Appearance ──
               _Lbl(lp.getText('appearance')),

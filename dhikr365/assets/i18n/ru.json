@@ -240,5 +240,21 @@
   "donation_not_available_short": "Пока недоступно",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Включить уведомления",
+  "notif_permission_body": "Разрешите Adhkaar 365 отправлять уведомления о времени молитвы и напоминания об утреннем/вечернем азкаре. Вы можете изменить это в Настройках.",
+  "notif_permission_allow": "Разрешить",
+  "notif_battery_title": "Сохранить надёжность напоминаний",
+  "notif_battery_body": "Некоторые телефоны блокируют фоновые приложения для экономии батареи. Разрешите Adhkaar 365 работать в фоне, чтобы не пропустить уведомления о молитве.",
+  "notif_battery_allow": "Разрешить в фоне",
+  "notif_battery_skip": "Пропустить",
+  "notif_status_disabled": "Уведомления отключены",
+  "notif_status_disabled_sub": "Нажмите для включения напоминаний о молитве и азкаре",
+  "notif_fix_btn": "Исправить уведомления",
+  "notif_battery_fix": "Исправление батареи уведомлений",
+  "notif_battery_fix_sub": "Запретить Samsung/Xiaomi отключать напоминания",
+  "notif_battery_fixed": "Оптимизация батареи исправлена!",
+  "notif_test_btn": "Отправить тест уведомления",
+  "notif_test_sub": "Тест мгновенного оповещения и 10с запланированного будильника",
+  "notif_test_sent": "Тест отправлен! Придёт мгновенное уведомление и будильник через 10с."
 }

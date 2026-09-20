@@ -240,5 +240,21 @@
   "donation_not_available_short": "Belum tersedia",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Aktifkan Notifikasi",
+  "notif_permission_body": "Izinkan Adhkaar 365 mengirim peringatan waktu shalat dan pengingat dzikir pagi/sore. Anda dapat mengubahnya kapan saja di Pengaturan.",
+  "notif_permission_allow": "Izinkan",
+  "notif_battery_title": "Jaga Pengingat Tetap Andal",
+  "notif_battery_body": "Beberapa ponsel memblokir aplikasi latar belakang untuk menghemat baterai. Izinkan Adhkaar 365 berjalan di latar belakang agar peringatan shalat tidak terlewat.",
+  "notif_battery_allow": "Izinkan di Latar Belakang",
+  "notif_battery_skip": "Lewati untuk Sekarang",
+  "notif_status_disabled": "Notifikasi dinonaktifkan",
+  "notif_status_disabled_sub": "Ketuk untuk mengaktifkan pengingat shalat & dzikir",
+  "notif_fix_btn": "Perbaiki Notifikasi",
+  "notif_battery_fix": "Perbaikan Baterai Notifikasi",
+  "notif_battery_fix_sub": "Cegah Samsung/Xiaomi mematikan pengingat",
+  "notif_battery_fixed": "Optimasi baterai berhasil diperbaiki!",
+  "notif_test_btn": "Kirim Notifikasi Uji Coba",
+  "notif_test_sub": "Uji peringatan instan & alarm terjadwal 10 detik",
+  "notif_test_sent": "Uji berhasil dikirim! Notifikasi instan dan alarm 10 detik akan segera tiba."
 }

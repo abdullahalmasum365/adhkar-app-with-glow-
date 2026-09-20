@@ -240,5 +240,21 @@
   "donation_not_available_short": "غير متاح بعد",
   "travel": "السفر والتنقل",
   "shifa": "الشفاء وعيادة المريض",
-  "distress": "الهم والحزن وقضاء الدين"
+  "distress": "الهم والحزن وقضاء الدين",
+  "notif_permission_title": "تفعيل الإشعارات",
+  "notif_permission_body": "اسمح لـ Adhkaar 365 بإرسال تنبيهات أوقات الصلاة وتذكيرات أذكار الصباح والمساء. يمكنك تغيير ذلك في الإعدادات.",
+  "notif_permission_allow": "السماح",
+  "notif_battery_title": "الحفاظ على موثوقية التذكيرات",
+  "notif_battery_body": "بعض الهواتف تمنع التطبيقات من العمل في الخلفية لتوفير البطارية. اسمح لـ Adhkaar 365 بالعمل في الخلفية حتى لا تفوتك تنبيهات الصلاة.",
+  "notif_battery_allow": "السماح بالعمل في الخلفية",
+  "notif_battery_skip": "تخطي الآن",
+  "notif_status_disabled": "الإشعارات معطلة",
+  "notif_status_disabled_sub": "انقر لتفعيل تذكيرات الصلاة والأذكار",
+  "notif_fix_btn": "إصلاح الإشعارات",
+  "notif_battery_fix": "إصلاح بطارية الإشعارات",
+  "notif_battery_fix_sub": "منع Samsung/Xiaomi من إيقاف التذكيرات",
+  "notif_battery_fixed": "تم إصلاح تحسين البطارية!",
+  "notif_test_btn": "إرسال إشعار تجريبي",
+  "notif_test_sub": "اختبار تنبيه فوري وإنذار مجدول بعد 10 ثواني",
+  "notif_test_sent": "تم الإرسال! سيصل إشعار فوري وإنذار مجدول بعد 10 ثواني."
 }

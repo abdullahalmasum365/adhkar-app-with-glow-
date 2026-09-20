@@ -240,5 +240,21 @@
   "donation_not_available_short": "ابھی دستیاب نہیں",
   "travel": "سفر اور سواری",
   "shifa": "شفاء اور عیادت",
-  "distress": "پریشانی اور قرض سے نجات"
+  "distress": "پریشانی اور قرض سے نجات",
+  "notif_permission_title": "اطلاعات فعال کریں",
+  "notif_permission_body": "Adhkaar 365 کو نماز کے اوقات کی تنبیہات اور صبح/شام کے اذکار کی یادہانی بھیجنے کی اجازت دیں۔ آپ یہ ترتیبات میں کبھی بھی تبدیل کر سکتے ہیں۔",
+  "notif_permission_allow": "اجازت دیں",
+  "notif_battery_title": "یادہانی کو قابل اعتماد رکھیں",
+  "notif_battery_body": "کچھ فون بیٹری بچانے کے لیے پس منظر کی ایپس کو بلاک کرتے ہیں۔ Adhkaar 365 کو پس منظر میں چلانے کی اجازت دیں تاکہ نماز کی تنبیہات نہ چھوٹیں۔",
+  "notif_battery_allow": "پس منظر میں اجازت دیں",
+  "notif_battery_skip": "ابھی چھوڑیں",
+  "notif_status_disabled": "اطلاعات بند ہیں",
+  "notif_status_disabled_sub": "نماز اور اذکار کی یادہانی فعال کرنے کے لیے ٹیپ کریں",
+  "notif_fix_btn": "اطلاعات ٹھیک کریں",
+  "notif_battery_fix": "اطلاع بیٹری فکس",
+  "notif_battery_fix_sub": "Samsung/Xiaomi کو یادہانی بند کرنے سے روکیں",
+  "notif_battery_fixed": "بیٹری آپٹیمائزیشن ٹھیک ہو گئی!",
+  "notif_test_btn": "ٹیسٹ اطلاع بھیجیں",
+  "notif_test_sub": "فوری الرٹ اور 10 سیکنڈ والے شیڈول الارم کا ٹیسٹ",
+  "notif_test_sent": "ٹیسٹ بھیجا گیا! فوری اطلاع اور 10 سیکنڈ بعد الارم آئے گا۔"
 }

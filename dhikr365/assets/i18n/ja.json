@@ -240,5 +240,21 @@
   "donation_not_available_short": "まだ利用できません",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "通知を有効にする",
+  "notif_permission_body": "Adhkaar 365が礼拝時間のアラートと朝夕のアズカールのリマインダーを送信することを許可してください。設定でいつでも変更できます。",
+  "notif_permission_allow": "許可する",
+  "notif_battery_title": "リマインダーの信頼性を保つ",
+  "notif_battery_body": "一部のスマートフォンはバッテリー節約のためバックグラウンドアプリをブロックします。Adhkaar 365のバックグラウンド動作を許可して礼拝アラートを見逃さないようにしましょう。",
+  "notif_battery_allow": "バックグラウンドを許可",
+  "notif_battery_skip": "今はスキップ",
+  "notif_status_disabled": "通知がオフです",
+  "notif_status_disabled_sub": "礼拝とアズカールのリマインダーを有効にするにはタップ",
+  "notif_fix_btn": "通知を修正する",
+  "notif_battery_fix": "通知バッテリー修正",
+  "notif_battery_fix_sub": "Samsung/XiaomiによるリマインダーのKillを防ぐ",
+  "notif_battery_fixed": "バッテリー最適化が修正されました！",
+  "notif_test_btn": "テスト通知を送信",
+  "notif_test_sub": "即時アラートと10秒スケジュールアラームをテスト",
+  "notif_test_sent": "テスト送信完了！即時通知と10秒後のスケジュールアラームが届きます。"
 }

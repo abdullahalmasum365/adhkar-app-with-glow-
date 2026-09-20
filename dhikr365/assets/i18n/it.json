@@ -240,5 +240,21 @@
   "donation_not_available_short": "Non ancora disponibile",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
-  "distress": "Anxiety & Debt Relief"
+  "distress": "Anxiety & Debt Relief",
+  "notif_permission_title": "Attiva le notifiche",
+  "notif_permission_body": "Consenti ad Adhkaar 365 di inviare avvisi sugli orari di preghiera e promemoria degli adhkar mattina/sera. Puoi cambiarlo in Impostazioni.",
+  "notif_permission_allow": "Consenti",
+  "notif_battery_title": "Mantieni i promemoria affidabili",
+  "notif_battery_body": "Alcuni telefoni bloccano le app in background per risparmiare batteria. Consenti ad Adhkaar 365 di funzionare in background per non perdere gli avvisi di preghiera.",
+  "notif_battery_allow": "Consenti in background",
+  "notif_battery_skip": "Salta per ora",
+  "notif_status_disabled": "Le notifiche sono disattivate",
+  "notif_status_disabled_sub": "Tocca per attivare i promemoria di preghiera e adhkar",
+  "notif_fix_btn": "Ripara le notifiche",
+  "notif_battery_fix": "Correzione batteria notifiche",
+  "notif_battery_fix_sub": "Impedire a Samsung/Xiaomi di terminare i promemoria",
+  "notif_battery_fixed": "Ottimizzazione batteria corretta!",
+  "notif_test_btn": "Invia notifica di prova",
+  "notif_test_sub": "Testa avviso immediato e allarme programmato 10s",
+  "notif_test_sent": "Test inviato! Arriverà una notifica immediata e un allarme a 10s."
 }
