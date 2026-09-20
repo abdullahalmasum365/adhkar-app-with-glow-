@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:622768800935:android:136846a08dcdcba5180782",
         "android_client_info": {
-          "package_name": "com.example.dhikr365"
+          "package_name": "com.adhkaar365.app"
         }
       },
       "oauth_client": [
@@ -17,8 +17,16 @@
           "client_id": "622768800935-qfrp2bg5vfj9slct8kjjt15qsaorumth.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.dhikr365",
+            "package_name": "com.adhkaar365.app",
             "certificate_hash": "31ad8700734292b81fe3fcbbd1b0a18752786371"
+          }
+        },
+        {
+          "client_id": "622768800935-s9cslcbdka9afek2342ng3thdb5eumjp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adhkaar365.app",
+            "certificate_hash": "775f01ef6ddabf0ba49c256ccf9770057f66d0b3"
           }
         },
         {

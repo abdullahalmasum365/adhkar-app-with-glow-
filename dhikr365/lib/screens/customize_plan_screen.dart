@@ -3,29 +3,54 @@ import 'package:provider/provider.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/custom_plan_provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/purchase_provider.dart';
 import '../models/dhikr.dart';
 import '../constants/app_theme.dart';
+import '../widgets/pro_paywall_sheet.dart';
 
 class CustomizePlanScreen extends StatelessWidget {
   const CustomizePlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final purchaseProvider = Provider.of<PurchaseProvider>(context);
+    if (!purchaseProvider.isPro) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context);
+        showProPaywallModal(context);
+      });
+    }
+
     final dp = Provider.of<DhikrProvider>(context);
     final cp = Provider.of<CustomPlanProvider>(context);
     final lp = Provider.of<LanguageProvider>(context);
 
-    final morning    = dp.getMorningDhikrs();
-    final evening    = dp.getEveningDhikrs();
+    final morning = dp.getMorningDhikrs();
+    final evening = dp.getEveningDhikrs();
     final protection = dp.getProtectionDhikrs();
-    final focus      = dp.getFocusDhikrs();
-    final parents    = dp.getParentsDhikrs();
-    final graveyard  = dp.getGraveyardDhikrs();
-    final food       = dp.getFoodDhikrs();
+    final focus = dp.getFocusDhikrs();
+    final parents = dp.getParentsDhikrs();
+    final graveyard = dp.getGraveyardDhikrs();
+    final food = dp.getFoodDhikrs();
+    final afterSalah = dp.getAfterSalahDhikrs();
+    final beforeSleep = dp.getBeforeSleepDhikrs();
+    final travel = dp.getTravelDhikrs();
+    final shifa = dp.getShifaDhikrs();
+    final distress = dp.getDistressDhikrs();
 
     final allIds = [
-      ...morning, ...evening, ...protection,
-      ...focus, ...parents, ...graveyard, ...food,
+      ...morning,
+      ...evening,
+      ...protection,
+      ...focus,
+      ...parents,
+      ...graveyard,
+      ...food,
+      ...afterSalah,
+      ...beforeSleep,
+      ...travel,
+      ...shifa,
+      ...distress,
     ].map((d) => d.id).toList();
     final allOn = allIds.every((id) => cp.enabledDhikrIds.contains(id));
 
@@ -60,6 +85,10 @@ class CustomizePlanScreen extends StatelessWidget {
           ...morning.map((d) => _Tile(d, cp)),
           _Header(lp.getText('evening_adhkar')),
           ...evening.map((d) => _Tile(d, cp)),
+          _Header(lp.getText('after_salah')),
+          ...afterSalah.map((d) => _Tile(d, cp)),
+          _Header(lp.getText('before_sleep')),
+          ...beforeSleep.map((d) => _Tile(d, cp)),
           _Header(lp.getText('protection')),
           ...protection.map((d) => _Tile(d, cp)),
           _Header(lp.getText('focus')),
@@ -70,6 +99,12 @@ class CustomizePlanScreen extends StatelessWidget {
           ...graveyard.map((d) => _Tile(d, cp)),
           _Header(lp.getText('food_eating')),
           ...food.map((d) => _Tile(d, cp)),
+          _Header(lp.getText('travel')),
+          ...travel.map((d) => _Tile(d, cp)),
+          _Header(lp.getText('shifa')),
+          ...shifa.map((d) => _Tile(d, cp)),
+          _Header(lp.getText('distress')),
+          ...distress.map((d) => _Tile(d, cp)),
         ],
       ),
     );
@@ -117,7 +152,7 @@ class _Tile extends StatelessWidget {
           width: 34,
           height: 34,
           decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.12),
+              color: AppColors.primary.withValues(alpha: 0.12),
               shape: BoxShape.circle),
           child: Center(
               child: Text('${dhikr.targetCount}',

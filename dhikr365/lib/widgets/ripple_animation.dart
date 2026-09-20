@@ -33,7 +33,9 @@ class _RippleAnimationState extends State<RippleAnimation> {
         key: UniqueKey(),
         position: position,
         onComplete: (key) {
-          if (mounted) setState(() => _ripples.removeWhere((e) => e.key == key));
+          if (mounted) {
+            setState(() => _ripples.removeWhere((e) => e.key == key));
+          }
         },
       ));
     });
@@ -74,7 +76,7 @@ class _RippleState extends State<_Ripple> with SingleTickerProviderStateMixin {
     super.initState();
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 600));
-    _scale   = Tween<double>(begin: 0.0, end: 2.0).animate(_controller);
+    _scale = Tween<double>(begin: 0.0, end: 2.0).animate(_controller);
     _opacity = Tween<double>(begin: 0.5, end: 0.0).animate(_controller);
     _controller.forward().then((_) {
       if (widget.key != null) widget.onComplete(widget.key!);
@@ -103,7 +105,7 @@ class _RippleState extends State<_Ripple> with SingleTickerProviderStateMixin {
               height: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: ThemeProvider.etherealSage.withOpacity(0.3),
+                color: ThemeProvider.etherealSage.withValues(alpha: 0.3),
               ),
             ),
           ),

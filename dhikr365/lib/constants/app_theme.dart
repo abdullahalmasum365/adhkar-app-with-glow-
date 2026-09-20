@@ -544,12 +544,12 @@ abstract class AppColors {
 
   /// Replaces `Colors.white.withOpacity(x)`: white ink on dark surfaces,
   /// deep purple-ink on light ones — readable in both themes.
-  static Color ink(double opacity) => _p.ink.withOpacity(opacity);
+  static Color ink(double opacity) => _p.ink.withValues(alpha: opacity);
 
   /// Replaces `Colors.black.withOpacity(x)` for shadows — scaled down on
   /// light surfaces where heavy black shadows look muddy.
-  static Color shadow(double opacity) =>
-      Colors.black.withOpacity((opacity * _p.shadowScale).clamp(0.0, 1.0));
+  static Color shadow(double opacity) => Colors.black
+      .withValues(alpha: (opacity * _p.shadowScale).clamp(0.0, 1.0));
 }
 
 abstract class AppText {

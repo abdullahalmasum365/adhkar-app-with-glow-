@@ -38,11 +38,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   provider: ^6.1.2
-  google_fonts: ^6.2.1
+  google_fonts: ^8.2.1
   flutter_animate: ^4.5.0
   shared_preferences: ^2.3.2
   hijri: ^3.0.0
-  intl: ^0.19.0
+  intl: ^0.20.3
   audioplayers: ^6.1.0
   flutter_local_notifications: ^17.2.3
   percent_indicator: ^4.2.3
@@ -119,6 +119,9 @@ flutter:
     - assets/translations/graveyard/
     - assets/translations/after_salah/
     - assets/translations/before_sleep/
+    - assets/translations/travel/
+    - assets/translations/shifa/
+    - assets/translations/distress/
     - assets/i18n/
     - assets/audio/
     - assets/data/

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -117,11 +118,24 @@ class CustomPlanProvider extends ChangeNotifier {
     final doc = _cloudDoc;
     if (doc == null) return;
     try {
+      // Security-First: Verify that current authenticated Firebase user matches _uid
+      final currentAuthUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentAuthUid == null || currentAuthUid != _uid) {
+        debugPrint('[CustomPlanProvider] Cloud push skipped: unauthenticated or UID mismatch.');
+        return;
+      }
+
+      // Sanitize dhikr IDs (clean string, max 150 items)
+      final sanitizedList = _enabledDhikrIds
+          .where((id) => id.trim().isNotEmpty)
+          .take(150)
+          .toList();
+
       await doc.set({
-        'enabledDhikrIds': _enabledDhikrIds.toList(),
+        'enabledDhikrIds': sanitizedList,
         'useCustomPlan': _useCustomPlan,
         'updatedAt': FieldValue.serverTimestamp(),
-      });
+      }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('[CustomPlanProvider] cloud push failed: $e');
     }

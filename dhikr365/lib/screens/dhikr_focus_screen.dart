@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,21 +24,25 @@ class DhikrFocusScreen extends StatefulWidget {
 }
 
 class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
-  int  _count   = 0;
+  int _count = 0;
   bool _pressed = false;
 
   // ── Mini player state ───────────────────────────────────────────────────
   final AudioService _audio = AudioService();
-  final TtsService   _tts   = TtsService();
-  bool _showPlayer     = false;
-  bool _playerPlaying  = false;
-  bool _usingTts       = false;
+  final TtsService _tts = TtsService();
+  bool _showPlayer = false;
+  bool _playerPlaying = false;
+  bool _usingTts = false;
   Duration _position = Duration.zero;
-  Duration _duration  = Duration.zero;
+  Duration _duration = Duration.zero;
   int _repeatTarget = 1; // how many times to play (0 = infinite)
   int _repeatsDone = 0;
   bool _completed = false; // finished all repeats — next play restarts at 0
   double? _dragProgress; // non-null while the user drags the seek bar
+  StreamSubscription<PlayerState>? _stateSub;
+  StreamSubscription<Duration>? _posSub;
+  StreamSubscription<Duration?>? _durSub;
+  StreamSubscription<void>? _completeSub;
 
   static const _speeds = [0.75, 1.0, 1.25, 1.5];
 
@@ -75,11 +80,13 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
   }
 
   void _repeatMinus() => setState(() {
-        _repeatTarget = _repeatTarget == 0 ? 1 : (_repeatTarget - 1).clamp(1, 999);
+        _repeatTarget =
+            _repeatTarget == 0 ? 1 : (_repeatTarget - 1).clamp(1, 999);
       });
 
   void _repeatPlus() => setState(() {
-        _repeatTarget = _repeatTarget == 0 ? 1 : (_repeatTarget + 1).clamp(1, 999);
+        _repeatTarget =
+            _repeatTarget == 0 ? 1 : (_repeatTarget + 1).clamp(1, 999);
       });
 
   Future<void> _pickRepeatCount() async {
@@ -91,22 +98,34 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
   void initState() {
     super.initState();
     WakelockPlus.enable();
-    _audio.stateStream.listen((s) {
+    _stateSub = _audio.stateStream.listen((s) {
       if (!mounted) return;
       setState(() => _playerPlaying = s == PlayerState.playing);
     });
-    _audio.positionStream.listen((p) {
+    _posSub = _audio.positionStream.listen((p) {
       if (!mounted) return;
       setState(() => _position = p);
     });
-    _audio.durationStream.listen((d) {
+    _durSub = _audio.durationStream.listen((d) {
       if (!mounted) return;
       setState(() => _duration = d ?? Duration.zero);
     });
-    _audio.onComplete.listen((_) {
+    _completeSub = _audio.onComplete.listen((_) {
       if (!mounted) return;
       _handleRepeatComplete();
     });
+  }
+
+  @override
+  void dispose() {
+    _stateSub?.cancel();
+    _posSub?.cancel();
+    _durSub?.cancel();
+    _completeSub?.cancel();
+    _audio.stop();
+    _tts.stop();
+    WakelockPlus.disable();
+    super.dispose();
   }
 
   String? _resolveAudioPath() {
@@ -142,11 +161,18 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
     final path = _resolveAudioPath();
     if (path != null) {
       final ok = await _audio.playPath(path);
-      if (ok) { setState(() => _usingTts = false); return; }
+      if (ok) {
+        setState(() => _usingTts = false);
+        return;
+      }
     }
     if (widget.dhikr.arabicText.isNotEmpty) {
-      setState(() { _usingTts = true; _playerPlaying = true; });
-      final ok = await _tts.speak(widget.dhikr.arabicText, lang: 'ar-SA', onComplete: () {
+      setState(() {
+        _usingTts = true;
+        _playerPlaying = true;
+      });
+      final ok = await _tts.speak(widget.dhikr.arabicText, lang: 'ar-SA',
+          onComplete: () {
         if (mounted) _handleRepeatComplete();
       });
       if (!ok) _showTtsUnavailable();
@@ -196,25 +222,32 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
       _audio.stop();
       _tts.stop();
       setState(() {
-        _showPlayer      = false;
-        _usingTts        = false;
-        _position        = Duration.zero;
-        _duration        = Duration.zero;
-        _repeatsDone     = 0;
-        _playerPlaying   = false;
-        _completed       = false;
-        _dragProgress    = null;
+        _showPlayer = false;
+        _usingTts = false;
+        _position = Duration.zero;
+        _duration = Duration.zero;
+        _repeatsDone = 0;
+        _playerPlaying = false;
+        _completed = false;
+        _dragProgress = null;
       });
     } else {
-      setState(() { _showPlayer = true; _repeatsDone = 0; _usingTts = false; });
+      setState(() {
+        _showPlayer = true;
+        _repeatsDone = 0;
+        _usingTts = false;
+      });
       _startPlayback();
     }
   }
 
   void _onPlayPause() {
     if (_playerPlaying) {
-      if (_usingTts) { _tts.pause(); }
-      else           { _audio.pause(); }
+      if (_usingTts) {
+        _tts.pause();
+      } else {
+        _audio.pause();
+      }
       setState(() => _playerPlaying = false);
     } else {
       if (_usingTts) {
@@ -233,14 +266,6 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
         _startPlayback();
       }
     }
-  }
-
-  @override
-  void dispose() {
-    _audio.stop();
-    _tts.stop();
-    WakelockPlus.disable();
-    super.dispose();
   }
 
   // ── Mini player (shown above the footer tap button) ──────────────────────
@@ -271,9 +296,9 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
             child: Container(
               padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
               decoration: BoxDecoration(
-                color: AppColors.playerSurface.withOpacity(0.93),
+                color: AppColors.playerSurface.withValues(alpha: 0.93),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: amber.withOpacity(0.22)),
+                border: Border.all(color: amber.withValues(alpha: 0.22)),
                 boxShadow: [
                   BoxShadow(color: AppColors.shadow(0.4), blurRadius: 24),
                 ],
@@ -282,30 +307,35 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                 // Title + close
                 Row(children: [
                   Container(
-                    width: 30, height: 30,
+                    width: 30,
+                    height: 30,
                     decoration: BoxDecoration(
-                      color: amber.withOpacity(0.15),
+                      color: amber.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       _usingTts
                           ? Icons.record_voice_over_rounded
                           : Icons.music_note_rounded,
-                      color: amber, size: 15,
+                      color: amber,
+                      size: 15,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(widget.dhikr.title,
-                        maxLines: 1, overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w700,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary)),
                   ),
                   GestureDetector(
                     onTap: _togglePlayer,
                     child: Container(
-                      width: 28, height: 28,
+                      width: 28,
+                      height: 28,
                       decoration: BoxDecoration(
                         color: AppColors.ink(0.07),
                         shape: BoxShape.circle,
@@ -329,8 +359,10 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                         Text(
                           _playerPlaying ? 'RECITING ARABIC...' : 'PAUSED',
                           style: TextStyle(
-                            fontSize: 9, fontWeight: FontWeight.w800,
-                            letterSpacing: 1.4, color: amber,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: 1.4,
+                            color: amber,
                           ),
                         ),
                       ],
@@ -347,15 +379,14 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                       activeTrackColor: amber,
                       inactiveTrackColor: AppColors.ink(0.12),
                       thumbColor: amber,
-                      overlayColor: amber.withOpacity(0.15),
+                      overlayColor: amber.withValues(alpha: 0.15),
                     ),
                     // Drag anywhere on the bar: thumb follows the finger
                     // (no fighting with the live position stream) and the
                     // actual seek fires once, when the finger lifts.
                     child: Slider(
                       value: _dragProgress ?? progress,
-                      onChangeStart: (v) =>
-                          setState(() => _dragProgress = v),
+                      onChangeStart: (v) => setState(() => _dragProgress = v),
                       onChanged: (v) => setState(() => _dragProgress = v),
                       onChangeEnd: (v) async {
                         final ms = (_duration.inMilliseconds * v).toInt();
@@ -401,21 +432,23 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                         _onPlayPause();
                       },
                       child: Container(
-                        width: 46, height: 46,
+                        width: 46,
+                        height: 46,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: amber,
                           boxShadow: [
                             BoxShadow(
-                                color: amber.withOpacity(0.35),
+                                color: amber.withValues(alpha: 0.35),
                                 blurRadius: 14),
                           ],
                         ),
                         child: Icon(
-                          _playerPlaying
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
-                          color: AppColors.onAccent, size: 26),
+                            _playerPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            color: AppColors.onAccent,
+                            size: 26),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -442,16 +475,15 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                         decoration: BoxDecoration(
                           color: AppColors.ink(0.07),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: AppColors.ink(0.1)),
+                          border: Border.all(color: AppColors.ink(0.1)),
                         ),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Icon(Icons.repeat_rounded,
-                              color: amber, size: 12),
+                          Icon(Icons.repeat_rounded, color: amber, size: 12),
                           const SizedBox(width: 5),
                           Text(_repeatLabel,
                               style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
                                   color: AppColors.textPrimary)),
                           const SizedBox(width: 4),
                           Icon(Icons.edit_rounded,
@@ -471,18 +503,19 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                             horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: _audio.rate != 1.0
-                              ? amber.withOpacity(0.15)
+                              ? amber.withValues(alpha: 0.15)
                               : AppColors.ink(0.07),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: _audio.rate != 1.0
-                                ? amber.withOpacity(0.5)
+                                ? amber.withValues(alpha: 0.5)
                                 : AppColors.ink(0.1),
                           ),
                         ),
                         child: Text(_speedLabel,
                             style: TextStyle(
-                                fontSize: 11, fontWeight: FontWeight.w800,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
                                 color: _audio.rate != 1.0
                                     ? amber
                                     : AppColors.textPrimary)),
@@ -495,7 +528,10 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
           ),
         )
             .animate()
-            .slideY(begin: 0.3, end: 0, duration: 300.ms,
+            .slideY(
+                begin: 0.3,
+                end: 0,
+                duration: 300.ms,
                 curve: Curves.easeOutCubic)
             .fadeIn(duration: 200.ms),
       ),
@@ -506,15 +542,16 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
   Widget build(BuildContext context) {
     R.init(context);
 
-    final lp           = Provider.of<LanguageProvider>(context);
-    final showTranslit = Provider.of<ThemeProvider>(context).showTransliteration;
-    final target       = widget.dhikr.targetCount;
-    final label      = target > 0 ? '$target' : '∞';
-    final prog       = target > 0 ? (_count / target).clamp(0.0, 1.0) : null;
+    final lp = Provider.of<LanguageProvider>(context);
+    final showTranslit =
+        Provider.of<ThemeProvider>(context).showTransliteration;
+    final target = widget.dhikr.targetCount;
+    final label = target > 0 ? '$target' : '∞';
+    final prog = target > 0 ? (_count / target).clamp(0.0, 1.0) : null;
     final arabicSize = R.adaptive(28.0, 36.0, 44.0);
-    final countSize  = R.adaptive(40.0, 48.0, 58.0);
-    final btnPadV    = R.adaptive(22.0, 28.0, 36.0);
-    final headerPad  = R.px(18);
+    final countSize = R.adaptive(40.0, 48.0, 58.0);
+    final btnPadV = R.adaptive(22.0, 28.0, 36.0);
+    final headerPad = R.px(18);
 
     return Scaffold(
       body: Container(
@@ -535,7 +572,8 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                     headerPad, headerPad, headerPad, R.px(10)),
                 child: Row(children: [
                   _Btn(Icons.close, onTap: () => Navigator.pop(context)),
-                  Expanded(child: Column(children: [
+                  Expanded(
+                      child: Column(children: [
                     Text(lp.getText('focus_mode').toUpperCase(),
                         style: AppText.label(color: AppColors.ink(0.38))),
                     SizedBox(height: R.px(2)),
@@ -554,14 +592,18 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                         widget.dhikr.category == DhikrCategory.evening) ...[
                       SizedBox(width: R.px(8)),
                       _Btn(
-                        _showPlayer ? Icons.music_note_rounded : Icons.play_arrow,
+                        _showPlayer
+                            ? Icons.music_note_rounded
+                            : Icons.play_arrow,
                         color: _showPlayer
-                            ? AppColors.primary.withOpacity(0.25)
+                            ? AppColors.primary.withValues(alpha: 0.25)
                             : AppColors.ink(0.06),
                         border: _showPlayer
-                            ? AppColors.primary.withOpacity(0.4)
+                            ? AppColors.primary.withValues(alpha: 0.4)
                             : AppColors.ink(0.1),
-                        iconColor: _showPlayer ? AppColors.primary : AppColors.ink(0.70),
+                        iconColor: _showPlayer
+                            ? AppColors.primary
+                            : AppColors.ink(0.70),
                         onTap: _togglePlayer,
                       ),
                     ],
@@ -578,8 +620,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                       value: prog,
                       minHeight: 3,
                       backgroundColor: AppColors.ink(0.08),
-                      valueColor:
-                          AlwaysStoppedAnimation(AppColors.primary),
+                      valueColor: AlwaysStoppedAnimation(AppColors.primary),
                     ),
                   ),
                 ),
@@ -599,15 +640,15 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                       // Palette-aware: warm cream on dark themes, deep ink
                       // on light themes — always readable.
                       style: AppText.amiri(
-                          fontSize: arabicSize,
-                          color: ThemeProvider.cream),
+                          fontSize: arabicSize, color: ThemeProvider.cream),
                     ),
 
                     SizedBox(height: R.px(28)),
 
                     // FIX: Transliteration uses NotoSerif for full diacritic support
                     // ā ū ī ḥ ḍ ṭ ẓ ṣ now render correctly on all devices
-                    if (showTranslit && widget.dhikr.transliteration?.isNotEmpty == true) ...[
+                    if (showTranslit &&
+                        widget.dhikr.transliteration?.isNotEmpty == true) ...[
                       Text(
                         widget.dhikr.transliteration!,
                         textAlign: TextAlign.center,
@@ -626,7 +667,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                       style: AppText.manrope(
                           fontSize: R.adaptive(14, 16, 18),
                           height: 1.7,
-                          color: ThemeProvider.cream.withOpacity(0.85)),
+                          color: ThemeProvider.cream.withValues(alpha: 0.85)),
                     ),
                   ]),
                 ),
@@ -635,18 +676,20 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
 
             // ── Tap Button Footer ─────────────────────────────────────────────
             Positioned(
-              left: 0, right: 0, bottom: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
               child: Container(
-                padding: EdgeInsets.fromLTRB(
-                    R.px(20), R.px(48), R.px(20), R.px(40)),
+                padding:
+                    EdgeInsets.fromLTRB(R.px(20), R.px(48), R.px(20), R.px(40)),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
                       AppColors.bgDark,
-                      AppColors.bgDark.withOpacity(0.9),
-                      AppColors.bgDark.withOpacity(0.0),
+                      AppColors.bgDark.withValues(alpha: 0.9),
+                      AppColors.bgDark.withValues(alpha: 0.0),
                     ],
                   ),
                 ),
@@ -663,6 +706,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(vertical: btnPadV),
                       transform: Matrix4.identity()
+                        // ignore: deprecated_member_use
                         ..scale(_pressed ? 0.97 : 1.0),
                       transformAlignment: Alignment.center,
                       decoration: BoxDecoration(
@@ -675,15 +719,14 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.primary
-                                .withOpacity(_pressed ? 0.5 : 0.25),
+                                .withValues(alpha: _pressed ? 0.5 : 0.25),
                             blurRadius: _pressed ? 40 : 20,
                           ),
                         ],
                       ),
                       child: Column(children: [
                         Text(lp.getText('tap_to_count').toUpperCase(),
-                            style: AppText.label(
-                                color: AppColors.ink(0.8))),
+                            style: AppText.label(color: AppColors.ink(0.8))),
                         SizedBox(height: R.px(6)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -754,12 +797,10 @@ class _Btn extends StatelessWidget {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: color ?? AppColors.ink(0.06),
-          border:
-              Border.all(color: border ?? AppColors.ink(0.1)),
+          border: Border.all(color: border ?? AppColors.ink(0.1)),
         ),
-        child: Icon(icon,
-            size: R.sp(17),
-            color: iconColor ?? AppColors.ink(0.7)),
+        child:
+            Icon(icon, size: R.sp(17), color: iconColor ?? AppColors.ink(0.7)),
       ),
     );
   }
@@ -775,7 +816,8 @@ class _SmallBtn extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 32, height: 32,
+        width: 32,
+        height: 32,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: AppColors.ink(0.07),

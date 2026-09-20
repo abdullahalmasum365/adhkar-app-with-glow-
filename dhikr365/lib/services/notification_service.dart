@@ -80,16 +80,82 @@ class NotificationService {
   // ── Public: called once from main() ────────────────────────────────────────
   Future<void> init() async {
     if (_initialized) return;
-    _initialized = true;
 
-    // 1. Timezone database
-    tz_data.initializeTimeZones();
-    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    // 1. Timezone database setup with multi-tier resilient fallback
+    try {
+      tz_data.initializeTimeZones();
+      String? timeZoneName;
+      try {
+        timeZoneName = await FlutterTimezone.getLocalTimezone();
+      } catch (e) {
+        debugPrint('[NotificationService] Failed to get local timezone name: $e');
+      }
+      final loc = _resolveLocation(timeZoneName);
+      tz.setLocalLocation(loc);
+      debugPrint('[NotificationService] Timezone set to: ${loc.name}');
+    } catch (e) {
+      debugPrint('[NotificationService] Critical timezone init error: $e');
+      try {
+        tz.setLocalLocation(tz.getLocation('UTC'));
+      } catch (_) {}
+    }
 
-    // 2. Local notifications setup
-    await _initLocalNotifications();
+    // 2. Local notifications setup — must always execute
+    try {
+      await _initLocalNotifications();
+      _initialized = true;
+      debugPrint('[NotificationService] Local notifications initialized successfully');
+    } catch (e) {
+      debugPrint('[NotificationService] _initLocalNotifications failed: $e');
+    }
   }
+
+  /// Resilient timezone location resolver:
+  /// 1. Tries direct lookup: tz.getLocation(timeZoneName)
+  /// 2. If fails, checks known aliases (e.g. Asia/Dacca, Asia/Calcutta, etc.)
+  /// 3. If still fails (e.g. "GMT+06:00" or raw offset), finds a timezone in
+  ///    tz.timeZoneDatabase whose current offset matches the device clock's offset.
+  /// 4. Fallback to UTC if all else fails.
+  static tz.Location _resolveLocation(String? timeZoneName) {
+    if (timeZoneName != null && timeZoneName.isNotEmpty) {
+      try {
+        return tz.getLocation(timeZoneName);
+      } catch (_) {}
+
+      final alias = _knownTimezoneAliases[timeZoneName];
+      if (alias != null) {
+        try {
+          return tz.getLocation(alias);
+        } catch (_) {}
+      }
+    }
+
+    // Fallback: match by actual device clock offset
+    final currentOffsetMs = DateTime.now().timeZoneOffset.inMilliseconds;
+    for (final loc in tz.timeZoneDatabase.locations.values) {
+      if (loc.currentTimeZone.offset == currentOffsetMs) {
+        return loc;
+      }
+    }
+
+    // Ultimate fallback
+    return tz.getLocation('UTC');
+  }
+
+  static const Map<String, String> _knownTimezoneAliases = {
+    'Asia/Dacca': 'Asia/Dhaka',
+    'Asia/Calcutta': 'Asia/Kolkata',
+    'Asia/Katmandu': 'Asia/Kathmandu',
+    'Asia/Saigon': 'Asia/Ho_Chi_Minh',
+    'Asia/Rangoon': 'Asia/Yangon',
+    'Asia/Ulan_Bator': 'Asia/Ulaanbaatar',
+    'Asia/Macao': 'Asia/Macau',
+    'Asia/Thimbu': 'Asia/Thimphu',
+    'US/Eastern': 'America/New_York',
+    'US/Central': 'America/Chicago',
+    'US/Mountain': 'America/Denver',
+    'US/Pacific': 'America/Los_Angeles',
+  };
 
   // ══════════════════════════════════════════════════════════════════════════
   // LOCAL NOTIFICATIONS — Setup
@@ -131,13 +197,13 @@ class NotificationService {
     final androidPlugin = _local.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
 
-    // Adhkar reminders channel — high importance, custom sound
+    // Adhkar reminders channel — max importance, heads-up banner, custom sound
     await androidPlugin?.createNotificationChannel(
       AndroidNotificationChannel(
         _IDs.adhkarChannelId,
         'Adhkar Reminders',
         description: 'Morning and Evening Adhkar reminders',
-        importance: Importance.high,
+        importance: Importance.max,
         playSound: true,
         sound: null,
         enableVibration: true,
@@ -146,13 +212,13 @@ class NotificationService {
       ),
     );
 
-    // Prayer alerts channel — high importance
+    // Prayer alerts channel — max importance
     await androidPlugin?.createNotificationChannel(
       const AndroidNotificationChannel(
         _IDs.prayerChannelId,
         'Prayer Time Alerts',
         description: 'Alerts for each prayer time',
-        importance: Importance.high,
+        importance: Importance.max,
         playSound: true,
         sound: null,
         enableVibration: true,
@@ -250,6 +316,18 @@ class NotificationService {
 
   /// Call after the user returns from Settings to force a fresh permission check.
   void invalidateExactAlarmCache() => _cachedCanExact = null;
+
+  /// Returns true if app notifications are enabled in system settings.
+  Future<bool> areNotificationsEnabled() async {
+    if (!Platform.isAndroid) return true;
+    try {
+      final androidPlugin = _local.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      return await androidPlugin?.areNotificationsEnabled() ?? true;
+    } catch (_) {
+      return true;
+    }
+  }
 
   Future<bool> requestPermissions() async {
     _cachedCanExact = null; // always re-check after a permission request cycle
@@ -527,8 +605,8 @@ class NotificationService {
     final androidDetails = AndroidNotificationDetails(
       channelId,
       channelName,
-      importance: Importance.high,
-      priority: Priority.high,
+      importance: Importance.max,
+      priority: Priority.max,
       icon: '@drawable/ic_notification',
       // Full-colour APP LOGO on the right side of the notification —
       // makes it instantly recognizable as Adhkaar 365 at first glance.
@@ -606,24 +684,21 @@ class NotificationService {
     try {
       await doSchedule(scheduleMode);
       debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime ($scheduleMode)');
-    } on PlatformException catch (e) {
-      // The exact-alarm permission can be revoked between the cache check and
-      // the actual schedule call. Never drop the notification: fall back to
-      // inexactAllowWhileIdle so it still fires (slightly less precisely).
-      if (e.code == 'exact_alarms_not_permitted') {
+    } catch (e) {
+      // If exact alarmClock fails for ANY reason (permission revoked, OEM security policy, etc.),
+      // fall back to inexactAllowWhileIdle so the user never loses the reminder.
+      if (scheduleMode == AndroidScheduleMode.alarmClock) {
         _cachedCanExact = false;
         lastScheduleUsedExact = false;
         try {
           await doSchedule(AndroidScheduleMode.inexactAllowWhileIdle);
-          debugPrint('[Scheduler] OK id=$id "$title" (fallback inexact)');
+          debugPrint('[Scheduler] OK id=$id "$title" (fallback inexactAllowWhileIdle)');
         } catch (e2) {
           debugPrint('[Scheduler] FAILED id=$id "$title": $e2');
         }
       } else {
         debugPrint('[Scheduler] FAILED id=$id "$title": $e');
       }
-    } catch (e) {
-      debugPrint('[Scheduler] FAILED id=$id "$title": $e');
     }
   }
 
@@ -712,22 +787,25 @@ class NotificationService {
     }
   }
 
-  /// FOR TESTING: Fires one notification immediately + one scheduled in 1 minute.
+  /// FOR TESTING: Fires one notification immediately + one scheduled in 10 seconds.
   /// Use this to verify both instant and scheduled delivery work on the device.
   Future<void> showInstantTestNotification() async {
     final details = NotificationDetails(
       android: AndroidNotificationDetails(
         _IDs.adhkarChannelId,
-        'Test Channel',
+        'Adhkar Reminders',
         importance: Importance.max,
         priority: Priority.max,
         icon: '@drawable/ic_notification',
         largeIcon:
             const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
         subText: 'Test',
-        color: AppColors.primary, // follows the active theme
+        playSound: true,
+        enableVibration: true,
+        color: AppColors.primary,
         styleInformation: const BigTextStyleInformation(
-          'Instant delivery works. Now checking scheduled delivery in 1 minute…',
+          'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।\nInstant delivery works! Checking 10-second scheduled alarm…',
+          contentTitle: '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
           summaryText: 'Adhkaar 365 ☪',
         ),
       ),
@@ -741,24 +819,25 @@ class NotificationService {
     // 1. Instant notification
     await _local.show(
       999,
-      '☪️ Adhkaar 365 — Instant OK',
-      'Instant delivery works. Now checking scheduled delivery in 1 minute…',
+      '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+      'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।',
       details,
     );
 
-    // 2. Scheduled notification 1 minute from now — proves the scheduler works
+    // 2. Scheduled notification 10 seconds from now — proves the alarm scheduler works
     await _scheduleLocalNotification(
       id: 998,
-      title: '☪️ Adhkaar 365 — Scheduled OK',
-      body: 'بارك الله فيك — Scheduled delivery works! Prayer time notifications are active.',
-      scheduledTime: DateTime.now().add(const Duration(minutes: 1)),
+      title: '⏰ Adhkaar 365 — শিডিউল অ্যালার্ম সফল!',
+      body: 'আলহামদুলিল্লাহ! শিডিউল অ্যালার্ম সফলভাবে কাজ করেছে। নামাজের ওয়াক্তে সময়মতো নোটিফিকেশন আসবে ইনশাআল্লাহ।',
+      scheduledTime: DateTime.now().add(const Duration(seconds: 10)),
       channelId: _IDs.adhkarChannelId,
       channelName: 'Adhkar Reminders',
       payload: 'test',
       sound: null,
+      subText: 'Schedule Test',
     );
 
-    debugPrint('[Test] Instant sent. Scheduled test fires in 1 minute.');
+    debugPrint('[Test] Instant sent. Scheduled test fires in 10 seconds.');
   }
 }
 

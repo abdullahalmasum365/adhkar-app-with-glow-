@@ -17,11 +17,16 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 /// Subscription product IDs — must be created as subscription base plans
 /// with these exact IDs in Play Console → Monetize → Products → Subscriptions.
 class DonationProductIds {
+  // Pro Feature products (Personal Unlock: Custom Plan, Themes, Sync)
+  static const proLifetime = 'adhkar365_pro_lifetime';
+
+  // Sadaqah Jariyah products (Monthly & Annual Subscriptions)
   static const seed = 'donation_seed_monthly';
   static const supporter = 'donation_supporter_monthly';
   static const patron = 'donation_patron_monthly';
+  static const annual = 'donation_annual_sponsor';
 
-  static const all = {seed, supporter, patron};
+  static const all = {proLifetime, seed, supporter, patron, annual};
 }
 
 class PurchaseService {

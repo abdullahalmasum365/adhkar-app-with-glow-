@@ -237,5 +237,8 @@
   "welcome_signin_body": "Accedi con Google o Apple in modo che le tue dua preferite e il tuo piano personalizzato vengano salvati nel tuo account e ripristinati su qualsiasi dispositivo. Del tutto facoltativo — puoi farlo anche più tardi dalle Impostazioni.",
   "continue_without_account": "Continua senza account",
   "donation_not_available": "Le donazioni non sono ancora attive in questa versione — ricontrolla presto.",
-  "donation_not_available_short": "Non ancora disponibile"
+  "donation_not_available_short": "Non ancora disponibile",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

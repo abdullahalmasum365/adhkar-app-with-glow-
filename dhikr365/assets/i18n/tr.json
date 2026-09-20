@@ -237,5 +237,8 @@
   "welcome_signin_body": "Favori dualarınız ve özel planınız hesabınıza kaydedilsin, her cihazda geri gelsin diye Google veya Apple ile giriş yapın. Tamamen isteğe bağlı — daha sonra Settings'ten de yapabilirsiniz.",
   "continue_without_account": "Hesap olmadan devam et",
   "donation_not_available": "Bu sürümde bağışlar henüz etkin değil — yakında tekrar kontrol edin.",
-  "donation_not_available_short": "Henüz kullanılamıyor"
+  "donation_not_available_short": "Henüz kullanılamıyor",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

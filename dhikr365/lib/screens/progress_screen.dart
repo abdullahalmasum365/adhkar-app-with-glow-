@@ -81,14 +81,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverAppBar(
-                    backgroundColor: AppColors.bgDark.withOpacity(0.85),
+                    backgroundColor: AppColors.bgDark.withValues(alpha: 0.85),
                     pinned: true,
                     elevation: 0,
                     flexibleSpace: ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child:
-                            Container(color: AppColors.bgDark.withOpacity(0.5)),
+                        child: Container(
+                            color: AppColors.bgDark.withValues(alpha: 0.5)),
                       ),
                     ),
                     title: Text(lp.getText('profile'),
@@ -111,13 +111,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                     height: avatarSize,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: AppColors.primary.withOpacity(0.1),
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.1),
                                       border: Border.all(
                                           color: AppColors.primary, width: 2),
                                       boxShadow: [
                                         BoxShadow(
                                             color: AppColors.primary
-                                                .withOpacity(0.3),
+                                                .withValues(alpha: 0.3),
                                             blurRadius: 20)
                                       ],
                                     ),
@@ -182,8 +183,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                               _Badge(Icons.workspace_premium,
                                   lp.getText('badge_7day_streak'), streak >= 7),
                               SizedBox(width: R.px(14)),
-                              _Badge(Icons.stars,
-                                  lp.getText('badge_1k_adhkar'), total >= 1000),
+                              _Badge(Icons.stars, lp.getText('badge_1k_adhkar'),
+                                  total >= 1000),
                               SizedBox(width: R.px(14)),
                               _Badge(Icons.wb_sunny,
                                   lp.getText('badge_early_bird'), false),
@@ -191,7 +192,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                               _Badge(Icons.nightlight_round,
                                   lp.getText('badge_night_prayer'), false),
                               SizedBox(width: R.px(14)),
-                              _Badge(Icons.favorite,
+                              _Badge(
+                                  Icons.favorite,
                                   lp.getText('badge_generous_donor'),
                                   user.hasDonated),
                             ],
@@ -225,19 +227,21 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                                   style: AppText.label()),
                                               SizedBox(height: R.px(4)),
                                               Text(
-                                                  R.localizeDigits(NumberFormat('#,###').format(total), langCode),
-                                                  style:
-                                                      AppText.manrope(
-                                                          fontSize: R.adaptive(
-                                                              20, 24, 30),
-                                                          fontWeight:
-                                                              FontWeight.w800)),
+                                                  R.localizeDigits(
+                                                      NumberFormat('#,###')
+                                                          .format(total),
+                                                      langCode),
+                                                  style: AppText.manrope(
+                                                      fontSize: R.adaptive(
+                                                          20, 24, 30),
+                                                      fontWeight:
+                                                          FontWeight.w800)),
                                             ]),
                                         Container(
                                           padding: EdgeInsets.all(R.px(8)),
                                           decoration: BoxDecoration(
                                               color: AppColors.primary
-                                                  .withOpacity(0.1),
+                                                  .withValues(alpha: 0.1),
                                               borderRadius:
                                                   BorderRadius.circular(
                                                       R.px(8))),
@@ -269,7 +273,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                                 color: isToday
                                                     ? AppColors.primary
                                                     : AppColors.primary
-                                                        .withOpacity(0.3),
+                                                        .withValues(alpha: 0.3),
                                                 borderRadius:
                                                     const BorderRadius.vertical(
                                                         top:
@@ -285,13 +289,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                   Container(
                                     padding: EdgeInsets.all(R.px(10)),
                                     decoration: BoxDecoration(
-                                        color:
-                                            AppColors.primary.withOpacity(0.05),
+                                        color: AppColors.primary
+                                            .withValues(alpha: 0.05),
                                         borderRadius:
                                             BorderRadius.circular(R.px(8)),
                                         border: Border.all(
                                             color: AppColors.primary
-                                                .withOpacity(0.15))),
+                                                .withValues(alpha: 0.15))),
                                     child: Row(children: [
                                       Icon(Icons.local_fire_department,
                                           color: AppColors.primary,
@@ -384,9 +388,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                           decoration: AppDeco.glassCard(
                             borderRadius: BorderRadius.circular(R.px(20)),
                           ).copyWith(
-                            color: AppColors.bgDark.withOpacity(0.92),
+                            color: AppColors.bgDark.withValues(alpha: 0.92),
                             border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3)),
+                                color:
+                                    AppColors.primary.withValues(alpha: 0.3)),
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -402,8 +407,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                               SizedBox(height: R.px(16)),
                               Text(
                                 lp.getText('progress_philosophy'),
-                                style: AppText.body(color: AppColors.textSlate300)
-                                    .copyWith(
+                                style:
+                                    AppText.body(color: AppColors.textSlate300)
+                                        .copyWith(
                                   fontSize: R.sp(R.adaptive(12, 14, 15)),
                                   height: 1.6,
                                 ),
@@ -415,13 +421,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                 onTap: _dismissNote,
                                 child: Container(
                                   width: double.infinity,
-                                  padding: EdgeInsets.symmetric(vertical: R.px(14)),
+                                  padding:
+                                      EdgeInsets.symmetric(vertical: R.px(14)),
                                   decoration: BoxDecoration(
                                     color: AppColors.primary,
-                                    borderRadius: BorderRadius.circular(R.px(12)),
+                                    borderRadius:
+                                        BorderRadius.circular(R.px(12)),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.primary.withOpacity(0.3),
+                                        color: AppColors.primary
+                                            .withValues(alpha: 0.3),
                                         blurRadius: 12,
                                       )
                                     ],
@@ -497,12 +506,12 @@ class _Badge extends StatelessWidget {
             color: AppColors.ink(0.03),
             border: Border.all(
                 color: unlocked
-                    ? AppColors.primary.withOpacity(0.4)
+                    ? AppColors.primary.withValues(alpha: 0.4)
                     : AppColors.ink(0.1)),
             boxShadow: unlocked
                 ? [
                     BoxShadow(
-                        color: AppColors.primary.withOpacity(0.25),
+                        color: AppColors.primary.withValues(alpha: 0.25),
                         blurRadius: 10)
                   ]
                 : [],
@@ -518,7 +527,9 @@ class _Badge extends StatelessWidget {
                 style: AppText.manrope(
                     fontSize: R.adaptive(9, 10, 12),
                     fontWeight: FontWeight.w600,
-                    color: unlocked ? AppColors.textPrimary : AppColors.textSlate500),
+                    color: unlocked
+                        ? AppColors.textPrimary
+                        : AppColors.textSlate500),
                 textAlign: TextAlign.center)),
       ]),
     );
@@ -542,7 +553,8 @@ class _Mile extends StatelessWidget {
                 width: R.sp(38),
                 height: R.sp(38),
                 decoration: BoxDecoration(
-                    color: color.withOpacity(0.15), shape: BoxShape.circle),
+                    color: color.withValues(alpha: 0.15),
+                    shape: BoxShape.circle),
                 child: Icon(icon, color: color, size: R.sp(18))),
             SizedBox(width: R.px(14)),
             Expanded(

@@ -237,5 +237,8 @@
   "welcome_signin_body": "使用 Google 或 Apple 登录，将您收藏的祈祷词和自定义计划保存到账户，并在任意设备上恢复。完全可选 —— 您也可以稍后在设置中完成。",
   "continue_without_account": "不使用账户继续",
   "donation_not_available": "此版本尚未启用捐赠功能 —— 请稍后再来查看。",
-  "donation_not_available_short": "暂不可用"
+  "donation_not_available_short": "暂不可用",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

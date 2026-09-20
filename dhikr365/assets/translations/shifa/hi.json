@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "shifa_pain_in_body": {
+      "dhikr_no": 1,
+      "title": "When Feeling Pain in the Body",
+      "frequency": "1x (Bismillah 3x, Dua 7x)",
+      "targetCount": 7,
+      "arabicText": "بِسْمِ اللَّهِ (٣ مَرَّاتٍ)، أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ (٧ مَرَّاتٍ)",
+      "transliteration": "Bismillāh (3x). A'ūdhu billāhi wa qudratihī min sharri mā ajidu wa uḥādhir (7x).",
+      "translation": "Place your hand at the site of the pain and say: In the name of Allah (3 times). Then say 7 times: I seek refuge in Allah and within His omnipotence from the evil that I feel and am wary of.",
+      "benefit": "Uthman ibn Abi al-As reported that he complained of pain to the Prophet (ﷺ), who taught him this remedy. He said: 'I did that and Allah removed my suffering.'",
+      "reference": "Sahih Muslim 4/1728 | Hisnul Muslim 243",
+      "grading": "Sahih",
+      "occasion": "Place your right hand on where it hurts and recite.",
+      "category": "shifa",
+      "audioPath": "assets/audio/shifa_pain_in_body.mp3"
+    },
+    "shifa_visiting_sick_1": {
+      "dhikr_no": 2,
+      "title": "Visiting the Sick (No Harm, Purification)",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "لَا بَأْسَ، طَهُورٌ إِنْ شَاءَ اللَّهُ",
+      "transliteration": "Lā ba'sa, ṭahūrun in shā' Allāh.",
+      "translation": "Never mind, may it (the sickness) be a purification (from sins), if Allah wills.",
+      "benefit": "The Prophet (ﷺ) would say this whenever he visited an ill person, giving them solace and hope of forgiveness.",
+      "reference": "Sahih al-Bukhari with Al-Fath 10/118 | Hisnul Muslim 147",
+      "grading": "Sahih",
+      "occasion": "Recite when visiting or speaking with someone who is ill.",
+      "category": "shifa",
+      "audioPath": "assets/audio/shifa_visiting_sick_1.mp3"
+    },
+    "shifa_visiting_sick_2": {
+      "dhikr_no": 3,
+      "title": "Supplication for Recovery (Recite 7 Times)",
+      "frequency": "7x",
+      "targetCount": 7,
+      "arabicText": "أَسْأَلُ اللَّهَ الْعَظِيمَ، رَبَّ الْعَرْشِ الْعَظِيمِ، أَنْ يَشْفِيَكَ",
+      "transliteration": "As'alullāhal-'Aẓīma, Rabbal-'Arshil-'Aẓīmi, an yashfiyak.",
+      "translation": "I ask Allah The Supreme, Lord of the Magnificent Throne, to heal you. (Recited 7 times)",
+      "benefit": "The Prophet (ﷺ) said: 'Whoever visits a sick person whose appointed time of death has not yet arrived, and recites this seven times, Allah will surely cure him of that illness.'",
+      "reference": "At-Tirmidhi, Abu Dawud; Sahih At-Tirmidhi 2/210 | Hisnul Muslim 148",
+      "grading": "Sahih",
+      "occasion": "Recite 7 times beside an ill person.",
+      "category": "shifa",
+      "audioPath": "assets/audio/shifa_visiting_sick_2.mp3"
+    },
+    "shifa_calamity": {
+      "dhikr_no": 4,
+      "title": "When Afflicted by Tragedy or Loss",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ، اللَّهُمَّ أْجُرْنِي فِي مُصِيبَتِي، وَأَخْلِفْ لِي خَيْرًا مِنْهَا",
+      "transliteration": "Innā lillāhi wa innā ilayhi rāji'ūn, Allāhumma'-jurnī fī muṣībatī, wa akhlif lī khayran minhā.",
+      "translation": "To Allah we belong and unto Him is our return. O Allah, reward me in my affliction and replace it for me with something better.",
+      "benefit": "Umm Salamah (may Allah be pleased with her) recited this after Abu Salamah died, and Allah gave her the best of husbands, the Prophet Muhammad (ﷺ).",
+      "reference": "Sahih Muslim 2/632 | Hisnul Muslim 154",
+      "grading": "Sahih",
+      "occasion": "Recite immediately upon hearing bad news, suffering a loss, or experiencing any tragedy.",
+      "category": "shifa",
+      "audioPath": "assets/audio/shifa_calamity.mp3"
+    }
+  }
+}

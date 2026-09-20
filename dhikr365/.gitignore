@@ -46,3 +46,8 @@ app.*.map.json
 /android/key.properties
 *.jks
 *.keystore
+
+# Build packages and binaries (exceeds GitHub 100MB file limit)
+*.apk
+*.aab
+scratch/

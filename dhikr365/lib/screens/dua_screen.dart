@@ -89,6 +89,27 @@ class _DuaScreenState extends State<DuaScreen> {
         count: 14,
         color: Color(0xFF6366F1),
         category: DhikrCategory.beforeSleep),
+    _Cat(
+        icon: Icons.flight_takeoff_rounded,
+        titleKey: 'travel',
+        title: 'Travel & Journey',
+        count: 4,
+        color: Color(0xFF0EA5E9),
+        category: DhikrCategory.travel),
+    _Cat(
+        icon: Icons.healing_rounded,
+        titleKey: 'shifa',
+        title: 'Healing & Relief',
+        count: 4,
+        color: Color(0xFF059669),
+        category: DhikrCategory.shifa),
+    _Cat(
+        icon: Icons.favorite_rounded,
+        titleKey: 'distress',
+        title: 'Anxiety & Debt Relief',
+        count: 5,
+        color: Color(0xFF8B5CF6),
+        category: DhikrCategory.distress),
   ];
 
   @override
@@ -106,42 +127,49 @@ class _DuaScreenState extends State<DuaScreen> {
       DhikrCategory.food: dp.getFoodDhikrs().length,
       DhikrCategory.afterSalah: dp.getAfterSalahDhikrs().length,
       DhikrCategory.beforeSleep: dp.getBeforeSleepDhikrs().length,
+      DhikrCategory.travel: dp.getTravelDhikrs().length,
+      DhikrCategory.shifa: dp.getShifaDhikrs().length,
+      DhikrCategory.distress: dp.getDistressDhikrs().length,
     };
 
     // Pre-resolve translated strings once — passed down to cards
-    final duasLabel  = lp.getText('duas_count');
+    final duasLabel = lp.getText('duas_count');
     final comingSoon = lp.getText('coming_soon');
 
     // Build resolved list (translated titles) then filter by query
     final resolvedCats = _cats.map((cat) {
-      final resolvedTitle = cat.titleKey != null
-          ? lp.getText(cat.titleKey!)
-          : cat.title;
+      final resolvedTitle =
+          cat.titleKey != null ? lp.getText(cat.titleKey!) : cat.title;
       return (cat: cat, resolvedTitle: resolvedTitle);
     }).toList();
 
     final filteredCats = _query.isEmpty
         ? resolvedCats
-        : resolvedCats.where((e) =>
-            e.resolvedTitle.toLowerCase().contains(_query.toLowerCase()) ||
-            e.cat.title.toLowerCase().contains(_query.toLowerCase()),
-          ).toList();
+        : resolvedCats
+            .where(
+              (e) =>
+                  e.resolvedTitle
+                      .toLowerCase()
+                      .contains(_query.toLowerCase()) ||
+                  e.cat.title.toLowerCase().contains(_query.toLowerCase()),
+            )
+            .toList();
 
     // FIX: LayoutBuilder reads real screen dimensions
     return LayoutBuilder(builder: (context, constraints) {
       final h = constraints.maxHeight;
       final w = constraints.maxWidth;
-      final isSmall  = h < 680;  // compact phone (SE, A03 …)
+      final isSmall = h < 680; // compact phone (SE, A03 …)
       final isTablet = w >= 600; // tablet → 3-column grid
 
       // Responsive values — no hardcoded px that overflow
-      final hPad       = isTablet ? 32.0 : 24.0;
-      final topPad     = isSmall  ? 12.0 : 20.0;
-      final searchH    = isSmall  ? 40.0 : 46.0;
+      final hPad = isTablet ? 32.0 : 24.0;
+      final topPad = isSmall ? 12.0 : 20.0;
+      final searchH = isSmall ? 40.0 : 46.0;
       final crossCount = isTablet ? 3 : 2;
       final childRatio = isTablet ? 1.3 : (isSmall ? 1.15 : 1.25);
-      final gridBottom = isSmall  ? 80.0 : 120.0;
-      final titleSize  = isSmall  ? 22.0 : 28.0;
+      final gridBottom = isSmall ? 80.0 : 120.0;
+      final titleSize = isSmall ? 22.0 : 28.0;
 
       return Scaffold(
         backgroundColor: AppColors.bgDark,
@@ -180,8 +208,7 @@ class _DuaScreenState extends State<DuaScreen> {
 
                 // ── Search bar ───────────────────────────────────────────────
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: hPad, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 12),
                   child: Container(
                     height: searchH,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -228,7 +255,8 @@ class _DuaScreenState extends State<DuaScreen> {
                           padding:
                               EdgeInsets.fromLTRB(hPad, 4, hPad, gridBottom),
                           physics: const BouncingScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: crossCount,
                             mainAxisSpacing: 12,
                             crossAxisSpacing: 12,
@@ -238,7 +266,7 @@ class _DuaScreenState extends State<DuaScreen> {
                           itemCount: filteredCats.length,
                           itemBuilder: (context, i) {
                             final entry = filteredCats[i];
-                            final cat   = entry.cat;
+                            final cat = entry.cat;
                             return _CatCard(
                               cat: cat,
                               isSmall: isSmall,
@@ -334,7 +362,8 @@ class _NoteSheet extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.bgTeal,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SafeArea(
           top: false,
@@ -364,7 +393,7 @@ class _NoteSheet extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: color.withOpacity(0.15),
+                        color: color.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -443,8 +472,9 @@ class _NoteSheet extends StatelessWidget {
 
 class _Cat {
   final IconData icon;
-  final String? titleKey; // i18n key; null for categories without translation yet
-  final String title;     // English fallback
+  final String?
+      titleKey; // i18n key; null for categories without translation yet
+  final String title; // English fallback
   final int count;
   final Color color;
   final DhikrCategory? category;
@@ -466,8 +496,8 @@ class _CatCard extends StatelessWidget {
   final bool isSmall;
   final int count;
   final String resolvedTitle; // already-translated title from parent
-  final String duasLabel;     // translated word for "duas"
-  final String comingSoon;    // translated "coming soon"
+  final String duasLabel; // translated word for "duas"
+  final String comingSoon; // translated "coming soon"
 
   const _CatCard({
     required this.cat,
@@ -487,10 +517,10 @@ class _CatCard extends StatelessWidget {
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => _NoteSheet(
-          color:       const Color(0xFFEC4899),
-          icon:        Icons.family_restroom_outlined,
-          title:       lp.getText('parents_note_title'),
-          body:        lp.getText('parents_note_body'),
+          color: const Color(0xFFEC4899),
+          icon: Icons.family_restroom_outlined,
+          title: lp.getText('parents_note_title'),
+          body: lp.getText('parents_note_body'),
           buttonLabel: resolvedTitle,
           onContinue: () {
             Navigator.pop(context); // close sheet
@@ -511,10 +541,10 @@ class _CatCard extends StatelessWidget {
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (_) => _NoteSheet(
-          color:       const Color(0xFF64748B),
-          icon:        Icons.landscape_outlined,
-          title:       lp.getText('graveyard_note_title'),
-          body:        lp.getText('graveyard_note_body'),
+          color: const Color(0xFF64748B),
+          icon: Icons.landscape_outlined,
+          title: lp.getText('graveyard_note_title'),
+          body: lp.getText('graveyard_note_body'),
           buttonLabel: resolvedTitle,
           onContinue: () {
             Navigator.pop(context);
@@ -557,7 +587,7 @@ class _CatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.ink(0.03),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: cat.color.withOpacity(0.2)),
+          border: Border.all(color: cat.color.withValues(alpha: 0.2)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,7 +598,7 @@ class _CatCard extends StatelessWidget {
               width: 34,
               height: 34,
               decoration: BoxDecoration(
-                color: cat.color.withOpacity(0.15),
+                color: cat.color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(9),
               ),
               child: Icon(cat.icon, color: cat.color, size: 18),
@@ -607,7 +637,7 @@ class _CatCard extends StatelessWidget {
                       Icon(
                         Icons.arrow_forward_ios,
                         size: 8,
-                        color: cat.color.withOpacity(0.7),
+                        color: cat.color.withValues(alpha: 0.7),
                       ),
                     ],
                   ],

@@ -237,5 +237,17 @@
   "welcome_signin_body": "আপনার পছন্দের দোয়া ও কাস্টম প্ল্যান অ্যাকাউন্টে সংরক্ষণ করে যেকোনো ডিভাইসে ফিরে পেতে Google বা Apple দিয়ে সাইন ইন করুন। এটা সম্পূর্ণ ঐচ্ছিক — পরে Settings থেকেও করতে পারবেন।",
   "continue_without_account": "অ্যাকাউন্ট ছাড়াই চালিয়ে যান",
   "donation_not_available": "এই বিল্ডে এখনো ডোনেশন চালু করা হয়নি — শীঘ্রই আবার দেখুন।",
-  "donation_not_available_short": "এখনো উপলব্ধ নয়"
+  "donation_not_available_short": "এখনো উপলব্ধ নয়",
+  "donation_tier_annual_name": "বার্ষিক স্পন্সর",
+  "donation_tier_annual_desc": "সারা বছর জুড়ে অবিরাম বরকত ও সদকায়ে জারিয়াহ",
+  "dedicate_title": "কার উদ্দেশ্যে উৎসর্গ করতে চান?",
+  "dedicate_desc": "কার মাগফিরাত বা কল্যাণে এই সদকায়ে জারিয়াহ পৌঁছাতে চান?",
+  "dedicate_self": "আমার নিজের জন্য",
+  "dedicate_parents": "আমার পিতা-মাতার জন্য",
+  "dedicate_deceased": "মরহুম প্রিয়জনের মাগফিরাতে",
+  "dedicate_family": "সন্তান ও পরিবারের সুরক্ষায়",
+  "preview_certificate": "সনদ ও দোয়ার প্রিভিউ দেখুন",
+  "travel": "সফর ও যাতায়াত",
+  "shifa": "রোগমুক্তি ও শেফা",
+  "distress": "দুশ্চিন্তা ও ঋণমুক্তি"
 }

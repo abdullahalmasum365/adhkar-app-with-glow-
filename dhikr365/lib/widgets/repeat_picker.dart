@@ -34,7 +34,7 @@ Future<int?> showRepeatPicker(BuildContext context, int current) {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: selected
-                  ? AppColors.primary.withOpacity(0.18)
+                  ? AppColors.primary.withValues(alpha: 0.18)
                   : AppColors.ink(0.06),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
@@ -73,8 +73,7 @@ Future<int?> showRepeatPicker(BuildContext context, int current) {
                 FilteringTextInputFormatter.digitsOnly,
                 LengthLimitingTextInputFormatter(3),
               ],
-              style: AppText.manrope(
-                  fontSize: 20, fontWeight: FontWeight.w800),
+              style: AppText.manrope(fontSize: 20, fontWeight: FontWeight.w800),
               textAlign: TextAlign.center,
               cursorColor: AppColors.primary,
               decoration: InputDecoration(
@@ -90,8 +89,7 @@ Future<int?> showRepeatPicker(BuildContext context, int current) {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      BorderSide(color: AppColors.primary, width: 1.5),
+                  borderSide: BorderSide(color: AppColors.primary, width: 1.5),
                 ),
               ),
               onSubmitted: (_) {
@@ -136,8 +134,7 @@ Future<int?> showRepeatPicker(BuildContext context, int current) {
             },
             child: Text('Set',
                 style: AppText.manrope(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.onPrimary)),
+                    fontWeight: FontWeight.w700, color: AppColors.onPrimary)),
           ),
         ],
       );

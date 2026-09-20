@@ -1,0 +1,79 @@
+{
+  "dhikrs": {
+    "distress_worry_grief": {
+      "dhikr_no": 1,
+      "title": "In Times of Worry and Grief",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي عَبْدُكَ، ابْنُ عَبْدِكَ، ابْنُ أَمَتِكَ، نَاصِيَتِي بِيَدِكَ، مَاضٍ فِيَّ حُكْمُكَ، عَدْلٌ فِيَّ قَضَاؤُكَ، أَسْأَلُكَ بِكُلِّ اسْمٍ هُوَ لَكَ، سَمَّيْتَ بِهِ نَفْسَكَ، أَوْ أَنْزَلْتَهُ فِي كِتَابِكَ، أَوْ عَلَّمْتَهُ أَحَدًا مِنْ خَلْقِكَ، أَوِ اسْتَأْثَرْتَ بِهِ فِي عِلْمِ الْغَيْبِ عِنْدَكَ، أَنْ تَجْعَلَ الْقُرْآنَ رَبِيعَ قَلْبِي، وَنُورَ صَدْرِي، وَجَلَاءَ حُزْنِي، وَذَهَابَ هَمِّي",
+      "transliteration": "Allāhumma innī 'abduk, ibnu 'abdik, ibnu amatik, nāṣiyatī bi-yadik, māḍin fiyya ḥukmuk, 'adlun fiyya qaḍā'uk, as'aluka bikullis-min huwa lak, sammayta bihī nafsak, aw anzaltahū fī kitābik, aw 'allamtahū aḥadam-min khalqik, awis-ta'tharta bihī fī 'ilmil-ghaybi 'indak, an taj'alal-Qur'āna rabī'a qalbī, wa nūra ṣadrī, wa jalā'a ḥuznī, wa dhahāba hammī.",
+      "translation": "O Allah, I am Your servant, son of Your servant, son of Your maidservant, my forelock is in Your hand, Your command over me is forever executed and Your decree over me is just. I ask You by every name belonging to You which You have named Yourself with, or revealed in Your Book, or taught to any of Your creation, or preserved in the knowledge of the unseen with You, that You make the Qur'an the life of my heart, the light of my chest, the departure of my sorrow, and the release of my anxiety.",
+      "benefit": "The Prophet (ﷺ) said: 'Never does a Muslim suffer anxiety or grief and say this except that Allah removes his sorrow and relieves his distress, replacing it with joy.'",
+      "reference": "Ahmad 1/391; As-Silsilah As-Sahihah 199 | Hisnul Muslim 120",
+      "grading": "Sahih",
+      "occasion": "Recite when overcome by sadness, grief, depression, or heavy anxiety.",
+      "category": "distress",
+      "audioPath": "assets/audio/distress_worry_grief.mp3"
+    },
+    "distress_anxiety_grief": {
+      "dhikr_no": 2,
+      "title": "Refuge from Anxiety, Laziness & Debt",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ، وَغَلَبَةِ الرِّجَالِ",
+      "transliteration": "Allāhumma innī a'ūdhu bika minal-hammi wal-ḥazan, wal-'ajzi wal-kasal, wal-bukhli wal-jubn, wa ḍala'id-dayni wa ghalabatir-rijāl.",
+      "translation": "O Allah, I take refuge in You from anxiety and sorrow, weakness and laziness, miserliness and cowardice, the burden of debts, and from being overpowered by men.",
+      "benefit": "Anas ibn Malik reported: 'I used to serve the Prophet (ﷺ) and I would often hear him saying this supplication.'",
+      "reference": "Sahih al-Bukhari 7/158 | Hisnul Muslim 121",
+      "grading": "Sahih",
+      "occasion": "Recite daily in the morning and evening, or during times of financial and mental burden.",
+      "category": "distress",
+      "audioPath": "assets/audio/distress_anxiety_grief.mp3"
+    },
+    "distress_anguish_yunus": {
+      "dhikr_no": 3,
+      "title": "Supplication in Anguish (Dua of Yunus)",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+      "transliteration": "Lā ilāha illā Anta subḥānaka innī kuntu minaẓ-ẓālimīn.",
+      "translation": "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.",
+      "benefit": "The Prophet (ﷺ) said: 'The supplication of Dhun-Nun (Prophet Yunus) when he called upon Allah from inside the belly of the whale... No Muslim calls upon Allah with it for anything, ever, except that Allah responds to him.'",
+      "reference": "At-Tirmidhi 5/529; Sahih At-Tirmidhi 3/168 | Hisnul Muslim 124",
+      "grading": "Sahih",
+      "occasion": "Recite repeatedly when feeling trapped, helpless, or facing extreme distress.",
+      "category": "distress",
+      "audioPath": "assets/audio/distress_anguish_yunus.mp3"
+    },
+    "distress_debt_settlement": {
+      "dhikr_no": 4,
+      "title": "For the Settlement of Debt",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ، وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+      "transliteration": "Allāhummak-finī bi-ḥalālika 'an ḥarāmik, wa aghninī bi-faḍlika 'amman siwāk.",
+      "translation": "O Allah, make what is lawful enough for me, as opposed to what is unlawful, and spare me by Your grace from needing anyone besides You.",
+      "benefit": "Ali (may Allah be pleased with him) said: 'Shall I not teach you words which the Messenger of Allah taught me? Even if you had a debt like Mount Seer, Allah would settle it for you.'",
+      "reference": "At-Tirmidhi 5/560; Sahih At-Tirmidhi 3/180 | Hisnul Muslim 136",
+      "grading": "Hasan",
+      "occasion": "Recite when facing debts, financial stress, or seeking halal provision.",
+      "category": "distress",
+      "audioPath": "assets/audio/distress_debt_settlement.mp3"
+    },
+    "distress_difficult_affair": {
+      "dhikr_no": 5,
+      "title": "When Something Becomes Difficult",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا",
+      "transliteration": "Allāhumma lā sahla illā mā ja'altahū sahlā, wa Anta taj'alul-ḥazna idhā shi'ta sahlā.",
+      "translation": "O Allah, there is no ease except in that which You have made easy, and You make the difficulty, if You wish, easy.",
+      "benefit": "A beloved prophetic dua to recite before difficult exams, interviews, medical procedures, or complex challenges.",
+      "reference": "Ibn Hibban 974, Ibn As-Sunni 351 | Hisnul Muslim 139",
+      "grading": "Sahih",
+      "occasion": "Recite before any difficult task, exam, interview, or obstacle.",
+      "category": "distress",
+      "audioPath": "assets/audio/distress_difficult_affair.mp3"
+    }
+  }
+}

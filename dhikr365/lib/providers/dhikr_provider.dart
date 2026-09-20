@@ -220,6 +220,18 @@ class DhikrProvider extends ChangeNotifier {
   List<Dhikr> getBeforeSleepDhikrs() =>
       _dhikrs.where((d) => d.category == DhikrCategory.beforeSleep).toList();
 
+  List<Dhikr> getTravelDhikrs() =>
+      _dhikrs.where((d) => d.category == DhikrCategory.travel).toList();
+
+  List<Dhikr> getShifaDhikrs() =>
+      _dhikrs.where((d) => d.category == DhikrCategory.shifa).toList();
+
+  List<Dhikr> getDistressDhikrs() =>
+      _dhikrs.where((d) => d.category == DhikrCategory.distress).toList();
+
+  List<Dhikr> getDhikrsByCategory(DhikrCategory category) =>
+      _dhikrs.where((d) => d.category == category).toList();
+
   Future reloadDhikrs({
     required String uiLanguageCode,
     required String transliterationCode,
@@ -331,6 +343,27 @@ class DhikrProvider extends ChangeNotifier {
     result.addAll(await _parseDhikrFile(
       assetPath: 'assets/translations/before_sleep/$lang.json',
       category: DhikrCategory.beforeSleep,
+      prefix: '',
+    ));
+
+    // Load travel duas from JSON
+    result.addAll(await _parseDhikrFile(
+      assetPath: 'assets/translations/travel/$lang.json',
+      category: DhikrCategory.travel,
+      prefix: '',
+    ));
+
+    // Load shifa/healing duas from JSON
+    result.addAll(await _parseDhikrFile(
+      assetPath: 'assets/translations/shifa/$lang.json',
+      category: DhikrCategory.shifa,
+      prefix: '',
+    ));
+
+    // Load distress/anxiety duas from JSON
+    result.addAll(await _parseDhikrFile(
+      assetPath: 'assets/translations/distress/$lang.json',
+      category: DhikrCategory.distress,
       prefix: '',
     ));
 

@@ -237,5 +237,8 @@
   "welcome_signin_body": "ลงชื่อเข้าใช้ด้วย Google หรือ Apple เพื่อให้ดุอาโปรดและแผนที่กำหนดเองถูกบันทึกไว้ในบัญชีและกู้คืนได้ในทุกอุปกรณ์ เป็นทางเลือกทั้งหมด — สามารถทำภายหลังได้จาก Settings",
   "continue_without_account": "ดำเนินการต่อโดยไม่มีบัญชี",
   "donation_not_available": "การบริจาคยังไม่พร้อมใช้งานในเวอร์ชันนี้ — โปรดกลับมาตรวจสอบเร็ว ๆ นี้",
-  "donation_not_available_short": "ยังไม่พร้อมใช้งาน"
+  "donation_not_available_short": "ยังไม่พร้อมใช้งาน",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

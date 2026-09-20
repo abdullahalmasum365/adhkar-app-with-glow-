@@ -13,6 +13,7 @@ import 'edit_profile_screen.dart';
 import 'splash_screen.dart';
 import '../providers/notification_provider.dart';
 import '../widgets/battery_reliability_dialogs.dart';
+import '../services/notification_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -34,7 +35,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
         decoration: BoxDecoration(
           color: AppColors.bgTeal,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           Container(
@@ -62,7 +64,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: Text(lang['nativeName']!,
                     style: AppText.manrope(
                         fontWeight: sel ? FontWeight.w700 : FontWeight.w400,
-                        color: sel ? AppColors.textPrimary : AppColors.ink(0.70))),
+                        color:
+                            sel ? AppColors.textPrimary : AppColors.ink(0.70))),
                 subtitle: Text(lang['name']!,
                     style: AppText.body(color: AppColors.ink(0.38))),
                 onTap: () {
@@ -152,10 +155,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.15),
+                          color: AppColors.primary.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3))),
+                              color: AppColors.primary.withValues(alpha: 0.3))),
                       child: Center(
                           child: Text(initials.isEmpty ? '?' : initials,
                               style: AppText.manrope(
@@ -184,7 +187,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8)),
                         child: Text(lp.getText('edit'),
                             style: AppText.body(color: AppColors.primary))),
@@ -245,6 +248,51 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     trailing: Switch(
                         value: np.specialTimesEnabled,
                         onChanged: (v) => np.toggleSpecialTimes(v))),
+                _div(),
+                _Tile(
+                    icon: Icons.notifications_active_rounded,
+                    color: Colors.tealAccent,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'টেস্ট নোটিফিকেশন পাঠান'
+                        : 'Send Test Notification',
+                    subtitle: lp.locale.languageCode == 'bn'
+                        ? 'নোটিফিকেশন ও সাউন্ড টেস্ট করুন (১০ সেকেন্ডের টেস্ট)'
+                        : 'Test instant alert & 10s scheduled alarm',
+                    onTap: () async {
+                      final svc = NotificationService();
+                      final hasPermission = await svc.areNotificationsEnabled();
+                      if (!hasPermission) {
+                        await svc.requestPermissions();
+                      }
+                      await svc.showInstantTestNotification();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: AppColors.primary,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            content: Text(
+                              lp.locale.languageCode == 'bn'
+                                  ? 'টেস্ট পাঠানো হয়েছে! এখনই নোটিফিকেশন আসবে এবং ১০ সেকেন্ড পর শিডিউল অ্যালার্ম বাজবে।'
+                                  : 'Test sent! Instant notification and a 10s scheduled alarm will arrive.',
+                              style: AppText.body(color: AppColors.onPrimary),
+                            ),
+                          ),
+                        );
+                      }
+                    }),
+                _div(),
+                _Tile(
+                    icon: Icons.battery_saver_rounded,
+                    color: Colors.amberAccent,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'নোটিফিকেশন রিলায়েবিলিটি ফিক্স'
+                        : 'Notification Reliability Fix',
+                    subtitle: lp.locale.languageCode == 'bn'
+                        ? 'স্যামসাং, শাওমি বা অপ্পো ফোনে অ্যালার্ম ড্রপ বন্ধ করুন'
+                        : 'Keep reminders reliable on Xiaomi/Samsung/Oppo',
+                    onTap: () => runNotificationReliabilityTips(context)),
               ])),
               const SizedBox(height: 22),
 
@@ -414,8 +462,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       for (int i = 0; i < AppPalettes.all.length; i += 2)
                         Padding(
                           padding: EdgeInsets.only(
-                              bottom:
-                                  i + 2 < AppPalettes.all.length ? 12 : 0),
+                              bottom: i + 2 < AppPalettes.all.length ? 12 : 0),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -549,7 +596,7 @@ class _ThemeChoice extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: selected
-              ? AppColors.primary.withOpacity(0.10)
+              ? AppColors.primary.withValues(alpha: 0.10)
               : AppColors.ink(0.03),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
@@ -581,7 +628,7 @@ class _ThemeChoice extends StatelessWidget {
                     width: 44,
                     height: 7,
                     decoration: BoxDecoration(
-                      color: previewText.withOpacity(0.75),
+                      color: previewText.withValues(alpha: 0.75),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -599,7 +646,7 @@ class _ThemeChoice extends StatelessWidget {
                       width: 12,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: previewText.withOpacity(0.25),
+                        color: previewText.withValues(alpha: 0.25),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -617,9 +664,7 @@ class _ThemeChoice extends StatelessWidget {
                         fontSize: 12.5, fontWeight: FontWeight.w800)),
               ),
               Icon(
-                selected
-                    ? Icons.check_circle_rounded
-                    : Icons.circle_outlined,
+                selected ? Icons.check_circle_rounded : Icons.circle_outlined,
                 size: 16,
                 color: selected ? AppColors.primary : AppColors.ink(0.25),
               ),
@@ -665,7 +710,7 @@ class _IBox extends StatelessWidget {
       width: 32,
       height: 32,
       decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8)),
       child: Icon(icon, color: color, size: 17));
 }

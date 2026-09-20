@@ -237,5 +237,8 @@
   "welcome_signin_body": "GoogleまたはAppleでサインインすると、お気に入りのドゥアとカスタムプランがアカウントに保存され、どの端末でも復元できます。完全に任意です — 後で設定画面からでも行えます。",
   "continue_without_account": "アカウントなしで続ける",
   "donation_not_available": "このバージョンではまだ寄付機能が有効になっていません。近日中に再度ご確認ください。",
-  "donation_not_available_short": "まだ利用できません"
+  "donation_not_available_short": "まだ利用できません",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

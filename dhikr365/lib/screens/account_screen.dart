@@ -9,6 +9,8 @@
 // an account, purely from local storage, exactly as before.
 // ============================================================================
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,15 +44,15 @@ class AccountScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(lp.getText('account_title'),
-                      textAlign: TextAlign.center,
-                      style: AppText.heading(20)),
+                      textAlign: TextAlign.center, style: AppText.heading(20)),
                 ),
                 const SizedBox(width: 48),
               ]),
             ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 physics: const BouncingScrollPhysics(),
                 children: [
                   ap.isSignedIn
@@ -112,7 +114,7 @@ class _SignedOutCard extends StatelessWidget {
           width: 64,
           height: 64,
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.12),
+            color: AppColors.primary.withValues(alpha: 0.12),
             shape: BoxShape.circle,
           ),
           child: Icon(Icons.person_outline_rounded,
@@ -124,7 +126,8 @@ class _SignedOutCard extends StatelessWidget {
         const SizedBox(height: 6),
         Text(lp.getText('account_signed_out_body'),
             textAlign: TextAlign.center,
-            style: AppText.body(color: AppColors.textSlate400).copyWith(height: 1.5)),
+            style: AppText.body(color: AppColors.textSlate400)
+                .copyWith(height: 1.5)),
         const SizedBox(height: 20),
         _ProviderButton(
           label: lp.getText('account_continue_google'),
@@ -134,15 +137,17 @@ class _SignedOutCard extends StatelessWidget {
           loading: ap.isLoading,
           onTap: () => _handleSignIn(context, ap.signInWithGoogle),
         ),
-        const SizedBox(height: 12),
-        _ProviderButton(
-          label: lp.getText('account_continue_apple'),
-          icon: Icons.apple_rounded,
-          background: Colors.black,
-          foreground: Colors.white,
-          loading: ap.isLoading,
-          onTap: () => _handleSignIn(context, ap.signInWithApple),
-        ),
+        if (Platform.isIOS || Platform.isMacOS) ...[
+          const SizedBox(height: 12),
+          _ProviderButton(
+            label: lp.getText('account_continue_apple'),
+            icon: Icons.apple_rounded,
+            background: Colors.black,
+            foreground: Colors.white,
+            loading: ap.isLoading,
+            onTap: () => _handleSignIn(context, ap.signInWithApple),
+          ),
+        ],
       ]),
     );
   }
@@ -195,9 +200,10 @@ class _SignedInCard extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha: 0.15),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+              border:
+                  Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               image: (photoUrl != null && photoUrl.isNotEmpty)
                   ? DecorationImage(
                       image: NetworkImage(photoUrl), fit: BoxFit.cover)
@@ -229,7 +235,7 @@ class _SignedInCard extends StatelessWidget {
                       style: AppText.body(color: AppColors.textSlate400)),
                 const SizedBox(height: 4),
                 Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.cloud_done_rounded,
+                  const Icon(Icons.cloud_done_rounded,
                       size: 14, color: Colors.greenAccent),
                   const SizedBox(width: 4),
                   Flexible(
@@ -250,7 +256,7 @@ class _SignedInCard extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => _confirmSignOut(context),
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.redAccent.withOpacity(0.5)),
+              side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.5)),
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
@@ -313,9 +319,9 @@ class _NotConfiguredNotice extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.08),
+        color: Colors.amber.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.amber.withOpacity(0.25)),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.25)),
       ),
       child: Row(children: [
         const Icon(Icons.info_outline_rounded,
@@ -323,7 +329,8 @@ class _NotConfiguredNotice extends StatelessWidget {
         const SizedBox(width: 10),
         Expanded(
           child: Text(lp.getText('account_not_configured'),
-              style: AppText.body(color: Colors.amberAccent).copyWith(fontSize: 12, height: 1.4)),
+              style: AppText.body(color: Colors.amberAccent)
+                  .copyWith(fontSize: 12, height: 1.4)),
         ),
       ]),
     );
@@ -358,13 +365,15 @@ class _ProviderButton extends StatelessWidget {
           backgroundColor: background,
           foregroundColor: foreground,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         child: loading
             ? SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: foreground),
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: foreground),
               )
             : FittedBox(
                 fit: BoxFit.scaleDown,

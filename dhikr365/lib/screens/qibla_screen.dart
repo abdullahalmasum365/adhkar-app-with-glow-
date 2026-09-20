@@ -80,10 +80,10 @@ class _QiblaScreenState extends State<QiblaScreen>
     final up = Provider.of<UserProvider>(context);
 
     final hasLocation = up.hasSavedCoordinates;
-    final userLat     = up.lat ?? 0.0;
-    final userLng     = up.lng ?? 0.0;
-    final qibla       = hasLocation ? _qiblaBearing(userLat, userLng) : 0.0;
-    final cityLabel   = (up.city?.isNotEmpty == true)
+    final userLat = up.lat ?? 0.0;
+    final userLng = up.lng ?? 0.0;
+    final qibla = hasLocation ? _qiblaBearing(userLat, userLng) : 0.0;
+    final cityLabel = (up.city?.isNotEmpty == true)
         ? '${up.city}, ${up.country}'
         : 'Location not set';
 
@@ -102,8 +102,8 @@ class _QiblaScreenState extends State<QiblaScreen>
             children: [
               // ── Header ──────────────────────────────────────────────────
               Padding(
-                padding: EdgeInsets.fromLTRB(
-                    R.px(8), R.px(8), R.px(16), R.px(4)),
+                padding:
+                    EdgeInsets.fromLTRB(R.px(8), R.px(8), R.px(16), R.px(4)),
                 child: Row(
                   children: [
                     IconButton(
@@ -131,8 +131,8 @@ class _QiblaScreenState extends State<QiblaScreen>
               // ── Location chip ────────────────────────────────────────────
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                 decoration: BoxDecoration(
                   color: AppColors.ink(0.06),
                   borderRadius: BorderRadius.circular(30),
@@ -141,8 +141,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.location_on,
-                        color: AppColors.primary, size: 14),
+                    Icon(Icons.location_on, color: AppColors.primary, size: 14),
                     const SizedBox(width: 6),
                     Text(
                       cityLabel,
@@ -171,25 +170,24 @@ class _QiblaScreenState extends State<QiblaScreen>
                       return _buildUnavailable();
                     }
 
-                    final event   = snap.data!;
-                    final raw     = event.heading ?? 0.0;
+                    final event = snap.data!;
+                    final raw = event.heading ?? 0.0;
                     // Smooth heading: lerp toward new value
                     _heading = _lerpAngle(_heading, raw, 0.15);
 
-                    final needleAngle =
-                        (qibla - _heading) * math.pi / 180;
+                    final needleAngle = (qibla - _heading) * math.pi / 180;
                     final compassAngle = -_heading * math.pi / 180;
                     final delta = ((qibla - _heading) % 360 + 360) % 360;
                     final aligned = delta < 5 || delta > 355;
 
                     return _buildCompass(
-                      compassAngle : compassAngle,
-                      needleAngle  : needleAngle,
-                      qibla        : qibla,
-                      heading      : _heading,
-                      aligned      : aligned,
-                      accuracy     : event.accuracy,
-                      lp           : lp,
+                      compassAngle: compassAngle,
+                      needleAngle: needleAngle,
+                      qibla: qibla,
+                      heading: _heading,
+                      aligned: aligned,
+                      accuracy: event.accuracy,
+                      lp: lp,
                     );
                   },
                 ),
@@ -202,8 +200,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                   padding: EdgeInsets.only(bottom: R.px(32)),
                   child: Column(
                     children: [
-                      const Text('🕋',
-                          style: TextStyle(fontSize: 28)),
+                      const Text('🕋', style: TextStyle(fontSize: 28)),
                       const SizedBox(height: 6),
                       Text(
                         'Masjid Al-Haram, Mecca',
@@ -254,8 +251,8 @@ class _QiblaScreenState extends State<QiblaScreen>
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF10B981).withOpacity(
-                              0.25 * _pulseCtrl.value),
+                          color: const Color(0xFF10B981)
+                              .withValues(alpha: 0.25 * _pulseCtrl.value),
                           blurRadius: 40,
                           spreadRadius: 10,
                         ),
@@ -289,14 +286,14 @@ class _QiblaScreenState extends State<QiblaScreen>
                 decoration: BoxDecoration(
                   color: aligned
                       ? const Color(0xFF10B981)
-                      : AppColors.primary.withOpacity(0.9),
+                      : AppColors.primary.withValues(alpha: 0.9),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
                       color: (aligned
                               ? const Color(0xFF10B981)
                               : AppColors.primary)
-                          .withOpacity(0.6),
+                          .withValues(alpha: 0.6),
                       blurRadius: 12,
                     ),
                   ],
@@ -314,12 +311,12 @@ class _QiblaScreenState extends State<QiblaScreen>
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           decoration: BoxDecoration(
             color: aligned
-                ? const Color(0xFF10B981).withOpacity(0.12)
+                ? const Color(0xFF10B981).withValues(alpha: 0.12)
                 : AppColors.ink(0.05),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: aligned
-                  ? const Color(0xFF10B981).withOpacity(0.35)
+                  ? const Color(0xFF10B981).withValues(alpha: 0.35)
                   : AppColors.ink(0.08),
             ),
           ),
@@ -372,13 +369,12 @@ class _QiblaScreenState extends State<QiblaScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.warning_amber_rounded,
-                    color: Colors.amber.withOpacity(0.7), size: 14),
+                    color: Colors.amber.withValues(alpha: 0.7), size: 14),
                 const SizedBox(width: 6),
                 Text(
                   'Low accuracy — move away from metal objects',
                   style: AppText.manrope(
-                      fontSize: 11,
-                      color: Colors.amber.withOpacity(0.7)),
+                      fontSize: 11, color: Colors.amber.withValues(alpha: 0.7)),
                 ),
               ],
             ),
@@ -393,8 +389,7 @@ class _QiblaScreenState extends State<QiblaScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.location_off_rounded,
-            color: AppColors.ink(0.24), size: 64),
+        Icon(Icons.location_off_rounded, color: AppColors.ink(0.24), size: 64),
         const SizedBox(height: 16),
         Text(
           'Location Not Set',
@@ -407,8 +402,7 @@ class _QiblaScreenState extends State<QiblaScreen>
         Text(
           'Set your location in Settings\nto use the Qibla compass.',
           textAlign: TextAlign.center,
-          style: AppText.manrope(
-              fontSize: 14, color: AppColors.ink(0.38)),
+          style: AppText.manrope(fontSize: 14, color: AppColors.ink(0.38)),
         ),
       ],
     );
@@ -416,10 +410,11 @@ class _QiblaScreenState extends State<QiblaScreen>
 
   Widget _buildLoading() {
     return SizedBox(
-      width: 40, height: 40,
+      width: 40,
+      height: 40,
       child: CircularProgressIndicator(
         strokeWidth: 2.5,
-        color: AppColors.primary.withOpacity(0.7),
+        color: AppColors.primary.withValues(alpha: 0.7),
       ),
     );
   }
@@ -442,8 +437,7 @@ class _QiblaScreenState extends State<QiblaScreen>
         Text(
           'This device does not have a\nmagnetometer sensor.',
           textAlign: TextAlign.center,
-          style: AppText.manrope(
-              fontSize: 14, color: AppColors.ink(0.38)),
+          style: AppText.manrope(fontSize: 14, color: AppColors.ink(0.38)),
         ),
       ],
     );
@@ -471,7 +465,7 @@ class _CompassRosePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final r  = size.width / 2;
+    final r = size.width / 2;
 
     // ── Outer ring ────────────────────────────────────────────────────
     final ringPaint = Paint()
@@ -489,7 +483,7 @@ class _CompassRosePainter extends CustomPainter {
       ..strokeWidth = 1.0;
 
     for (int i = 0; i < 72; i++) {
-      final angle  = i * 5.0 * math.pi / 180;
+      final angle = i * 5.0 * math.pi / 180;
       final isMajor = i % 6 == 0;
       final outer = r * 0.92;
       final inner = outer - (isMajor ? r * 0.08 : r * 0.04);
@@ -509,15 +503,15 @@ class _CompassRosePainter extends CustomPainter {
 
     // ── Cardinal labels ───────────────────────────────────────────────
     final cardinals = {
-      0.0  : ('N', true),
-      90.0 : ('E', false),
+      0.0: ('N', true),
+      90.0: ('E', false),
       180.0: ('S', false),
       270.0: ('W', false),
     };
 
     for (final entry in cardinals.entries) {
-      final angle  = entry.key * math.pi / 180;
-      final label  = entry.value.$1;
+      final angle = entry.key * math.pi / 180;
+      final label = entry.value.$1;
       final isNorth = entry.value.$2;
       final dist = r * 0.78;
       final x = cx + dist * math.sin(angle);
@@ -529,23 +523,20 @@ class _CompassRosePainter extends CustomPainter {
           style: TextStyle(
             fontSize: r * 0.1,
             fontWeight: FontWeight.w900,
-            color: isNorth
-                ? const Color(0xFFEF4444)
-                : AppColors.ink(0.7),
+            color: isNorth ? const Color(0xFFEF4444) : AppColors.ink(0.7),
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas,
-          Offset(x - tp.width / 2, y - tp.height / 2));
+      tp.paint(canvas, Offset(x - tp.width / 2, y - tp.height / 2));
     }
 
     // ── Intercardinal labels ──────────────────────────────────────────
     const intercardinals = [45.0, 135.0, 225.0, 315.0];
-    const icLabels       = ['NE', 'SE', 'SW', 'NW'];
+    const icLabels = ['NE', 'SE', 'SW', 'NW'];
     for (int i = 0; i < 4; i++) {
       final angle = intercardinals[i] * math.pi / 180;
-      final dist  = r * 0.78;
+      final dist = r * 0.78;
       final x = cx + dist * math.sin(angle);
       final y = cy - dist * math.cos(angle);
 
@@ -560,8 +551,7 @@ class _CompassRosePainter extends CustomPainter {
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(canvas,
-          Offset(x - tp.width / 2, y - tp.height / 2));
+      tp.paint(canvas, Offset(x - tp.width / 2, y - tp.height / 2));
     }
   }
 
@@ -577,23 +567,19 @@ class _NeedlePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final cx = size.width / 2;
     final cy = size.height / 2;
-    final r  = size.width / 2;
+    final r = size.width / 2;
 
-    final topColor = aligned
-        ? const Color(0xFF10B981)
-        : const Color(0xFFF59E0B);
+    final topColor =
+        aligned ? const Color(0xFF10B981) : const Color(0xFFF59E0B);
 
     // ── Kaaba icon at the tip ────────────────────────────────────────
     const kaabaEmoji = '🕋';
     final kaabaY = cy - r * 0.78;
     final tp = TextPainter(
-      text: TextSpan(
-          text: kaabaEmoji,
-          style: TextStyle(fontSize: r * 0.18)),
+      text: TextSpan(text: kaabaEmoji, style: TextStyle(fontSize: r * 0.18)),
       textDirection: TextDirection.ltr,
     )..layout();
-    tp.paint(canvas,
-        Offset(cx - tp.width / 2, kaabaY - tp.height / 2));
+    tp.paint(canvas, Offset(cx - tp.width / 2, kaabaY - tp.height / 2));
 
     // ── Arrow shaft (pointing up = toward Qibla) ─────────────────────
     final shaftPaint = Paint()
@@ -613,9 +599,9 @@ class _NeedlePainter extends CustomPainter {
       ..color = topColor
       ..style = PaintingStyle.fill;
 
-    final tipY  = kaabaY + tp.height / 2;
+    final tipY = kaabaY + tp.height / 2;
     final hBase = tipY + r * 0.12;
-    final hW    = r * 0.07;
+    final hW = r * 0.07;
 
     final path = Path()
       ..moveTo(cx, tipY)

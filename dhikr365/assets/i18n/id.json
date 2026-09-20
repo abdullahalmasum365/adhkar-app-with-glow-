@@ -237,5 +237,8 @@
   "welcome_signin_body": "Masuk dengan Google atau Apple agar doa favorit dan rencana khusus Anda tersimpan ke akun dan bisa dipulihkan di perangkat mana pun. Sepenuhnya opsional — bisa dilakukan nanti dari Settings.",
   "continue_without_account": "Lanjutkan tanpa akun",
   "donation_not_available": "Donasi belum diaktifkan pada build ini — periksa lagi nanti.",
-  "donation_not_available_short": "Belum tersedia"
+  "donation_not_available_short": "Belum tersedia",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

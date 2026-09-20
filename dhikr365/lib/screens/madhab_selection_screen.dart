@@ -158,11 +158,11 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
             child: Container(
               height: 256,
               decoration: BoxDecoration(
-                  color: primaryColor.withOpacity(0.1),
+                  color: primaryColor.withValues(alpha: 0.1),
                   shape: BoxShape.rectangle,
                   boxShadow: [
                     BoxShadow(
-                      color: primaryColor.withOpacity(0.1),
+                      color: primaryColor.withValues(alpha: 0.1),
                       blurRadius: 120,
                       spreadRadius: 60,
                     )
@@ -181,7 +181,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                     end: Alignment.topCenter,
                     colors: [
                       bgDark,
-                      bgDark.withOpacity(0.95),
+                      bgDark.withValues(alpha: 0.95),
                       Colors.transparent,
                     ],
                   ),
@@ -198,7 +198,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: primaryColor.withOpacity(0.3),
+                              color: primaryColor.withValues(alpha: 0.3),
                               blurRadius: 30,
                               offset: const Offset(0, 8),
                             ),
@@ -293,7 +293,7 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: primaryColor.withOpacity(0.15),
+                    color: primaryColor.withValues(alpha: 0.15),
                     blurRadius: 20,
                     spreadRadius: 0,
                   )
@@ -377,7 +377,7 @@ class _GeometricOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFF48C25).withOpacity(0.03) // 3% orange
+      ..color = const Color(0xFFF48C25).withValues(alpha: 0.03) // 3% orange
       ..style = PaintingStyle.fill;
 
     const double patternSize = 60.0;

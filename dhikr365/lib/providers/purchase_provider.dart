@@ -13,10 +13,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/purchase_service.dart';
 
 class PurchaseProvider extends ChangeNotifier {
+  static const String _prefKeyActiveSub = 'active_subscription_id';
   final PurchaseService _service = PurchaseService();
 
   bool _isAvailable = false;
@@ -33,12 +35,24 @@ class PurchaseProvider extends ChangeNotifier {
   Map<String, ProductDetails> get products => _products;
   String? get activeSubscriptionId => _activeSubscriptionId;
   bool get hasActiveSubscription => _activeSubscriptionId != null;
+  bool get isPro => hasActiveSubscription;
 
   PurchaseProvider() {
     _init();
   }
 
   Future<void> _init() async {
+    // Load cached subscription state so offline users retain Pro access
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _activeSubscriptionId = prefs.getString(_prefKeyActiveSub);
+      if (_activeSubscriptionId != null) {
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[PurchaseProvider] load cached subscription error: $e');
+    }
+
     _service.listen(_onPurchaseUpdate);
 
     _isAvailable = await _service.isAvailable;
@@ -87,6 +101,12 @@ class PurchaseProvider extends ChangeNotifier {
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
           _activeSubscriptionId = purchase.productID;
+          try {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(_prefKeyActiveSub, purchase.productID);
+          } catch (e) {
+            debugPrint('[PurchaseProvider] save subscription error: $e');
+          }
           if (purchase.pendingCompletePurchase) {
             await _service.completePurchase(purchase);
           }

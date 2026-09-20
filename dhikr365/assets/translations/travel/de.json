@@ -1,0 +1,64 @@
+{
+  "dhikrs": {
+    "travel_riding_vehicle": {
+      "dhikr_no": 1,
+      "title": "When Riding a Vehicle or Mount",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "بِسْمِ اللَّهِ، وَالْحَمْدُ لِلَّهِ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَىٰ رَبِّنَا لَمُنْقَلِبُونَ، الْحَمْدُ لِلَّهِ، الْحَمْدُ لِلَّهِ، الْحَمْدُ لِلَّهِ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، سُبْحَانَكَ اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+      "transliteration": "Bismillāhi wal-ḥamdu lillāh, Subḥānal-ladhī sakh-khara lanā hādhā wamā kunnā lahū muqrinīn, wa innā ilā Rabbinā lamunqalibūn. Al-ḥamdu lillāh (3x), Allāhu Akbar (3x), Subḥānakallāhumma innī ẓalamtu nafsī faghfir lī, fa-innahū lā yaghfirudh-dhunūba illā Ant.",
+      "translation": "In the name of Allah, and all praise is due to Allah. How perfect He is, The One Who has placed this at our service, and we could never have had the capacity for it, and to our Lord is our return. Praise be to Allah (3x), Allah is the Greatest (3x), Glory is to You, O Allah, indeed I have wronged myself, so forgive me, for none forgives sins except You.",
+      "benefit": "Ali ibn Abi Talib (may Allah be pleased with him) reported that the Prophet (ﷺ) recited this upon boarding his mount and smiled, saying that Allah marvels with pleasure at His servant who asks for forgiveness.",
+      "reference": "Abu Dawud 3/34, At-Tirmidhi 5/501 | Hisnul Muslim 206",
+      "grading": "Sahih",
+      "occasion": "Recite upon boarding any car, bike, bus, train, or airplane.",
+      "category": "travel",
+      "audioPath": "assets/audio/travel_riding_vehicle.mp3"
+    },
+    "travel_supplication": {
+      "dhikr_no": 2,
+      "title": "Supplication for Journey & Travel",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَىٰ رَبِّنَا لَمُنْقَلِبُونَ، اللَّهُمَّ إِنَّا نَسْأَلُكَ فِي سَفَرِنَا هَذَا الْبِرَّ وَالتَّقْوَى، وَمِنَ الْعَمَلِ مَا تَرْضَى، اللَّهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِ عَنَّا بُعْدَهُ، اللَّهُمَّ أَنْتَ الصَّاحِبُ فِي السَّفَرِ، وَالْخَلِيفَةُ فِي الْأَهْلِ، اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ وَعْثَاءِ السَّفَرِ، وَكَآبَةِ الْمَنْظَرِ، وَسُوءِ الْمُنْقَلَبِ فِي الْمَالِ وَالْأَهْلِ",
+      "transliteration": "Allāhu Akbar (3x). Subḥānal-ladhī sakh-khara lanā hādhā wamā kunnā lahū muqrinīn wa innā ilā Rabbinā lamunqalibūn. Allāhumma innā nas'aluka fī safarinā hādhal-birra wat-taqwā, waminal-'amali mā tarḍā. Allāhumma hawwin 'alaynā safaranā hādhā waṭwi 'annā bu'dah. Allāhumma Antaṣ-Ṣāḥibu fis-safar, wal-khalīfatu fil-ahl. Allāhumma innī a'ūdhu bika min wa'thā'is-safar, wa ka'ābatil-manẓar, wa sū'il-munqalabi fil-māli wal-ahl.",
+      "translation": "Allah is the Greatest (3x). How perfect He is, The One Who has placed this at our service, and we could never have controlled it, and indeed to our Lord we shall return. O Allah, we ask You in this journey of ours for righteousness and piety, and for deeds that please You. O Allah, make easy for us this journey of ours and shorten its distance for us. O Allah, You are the Companion on the journey and the Caretaker over our family. O Allah, I seek refuge in You from the hardships of travel, grim sights, and a bad return to wealth and family.",
+      "benefit": "The comprehensive sunnah supplication taught by the Messenger of Allah (ﷺ) whenever he set out on a journey.",
+      "reference": "Sahih Muslim 2/998 | Hisnul Muslim 207",
+      "grading": "Sahih",
+      "occasion": "Recite when commencing any journey or travel.",
+      "category": "travel",
+      "audioPath": "assets/audio/travel_supplication.mp3"
+    },
+    "travel_market": {
+      "dhikr_no": 3,
+      "title": "Upon Entering the Market",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ، وَهُوَ حَيٌّ لَا يَمُوتُ، بِيَدِهِ الْخَيْرُ، وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "Lā ilāha illallāhu waḥdahū lā sharīka lah, lahul-mulku wa lahul-ḥamd, yuḥyī wa yumīt, wa huwa ḥayyun lā yamūt, biyadihil-khayr, wa huwa 'alā kulli shay'in qadīr.",
+      "translation": "None has the right to be worshipped except Allah alone, without partner. To Him belongs all sovereignty and to Him belongs all praise. He gives life and causes death, and He is Ever-Living and never dies. In His hand is all good, and He is over all things capable.",
+      "benefit": "The Prophet (ﷺ) said: 'Whoever enters a market and says this, Allah records for him one million good deeds, erases from him one million sins, and elevates him one million ranks.'",
+      "reference": "At-Tirmidhi 5/291, Al-Hakim 1/538 | Hisnul Muslim 209",
+      "grading": "Hasan",
+      "occasion": "Recite upon entering a market, mall, or shopping center.",
+      "category": "travel",
+      "audioPath": "assets/audio/travel_market.mp3"
+    },
+    "travel_returning": {
+      "dhikr_no": 4,
+      "title": "Upon Returning from a Journey",
+      "frequency": "1x",
+      "targetCount": 1,
+      "arabicText": "آيِبُونَ تَائِبُونَ عَابِدُونَ لِرَبِّنَا حَامِدُونَ",
+      "transliteration": "Āyibūna, tā'ibūna, 'ābidūna, li-Rabbinā ḥāmidūn.",
+      "translation": "We return, repent, worship and praise our Lord.",
+      "benefit": "The Prophet (ﷺ) would repeat this continuous remembrance upon returning home from a journey or battle until he entered his city.",
+      "reference": "Sahih Muslim 2/998 | Hisnul Muslim 217",
+      "grading": "Sahih",
+      "occasion": "Recite when returning home from travel.",
+      "category": "travel",
+      "audioPath": "assets/audio/travel_returning.mp3"
+    }
+  }
+}

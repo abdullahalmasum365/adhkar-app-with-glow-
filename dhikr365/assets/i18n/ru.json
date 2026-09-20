@@ -237,5 +237,8 @@
   "welcome_signin_body": "Войдите через Google или Apple, чтобы избранные дуа и ваш план сохранялись в аккаунте и восстанавливались на любом устройстве. Полностью необязательно — это можно сделать позже в настройках.",
   "continue_without_account": "Продолжить без аккаунта",
   "donation_not_available": "Пожертвования пока не настроены в этой версии — загляните позже.",
-  "donation_not_available_short": "Пока недоступно"
+  "donation_not_available_short": "Пока недоступно",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

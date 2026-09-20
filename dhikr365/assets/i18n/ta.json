@@ -237,5 +237,8 @@
   "welcome_signin_body": "உங்கள் விருப்பமான துஆக்களும் தனிப்பயன் திட்டமும் உங்கள் கணக்கில் சேமிக்கப்பட்டு எந்த சாதனத்திலும் மீட்டெடுக்கப்பட, Google அல்லது Apple மூலம் உள்நுழையவும். இது முற்றிலும் விருப்பமானது — பின்னர் Settings இலிருந்தும் செய்யலாம்.",
   "continue_without_account": "கணக்கு இல்லாமல் தொடரவும்",
   "donation_not_available": "இந்த பதிப்பில் நன்கொடைகள் இன்னும் அமைக்கப்படவில்லை — விரைவில் மீண்டும் பாருங்கள்.",
-  "donation_not_available_short": "இன்னும் கிடைக்கவில்லை"
+  "donation_not_available_short": "இன்னும் கிடைக்கவில்லை",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

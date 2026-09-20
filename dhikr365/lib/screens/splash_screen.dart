@@ -93,13 +93,12 @@ class _SplashScreenState extends State<SplashScreen> {
         barrierDismissible: false,
         builder: (ctx) => AlertDialog(
           backgroundColor: AppColors.bgTeal,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(children: [
             Icon(Icons.alarm_on, color: AppColors.primary, size: 22),
             const SizedBox(width: 10),
-            Text('Enable Precise Alarms',
-                style: AppText.heading(16)),
+            Text('Enable Precise Alarms', style: AppText.heading(16)),
           ]),
           content: Text(
             'For prayer time notifications to arrive at the exact correct '
@@ -205,11 +204,14 @@ class _SplashScreenState extends State<SplashScreen> {
       if (!mounted) return;
       if (launchPayload == 'morning' || launchPayload == 'prayer:sunrise') {
         nav.push(MaterialPageRoute(
-          builder: (_) => const DhikrListScreen(category: DhikrCategory.morning),
+          builder: (_) =>
+              const DhikrListScreen(category: DhikrCategory.morning),
         ));
-      } else if (launchPayload == 'evening' || launchPayload == 'prayer:maghrib') {
+      } else if (launchPayload == 'evening' ||
+          launchPayload == 'prayer:maghrib') {
         nav.push(MaterialPageRoute(
-          builder: (_) => const DhikrListScreen(category: DhikrCategory.evening),
+          builder: (_) =>
+              const DhikrListScreen(category: DhikrCategory.evening),
         ));
       }
     }
@@ -242,14 +244,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.15),
+                      color: AppColors.primary.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: AppColors.primary.withOpacity(0.3),
+                          color: AppColors.primary.withValues(alpha: 0.3),
                           width: 1.5),
                     ),
-                    child: Icon(Icons.mosque,
-                        size: 52, color: AppColors.primary),
+                    child:
+                        Icon(Icons.mosque, size: 52, color: AppColors.primary),
                   )
                       .animate()
                       .fadeIn(duration: 600.ms)
@@ -277,7 +279,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   height: 24,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.primary.withOpacity(0.6),
+                    color: AppColors.primary.withValues(alpha: 0.6),
                   ),
                 ).animate().fadeIn(delay: 1200.ms),
               ),

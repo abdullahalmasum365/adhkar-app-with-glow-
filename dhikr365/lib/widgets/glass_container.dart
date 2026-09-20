@@ -14,7 +14,7 @@ class GlassContainer extends StatelessWidget {
   final double? height;
   final BoxBorder? border;
 
-  GlassContainer({
+  const GlassContainer({
     super.key,
     required this.child,
     this.blur = 10.0,
@@ -42,7 +42,8 @@ class GlassContainer extends StatelessWidget {
             padding: padding,
             decoration: BoxDecoration(
               // Frosted fill follows the palette ink unless overridden.
-              color: (color ?? AppColors.palette.ink).withOpacity(opacity),
+              color:
+                  (color ?? AppColors.palette.ink).withValues(alpha: opacity),
               borderRadius: borderRadius ?? BorderRadius.circular(20),
               border: border ??
                   Border.all(

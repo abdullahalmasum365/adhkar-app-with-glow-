@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import '../constants/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ import '../widgets/repeat_picker.dart';
 import '../utils/responsive.dart';
 import '../services/audio_service.dart';
 import '../services/tts_service.dart';
+import '../providers/purchase_provider.dart';
+import '../widgets/pro_paywall_sheet.dart';
 import 'edit_plan_screen.dart';
 
 // ============================================================================
@@ -40,18 +43,22 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
 
   // ── Mini player state ────────────────────────────────────────────────────
   final AudioService _audio = AudioService();
-  final TtsService   _tts   = TtsService();
+  final TtsService _tts = TtsService();
   Dhikr? _activeDhikr;
-  bool   _playerPlaying    = false;
-  bool   _usingTts         = false;
+  bool _playerPlaying = false;
+  bool _usingTts = false;
   Duration _position = Duration.zero;
-  Duration _duration  = Duration.zero;
+  Duration _duration = Duration.zero;
   int _repeatTarget = 1; // how many times to play (0 = infinite)
   int _repeatsDone = 0;
   bool _completed = false; // finished all repeats — next play restarts at 0
   double? _dragProgress; // non-null while the user drags the seek bar
   bool _autoNext = false; // continuous play: auto-advance to the next dhikr
   List<Dhikr>? _navList; // currently displayed list, for prev/next
+  StreamSubscription<PlayerState>? _stateSub;
+  StreamSubscription<Duration>? _posSub;
+  StreamSubscription<Duration?>? _durSub;
+  StreamSubscription<void>? _completeSub;
 
   static const _speeds = [0.75, 1.0, 1.25, 1.5];
 
@@ -90,13 +97,13 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     await _audio.stop();
     await _tts.stop();
     setState(() {
-      _activeDhikr   = list[j];
-      _repeatsDone   = 0;
-      _position      = Duration.zero;
-      _duration      = Duration.zero;
-      _usingTts      = false;
+      _activeDhikr = list[j];
+      _repeatsDone = 0;
+      _position = Duration.zero;
+      _duration = Duration.zero;
+      _usingTts = false;
       _playerPlaying = false;
-      _completed     = false;
+      _completed = false;
     });
     await _startPlayback(list[j]);
   }
@@ -122,11 +129,13 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   }
 
   void _repeatMinus() => setState(() {
-        _repeatTarget = _repeatTarget == 0 ? 1 : (_repeatTarget - 1).clamp(1, 999);
+        _repeatTarget =
+            _repeatTarget == 0 ? 1 : (_repeatTarget - 1).clamp(1, 999);
       });
 
   void _repeatPlus() => setState(() {
-        _repeatTarget = _repeatTarget == 0 ? 1 : (_repeatTarget + 1).clamp(1, 999);
+        _repeatTarget =
+            _repeatTarget == 0 ? 1 : (_repeatTarget + 1).clamp(1, 999);
       });
 
   Future<void> _pickRepeatCount() async {
@@ -152,19 +161,19 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     });
 
     // Subscribe to audio streams for mini player UI
-    _audio.stateStream.listen((s) {
+    _stateSub = _audio.stateStream.listen((s) {
       if (!mounted) return;
       setState(() => _playerPlaying = s == PlayerState.playing);
     });
-    _audio.positionStream.listen((p) {
+    _posSub = _audio.positionStream.listen((p) {
       if (!mounted) return;
       setState(() => _position = p);
     });
-    _audio.durationStream.listen((d) {
+    _durSub = _audio.durationStream.listen((d) {
       if (!mounted) return;
       setState(() => _duration = d ?? Duration.zero);
     });
-    _audio.onComplete.listen((_) {
+    _completeSub = _audio.onComplete.listen((_) {
       if (!mounted) return;
       _handleRepeatComplete();
     });
@@ -172,6 +181,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
 
   @override
   void dispose() {
+    _stateSub?.cancel();
+    _posSub?.cancel();
+    _durSub?.cancel();
+    _completeSub?.cancel();
     _dhikrProvider?.removeListener(_onProviderChanged);
     _audio.stop();
     _tts.stop();
@@ -182,7 +195,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   void _onProviderChanged() {
     if (!mounted) return;
     final dp = Provider.of<DhikrProvider>(context, listen: false);
-    if (!_celebrationShownThisSession && dp.isCategoryCompleted(widget.category)) {
+    if (!_celebrationShownThisSession &&
+        dp.isCategoryCompleted(widget.category)) {
       _celebrationShownThisSession = true;
       setState(() => _showCelebration = true);
       // Auto-dismiss after 2.8 s
@@ -212,8 +226,14 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
         return lp.getText('after_salah');
       case DhikrCategory.beforeSleep:
         return lp.getText('before_sleep');
-      default:
-        return 'Dhikr';
+      case DhikrCategory.food:
+        return lp.getText('food_eating');
+      case DhikrCategory.travel:
+        return lp.getText('travel');
+      case DhikrCategory.shifa:
+        return lp.getText('shifa');
+      case DhikrCategory.distress:
+        return lp.getText('distress');
     }
   }
 
@@ -226,14 +246,21 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
       backgroundColor: Colors.transparent,
       barrierColor: AppColors.shadow(0.4),
       builder: (BuildContext context) {
-        final langProvider = Provider.of<LanguageProvider>(context, listen: false);
-        String selectedAppLang = LanguageProvider.supportedLanguages.firstWhere((l) => l['code'] == langProvider.locale.languageCode)['name']!;
-        String selectedTranslationLang = LanguageProvider.supportedLanguages.firstWhere((l) => l['code'] == langProvider.translationCode)['name']!;
-        String selectedTransliterationLang = LanguageProvider.supportedLanguages.firstWhere((l) => l['code'] == langProvider.transliterationCode)['name']!;
+        final langProvider =
+            Provider.of<LanguageProvider>(context, listen: false);
+        String selectedAppLang = LanguageProvider.supportedLanguages.firstWhere(
+            (l) => l['code'] == langProvider.locale.languageCode)['name']!;
+        String selectedTranslationLang = LanguageProvider.supportedLanguages
+            .firstWhere(
+                (l) => l['code'] == langProvider.translationCode)['name']!;
+        String selectedTransliterationLang = LanguageProvider.supportedLanguages
+            .firstWhere(
+                (l) => l['code'] == langProvider.transliterationCode)['name']!;
 
         return StatefulBuilder(
           builder: (context, setModalState) {
-            final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+            final themeProvider =
+                Provider.of<ThemeProvider>(context, listen: false);
             return Padding(
               padding: EdgeInsets.only(
                 left: 16,
@@ -247,10 +274,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(32),
                     decoration: BoxDecoration(
-                      color: AppColors.playerSurface.withOpacity(0.85),
+                      color: AppColors.playerSurface.withValues(alpha: 0.85),
                       borderRadius: BorderRadius.circular(40),
                       border: Border.all(
-                        color: const Color(0xFFF59E0B).withOpacity(0.3),
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -258,7 +285,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           blurRadius: 40,
                         ),
                         BoxShadow(
-                          color: const Color(0xFFF59E0B).withOpacity(0.1),
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
                           blurRadius: 15,
                         ),
                       ],
@@ -291,7 +318,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             ),
                             IconButton(
                               onPressed: () => Navigator.pop(context),
-                              icon: Icon(Icons.close, color: AppColors.ink(0.54)),
+                              icon:
+                                  Icon(Icons.close, color: AppColors.ink(0.54)),
                               padding: EdgeInsets.zero,
                               constraints: const BoxConstraints(),
                             ),
@@ -301,43 +329,58 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
 
                         // App Language Row
                         _buildLanguageDropdown(
-                          label: langProvider.getText('app_language').toUpperCase(),
+                          label: langProvider
+                              .getText('app_language')
+                              .toUpperCase(),
                           subLabel: "Interface language",
                           icon: Icons.language,
                           value: selectedAppLang,
                           onChanged: (val) {
-                            if (val != null) setModalState(() => selectedAppLang = val);
+                            if (val != null) {
+                              setModalState(() => selectedAppLang = val);
+                            }
                           },
                         ),
                         const SizedBox(height: 24),
 
                         // Translation Row
                         _buildLanguageDropdown(
-                          label: langProvider.getText('translation_lang').toUpperCase(),
+                          label: langProvider
+                              .getText('translation_lang')
+                              .toUpperCase(),
                           subLabel: "Meaning language",
                           icon: Icons.subtitles_outlined,
                           value: selectedTranslationLang,
                           onChanged: (val) {
-                            if (val != null) setModalState(() => selectedTranslationLang = val);
+                            if (val != null) {
+                              setModalState(
+                                  () => selectedTranslationLang = val);
+                            }
                           },
                         ),
                         const SizedBox(height: 24),
 
                         // Transliteration language Row
                         _buildLanguageDropdown(
-                          label: langProvider.getText('transliteration_lang').toUpperCase(),
+                          label: langProvider
+                              .getText('transliteration_lang')
+                              .toUpperCase(),
                           subLabel: "Reading aid",
                           icon: Icons.spellcheck,
                           value: selectedTransliterationLang,
                           onChanged: (val) {
-                            if (val != null) setModalState(() => selectedTransliterationLang = val);
+                            if (val != null) {
+                              setModalState(
+                                  () => selectedTransliterationLang = val);
+                            }
                           },
                         ),
                         const SizedBox(height: 24),
 
                         // Show Transliteration toggle
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.ink(0.05),
                             borderRadius: BorderRadius.circular(16),
@@ -372,7 +415,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                               ),
                               Switch(
                                 value: themeProvider.showTransliteration,
-                                activeColor: AppColors.accent,
+                                activeThumbColor: AppColors.accent,
                                 onChanged: (v) {
                                   themeProvider.toggleTransliteration(v);
                                   setModalState(() {});
@@ -387,15 +430,24 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         GestureDetector(
                           onTap: () async {
                             String appCode = LanguageProvider.supportedLanguages
-                                .firstWhere((l) => l['name'] == selectedAppLang)['code']!;
-                            String transCode = LanguageProvider.supportedLanguages
-                                .firstWhere((l) => l['name'] == selectedTranslationLang)['code']!;
-                            String translitCode = LanguageProvider.supportedLanguages
-                                .firstWhere((l) => l['name'] == selectedTransliterationLang)['code']!;
+                                .firstWhere((l) =>
+                                    l['name'] == selectedAppLang)['code']!;
+                            String transCode = LanguageProvider
+                                .supportedLanguages
+                                .firstWhere((l) =>
+                                    l['name'] ==
+                                    selectedTranslationLang)['code']!;
+                            String translitCode = LanguageProvider
+                                .supportedLanguages
+                                .firstWhere((l) =>
+                                    l['name'] ==
+                                    selectedTransliterationLang)['code']!;
 
                             await langProvider.setLanguage(appCode);
-                            await langProvider.setTranslationLanguage(transCode);
-                            await langProvider.setTransliterationLanguage(translitCode);
+                            await langProvider
+                                .setTranslationLanguage(transCode);
+                            await langProvider
+                                .setTransliterationLanguage(translitCode);
 
                             await dhikrProvider.reloadDhikrs(
                               uiLanguageCode: appCode,
@@ -416,7 +468,9 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                langProvider.getText('save_changes').toUpperCase(),
+                                langProvider
+                                    .getText('save_changes')
+                                    .toUpperCase(),
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w900,
@@ -479,7 +533,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
             child: DropdownButton<String>(
               isExpanded: true,
               value: value,
-              icon: const Icon(Icons.unfold_more, color: Color(0xFFF59E0B), size: 20),
+              icon: const Icon(Icons.unfold_more,
+                  color: Color(0xFFF59E0B), size: 20),
               dropdownColor: AppColors.playerSurface,
               style: TextStyle(
                 fontSize: 15,
@@ -543,11 +598,18 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     final path = _resolveAudioPath(dhikr);
     if (path != null) {
       final ok = await _audio.playPath(path);
-      if (ok) { setState(() => _usingTts = false); return; }
+      if (ok) {
+        setState(() => _usingTts = false);
+        return;
+      }
     }
     if (dhikr.arabicText.isNotEmpty) {
-      setState(() { _usingTts = true; _playerPlaying = true; });
-      final ok = await _tts.speak(dhikr.arabicText, lang: 'ar-SA', onComplete: () {
+      setState(() {
+        _usingTts = true;
+        _playerPlaying = true;
+      });
+      final ok =
+          await _tts.speak(dhikr.arabicText, lang: 'ar-SA', onComplete: () {
         if (mounted) _handleRepeatComplete();
       });
       if (!ok) _showTtsUnavailable();
@@ -559,8 +621,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   Future<void> _onPlayTapped(Dhikr dhikr) async {
     final isSame = _activeDhikr?.id == dhikr.id;
     if (isSame && _playerPlaying) {
-      if (_usingTts) { await _tts.pause(); }
-      else           { await _audio.pause(); }
+      if (_usingTts) {
+        await _tts.pause();
+      } else {
+        await _audio.pause();
+      }
       setState(() => _playerPlaying = false);
       return;
     }
@@ -584,11 +649,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     await _audio.stop();
     await _tts.stop();
     setState(() {
-      _activeDhikr   = dhikr;
-      _repeatsDone   = 0;
-      _position      = Duration.zero;
-      _duration      = Duration.zero;
-      _usingTts      = false;
+      _activeDhikr = dhikr;
+      _repeatsDone = 0;
+      _position = Duration.zero;
+      _duration = Duration.zero;
+      _usingTts = false;
       _playerPlaying = false;
     });
     await _startPlayback(dhikr);
@@ -618,14 +683,14 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     _audio.stop();
     _tts.stop();
     setState(() {
-      _activeDhikr     = null;
-      _playerPlaying   = false;
-      _usingTts        = false;
-      _position        = Duration.zero;
-      _duration        = Duration.zero;
-      _repeatsDone     = 0;
-      _completed       = false;
-      _dragProgress    = null;
+      _activeDhikr = null;
+      _playerPlaying = false;
+      _usingTts = false;
+      _position = Duration.zero;
+      _duration = Duration.zero;
+      _repeatsDone = 0;
+      _completed = false;
+      _dragProgress = null;
     });
   }
 
@@ -643,7 +708,9 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     final amber = AppColors.accent;
 
     return Positioned(
-      bottom: 0, left: 0, right: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
       child: SafeArea(
         top: false,
         child: ClipRRect(
@@ -654,9 +721,9 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
               margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
               decoration: BoxDecoration(
-                color: AppColors.playerSurface.withOpacity(0.93),
+                color: AppColors.playerSurface.withValues(alpha: 0.93),
                 borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: amber.withOpacity(0.22)),
+                border: Border.all(color: amber.withValues(alpha: 0.22)),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.shadow(0.55),
@@ -670,7 +737,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                 children: [
                   // ── Handle ────────────────────────────────────────────
                   Container(
-                    width: 36, height: 3,
+                    width: 36,
+                    height: 3,
                     margin: const EdgeInsets.only(bottom: 14),
                     decoration: BoxDecoration(
                       color: AppColors.ink(0.24),
@@ -681,16 +749,18 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                   // ── Title row ─────────────────────────────────────────
                   Row(children: [
                     Container(
-                      width: 36, height: 36,
+                      width: 36,
+                      height: 36,
                       decoration: BoxDecoration(
-                        color: amber.withOpacity(0.15),
+                        color: amber.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
                         _usingTts
                             ? Icons.record_voice_over_rounded
                             : Icons.music_note_rounded,
-                        color: amber, size: 18,
+                        color: amber,
+                        size: 18,
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -698,16 +768,19 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _usingTts ? 'VOICE RECITATION' : 'NOW PLAYING',
-                            style: TextStyle(
-                                fontSize: 9, fontWeight: FontWeight.w900,
-                                letterSpacing: 1.6, color: AppColors.ink(0.38))),
+                          Text(_usingTts ? 'VOICE RECITATION' : 'NOW PLAYING',
+                              style: TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.6,
+                                  color: AppColors.ink(0.38))),
                           const SizedBox(height: 1),
                           Text(dhikr.title,
-                              maxLines: 1, overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
                                   color: AppColors.textPrimary)),
                         ],
                       ),
@@ -717,7 +790,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                     GestureDetector(
                       onTap: _closePlayer,
                       child: Container(
-                        width: 32, height: 32,
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
                           color: AppColors.ink(0.07),
                           shape: BoxShape.circle,
@@ -744,8 +818,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           Text(
                             _playerPlaying ? 'RECITING ARABIC...' : 'PAUSED',
                             style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.w800,
-                              letterSpacing: 1.6, color: amber,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 1.6,
+                              color: amber,
                             ),
                           ),
                         ],
@@ -755,20 +831,21 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                     SliderTheme(
                       data: SliderTheme.of(context).copyWith(
                         trackHeight: 3,
-                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-                        overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
+                        thumbShape:
+                            const RoundSliderThumbShape(enabledThumbRadius: 5),
+                        overlayShape:
+                            const RoundSliderOverlayShape(overlayRadius: 12),
                         activeTrackColor: amber,
                         inactiveTrackColor: AppColors.ink(0.12),
                         thumbColor: amber,
-                        overlayColor: amber.withOpacity(0.18),
+                        overlayColor: amber.withValues(alpha: 0.18),
                       ),
                       // Drag anywhere on the bar: thumb follows the finger
                       // (no fighting with the live position stream) and the
                       // actual seek fires once, when the finger lifts.
                       child: Slider(
                         value: _dragProgress ?? progress,
-                        onChangeStart: (v) =>
-                            setState(() => _dragProgress = v),
+                        onChangeStart: (v) => setState(() => _dragProgress = v),
                         onChanged: (v) => setState(() => _dragProgress = v),
                         onChangeEnd: (v) async {
                           final ms = (_duration.inMilliseconds * v).toInt();
@@ -789,9 +866,11 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                               _dragProgress!)
                                           .toInt())
                                   : _position),
-                              style: TextStyle(fontSize: 11, color: AppColors.ink(0.38))),
+                              style: TextStyle(
+                                  fontSize: 11, color: AppColors.ink(0.38))),
                           Text(fmt(_duration),
-                              style: TextStyle(fontSize: 11, color: AppColors.ink(0.38))),
+                              style: TextStyle(
+                                  fontSize: 11, color: AppColors.ink(0.38))),
                         ],
                       ),
                     ),
@@ -805,61 +884,62 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _CircleBtn(
-                        icon: Icons.skip_previous_rounded,
-                        dimmed: !_hasNeighbour(-1),
-                        onTap: () => _playRelative(-1),
-                      ),
-                      const SizedBox(width: 10),
-                      _CircleBtn(
-                        icon: Icons.replay_10_rounded,
-                        dimmed: _usingTts,
-                        onTap: () => _skipBy(-10),
-                      ),
-                      const SizedBox(width: 14),
-                      // Play / Pause (main button)
-                      GestureDetector(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          _onPlayTapped(dhikr);
-                        },
-                        child: Container(
-                          width: 56, height: 56,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: amber,
-                            boxShadow: [
-                              BoxShadow(
-                                color: amber.withOpacity(0.4),
-                                blurRadius: 18,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            _playerPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: AppColors.onAccent,
-                            size: 32,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _CircleBtn(
+                          icon: Icons.skip_previous_rounded,
+                          dimmed: !_hasNeighbour(-1),
+                          onTap: () => _playRelative(-1),
+                        ),
+                        const SizedBox(width: 10),
+                        _CircleBtn(
+                          icon: Icons.replay_10_rounded,
+                          dimmed: _usingTts,
+                          onTap: () => _skipBy(-10),
+                        ),
+                        const SizedBox(width: 14),
+                        // Play / Pause (main button)
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.lightImpact();
+                            _onPlayTapped(dhikr);
+                          },
+                          child: Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: amber,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: amber.withValues(alpha: 0.4),
+                                  blurRadius: 18,
+                                ),
+                              ],
+                            ),
+                            child: Icon(
+                              _playerPlaying
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
+                              color: AppColors.onAccent,
+                              size: 32,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 14),
-                      _CircleBtn(
-                        icon: Icons.forward_10_rounded,
-                        dimmed: _usingTts,
-                        onTap: () => _skipBy(10),
-                      ),
-                      const SizedBox(width: 10),
-                      _CircleBtn(
-                        icon: Icons.skip_next_rounded,
-                        dimmed: !_hasNeighbour(1),
-                        onTap: () => _playRelative(1),
-                      ),
-                    ],
-                  ),
+                        const SizedBox(width: 14),
+                        _CircleBtn(
+                          icon: Icons.forward_10_rounded,
+                          dimmed: _usingTts,
+                          onTap: () => _skipBy(10),
+                        ),
+                        const SizedBox(width: 10),
+                        _CircleBtn(
+                          icon: Icons.skip_next_rounded,
+                          dimmed: !_hasNeighbour(1),
+                          onTap: () => _playRelative(1),
+                        ),
+                      ],
+                    ),
                   ),
 
                   const SizedBox(height: 12),
@@ -868,118 +948,121 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                   FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Repeat − (steps down by 1, minimum 1)
-                      _CircleBtn(
-                        icon: Icons.remove,
-                        small: true,
-                        onTap: _repeatMinus,
-                      ),
-                      const SizedBox(width: 6),
-                      // Repeat count chip — tap to TYPE an exact number
-                      GestureDetector(
-                        onTap: _pickRepeatCount,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: AppColors.ink(0.07),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: AppColors.ink(0.12)),
-                          ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(Icons.repeat_rounded,
-                                color: amber, size: 13),
-                            const SizedBox(width: 5),
-                            Text(_repeatLabel,
-                                style: TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.w700,
-                                    color: AppColors.textPrimary)),
-                            const SizedBox(width: 4),
-                            Icon(Icons.edit_rounded,
-                                color: AppColors.ink(0.35), size: 10),
-                          ]),
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Repeat − (steps down by 1, minimum 1)
+                        _CircleBtn(
+                          icon: Icons.remove,
+                          small: true,
+                          onTap: _repeatMinus,
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      // Repeat + (steps up by 1, max 999)
-                      _CircleBtn(
-                        icon: Icons.add,
-                        small: true,
-                        onTap: _repeatPlus,
-                      ),
+                        const SizedBox(width: 6),
+                        // Repeat count chip — tap to TYPE an exact number
+                        GestureDetector(
+                          onTap: _pickRepeatCount,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: AppColors.ink(0.07),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: AppColors.ink(0.12)),
+                            ),
+                            child:
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                              Icon(Icons.repeat_rounded,
+                                  color: amber, size: 13),
+                              const SizedBox(width: 5),
+                              Text(_repeatLabel,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textPrimary)),
+                              const SizedBox(width: 4),
+                              Icon(Icons.edit_rounded,
+                                  color: AppColors.ink(0.35), size: 10),
+                            ]),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        // Repeat + (steps up by 1, max 999)
+                        _CircleBtn(
+                          icon: Icons.add,
+                          small: true,
+                          onTap: _repeatPlus,
+                        ),
 
-                      const SizedBox(width: 16),
+                        const SizedBox(width: 16),
 
-                      // Playback speed (0.75× → 1× → 1.25× → 1.5×)
-                      GestureDetector(
-                        onTap: _cycleSpeed,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: _audio.rate != 1.0
-                                ? amber.withOpacity(0.15)
-                                : AppColors.ink(0.07),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
+                        // Playback speed (0.75× → 1× → 1.25× → 1.5×)
+                        GestureDetector(
+                          onTap: _cycleSpeed,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 7),
+                            decoration: BoxDecoration(
                               color: _audio.rate != 1.0
-                                  ? amber.withOpacity(0.5)
-                                  : AppColors.ink(0.12),
+                                  ? amber.withValues(alpha: 0.15)
+                                  : AppColors.ink(0.07),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: _audio.rate != 1.0
+                                    ? amber.withValues(alpha: 0.5)
+                                    : AppColors.ink(0.12),
+                              ),
                             ),
-                          ),
-                          child: Text(_speedLabel,
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w800,
-                                  color: _audio.rate != 1.0
-                                      ? amber
-                                      : AppColors.textPrimary)),
-                        ),
-                      ),
-
-                      const SizedBox(width: 16),
-
-                      // Continuous play: keep going through the whole list
-                      GestureDetector(
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          setState(() => _autoNext = !_autoNext);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 7),
-                          decoration: BoxDecoration(
-                            color: _autoNext
-                                ? amber.withOpacity(0.15)
-                                : AppColors.ink(0.07),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: _autoNext
-                                  ? amber.withOpacity(0.5)
-                                  : AppColors.ink(0.12),
-                            ),
-                          ),
-                          child: Row(mainAxisSize: MainAxisSize.min, children: [
-                            Icon(Icons.playlist_play_rounded,
-                                color: _autoNext
-                                    ? amber
-                                    : AppColors.ink(0.55),
-                                size: 16),
-                            const SizedBox(width: 4),
-                            Text('AUTO',
+                            child: Text(_speedLabel,
                                 style: TextStyle(
-                                    fontSize: 10, fontWeight: FontWeight.w800,
-                                    letterSpacing: 0.8,
-                                    color: _autoNext
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: _audio.rate != 1.0
                                         ? amber
-                                        : AppColors.ink(0.55))),
-                          ]),
+                                        : AppColors.textPrimary)),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+
+                        const SizedBox(width: 16),
+
+                        // Continuous play: keep going through the whole list
+                        GestureDetector(
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _autoNext = !_autoNext);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: _autoNext
+                                  ? amber.withValues(alpha: 0.15)
+                                  : AppColors.ink(0.07),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: _autoNext
+                                    ? amber.withValues(alpha: 0.5)
+                                    : AppColors.ink(0.12),
+                              ),
+                            ),
+                            child:
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                              Icon(Icons.playlist_play_rounded,
+                                  color:
+                                      _autoNext ? amber : AppColors.ink(0.55),
+                                  size: 16),
+                              const SizedBox(width: 4),
+                              Text('AUTO',
+                                  style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 0.8,
+                                      color: _autoNext
+                                          ? amber
+                                          : AppColors.ink(0.55))),
+                            ]),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -987,7 +1070,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
           ),
         )
             .animate()
-            .slideY(begin: 1, end: 0, duration: 340.ms, curve: Curves.easeOutCubic)
+            .slideY(
+                begin: 1, end: 0, duration: 340.ms, curve: Curves.easeOutCubic)
             .fadeIn(duration: 200.ms),
       ),
     );
@@ -1014,7 +1098,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFF97316).withOpacity(0.45),
+                  color: const Color(0xFFF97316).withValues(alpha: 0.45),
                   blurRadius: 24,
                   offset: const Offset(0, 6),
                 ),
@@ -1073,7 +1157,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   Widget build(BuildContext context) {
     R.init(context);
     final lp = Provider.of<LanguageProvider>(context);
-    final streak = Provider.of<DhikrProvider>(context, listen: false).streakDays;
+    final streak =
+        Provider.of<DhikrProvider>(context, listen: false).streakDays;
 
     return Scaffold(
       backgroundColor: ThemeProvider.brandDark,
@@ -1086,7 +1171,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [ThemeProvider.deepTeal, ThemeProvider.brandDark],
-                stops: [0.0, 0.4],
+                stops: const [0.0, 0.4],
               ),
             ),
             child: Column(
@@ -1095,9 +1180,10 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                 SafeArea(
                   bottom: false,
                   child: Container(
-                    padding: EdgeInsets.fromLTRB(R.px(12), R.px(12), R.px(8), R.px(20)),
+                    padding: EdgeInsets.fromLTRB(
+                        R.px(12), R.px(12), R.px(8), R.px(20)),
                     decoration: BoxDecoration(
-                      color: ThemeProvider.deepTeal.withOpacity(0.4),
+                      color: ThemeProvider.deepTeal.withValues(alpha: 0.4),
                       border: Border(
                         bottom: BorderSide(
                           color: AppColors.ink(0.05),
@@ -1142,15 +1228,23 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                     .useCustomPlan)
                                   IconButton(
                                     onPressed: () {
+                                      final pp = Provider.of<PurchaseProvider>(
+                                          context,
+                                          listen: false);
+                                      if (!pp.isPro) {
+                                        showProPaywallModal(context);
+                                        return;
+                                      }
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) =>
-                                                EditPlanScreen(category: widget.category)),
+                                            builder: (_) => EditPlanScreen(
+                                                category: widget.category)),
                                       );
                                     },
                                     icon: Icon(Icons.edit_document,
-                                        color: ThemeProvider.divineAmber, size: 22),
+                                        color: ThemeProvider.divineAmber,
+                                        size: 22),
                                   ),
                                 IconButton(
                                   onPressed: () {
@@ -1167,32 +1261,13 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         // Progress Section
                         Consumer2<DhikrProvider, CustomPlanProvider>(builder:
                             (context, provider, customPlanProvider, child) {
-                          List<Dhikr> dhikrs;
-                          if (widget.category == DhikrCategory.morning) {
-                            dhikrs = provider.getMorningDhikrs();
-                          } else if (widget.category == DhikrCategory.evening) {
-                            dhikrs = provider.getEveningDhikrs();
-                          } else if (widget.category == DhikrCategory.focus) {
-                            dhikrs = provider.getFocusDhikrs();
-                          } else if (widget.category == DhikrCategory.parents) {
-                            dhikrs = provider.getParentsDhikrs();
-                          } else if (widget.category == DhikrCategory.graveyard) {
-                            dhikrs = provider.getGraveyardDhikrs();
-                          } else if (widget.category == DhikrCategory.food) {
-                            dhikrs = provider.getFoodDhikrs();
-                          } else if (widget.category == DhikrCategory.afterSalah) {
-                            dhikrs = provider.getAfterSalahDhikrs();
-                          } else if (widget.category == DhikrCategory.beforeSleep) {
-                            dhikrs = provider.getBeforeSleepDhikrs();
-                          } else {
-                            dhikrs = provider.getProtectionDhikrs();
-                          }
+                          final dhikrs = provider.getDhikrsByCategory(widget.category);
 
                           List<Dhikr> displayList = [...dhikrs];
                           if (customPlanProvider.useCustomPlan) {
                             displayList = displayList
-                                .where(
-                                    (d) => customPlanProvider.isDhikrEnabled(d.id))
+                                .where((d) =>
+                                    customPlanProvider.isDhikrEnabled(d.id))
                                 .toList();
                           }
 
@@ -1202,13 +1277,15 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           int completedDhikrs = allDhikrs
                               .where((d) => d.currentCount >= d.targetCount)
                               .length;
-                          double progress =
-                              totalDhikrs > 0 ? completedDhikrs / totalDhikrs : 0;
+                          double progress = totalDhikrs > 0
+                              ? completedDhikrs / totalDhikrs
+                              : 0;
 
                           return Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Flexible(
                                     child: Text(
@@ -1255,7 +1332,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                       boxShadow: [
                                         BoxShadow(
                                           color: ThemeProvider.divineAmber
-                                              .withOpacity(0.5),
+                                              .withValues(alpha: 0.5),
                                           blurRadius: 10,
                                         ),
                                       ],
@@ -1274,35 +1351,18 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                 Expanded(
                   child: Consumer2<DhikrProvider, CustomPlanProvider>(
                     builder: (context, provider, customPlanProvider, child) {
-                      List<Dhikr> dhikrs;
-                      if (widget.category == DhikrCategory.morning) {
-                        dhikrs = provider.getMorningDhikrs();
-                      } else if (widget.category == DhikrCategory.evening) {
-                        dhikrs = provider.getEveningDhikrs();
-                      } else if (widget.category == DhikrCategory.focus) {
-                        dhikrs = provider.getFocusDhikrs();
-                      } else if (widget.category == DhikrCategory.parents) {
-                        dhikrs = provider.getParentsDhikrs();
-                      } else if (widget.category == DhikrCategory.graveyard) {
-                        dhikrs = provider.getGraveyardDhikrs();
-                      } else if (widget.category == DhikrCategory.food) {
-                        dhikrs = provider.getFoodDhikrs();
-                      } else if (widget.category == DhikrCategory.afterSalah) {
-                        dhikrs = provider.getAfterSalahDhikrs();
-                      } else if (widget.category == DhikrCategory.beforeSleep) {
-                        dhikrs = provider.getBeforeSleepDhikrs();
-                      } else {
-                        dhikrs = provider.getProtectionDhikrs();
-                      }
+                      final dhikrs = provider.getDhikrsByCategory(widget.category);
 
                       List<Dhikr> displayList = [...dhikrs];
                       if (customPlanProvider.useCustomPlan) {
                         displayList = displayList
-                            .where((d) => customPlanProvider.isDhikrEnabled(d.id))
+                            .where(
+                                (d) => customPlanProvider.isDhikrEnabled(d.id))
                             .toList();
                       }
 
-                      if (customPlanProvider.useCustomPlan && displayList.isEmpty) {
+                      if (customPlanProvider.useCustomPlan &&
+                          displayList.isEmpty) {
                         return Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -1330,11 +1390,18 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                               const SizedBox(height: 16),
                               ElevatedButton.icon(
                                 onPressed: () {
+                                  final pp = Provider.of<PurchaseProvider>(
+                                      context,
+                                      listen: false);
+                                  if (!pp.isPro) {
+                                    showProPaywallModal(context);
+                                    return;
+                                  }
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) =>
-                                            EditPlanScreen(category: widget.category)),
+                                        builder: (_) => EditPlanScreen(
+                                            category: widget.category)),
                                   );
                                 },
                                 icon: const Icon(Icons.edit_document, size: 16),
@@ -1355,7 +1422,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       _navList = displayList;
                       return ListView.builder(
                         padding: EdgeInsets.only(
-                            bottom: _activeDhikr != null ? R.px(240) : R.px(100),
+                            bottom:
+                                _activeDhikr != null ? R.px(240) : R.px(100),
                             top: R.px(16)),
                         itemCount: displayList.length,
                         itemBuilder: (context, index) {
@@ -1364,7 +1432,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             dhikr: d,
                             onPlayTapped: _onPlayTapped,
                             isActive: _activeDhikr?.id == d.id,
-                            isPlaying: _activeDhikr?.id == d.id && _playerPlaying,
+                            isPlaying:
+                                _activeDhikr?.id == d.id && _playerPlaying,
                           )
                               .animate()
                               .fadeIn(delay: (50 * index).ms)
@@ -1407,15 +1476,15 @@ class _CircleBtn extends StatelessWidget {
     return GestureDetector(
       onTap: dimmed ? null : onTap,
       child: Container(
-        width: size, height: size,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: AppColors.ink(dimmed ? 0.03 : 0.07),
           border: Border.all(color: AppColors.ink(dimmed ? 0.06 : 0.12)),
         ),
         child: Icon(icon,
-            color: AppColors.ink(dimmed ? 0.20 : 0.70),
-            size: small ? 16 : 20),
+            color: AppColors.ink(dimmed ? 0.20 : 0.70), size: small ? 16 : 20),
       ),
     );
   }

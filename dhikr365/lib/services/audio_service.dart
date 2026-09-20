@@ -50,6 +50,9 @@ class AudioService {
       case DhikrCategory.graveyard:  return 'audio/graveyard.mp3';
       case DhikrCategory.afterSalah: return 'audio/after_salah.mp3';
       case DhikrCategory.beforeSleep: return 'audio/before_sleep.mp3';
+      case DhikrCategory.travel:     return 'audio/travel.mp3';
+      case DhikrCategory.shifa:      return 'audio/shifa.mp3';
+      case DhikrCategory.distress:   return 'audio/distress.mp3';
     }
   }
 

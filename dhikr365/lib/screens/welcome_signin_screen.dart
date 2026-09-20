@@ -9,6 +9,8 @@
 // from Settings → Account & Sync.
 // ============================================================================
 
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -73,15 +75,17 @@ class WelcomeSignInScreen extends StatelessWidget {
                   width: 84,
                   height: 84,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
-                    border:
-                        Border.all(color: AppColors.primary.withOpacity(0.3)),
+                    border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.3)),
                   ),
                   child: Icon(Icons.cloud_sync_rounded,
                       size: 42, color: AppColors.primary),
-                ).animate().fadeIn(duration: 500.ms).scale(
-                    begin: const Offset(0.85, 0.85), delay: 150.ms),
+                )
+                    .animate()
+                    .fadeIn(duration: 500.ms)
+                    .scale(begin: const Offset(0.85, 0.85), delay: 150.ms),
                 const SizedBox(height: 24),
                 Text(
                   lp.getText('welcome_signin_title'),
@@ -102,19 +106,19 @@ class WelcomeSignInScreen extends StatelessWidget {
                   background: Colors.white,
                   foreground: Colors.black87,
                   loading: ap.isLoading,
-                  onTap: () =>
-                      _handleSignIn(context, ap, ap.signInWithGoogle),
+                  onTap: () => _handleSignIn(context, ap, ap.signInWithGoogle),
                 ),
-                const SizedBox(height: 12),
-                _ProviderButton(
-                  label: lp.getText('account_continue_apple'),
-                  icon: Icons.apple_rounded,
-                  background: Colors.black,
-                  foreground: Colors.white,
-                  loading: ap.isLoading,
-                  onTap: () =>
-                      _handleSignIn(context, ap, ap.signInWithApple),
-                ),
+                if (Platform.isIOS || Platform.isMacOS) ...[
+                  const SizedBox(height: 12),
+                  _ProviderButton(
+                    label: lp.getText('account_continue_apple'),
+                    icon: Icons.apple_rounded,
+                    background: Colors.black,
+                    foreground: Colors.white,
+                    loading: ap.isLoading,
+                    onTap: () => _handleSignIn(context, ap, ap.signInWithApple),
+                  ),
+                ],
                 const SizedBox(height: 18),
                 GestureDetector(
                   onTap: ap.isLoading ? null : () => _enterDashboard(context),
@@ -167,13 +171,15 @@ class _ProviderButton extends StatelessWidget {
           backgroundColor: background,
           foregroundColor: foreground,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
         child: loading
             ? SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(strokeWidth: 2, color: foreground),
+                child: CircularProgressIndicator(
+                    strokeWidth: 2, color: foreground),
               )
             : FittedBox(
                 fit: BoxFit.scaleDown,

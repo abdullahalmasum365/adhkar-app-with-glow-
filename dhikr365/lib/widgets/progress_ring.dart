@@ -30,7 +30,7 @@ class DhikrProgressRing extends StatelessWidget {
             'Completed',
             style: TextStyle(
               fontSize: 12.0,
-              color: ThemeProvider.etherealSage.withOpacity(0.8),
+              color: ThemeProvider.etherealSage.withValues(alpha: 0.8),
             ),
           ),
         ],

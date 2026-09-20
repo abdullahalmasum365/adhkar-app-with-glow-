@@ -248,5 +248,17 @@
   "welcome_signin_body": "Sign in with Google or Apple so your favorite duas and custom plan are saved to your account and restored on any device. Totally optional — you can always do this later from Settings.",
   "continue_without_account": "Continue without an account",
   "donation_not_available": "Donations aren't set up on this build yet — check back soon.",
-  "donation_not_available_short": "Not available yet"
+  "donation_not_available_short": "Not available yet",
+  "donation_tier_annual_name": "Annual Sponsor",
+  "donation_tier_annual_desc": "Continuous blessing throughout the year",
+  "dedicate_title": "DEDICATE THIS ONGOING CHARITY",
+  "dedicate_desc": "Who would you like this continuous reward (Sadaqah Jariyah) to reach?",
+  "dedicate_self": "For Myself",
+  "dedicate_parents": "On Behalf of Parents",
+  "dedicate_deceased": "In Memory of Deceased Loved One",
+  "dedicate_family": "For Children & Family",
+  "preview_certificate": "Preview Du'a Certificate",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

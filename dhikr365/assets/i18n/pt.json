@@ -237,5 +237,8 @@
   "welcome_signin_body": "Entre com Google ou Apple para que suas duas favoritas e seu plano personalizado sejam salvos na conta e restaurados em qualquer dispositivo. Totalmente opcional — você pode fazer isso depois nas Configurações.",
   "continue_without_account": "Continuar sem conta",
   "donation_not_available": "As doações ainda não estão ativas nesta versão — volte em breve.",
-  "donation_not_available_short": "Ainda não disponível"
+  "donation_not_available_short": "Ainda não disponível",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

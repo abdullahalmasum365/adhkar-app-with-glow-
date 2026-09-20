@@ -19,8 +19,8 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  int  _currentPage = 0;
-  bool _isLoading   = false;
+  int _currentPage = 0;
+  bool _isLoading = false;
 
   static const int _totalPages = 3;
 
@@ -48,8 +48,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     // Capture context-dependent objects before any await.
     final nav = Navigator.of(context);
-    final up  = Provider.of<UserProvider>(context, listen: false);
-    final np  = Provider.of<NotificationProvider>(context, listen: false);
+    final up = Provider.of<UserProvider>(context, listen: false);
+    final np = Provider.of<NotificationProvider>(context, listen: false);
 
     bool gpsSucceeded = false;
 
@@ -74,7 +74,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         if (!mounted) return;
 
         await NotificationService().requestPermissions();
-        try { await np.refreshAllSchedules(up); } catch (_) {}
+        try {
+          await np.refreshAllSchedules(up);
+        } catch (_) {}
         if (!mounted) return;
       }
     } catch (_) {
@@ -100,10 +102,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         return AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.symmetric(horizontal: 4),
-          width:  isActive ? 32 : 6,
+          width: isActive ? 32 : 6,
           height: 6,
           decoration: BoxDecoration(
-            color: isActive ? active : active.withOpacity(0.25),
+            color: isActive ? active : active.withValues(alpha: 0.25),
             borderRadius: BorderRadius.circular(3),
           ),
         );
@@ -113,16 +115,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // ── shared skip button ────────────────────────────────────────────────────
   Widget _skipBtn(LanguageProvider lp) => GestureDetector(
-    onTap: _finishOnboarding,
-    child: Text(
-      lp.getText('skip'),
-      style: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-        color: AppColors.ink(0.4),
-      ),
-    ),
-  );
+        onTap: _finishOnboarding,
+        child: Text(
+          lp.getText('skip'),
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.ink(0.4),
+          ),
+        ),
+      );
 
   // ── primary button (shared) ───────────────────────────────────────────────
   Widget _primaryBtn({
@@ -145,30 +147,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [color, gradientEnd ?? color]),
             borderRadius: BorderRadius.circular(100),
-            boxShadow: [BoxShadow(color: color.withOpacity(0.25), blurRadius: 8)],
+            boxShadow: [
+              BoxShadow(color: color.withValues(alpha: 0.25), blurRadius: 8)
+            ],
           ),
           child: _isLoading && _currentPage == _totalPages - 1
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 22, height: 22,
+                      width: 22,
+                      height: 22,
                       child: CircularProgressIndicator(
-                        color: AppColors.onPrimary, strokeWidth: 2.5,
+                        color: AppColors.onPrimary,
+                        strokeWidth: 2.5,
                       ),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     Text('Setting up…',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary)),
                   ],
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(text,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary)),
                     const SizedBox(width: 8),
-                    Icon(Icons.arrow_forward, color: AppColors.textPrimary, size: 20),
+                    Icon(Icons.arrow_forward,
+                        color: AppColors.textPrimary, size: 20),
                   ],
                 ),
         ),
@@ -183,13 +196,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (_) { if (_currentPage > 0) _onBack(); },
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_currentPage > 0) {
+          _onBack();
+        }
+      },
       child: Scaffold(
         body: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           layoutBuilder: (currentChild, previousChildren) => Stack(
             fit: StackFit.expand,
-            children: [...previousChildren, if (currentChild != null) currentChild],
+            children: [
+              ...previousChildren,
+              if (currentChild != null) currentChild
+            ],
           ),
           child: KeyedSubtree(
             key: ValueKey<int>(_currentPage),
@@ -215,15 +236,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return LayoutBuilder(builder: (context, constraints) {
       final h = constraints.maxHeight;
       final w = constraints.maxWidth;
-      final isSmall  = h < 700;
+      final isSmall = h < 700;
       final ringSize = (h * 0.32).clamp(180.0, 275.0);
-      final strokeW  = (ringSize * 0.058).clamp(10.0, 16.0);
+      final strokeW = (ringSize * 0.058).clamp(10.0, 16.0);
       final iconSize = ringSize * 0.185;
 
       return Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
-            center: Alignment.topCenter, radius: 1.2,
+            center: Alignment.topCenter,
+            radius: 1.2,
             colors: [bgTeal, bgDark],
           ),
         ),
@@ -232,14 +254,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: [
               // ── top bar: no back button on page 0, skip on right ──
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: isSmall ? 8 : 16),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 24, vertical: isSmall ? 8 : 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const SizedBox(width: 48),
                     Text('1 / $_totalPages',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                            letterSpacing: 2.0, color: AppColors.ink(0.4))),
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 2.0,
+                            color: AppColors.ink(0.4))),
                     _skipBtn(lp),
                   ],
                 ),
@@ -250,31 +276,54 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: ringSize + 40, height: ringSize + 40,
+                      width: ringSize + 40,
+                      height: ringSize + 40,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: primaryColor.withOpacity(0.1),
-                        boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.1), blurRadius: 10)],
+                        color: primaryColor.withValues(alpha: 0.1),
+                        boxShadow: [
+                          BoxShadow(
+                              color: primaryColor.withValues(alpha: 0.1),
+                              blurRadius: 10)
+                        ],
                       ),
                     ),
-                    Positioned(top: 0, right: w * 0.05,
-                      child: Container(width: 60, height: 60,
-                        decoration: BoxDecoration(shape: BoxShape.circle,
-                          color: primaryColor.withOpacity(0.3),
-                          boxShadow: const [BoxShadow(color: primaryColor, blurRadius: 8)]))),
-                    Positioned(bottom: 0, left: w * 0.1,
-                      child: Container(width: 100, height: 100,
-                        decoration: BoxDecoration(shape: BoxShape.circle,
-                          color: Colors.teal.withOpacity(0.3),
-                          boxShadow: const [BoxShadow(color: Colors.teal, blurRadius: 8)]))),
+                    Positioned(
+                        top: 0,
+                        right: w * 0.05,
+                        child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: primaryColor.withValues(alpha: 0.3),
+                                boxShadow: const [
+                                  BoxShadow(color: primaryColor, blurRadius: 8)
+                                ]))),
+                    Positioned(
+                        bottom: 0,
+                        left: w * 0.1,
+                        child: Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.teal.withValues(alpha: 0.3),
+                                boxShadow: const [
+                                  BoxShadow(color: Colors.teal, blurRadius: 8)
+                                ]))),
                     SizedBox(
-                      width: ringSize, height: ringSize,
+                      width: ringSize,
+                      height: ringSize,
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            decoration: BoxDecoration(shape: BoxShape.circle,
-                              border: Border.all(color: primaryColor.withOpacity(0.2), width: strokeW)),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: primaryColor.withValues(alpha: 0.2),
+                                    width: strokeW)),
                           ),
                           Positioned.fill(
                             child: Transform.rotate(
@@ -283,10 +332,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 tween: Tween(begin: 0.0, end: 0.7),
                                 duration: const Duration(seconds: 1),
                                 curve: Curves.easeOutCubic,
-                                builder: (_, value, __) => CircularProgressIndicator(
-                                  value: value, strokeWidth: strokeW,
+                                builder: (_, value, __) =>
+                                    CircularProgressIndicator(
+                                  value: value,
+                                  strokeWidth: strokeW,
                                   backgroundColor: Colors.transparent,
-                                  valueColor: const AlwaysStoppedAnimation(primaryColor),
+                                  valueColor: const AlwaysStoppedAnimation(
+                                      primaryColor),
                                   strokeCap: StrokeCap.round,
                                 ),
                               ),
@@ -295,17 +347,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.flare, color: primaryColor, size: iconSize),
+                              Icon(Icons.flare,
+                                  color: primaryColor, size: iconSize),
                               const SizedBox(height: 8),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: primaryColor.withOpacity(0.2),
+                                  color: primaryColor.withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(lp.getText('sun_morning'),
-                                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold,
-                                        letterSpacing: 2.0, color: primaryColor)),
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 2.0,
+                                        color: primaryColor)),
                               ),
                             ],
                           ),
@@ -324,20 +381,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(lp.getText('onboarding_title_1'), textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isSmall ? 26 : 32, fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary, height: 1.2, letterSpacing: -0.5))
-                            .animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
+                        Text(lp.getText('onboarding_title_1'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: isSmall ? 26 : 32,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.textPrimary,
+                                    height: 1.2,
+                                    letterSpacing: -0.5))
+                            .animate()
+                            .fadeIn(delay: 300.ms)
+                            .moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 8 : 16),
-                        Text(lp.getText('onboarding_desc_1'), textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isSmall ? 13 : 16,
-                                color: AppColors.ink(0.7), height: 1.5))
-                            .animate().fadeIn(delay: 500.ms).moveY(begin: 20, end: 0),
+                        Text(lp.getText('onboarding_desc_1'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: isSmall ? 13 : 16,
+                                    color: AppColors.ink(0.7),
+                                    height: 1.5))
+                            .animate()
+                            .fadeIn(delay: 500.ms)
+                            .moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 16 : 32),
                         _dots(primaryColor),
                         SizedBox(height: isSmall ? 16 : 32),
-                        _primaryBtn(text: lp.getText('continue'), onTap: _onNext,
-                            color: primaryColor, gradientEnd: const Color(0xFFF97316)),
+                        _primaryBtn(
+                            text: lp.getText('continue'),
+                            onTap: _onNext,
+                            color: primaryColor,
+                            gradientEnd: const Color(0xFFF97316)),
                         SizedBox(height: isSmall ? 16 : 32),
                       ],
                     ),
@@ -366,7 +438,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       return Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter, end: Alignment.bottomCenter,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
             colors: [bgTeal, bgDark],
           ),
         ),
@@ -375,7 +448,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: [
               // ── top bar: back button + page counter + skip ──
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: isSmall ? 8 : 16),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 24, vertical: isSmall ? 8 : 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -383,17 +457,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onTap: _onBack,
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        width: 40, height: 40,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: primaryColor.withOpacity(0.1),
+                          color: primaryColor.withValues(alpha: 0.1),
                         ),
-                        child: Icon(Icons.chevron_left, color: AppColors.textPrimary),
+                        child: Icon(Icons.chevron_left,
+                            color: AppColors.textPrimary),
                       ),
                     ),
                     Text('2 / $_totalPages',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                            letterSpacing: 2.0, color: AppColors.ink(0.4))),
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 2.0,
+                            color: AppColors.ink(0.4))),
                     _skipBtn(lp),
                   ],
                 ),
@@ -404,27 +483,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   alignment: Alignment.center,
                   children: [
                     Container(
-                      width: 256, height: 256,
+                      width: 256,
+                      height: 256,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: primaryColor.withOpacity(0.2),
-                        boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.2), blurRadius: 10)],
+                        color: primaryColor.withValues(alpha: 0.2),
+                        boxShadow: [
+                          BoxShadow(
+                              color: primaryColor.withValues(alpha: 0.2),
+                              blurRadius: 10)
+                        ],
                       ),
                     ),
                     Container(
-                      width: 220, height: 220,
+                      width: 220,
+                      height: 220,
                       decoration: BoxDecoration(
                         color: AppColors.shadow(0.3),
                         shape: BoxShape.circle,
                         boxShadow: [
-                          BoxShadow(color: primaryColor.withOpacity(0.35), blurRadius: 10),
-                          const BoxShadow(color: Color(0xFFFF9D3F), blurRadius: 8),
+                          BoxShadow(
+                              color: primaryColor.withValues(alpha: 0.35),
+                              blurRadius: 10),
+                          const BoxShadow(
+                              color: Color(0xFFFF9D3F), blurRadius: 8),
                         ],
                       ),
                       child: Center(
-                        child: Icon(Icons.mosque, color: AppColors.textPrimary, size: 110),
+                        child: Icon(Icons.mosque,
+                            color: AppColors.textPrimary, size: 110),
                       ),
-                    ).animate().fadeIn(duration: 800.ms).scale(begin: const Offset(0.9, 0.9)),
+                    )
+                        .animate()
+                        .fadeIn(duration: 800.ms)
+                        .scale(begin: const Offset(0.9, 0.9)),
                   ],
                 ),
               ),
@@ -437,20 +529,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(lp.getText('onboarding_title_2'), textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isSmall ? 26 : 32, fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary, height: 1.2, letterSpacing: -0.5))
-                            .animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
+                        Text(lp.getText('onboarding_title_2'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: isSmall ? 26 : 32,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.textPrimary,
+                                    height: 1.2,
+                                    letterSpacing: -0.5))
+                            .animate()
+                            .fadeIn(delay: 300.ms)
+                            .moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 8 : 16),
-                        Text(lp.getText('onboarding_desc_2'), textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isSmall ? 14 : 16,
-                                color: AppColors.ink(0.7), height: 1.5))
-                            .animate().fadeIn(delay: 500.ms).moveY(begin: 20, end: 0),
+                        Text(lp.getText('onboarding_desc_2'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: isSmall ? 14 : 16,
+                                    color: AppColors.ink(0.7),
+                                    height: 1.5))
+                            .animate()
+                            .fadeIn(delay: 500.ms)
+                            .moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 16 : 32),
                         _dots(primaryColor),
                         SizedBox(height: isSmall ? 16 : 32),
-                        _primaryBtn(text: lp.getText('continue'), onTap: _onNext,
-                            color: primaryColor, gradientEnd: const Color(0xFFFF9D3F)),
+                        _primaryBtn(
+                            text: lp.getText('continue'),
+                            onTap: _onNext,
+                            color: primaryColor,
+                            gradientEnd: const Color(0xFFFF9D3F)),
                         SizedBox(height: isSmall ? 16 : 32),
                       ],
                     ),
@@ -474,7 +581,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return LayoutBuilder(builder: (context, constraints) {
       final h = constraints.maxHeight;
-      final isSmall  = h < 700;
+      final isSmall = h < 700;
       final cardSize = (h * 0.36).clamp(220.0, 310.0);
 
       return Container(
@@ -484,7 +591,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: [
               // ── top bar: back button + page counter, NO skip on last page ──
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: isSmall ? 8 : 16),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 24, vertical: isSmall ? 8 : 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -492,17 +600,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       onTap: _isLoading ? null : _onBack,
                       borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        width: 40, height: 40,
+                        width: 40,
+                        height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: primaryColor.withOpacity(0.1),
+                          color: primaryColor.withValues(alpha: 0.1),
                         ),
-                        child: Icon(Icons.chevron_left, color: AppColors.textPrimary),
+                        child: Icon(Icons.chevron_left,
+                            color: AppColors.textPrimary),
                       ),
                     ),
                     Text('3 / 3',
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
-                            letterSpacing: 2.0, color: AppColors.textPrimary)),
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 2.0,
+                            color: AppColors.textPrimary)),
                     // Empty space where skip was — keeps title centred
                     const SizedBox(width: 48),
                   ],
@@ -516,103 +629,226 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                          colors: [primaryColor.withOpacity(0.05), Colors.transparent],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            primaryColor.withValues(alpha: 0.05),
+                            Colors.transparent
+                          ],
                         ),
                       ),
                     ),
                     SizedBox(
-                      width: cardSize, height: cardSize,
+                      width: cardSize,
+                      height: cardSize,
                       child: Stack(
                         children: [
                           Positioned(
-                            top: cardSize * 0.033, left: cardSize * 0.133,
-                            right: cardSize * 0.133, bottom: cardSize * 0.167,
+                            top: cardSize * 0.033,
+                            left: cardSize * 0.133,
+                            right: cardSize * 0.133,
+                            bottom: cardSize * 0.167,
                             child: Transform(
                               transform: Matrix4.identity()..rotateZ(-0.08),
                               alignment: Alignment.center,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-                                      colors: [Color(0xFF1E293B), Color(0xFF0F172A)]),
+                                  gradient: const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFF1E293B),
+                                        Color(0xFF0F172A)
+                                      ]),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(color: AppColors.ink(0.1)),
-                                  boxShadow: [BoxShadow(color: AppColors.shadow(0.54), blurRadius: 8)],
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: AppColors.shadow(0.54),
+                                        blurRadius: 8)
+                                  ],
                                 ),
                                 padding: const EdgeInsets.all(16),
-                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                  Container(width: 48, height: 8,
-                                    decoration: BoxDecoration(color: primaryColor.withOpacity(0.4), borderRadius: BorderRadius.circular(4))),
-                                  const SizedBox(height: 16),
-                                  Container(width: 150, height: 16,
-                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
-                                  const SizedBox(height: 8),
-                                  Container(width: 100, height: 16,
-                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
-                                  const Spacer(),
-                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    Container(width: 32, height: 32,
-                                      decoration: BoxDecoration(color: primaryColor.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
-                                      child: const Icon(Icons.settings_suggest, color: primaryColor, size: 16)),
-                                    Container(width: 64, height: 24,
-                                      decoration: BoxDecoration(color: primaryColor.withOpacity(0.8), borderRadius: BorderRadius.circular(12))),
-                                  ]),
-                                ]),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          width: 48,
+                                          height: 8,
+                                          decoration: BoxDecoration(
+                                              color: primaryColor.withValues(
+                                                  alpha: 0.4),
+                                              borderRadius:
+                                                  BorderRadius.circular(4))),
+                                      const SizedBox(height: 16),
+                                      Container(
+                                          width: 150,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                              color: AppColors.ink(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8))),
+                                      const SizedBox(height: 8),
+                                      Container(
+                                          width: 100,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                              color: AppColors.ink(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8))),
+                                      const Spacer(),
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                width: 32,
+                                                height: 32,
+                                                decoration: BoxDecoration(
+                                                    color: primaryColor
+                                                        .withValues(alpha: 0.2),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8)),
+                                                child: const Icon(
+                                                    Icons.settings_suggest,
+                                                    color: primaryColor,
+                                                    size: 16)),
+                                            Container(
+                                                width: 64,
+                                                height: 24,
+                                                decoration: BoxDecoration(
+                                                    color: primaryColor
+                                                        .withValues(alpha: 0.8),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12))),
+                                          ]),
+                                    ]),
                               ),
                             ),
-                          ).animate().fadeIn(duration: 800.ms).slideY(begin: 0.1),
+                          )
+                              .animate()
+                              .fadeIn(duration: 800.ms)
+                              .slideY(begin: 0.1),
                           Positioned(
-                            top: cardSize * 0.133, left: cardSize * 0.067,
-                            right: cardSize * 0.067, bottom: cardSize * 0.067,
+                            top: cardSize * 0.133,
+                            left: cardSize * 0.067,
+                            right: cardSize * 0.067,
+                            bottom: cardSize * 0.067,
                             child: Transform(
                               transform: Matrix4.identity()..rotateZ(0.06),
                               alignment: Alignment.center,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  gradient: const LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight,
-                                      colors: [Color(0xFF1E293B), Color(0xFF0F172A)]),
+                                  gradient: const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFF1E293B),
+                                        Color(0xFF0F172A)
+                                      ]),
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: primaryColor.withOpacity(0.3)),
-                                  boxShadow: [BoxShadow(color: AppColors.shadow(0.54), blurRadius: 8)],
+                                  border: Border.all(
+                                      color:
+                                          primaryColor.withValues(alpha: 0.3)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: AppColors.shadow(0.54),
+                                        blurRadius: 8)
+                                  ],
                                 ),
                                 padding: const EdgeInsets.all(16),
-                                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                                    Container(width: 48, height: 8,
-                                      decoration: BoxDecoration(color: primaryColor, borderRadius: BorderRadius.circular(4))),
-                                    const Icon(Icons.check_circle, color: primaryColor, size: 20),
-                                  ]),
-                                  const SizedBox(height: 16),
-                                  Container(width: double.infinity, height: 16,
-                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
-                                  const SizedBox(height: 8),
-                                  Container(width: 200, height: 16,
-                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
-                                  const SizedBox(height: 8),
-                                  Container(width: 150, height: 16,
-                                    decoration: BoxDecoration(color: AppColors.ink(0.1), borderRadius: BorderRadius.circular(8))),
-                                  const Spacer(),
-                                  Row(children: [
-                                    Container(width: 48, height: 24,
-                                      decoration: BoxDecoration(color: primaryColor.withOpacity(0.2), borderRadius: BorderRadius.circular(12))),
-                                    const SizedBox(width: 8),
-                                    Container(width: 48, height: 24,
-                                      decoration: BoxDecoration(color: primaryColor.withOpacity(0.2), borderRadius: BorderRadius.circular(12))),
-                                  ]),
-                                ]),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                width: 48,
+                                                height: 8,
+                                                decoration: BoxDecoration(
+                                                    color: primaryColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4))),
+                                            const Icon(Icons.check_circle,
+                                                color: primaryColor, size: 20),
+                                          ]),
+                                      const SizedBox(height: 16),
+                                      Container(
+                                          width: double.infinity,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                              color: AppColors.ink(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8))),
+                                      const SizedBox(height: 8),
+                                      Container(
+                                          width: 200,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                              color: AppColors.ink(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8))),
+                                      const SizedBox(height: 8),
+                                      Container(
+                                          width: 150,
+                                          height: 16,
+                                          decoration: BoxDecoration(
+                                              color: AppColors.ink(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8))),
+                                      const Spacer(),
+                                      Row(children: [
+                                        Container(
+                                            width: 48,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                                color: primaryColor.withValues(
+                                                    alpha: 0.2),
+                                                borderRadius:
+                                                    BorderRadius.circular(12))),
+                                        const SizedBox(width: 8),
+                                        Container(
+                                            width: 48,
+                                            height: 24,
+                                            decoration: BoxDecoration(
+                                                color: primaryColor.withValues(
+                                                    alpha: 0.2),
+                                                borderRadius:
+                                                    BorderRadius.circular(12))),
+                                      ]),
+                                    ]),
                               ),
                             ),
-                          ).animate().fadeIn(duration: 800.ms, delay: 200.ms).slideY(begin: 0.1),
+                          )
+                              .animate()
+                              .fadeIn(duration: 800.ms, delay: 200.ms)
+                              .slideY(begin: 0.1),
                           Positioned(
-                            bottom: cardSize * 0.033, right: cardSize * 0.033,
+                            bottom: cardSize * 0.033,
+                            right: cardSize * 0.033,
                             child: Container(
-                              width: 64, height: 64,
+                              width: 64,
+                              height: 64,
                               decoration: BoxDecoration(
                                 color: primaryColor,
                                 borderRadius: BorderRadius.circular(16),
-                                boxShadow: [BoxShadow(color: primaryColor.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 4))],
+                                boxShadow: [
+                                  BoxShadow(
+                                      color:
+                                          primaryColor.withValues(alpha: 0.4),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4))
+                                ],
                               ),
-                              child: Icon(Icons.tune, color: AppColors.textPrimary, size: 32),
+                              child: Icon(Icons.tune,
+                                  color: AppColors.textPrimary, size: 32),
                             ).animate().fadeIn(duration: 600.ms, delay: 400.ms),
                           ),
                         ],
@@ -626,19 +862,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: SingleChildScrollView(
                   physics: const NeverScrollableScrollPhysics(),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(32, isSmall ? 8 : 16, 32, isSmall ? 24 : 48),
+                    padding: EdgeInsets.fromLTRB(
+                        32, isSmall ? 8 : 16, 32, isSmall ? 24 : 48),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(lp.getText('onboarding_title_3'), textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isSmall ? 26 : 32, fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary, height: 1.2, letterSpacing: -0.5))
-                            .animate().fadeIn(delay: 300.ms).moveY(begin: 20, end: 0),
+                        Text(lp.getText('onboarding_title_3'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: isSmall ? 26 : 32,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.textPrimary,
+                                    height: 1.2,
+                                    letterSpacing: -0.5))
+                            .animate()
+                            .fadeIn(delay: 300.ms)
+                            .moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 8 : 16),
-                        Text(lp.getText('onboarding_desc_3'), textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: isSmall ? 13 : 16,
-                                color: AppColors.ink(0.7), height: 1.5))
-                            .animate().fadeIn(delay: 500.ms).moveY(begin: 20, end: 0),
+                        Text(lp.getText('onboarding_desc_3'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: isSmall ? 13 : 16,
+                                    color: AppColors.ink(0.7),
+                                    height: 1.5))
+                            .animate()
+                            .fadeIn(delay: 500.ms)
+                            .moveY(begin: 20, end: 0),
                         SizedBox(height: isSmall ? 16 : 32),
                         _dots(primaryColor),
                         SizedBox(height: isSmall ? 16 : 32),

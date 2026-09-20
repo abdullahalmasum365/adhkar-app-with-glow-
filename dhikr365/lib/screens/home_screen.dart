@@ -9,9 +9,12 @@ import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/custom_plan_provider.dart';
+import '../providers/purchase_provider.dart';
+import '../providers/theme_provider.dart';
 import '../models/dhikr.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
+import '../widgets/pro_paywall_sheet.dart';
 import 'dhikr_list_screen.dart';
 import 'donation_screen.dart';
 import 'location_setup_screen.dart';
@@ -23,8 +26,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool _isListening = false;
   late final AnimationController _pulseCtrl;
 
@@ -67,46 +69,52 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     R.init(context);
 
-    final lp                 = Provider.of<LanguageProvider>(context);
-    final dhikrProvider      = Provider.of<DhikrProvider>(context);
-    final userProvider       = Provider.of<UserProvider>(context);
+    final lp = Provider.of<LanguageProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     final customPlanProvider = Provider.of<CustomPlanProvider>(context);
+    final purchaseProvider = Provider.of<PurchaseProvider>(context);
 
-    final now           = DateTime.now();
-    final isMorning     = now.hour >= 5 && now.hour < 18;
-    final langCode      = lp.locale.languageCode;
+    // Safeguard: if user is not Pro, revert custom plan mode to standard
+    if (customPlanProvider.useCustomPlan && !purchaseProvider.isPro) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (customPlanProvider.useCustomPlan && !purchaseProvider.isPro) {
+          customPlanProvider.setUseCustomPlan(false);
+        }
+      });
+    }
+
+    final now = DateTime.now();
+    final isMorning = now.hour >= 5 && now.hour < 18;
+    final langCode = lp.locale.languageCode;
     // Locale-aware date: apply digit localization for languages that use
     // non-Latin numeral systems (Arabic, Hindi, Bengali, Tamil, Thai, Urdu).
-    final formattedDate = R.localizeDigits(
-      DateFormat('EEEE, d MMM yyyy').format(now), langCode);
-    final hijriDate = R.localizeDigits(
-      HijriCalendar.now().toFormat('d MMMM yyyy'), langCode);
+    final formattedDate =
+        R.localizeDigits(DateFormat('EEEE, d MMM yyyy').format(now), langCode);
+    final hijriDate =
+        R.localizeDigits(HijriCalendar.now().toFormat('d MMMM yyyy'), langCode);
 
     final displayName = (userProvider.userName?.isNotEmpty == true)
-        ? userProvider.userName! : lp.getText('guest');
-    final initials = displayName.split(' ').take(2)
-        .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '').join();
+        ? userProvider.userName!
+        : lp.getText('guest');
+    final initials = displayName
+        .split(' ')
+        .take(2)
+        .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
+        .join();
 
     final location = (userProvider.city?.isNotEmpty == true)
         ? '${userProvider.city}, ${userProvider.country}'
         : lp.getText('tap_to_set_location');
 
-    List<Dhikr> activeDhikrs = dhikrProvider.dhikrs;
-    if (customPlanProvider.useCustomPlan) {
-      activeDhikrs = activeDhikrs
-          .where((d) => customPlanProvider.isDhikrEnabled(d.id)).toList();
-    }
-    final progress = dhikrProvider.calculateProgressFor(activeDhikrs);
-
     // Responsive sizes
-    final avatarSize   = R.adaptive(36.0, 40.0, 52.0);
-    final ringSize     = R.adaptive(120.0, 150.0, 200.0);
-    final ringStroke   = R.adaptive(6.0, 8.0, 10.0);
+    final avatarSize = R.adaptive(36.0, 40.0, 52.0);
+    final ringSize = R.adaptive(120.0, 150.0, 200.0);
+    final ringStroke = R.adaptive(6.0, 8.0, 10.0);
     final ringFontSize = R.adaptive(28.0, 36.0, 44.0);
-    final arabicSize   = R.adaptive(22.0, 28.0, 34.0);
-    final btnHeight    = R.adaptive(48.0, 56.0, 64.0);
-    final hPad         = R.adaptive(14.0, 20.0, 28.0);
-    final vGap         = R.adaptive(12.0, 20.0, 28.0);
+    final arabicSize = R.adaptive(22.0, 28.0, 34.0);
+    final btnHeight = R.adaptive(48.0, 56.0, 64.0);
+    final hPad = R.adaptive(14.0, 20.0, 28.0);
+    final vGap = R.adaptive(12.0, 20.0, 28.0);
 
     return Scaffold(
       backgroundColor: AppColors.bgDark,
@@ -128,367 +136,461 @@ class _HomeScreenState extends State<HomeScreen>
           // ── Layer 2: UI content ───────────────────────────────────────────
           SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: hPad, vertical: R.px(12)),
+              padding:
+                  EdgeInsets.symmetric(horizontal: hPad, vertical: R.px(12)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                // ── Location setup banner ─────────────────────────────────
-                // Visible only when no coordinates are saved — zero height
-                // when hasSavedCoordinates is true.
-                if (!userProvider.hasSavedCoordinates)
-                  _LocationBanner(
-                    onSetNow: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const LocationSetupScreen()),
+                  // ── Location setup banner ─────────────────────────────────
+                  // Visible only when no coordinates are saved — zero height
+                  // when hasSavedCoordinates is true.
+                  if (!userProvider.hasSavedCoordinates)
+                    _LocationBanner(
+                      onSetNow: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const LocationSetupScreen()),
+                      ),
                     ),
+
+                  // ── Header ──────────────────────────────────────────────────
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        Container(
+                          width: avatarSize,
+                          height: avatarSize,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                color:
+                                    AppColors.primary.withValues(alpha: 0.4)),
+                          ),
+                          child: Center(
+                              child: Text(
+                            initials.isEmpty ? '?' : initials,
+                            style: AppText.manrope(
+                              fontSize: R.adaptive(11, 14, 16),
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primary,
+                            ),
+                          )),
+                        ),
+                        SizedBox(width: R.px(10)),
+                        Text(displayName,
+                            style: AppText.manrope(
+                                fontSize: R.adaptive(12, 14, 16),
+                                color: AppColors.textSlate400)),
+                      ]),
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const DonationScreen())),
+                        child: Container(
+                          width: avatarSize,
+                          height: avatarSize,
+                          decoration: BoxDecoration(
+                            color: AppColors.ink(0.05),
+                            borderRadius: BorderRadius.circular(R.px(10)),
+                            border: Border.all(color: AppColors.ink(0.08)),
+                          ),
+                          child: Icon(Icons.volunteer_activism,
+                              color: AppColors.primary, size: R.sp(18)),
+                        ),
+                      )
+                          .animate()
+                          .fadeIn()
+                          .animate(onPlay: (controller) => controller.repeat())
+                          .shimmer(
+                              duration: 2000.ms,
+                              color: AppColors.ink(0.2),
+                              delay: 1500.ms),
+                    ],
+                  ).animate().fadeIn(),
+
+                  SizedBox(height: vGap),
+
+                  // ── Date ─────────────────────────────────────────────────────
+                  Text(formattedDate,
+                          style: AppText.manrope(
+                              fontSize: R.adaptive(11, 14, 16),
+                              fontWeight: FontWeight.w600))
+                      .animate()
+                      .fadeIn(delay: 100.ms),
+                  SizedBox(height: R.px(2)),
+                  Text(hijriDate,
+                          style: AppText.body(color: AppColors.textSlate400)
+                              .copyWith(fontSize: R.sp(R.adaptive(10, 12, 14))))
+                      .animate()
+                      .fadeIn(delay: 150.ms),
+                  SizedBox(height: R.px(4)),
+
+                  // ── Tappable location row ─────────────────────────────────────
+                  // When no location is saved, "Tap to set location" goes straight
+                  // to LocationSetupScreen instead of the edit sheet — that screen
+                  // is designed for first-time setup and handles GPS + manual entry.
+                  GestureDetector(
+                    onTap: () => userProvider.hasSavedCoordinates
+                        ? _showLocationPicker(context)
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const LocationSetupScreen()),
+                          ),
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: R.px(3)),
+                      child: Row(children: [
+                        Icon(Icons.location_on,
+                            color: AppColors.primary, size: R.sp(13)),
+                        SizedBox(width: R.px(4)),
+                        Flexible(
+                          child: Text(
+                            location,
+                            style: AppText.manrope(
+                                fontSize: R.adaptive(10, 11, 13),
+                                color: AppColors.textSlate400),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(width: R.px(4)),
+                        Icon(Icons.edit_outlined,
+                            size: R.sp(11), color: AppColors.textSlate500),
+                      ]),
+                    ),
+                  ).animate().fadeIn(delay: 200.ms),
+
+                  SizedBox(height: vGap),
+
+                  // ── Streak chip ──────────────────────────────────────────────
+                  // Shown only when the user has an active streak (≥ 1 day).
+                  Consumer<DhikrProvider>(
+                    builder: (context, dp, _) {
+                      if (dp.streakDays <= 0) return const SizedBox.shrink();
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: vGap),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 7),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFFF97316),
+                                    Color(0xFFEA580C)
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFFF97316)
+                                        .withValues(alpha: 0.35),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Text('🔥',
+                                      style: TextStyle(fontSize: 16)),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    R.localizeDigits(
+                                        '${dp.streakDays}', langCode),
+                                    style: AppText.manrope(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w900,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    lp.getText('day_streak'),
+                                    style: AppText.manrope(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.ink(0.85),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          .animate()
+                          .fadeIn(delay: 220.ms)
+                          .slideY(begin: 0.3, end: 0);
+                    },
                   ),
 
-                // ── Header ──────────────────────────────────────────────────
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      Container(
-                        width: avatarSize, height: avatarSize,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.primary.withOpacity(0.4)),
+                  // ── Plan Switcher ────────────────────────────────────────────
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.all(R.px(4)),
+                      decoration: BoxDecoration(
+                        color: AppColors.ink(0.05),
+                        borderRadius: BorderRadius.circular(R.px(30)),
+                      ),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        _Tab(
+                          label: lp.getText('plan_standard'),
+                          isActive: !customPlanProvider.useCustomPlan,
+                          onTap: () =>
+                              customPlanProvider.setUseCustomPlan(false),
                         ),
-                        child: Center(child: Text(
-                          initials.isEmpty ? '?' : initials,
-                          style: AppText.manrope(
-                            fontSize: R.adaptive(11, 14, 16),
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.primary,
+                        Consumer<PurchaseProvider>(
+                          builder: (context, pp, _) => _Tab(
+                            label: lp.getText('plan_my'),
+                            isActive: customPlanProvider.useCustomPlan,
+                            trailing: !pp.isPro
+                                ? Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 1),
+                                    decoration: BoxDecoration(
+                                      color: ThemeProvider.divineAmber
+                                          .withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      'PRO',
+                                      style: TextStyle(
+                                        fontSize: 9,
+                                        fontWeight: FontWeight.w800,
+                                        color: ThemeProvider.divineAmber,
+                                      ),
+                                    ),
+                                  )
+                                : null,
+                            onTap: () {
+                              if (!pp.isPro) {
+                                showProPaywallModal(context);
+                                return;
+                              }
+                              customPlanProvider.setUseCustomPlan(true);
+                            },
                           ),
-                        )),
-                      ),
-                      SizedBox(width: R.px(10)),
-                      Text(displayName,
-                          style: AppText.manrope(
-                              fontSize: R.adaptive(12, 14, 16),
-                              color: AppColors.textSlate400)),
-                    ]),
-                    GestureDetector(
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const DonationScreen())),
-                      child: Container(
-                        width: avatarSize, height: avatarSize,
-                        decoration: BoxDecoration(
-                          color: AppColors.ink(0.05),
-                          borderRadius: BorderRadius.circular(R.px(10)),
-                          border: Border.all(color: AppColors.ink(0.08)),
                         ),
-                        child: Icon(Icons.volunteer_activism,
-                            color: AppColors.primary, size: R.sp(18)),
+                      ]),
+                    ),
+                  ).animate().fadeIn(delay: 300.ms),
+
+                  SizedBox(height: vGap),
+
+                  // ── Progress Ring + Pulse Glow ────────────────────────────────
+                  // Tap the ring to toggle the listening/glow animation.
+                  Consumer2<DhikrProvider, CustomPlanProvider>(
+                    builder: (context, dp, cp, _) {
+                      List<Dhikr> activeDhikrs = dp.dhikrs;
+                      if (cp.useCustomPlan) {
+                        activeDhikrs = activeDhikrs
+                            .where((d) => cp.isDhikrEnabled(d.id))
+                            .toList();
+                      }
+                      final progress = dp.calculateProgressFor(activeDhikrs);
+
+                      return Center(
+                        child: GestureDetector(
+                          onTap: _toggleListening,
+                          behavior: HitTestBehavior.opaque,
+                          child: _PulseGlow(
+                            controller: _pulseCtrl,
+                            isListening: _isListening,
+                            ringSize: ringSize,
+                            color: AppColors.primary,
+                            child: SizedBox(
+                              width: ringSize,
+                              height: ringSize,
+                              child: Stack(fit: StackFit.expand, children: [
+                                CircularProgressIndicator(
+                                  value: progress,
+                                  strokeWidth: ringStroke,
+                                  backgroundColor: AppColors.ink(0.05),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primary),
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      R.localizeDigits(
+                                          '${(progress * 100).toInt()}%',
+                                          langCode),
+                                      style: AppText.manrope(
+                                          fontSize: ringFontSize,
+                                          fontWeight: FontWeight.w800),
+                                    ),
+                                    Text(
+                                      lp.getText('completed'),
+                                      style: AppText.body(
+                                              color: AppColors.textSlate400)
+                                          .copyWith(
+                                              fontSize:
+                                                  R.sp(R.adaptive(10, 12, 14))),
+                                    ),
+                                    // Listening hint label
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      child: _isListening
+                                          ? Padding(
+                                              key: const ValueKey('on'),
+                                              padding:
+                                                  const EdgeInsets.only(top: 6),
+                                              child: Text(
+                                                '● LISTENING',
+                                                style: TextStyle(
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: AppColors.primary
+                                                      .withValues(alpha: 0.8),
+                                                  letterSpacing: 1.5,
+                                                ),
+                                              ),
+                                            )
+                                          : const SizedBox.shrink(
+                                              key: ValueKey('off')),
+                                    ),
+                                  ],
+                                ),
+                              ]),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ).animate().scale(
+                      delay: 400.ms,
+                      duration: 600.ms,
+                      curve: Curves.easeOutBack),
+
+                  SizedBox(height: vGap),
+
+                  // ── Dua Card ──────────────────────────────────────────────────
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                        vertical: R.px(16), horizontal: R.px(14)),
+                    decoration: AppDeco.glassCard(
+                        borderRadius: BorderRadius.circular(R.px(20))),
+                    child: Column(children: [
+                      Text(
+                        isMorning ? 'اللهم بك اصبحنا' : 'اللهم بك امسينا',
+                        style: AppText.amiri(fontSize: arabicSize),
+                        textAlign: TextAlign.center,
                       ),
-                    ).animate().fadeIn()
-                     .animate(onPlay: (controller) => controller.repeat())
-                     .shimmer(duration: 2000.ms, color: AppColors.ink(0.2), delay: 1500.ms),
-                  ],
-                ).animate().fadeIn(),
+                      SizedBox(height: R.px(10)),
+                      Text(
+                        isMorning
+                            ? lp.getText('morning_dua_trans')
+                            : lp.getText('evening_dua_trans'),
+                        style: AppText.body(color: AppColors.textSlate400)
+                            .copyWith(fontSize: R.sp(R.adaptive(12, 14, 16))),
+                        textAlign: TextAlign.center,
+                      ),
+                    ]),
+                  ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
 
-                SizedBox(height: vGap),
+                  SizedBox(height: R.px(14)),
 
-                // ── Date ─────────────────────────────────────────────────────
-                Text(formattedDate,
-                    style: AppText.manrope(
-                        fontSize: R.adaptive(11, 14, 16),
-                        fontWeight: FontWeight.w600))
-                    .animate().fadeIn(delay: 100.ms),
-                SizedBox(height: R.px(2)),
-                Text(hijriDate,
-                    style: AppText.body(color: AppColors.textSlate400)
-                        .copyWith(fontSize: R.sp(R.adaptive(10, 12, 14))))
-                    .animate().fadeIn(delay: 150.ms),
-                SizedBox(height: R.px(4)),
+                  // ── Action Button ─────────────────────────────────────────────
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => DhikrListScreen(
+                                category: isMorning
+                                    ? DhikrCategory.morning
+                                    : DhikrCategory.evening))),
+                    child: Container(
+                      width: double.infinity,
+                      height: btnHeight,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        borderRadius: BorderRadius.circular(R.px(32)),
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.4),
+                              blurRadius: 20,
+                              offset: const Offset(0, 5))
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // onPrimary (not textPrimary): this row sits on a
+                          // solid AppColors.primary fill. On monochrome themes
+                          // (E Ink Reader, Pencil Sketch) primary and
+                          // textPrimary are both near-black, so textPrimary
+                          // renders invisible text on a black button.
+                          Icon(isMorning ? Icons.wb_sunny : Icons.nights_stay,
+                              color: AppColors.onPrimary, size: R.sp(18)),
+                          SizedBox(width: R.px(8)),
+                          Text(
+                            // Use morning_adhkar / evening_adhkar — these keys
+                            // are already translated in all 19 language files.
+                            // morning_dhikr / evening_dhikr were missing from
+                            // most language files and always fell back to English.
+                            isMorning
+                                ? lp.getText('morning_adhkar')
+                                : lp.getText('evening_adhkar'),
+                            style: AppText.manrope(
+                                fontSize: R.adaptive(14, 16, 18),
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.onPrimary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                      .animate()
+                      .fadeIn(delay: 600.ms)
+                      .slideY(begin: 0.2)
+                      .animate(onPlay: (controller) => controller.repeat())
+                      .shimmer(
+                          duration: 2500.ms,
+                          color: AppColors.ink(0.3),
+                          delay: 1000.ms),
 
-                // ── Tappable location row ─────────────────────────────────────
-                // When no location is saved, "Tap to set location" goes straight
-                // to LocationSetupScreen instead of the edit sheet — that screen
-                // is designed for first-time setup and handles GPS + manual entry.
-                GestureDetector(
-                  onTap: () => userProvider.hasSavedCoordinates
-                      ? _showLocationPicker(context)
-                      : Navigator.push(
+                  SizedBox(height: R.px(12)),
+
+                  // ── Category Cards ────────────────────────────────────────────
+                  Row(children: [
+                    Expanded(
+                        child: _CategoryCard(
+                      icon: Icons.shield_outlined,
+                      label: lp.getText('protection'),
+                      onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (_) => const LocationSetupScreen()),
-                        ),
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: R.px(3)),
-                    child: Row(children: [
-                      Icon(Icons.location_on,
-                          color: AppColors.primary, size: R.sp(13)),
-                      SizedBox(width: R.px(4)),
-                      Flexible(
-                        child: Text(
-                          location,
-                          style: AppText.manrope(
-                              fontSize: R.adaptive(10, 11, 13),
-                              color: AppColors.textSlate400),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      SizedBox(width: R.px(4)),
-                      Icon(Icons.edit_outlined,
-                          size: R.sp(11), color: AppColors.textSlate500),
-                    ]),
-                  ),
-                ).animate().fadeIn(delay: 200.ms),
+                              builder: (_) => const DhikrListScreen(
+                                  category: DhikrCategory.protection))),
+                    )),
+                    SizedBox(width: R.px(12)),
+                    Expanded(
+                        child: _CategoryCard(
+                      icon: Icons.filter_center_focus,
+                      label: lp.getText('focus'),
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const DhikrListScreen(
+                                  category: DhikrCategory.focus))),
+                    )),
+                  ]).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2),
 
-                SizedBox(height: vGap),
-
-                // ── Streak chip ──────────────────────────────────────────────
-                // Shown only when the user has an active streak (≥ 1 day).
-                if (dhikrProvider.streakDays > 0)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: vGap),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 7),
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFFF97316), Color(0xFFEA580C)],
-                            ),
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFFF97316).withOpacity(0.35),
-                                blurRadius: 12,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text('🔥',
-                                  style: TextStyle(fontSize: 16)),
-                              const SizedBox(width: 6),
-                              Text(
-                                R.localizeDigits(
-                                    '${dhikrProvider.streakDays}', langCode),
-                                style: AppText.manrope(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                lp.getText('day_streak'),
-                                style: AppText.manrope(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.ink(0.85),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ).animate().fadeIn(delay: 220.ms).slideY(begin: 0.3, end: 0),
-                  ),
-
-                // ── Plan Switcher ────────────────────────────────────────────
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.all(R.px(4)),
-                    decoration: BoxDecoration(
-                      color: AppColors.ink(0.05),
-                      borderRadius: BorderRadius.circular(R.px(30)),
-                    ),
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      _Tab(label: lp.getText('plan_standard'),
-                          isActive: !customPlanProvider.useCustomPlan,
-                          onTap: () => customPlanProvider.setUseCustomPlan(false)),
-                      _Tab(label: lp.getText('plan_my'),
-                          isActive: customPlanProvider.useCustomPlan,
-                          onTap: () => customPlanProvider.setUseCustomPlan(true)),
-                    ]),
-                  ),
-                ).animate().fadeIn(delay: 300.ms),
-
-                SizedBox(height: vGap),
-
-                // ── Progress Ring + Pulse Glow ────────────────────────────────
-                // Tap the ring to toggle the listening/glow animation.
-                Center(
-                  child: GestureDetector(
-                    onTap: _toggleListening,
-                    behavior: HitTestBehavior.opaque,
-                    child: _PulseGlow(
-                      controller: _pulseCtrl,
-                      isListening: _isListening,
-                      ringSize: ringSize,
-                      color: AppColors.primary,
-                      child: SizedBox(
-                        width: ringSize, height: ringSize,
-                        child: Stack(fit: StackFit.expand, children: [
-                          CircularProgressIndicator(
-                            value: progress,
-                            strokeWidth: ringStroke,
-                            backgroundColor: AppColors.ink(0.05),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColors.primary),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                R.localizeDigits(
-                                    '${(progress * 100).toInt()}%', langCode),
-                                style: AppText.manrope(
-                                    fontSize: ringFontSize,
-                                    fontWeight: FontWeight.w800),
-                              ),
-                              Text(
-                                lp.getText('completed'),
-                                style: AppText.body(color: AppColors.textSlate400)
-                                    .copyWith(
-                                        fontSize:
-                                            R.sp(R.adaptive(10, 12, 14))),
-                              ),
-                              // Listening hint label
-                              AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                child: _isListening
-                                    ? Padding(
-                                        key: const ValueKey('on'),
-                                        padding: const EdgeInsets.only(top: 6),
-                                        child: Text(
-                                          '● LISTENING',
-                                          style: TextStyle(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.w800,
-                                            color: AppColors.primary
-                                                .withOpacity(0.8),
-                                            letterSpacing: 1.5,
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox.shrink(
-                                        key: ValueKey('off')),
-                              ),
-                            ],
-                          ),
-                        ]),
-                      ),
-                    ),
-                  ),
-                ).animate().scale(
-                    delay: 400.ms, duration: 600.ms, curve: Curves.easeOutBack),
-
-                SizedBox(height: vGap),
-
-                // ── Dua Card ──────────────────────────────────────────────────
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                      vertical: R.px(16), horizontal: R.px(14)),
-                  decoration: AppDeco.glassCard(
-                      borderRadius: BorderRadius.circular(R.px(20))),
-                  child: Column(children: [
-                    Text(
-                      isMorning ? 'اللهم بك اصبحنا' : 'اللهم بك امسينا',
-                      style: AppText.amiri(fontSize: arabicSize),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: R.px(10)),
-                    Text(
-                      isMorning
-                          ? lp.getText('morning_dua_trans')
-                          : lp.getText('evening_dua_trans'),
-                      style: AppText.body(color: AppColors.textSlate400)
-                          .copyWith(fontSize: R.sp(R.adaptive(12, 14, 16))),
-                      textAlign: TextAlign.center,
-                    ),
-                  ]),
-                ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
-
-                SizedBox(height: R.px(14)),
-
-                // ── Action Button ─────────────────────────────────────────────
-                GestureDetector(
-                  onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => DhikrListScreen(
-                          category: isMorning
-                              ? DhikrCategory.morning
-                              : DhikrCategory.evening))),
-                  child: Container(
-                    width: double.infinity,
-                    height: btnHeight,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(R.px(32)),
-                      boxShadow: [BoxShadow(
-                          color: AppColors.primary.withOpacity(0.4),
-                          blurRadius: 20, offset: const Offset(0, 5))],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // onPrimary (not textPrimary): this row sits on a
-                        // solid AppColors.primary fill. On monochrome themes
-                        // (E Ink Reader, Pencil Sketch) primary and
-                        // textPrimary are both near-black, so textPrimary
-                        // renders invisible text on a black button.
-                        Icon(isMorning ? Icons.wb_sunny : Icons.nights_stay,
-                            color: AppColors.onPrimary, size: R.sp(18)),
-                        SizedBox(width: R.px(8)),
-                        Text(
-                          // Use morning_adhkar / evening_adhkar — these keys
-                          // are already translated in all 19 language files.
-                          // morning_dhikr / evening_dhikr were missing from
-                          // most language files and always fell back to English.
-                          isMorning
-                              ? lp.getText('morning_adhkar')
-                              : lp.getText('evening_adhkar'),
-                          style: AppText.manrope(
-                              fontSize: R.adaptive(14, 16, 18),
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.onPrimary),
-                        ),
-                      ],
-                    ),
-                  ),
-                ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.2)
-                 .animate(onPlay: (controller) => controller.repeat())
-                 .shimmer(duration: 2500.ms, color: AppColors.ink(0.3), delay: 1000.ms),
-
-                SizedBox(height: R.px(12)),
-
-                // ── Category Cards ────────────────────────────────────────────
-                Row(children: [
-                  Expanded(child: _CategoryCard(
-                    icon: Icons.shield_outlined,
-                    label: lp.getText('protection'),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => const DhikrListScreen(
-                            category: DhikrCategory.protection))),
-                  )),
-                  SizedBox(width: R.px(12)),
-                  Expanded(child: _CategoryCard(
-                    icon: Icons.filter_center_focus,
-                    label: lp.getText('focus'),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(
-                        builder: (_) => const DhikrListScreen(
-                            category: DhikrCategory.focus))),
-                  )),
-                ]).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2),
-
-                SizedBox(height: R.px(24)),
-              ],
+                  SizedBox(height: R.px(24)),
+                ],
+              ),
             ),
           ),
-        ),
         ],
       ),
     );
@@ -563,8 +665,8 @@ class _PulseGlow extends StatelessWidget {
 /// A single expanding, fading ring driven by a normalised [t] value (0 → 1).
 /// Stateless — the parent AnimatedBuilder owns the rebuild cycle.
 class _PulseRing extends StatelessWidget {
-  final double t;     // animation progress 0.0 – 1.0
-  final double size;  // base diameter (matches the progress ring)
+  final double t; // animation progress 0.0 – 1.0
+  final double size; // base diameter (matches the progress ring)
   final Color color;
 
   const _PulseRing({
@@ -592,18 +694,18 @@ class _PulseRing extends StatelessWidget {
           // Soft blur-based glow — two layered shadows give depth.
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(opacity * 0.6),
+              color: color.withValues(alpha: opacity * 0.6),
               blurRadius: 28,
               spreadRadius: 6,
             ),
             BoxShadow(
-              color: color.withOpacity(opacity * 0.3),
+              color: color.withValues(alpha: opacity * 0.3),
               blurRadius: 56,
               spreadRadius: 14,
             ),
           ],
           border: Border.all(
-            color: color.withOpacity(opacity),
+            color: color.withValues(alpha: opacity),
             width: 1.5,
           ),
         ),
@@ -635,15 +737,21 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
   @override
   void initState() {
     super.initState();
-    _cityCtrl    = TextEditingController(text: widget.userProvider.city    ?? '');
-    _countryCtrl = TextEditingController(text: widget.userProvider.country ?? '');
+    _cityCtrl = TextEditingController(text: widget.userProvider.city ?? '');
+    _countryCtrl =
+        TextEditingController(text: widget.userProvider.country ?? '');
     // If user edits text manually, drop any GPS coords we got this session
     _cityCtrl.addListener(_onTextEdited);
     _countryCtrl.addListener(_onTextEdited);
   }
 
   void _onTextEdited() {
-    if (_gpsLat != null) setState(() { _gpsLat = null; _gpsLng = null; });
+    if (_gpsLat != null) {
+      setState(() {
+        _gpsLat = null;
+        _gpsLng = null;
+      });
+    }
   }
 
   @override
@@ -655,14 +763,20 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
 
   Future<void> _useGPS() async {
     final lp = Provider.of<LanguageProvider>(context, listen: false);
-    setState(() { _loading = true; _error = null; _showSettingsLink = false; });
+    setState(() {
+      _loading = true;
+      _error = null;
+      _showSettingsLink = false;
+    });
     try {
       LocationPermission perm = await Geolocator.checkPermission();
       if (perm == LocationPermission.denied) {
         perm = await Geolocator.requestPermission();
       }
       if (perm == LocationPermission.deniedForever) {
-        setState(() { _showSettingsLink = true; });
+        setState(() {
+          _showSettingsLink = true;
+        });
         throw Exception(lp.getText('location_perm_denied_forever'));
       }
       if (perm == LocationPermission.denied) {
@@ -676,15 +790,16 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
         ),
       );
 
-      final placemarks = await placemarkFromCoordinates(pos.latitude, pos.longitude);
+      final placemarks =
+          await placemarkFromCoordinates(pos.latitude, pos.longitude);
       if (placemarks.isNotEmpty) {
-        final p    = placemarks.first;
+        final p = placemarks.first;
         final city = p.locality?.isNotEmpty == true
             ? p.locality!
             : (p.administrativeArea ?? '');
         final country = p.country ?? '';
         setState(() {
-          _cityCtrl.text    = city;
+          _cityCtrl.text = city;
           _countryCtrl.text = country;
           _gpsLat = pos.latitude;
           _gpsLng = pos.longitude;
@@ -700,9 +815,9 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
   }
 
   Future<void> _save() async {
-    final lp      = Provider.of<LanguageProvider>(context, listen: false);
-    final nav     = Navigator.of(context);
-    final city    = _cityCtrl.text.trim();
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
+    final nav = Navigator.of(context);
+    final city = _cityCtrl.text.trim();
     final country = _countryCtrl.text.trim();
 
     if (city.isEmpty) {
@@ -724,7 +839,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
   @override
   Widget build(BuildContext context) {
     R.init(context);
-    final lp     = Provider.of<LanguageProvider>(context);
+    final lp = Provider.of<LanguageProvider>(context);
     final bottom = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -732,12 +847,14 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.bgTeal,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SafeArea(
           top: false,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(R.px(20), R.px(12), R.px(20), R.px(24)),
+            padding:
+                EdgeInsets.fromLTRB(R.px(20), R.px(12), R.px(20), R.px(24)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -745,7 +862,8 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                 // ── Handle ────────────────────────────────────────────────────
                 Center(
                   child: Container(
-                    width: R.px(40), height: R.px(4),
+                    width: R.px(40),
+                    height: R.px(4),
                     decoration: BoxDecoration(
                         color: AppColors.ink(0.24),
                         borderRadius: BorderRadius.circular(2)),
@@ -758,7 +876,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                   Container(
                     padding: EdgeInsets.all(R.px(8)),
                     decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(R.px(10))),
                     child: Icon(Icons.location_on,
                         color: AppColors.primary, size: R.sp(18)),
@@ -792,9 +910,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           ? null
                           : const LinearGradient(
                               colors: [Color(0xFFF97316), Color(0xFFEA580C)]),
-                      color: _loading
-                          ? AppColors.ink(0.05)
-                          : null,
+                      color: _loading ? AppColors.ink(0.05) : null,
                       borderRadius: BorderRadius.circular(R.px(14)),
                       border: _loading
                           ? Border.all(color: AppColors.ink(0.12))
@@ -805,7 +921,8 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                       children: [
                         if (_loading)
                           SizedBox(
-                            width: R.sp(16), height: R.sp(16),
+                            width: R.sp(16),
+                            height: R.sp(16),
                             child: CircularProgressIndicator(
                                 strokeWidth: 2, color: AppColors.primary),
                           )
@@ -929,7 +1046,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           borderRadius: BorderRadius.circular(R.px(14)),
                           boxShadow: [
                             BoxShadow(
-                                color: AppColors.primary.withOpacity(0.3),
+                                color: AppColors.primary.withValues(alpha: 0.3),
                                 blurRadius: 12)
                           ],
                         ),
@@ -983,12 +1100,12 @@ class _Field extends StatelessWidget {
             hintText: hint,
             hintStyle: AppText.body(color: AppColors.textSlate500)
                 .copyWith(fontSize: R.sp(13)),
-            prefixIcon: Icon(icon,
-                color: AppColors.textSlate500, size: R.sp(17)),
+            prefixIcon:
+                Icon(icon, color: AppColors.textSlate500, size: R.sp(17)),
             filled: true,
             fillColor: AppColors.ink(0.05),
-            contentPadding: EdgeInsets.symmetric(
-                horizontal: R.px(16), vertical: R.px(14)),
+            contentPadding:
+                EdgeInsets.symmetric(horizontal: R.px(16), vertical: R.px(14)),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
               borderSide: BorderSide(color: AppColors.ink(0.1)),
@@ -999,8 +1116,8 @@ class _Field extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
-              borderSide:
-                  BorderSide(color: AppColors.primary.withOpacity(0.6), width: 1.5),
+              borderSide: BorderSide(
+                  color: AppColors.primary.withValues(alpha: 0.6), width: 1.5),
             ),
           ),
         ),
@@ -1015,7 +1132,14 @@ class _Tab extends StatelessWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
-  const _Tab({required this.label, required this.isActive, required this.onTap});
+  final Widget? trailing;
+
+  const _Tab({
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+    this.trailing,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1023,18 +1147,27 @@ class _Tab extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(
-            horizontal: R.px(16), vertical: R.px(8)),
+        padding: EdgeInsets.symmetric(horizontal: R.px(16), vertical: R.px(8)),
         decoration: BoxDecoration(
           color: isActive ? AppColors.ink(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(R.px(20)),
         ),
-        child: Text(label,
-            style: AppText.manrope(
-              fontSize: R.adaptive(12, 13, 15),
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-              color: isActive ? AppColors.textPrimary : AppColors.textSlate400,
-            )),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(label,
+                style: AppText.manrope(
+                  fontSize: R.adaptive(12, 13, 15),
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                  color:
+                      isActive ? AppColors.textPrimary : AppColors.textSlate400,
+                )),
+            if (trailing != null) ...[
+              const SizedBox(width: 4),
+              trailing!,
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -1052,12 +1185,11 @@ class _LocationBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: R.px(12)),
-      padding: EdgeInsets.symmetric(
-          horizontal: R.px(14), vertical: R.px(10)),
+      padding: EdgeInsets.symmetric(horizontal: R.px(14), vertical: R.px(10)),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.12),
+        color: AppColors.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(R.px(12)),
-        border: Border.all(color: AppColors.primary.withOpacity(0.35)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
       ),
       child: Row(
         children: [
@@ -1076,8 +1208,8 @@ class _LocationBanner extends StatelessWidget {
           GestureDetector(
             onTap: onSetNow,
             child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: R.px(12), vertical: R.px(6)),
+              padding:
+                  EdgeInsets.symmetric(horizontal: R.px(12), vertical: R.px(6)),
               decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(R.px(8)),
@@ -1109,8 +1241,8 @@ class _CategoryCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: R.px(16)),
-        decoration: AppDeco.glassCard(
-            borderRadius: BorderRadius.circular(R.px(20))),
+        decoration:
+            AppDeco.glassCard(borderRadius: BorderRadius.circular(R.px(20))),
         child: Column(children: [
           Icon(icon, color: AppColors.primary, size: R.sp(26)),
           SizedBox(height: R.px(8)),

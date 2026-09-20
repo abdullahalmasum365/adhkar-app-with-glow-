@@ -66,7 +66,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
 
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-      final lp           = Provider.of<LanguageProvider>(context, listen: false);
+      final lp = Provider.of<LanguageProvider>(context, listen: false);
       double? lat;
       double? lng;
 
@@ -74,7 +74,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       if (!forceGPS && userProvider.hasSavedCoordinates) {
         lat = userProvider.lat;
         lng = userProvider.lng;
-        final city    = userProvider.city ?? '';
+        final city = userProvider.city ?? '';
         final country = userProvider.country ?? '';
         setState(() => _locationName =
             city.isNotEmpty ? '$city, $country' : 'saved_location');
@@ -86,10 +86,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       //    A 5-second Dart timeout is added as a belt-and-suspenders guard so
       //    the app never hangs waiting for a slow/unavailable geocoder.
       else if (!forceGPS && userProvider.city?.isNotEmpty == true) {
-        final query  = '${userProvider.city}, ${userProvider.country}';
-        final coords = await LocationService()
-            .coordsFromCity(query)
-            .timeout(
+        final query = '${userProvider.city}, ${userProvider.country}';
+        final coords = await LocationService().coordsFromCity(query).timeout(
               const Duration(seconds: 5),
               onTimeout: () => null, // null = timed out, no exception thrown
             );
@@ -141,7 +139,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
             ? Madhab.hanafi
             : Madhab.shafi;
 
-      final date  = DateComponents.from(DateTime.now());
+      final date = DateComponents.from(DateTime.now());
       final times = PrayerTimes(coords, date, params);
 
       setState(() {
@@ -149,16 +147,16 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
         // as lookup keys (isPrayerEnabled / toggleSpecificPrayer).
         // Translated display names are resolved in build() via the prayerLabels map.
         _prayers = [
-          _Prayer('Fajr',    times.fajr,    Icons.nights_stay),
-          _Prayer('Sunrise', times.sunrise,  Icons.wb_sunny, isSunrise: true),
-          _Prayer('Dhuhr',   times.dhuhr,   Icons.light_mode),
-          _Prayer('Asr',     times.asr,     Icons.wb_twilight),
+          _Prayer('Fajr', times.fajr, Icons.nights_stay),
+          _Prayer('Sunrise', times.sunrise, Icons.wb_sunny, isSunrise: true),
+          _Prayer('Dhuhr', times.dhuhr, Icons.light_mode),
+          _Prayer('Asr', times.asr, Icons.wb_twilight),
           _Prayer('Maghrib', times.maghrib, Icons.dark_mode),
-          _Prayer('Isha',    times.isha,    Icons.bedtime),
+          _Prayer('Isha', times.isha, Icons.bedtime),
         ];
         _sunriseTime = times.sunrise;
-        _sunsetTime  = times.maghrib;
-        _loading     = false;
+        _sunsetTime = times.maghrib;
+        _loading = false;
       });
 
       if (mounted) {
@@ -167,7 +165,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       }
     } catch (e) {
       setState(() {
-        _error   = e.toString().replaceFirst('Exception: ', '');
+        _error = e.toString().replaceFirst('Exception: ', '');
         _loading = false;
       });
     }
@@ -181,8 +179,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
     try {
       final placemarks = await placemarkFromCoordinates(lat, lng);
       if (placemarks.isNotEmpty && mounted) {
-        final p       = placemarks.first;
-        final city    = p.locality?.isNotEmpty == true
+        final p = placemarks.first;
+        final city = p.locality?.isNotEmpty == true
             ? p.locality!
             : p.administrativeArea ?? 'Unknown';
         final country = p.country ?? '';
@@ -211,24 +209,24 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
 
   String _getCountdown(String langCode) {
     if (_prayers.isEmpty) return '--';
-    final now  = DateTime.now();
-    var next   = _prayers[_nextIdx].time;
+    final now = DateTime.now();
+    var next = _prayers[_nextIdx].time;
     if (next == null) return '--';
     if (next.isBefore(now)) next = next.add(const Duration(days: 1));
     final diff = next.difference(now);
-    final h    = diff.inHours;
-    final m    = diff.inMinutes % 60;
-    final str  = h > 0 ? '${h}h ${m}m' : '${m}m';
+    final h = diff.inHours;
+    final m = diff.inMinutes % 60;
+    final str = h > 0 ? '${h}h ${m}m' : '${m}m';
     return R.localizeDigits(str, langCode);
   }
 
   double get _sunProgress {
     final rise = _sunriseTime;
-    final set  = _sunsetTime;
+    final set = _sunsetTime;
     if (rise == null || set == null) return 0.5;
-    final now  = DateTime.now();
+    final now = DateTime.now();
     if (now.isBefore(rise)) return 0.0;
-    if (now.isAfter(set))   return 1.0;
+    if (now.isAfter(set)) return 1.0;
     return now.difference(rise).inMinutes / set.difference(rise).inMinutes;
   }
 
@@ -252,7 +250,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   // ── No-location empty state ───────────────────────────────────────────────
 
   Widget _buildNoLocation(BuildContext context) {
-    final lp        = Provider.of<LanguageProvider>(context, listen: false);
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
     final titleSize = R.adaptive(18.0, 20.0, 24.0);
 
     return Scaffold(
@@ -282,9 +280,10 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                           height: 72,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3)),
+                                color:
+                                    AppColors.primary.withValues(alpha: 0.3)),
                           ),
                           child: Icon(Icons.mosque,
                               color: AppColors.primary, size: 34),
@@ -319,7 +318,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                               borderRadius: BorderRadius.circular(14),
                               boxShadow: [
                                 BoxShadow(
-                                    color: AppColors.primary.withOpacity(0.3),
+                                    color: AppColors.primary
+                                        .withValues(alpha: 0.3),
                                     blurRadius: 12),
                               ],
                             ),
@@ -364,21 +364,21 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       return _buildNoLocation(context);
     }
 
-    final lp        = Provider.of<LanguageProvider>(context);
-    final langCode  = lp.locale.languageCode;
-    final today     = R.localizeDigits(
+    final lp = Provider.of<LanguageProvider>(context);
+    final langCode = lp.locale.languageCode;
+    final today = R.localizeDigits(
         DateFormat('EEEE, d MMM').format(DateTime.now()), langCode);
     final titleSize = R.adaptive(18.0, 20.0, 24.0);
 
     // Build translated prayer name map — English keys stay internal,
     // display labels come from the JSON for the current language.
     final prayerLabels = {
-      'Fajr':    lp.getText('fajr'),
+      'Fajr': lp.getText('fajr'),
       'Sunrise': lp.getText('sunrise'),
-      'Dhuhr':   lp.getText('dhuhr'),
-      'Asr':     lp.getText('asr'),
+      'Dhuhr': lp.getText('dhuhr'),
+      'Asr': lp.getText('asr'),
       'Maghrib': lp.getText('maghrib'),
-      'Isha':    lp.getText('isha'),
+      'Isha': lp.getText('isha'),
     };
 
     // Display-only copies of prayers with translated names and
@@ -406,7 +406,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
           slivers: [
             // ── AppBar ──
             SliverAppBar(
-              backgroundColor: AppColors.bgDark.withOpacity(0.85),
+              backgroundColor: AppColors.bgDark.withValues(alpha: 0.85),
               pinned: true,
               elevation: 0,
               flexibleSpace: ClipRect(
@@ -508,8 +508,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.red.withOpacity(0.1),
-                border: Border.all(color: Colors.red.withOpacity(0.3)),
+                color: Colors.red.withValues(alpha: 0.1),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
               ),
               child: const Icon(Icons.location_off,
                   color: Colors.redAccent, size: 28),
@@ -557,29 +557,32 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
 
   // ── Main content ──────────────────────────────────────────────────────────
 
-  Widget _buildContent(LanguageProvider lp, String langCode, List<_Prayer> displayPrayers) {
+  Widget _buildContent(
+      LanguageProvider lp, String langCode, List<_Prayer> displayPrayers) {
     if (displayPrayers.isEmpty) return const SizedBox.shrink();
     return Column(children: [
       const SizedBox(height: 24),
       _SunPath(
         progress: _sunProgress,
         sunriseLabel: _sunriseTime != null
-            ? R.localizeDigits(DateFormat('h:mm a').format(_sunriseTime!.toLocal()), langCode)
+            ? R.localizeDigits(
+                DateFormat('h:mm a').format(_sunriseTime!.toLocal()), langCode)
             : '—',
         sunsetLabel: _sunsetTime != null
-            ? R.localizeDigits(DateFormat('h:mm a').format(_sunsetTime!.toLocal()), langCode)
+            ? R.localizeDigits(
+                DateFormat('h:mm a').format(_sunsetTime!.toLocal()), langCode)
             : '—',
         morningLabel: lp.getText('sun_morning'),
-        noonLabel:    lp.getText('sun_noon'),
+        noonLabel: lp.getText('sun_noon'),
         eveningLabel: lp.getText('sun_evening'),
       ),
       const SizedBox(height: 28),
       _HeroCard(
-        prayer:              displayPrayers[_curIdx],
-        next:                displayPrayers[_nextIdx],
-        countdown:           _getCountdown(langCode),
-        currentPrayerLabel:  lp.getText('current_prayer').toUpperCase(),
-        inLabel:             lp.getText('in_label'),
+        prayer: displayPrayers[_curIdx],
+        next: displayPrayers[_nextIdx],
+        countdown: _getCountdown(langCode),
+        currentPrayerLabel: lp.getText('current_prayer').toUpperCase(),
+        inLabel: lp.getText('in_label'),
       ),
       const SizedBox(height: 28),
       Padding(
@@ -597,11 +600,12 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
               padding: const EdgeInsets.only(bottom: 10),
               child: _PrayerRow(
                 // displayPrayers carry translated name; internal _prayers keep English key
-                prayer:   displayPrayers[i],
-                internalName: _prayers[i].name, // English key for notification API
-                isNow:    i == _curIdx && !_prayers[i].isSunrise,
-                isNext:   i == _nextIdx && !_prayers[i].isSunrise,
-                nowLabel:  lp.getText('now_badge'),
+                prayer: displayPrayers[i],
+                internalName:
+                    _prayers[i].name, // English key for notification API
+                isNow: i == _curIdx && !_prayers[i].isSunrise,
+                isNext: i == _nextIdx && !_prayers[i].isSunrise,
+                nowLabel: lp.getText('now_badge'),
                 nextLabel: lp.getText('next_badge'),
               ),
             ),
@@ -617,8 +621,7 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
         return Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
           child: Row(children: [
-            Icon(Icons.info_outline,
-                size: 12, color: AppColors.textSlate500),
+            Icon(Icons.info_outline, size: 12, color: AppColors.textSlate500),
             const SizedBox(width: 6),
             Flexible(
               child: Text(
@@ -649,8 +652,8 @@ class _Prayer {
   final String? timeOverride;
 
   final DateTime? time;
-  final IconData  icon;
-  final bool      isSunrise;
+  final IconData icon;
+  final bool isSunrise;
 
   const _Prayer(this.name, this.time, this.icon,
       {this.isSunrise = false, this.displayName, this.timeOverride});
@@ -714,12 +717,12 @@ class _SunPath extends StatelessWidget {
                     height: 32,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.primary.withOpacity(0.2),
+                      color: AppColors.primary.withValues(alpha: 0.2),
                       border: Border.all(
-                          color: AppColors.primary.withOpacity(0.5)),
+                          color: AppColors.primary.withValues(alpha: 0.5)),
                       boxShadow: [
                         BoxShadow(
-                            color: AppColors.primary.withOpacity(0.4),
+                            color: AppColors.primary.withValues(alpha: 0.4),
                             blurRadius: 12)
                       ],
                     ),
@@ -762,8 +765,8 @@ class _ArcPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color       = AppColors.ink(0.08)
-      ..style       = PaintingStyle.stroke
+      ..color = AppColors.ink(0.08)
+      ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
     final path = Path();
     path.addArc(
@@ -793,9 +796,9 @@ class _ArcPainter extends CustomPainter {
 class _HeroCard extends StatelessWidget {
   final _Prayer prayer;
   final _Prayer next;
-  final String  countdown;
-  final String  currentPrayerLabel; // translated "CURRENT PRAYER"
-  final String  inLabel;            // translated "in"
+  final String countdown;
+  final String currentPrayerLabel; // translated "CURRENT PRAYER"
+  final String inLabel; // translated "in"
 
   const _HeroCard({
     required this.prayer,
@@ -812,19 +815,18 @@ class _HeroCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.08),
+          color: AppColors.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
           boxShadow: [
             BoxShadow(
-                color: AppColors.primary.withOpacity(0.15), blurRadius: 20)
+                color: AppColors.primary.withValues(alpha: 0.15),
+                blurRadius: 20)
           ],
         ),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(8)),
@@ -869,11 +871,12 @@ class _HeroCard extends StatelessWidget {
 
 class _PrayerRow extends StatefulWidget {
   final _Prayer prayer;
-  final String  internalName; // English key for NotificationProvider — never translate
-  final bool    isNow;
-  final bool    isNext;
-  final String  nowLabel;    // translated "NOW"
-  final String  nextLabel;   // translated "NEXT"
+  final String
+      internalName; // English key for NotificationProvider — never translate
+  final bool isNow;
+  final bool isNext;
+  final String nowLabel; // translated "NOW"
+  final String nextLabel; // translated "NEXT"
 
   const _PrayerRow({
     required this.prayer,
@@ -899,21 +902,20 @@ class _PrayerRowState extends State<_PrayerRow> {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             color: widget.isNow
-                ? AppColors.primary.withOpacity(0.14)
+                ? AppColors.primary.withValues(alpha: 0.14)
                 : AppColors.ink(0.03),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: widget.isNow
-                  ? AppColors.primary.withOpacity(0.6)
+                  ? AppColors.primary.withValues(alpha: 0.6)
                   : AppColors.ink(0.07),
               width: widget.isNow ? 1.5 : 1,
             ),
           ),
           child: Row(children: [
             Icon(p.icon,
-                color: widget.isNow
-                    ? AppColors.primary
-                    : AppColors.textSlate500,
+                color:
+                    widget.isNow ? AppColors.primary : AppColors.textSlate500,
                 size: 20),
             const SizedBox(width: 12),
             Expanded(
@@ -951,8 +953,7 @@ class _PrayerRowState extends State<_PrayerRow> {
                 // CRITICAL: use internalName (English) as the lookup key —
                 // NotificationProvider stores/reads alerts by English name.
                 final isEnabled = np.isPrayerEnabled(widget.internalName);
-                final up =
-                    Provider.of<UserProvider>(context, listen: false);
+                final up = Provider.of<UserProvider>(context, listen: false);
 
                 return GestureDetector(
                   onTap: () => np.toggleSpecificPrayer(
@@ -966,13 +967,13 @@ class _PrayerRowState extends State<_PrayerRow> {
                       color: widget.isNow
                           ? AppColors.primary
                           : (isEnabled
-                              ? AppColors.primary.withOpacity(0.1)
+                              ? AppColors.primary.withValues(alpha: 0.1)
                               : Colors.transparent),
                       border: Border.all(
                         color: widget.isNow
                             ? AppColors.primary
                             : (isEnabled
-                                ? AppColors.primary.withOpacity(0.4)
+                                ? AppColors.primary.withValues(alpha: 0.4)
                                 : AppColors.ink(0.1)),
                       ),
                     ),
@@ -998,8 +999,7 @@ class _PrayerRowState extends State<_PrayerRow> {
             top: -8,
             right: 12,
             child: Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(6)),

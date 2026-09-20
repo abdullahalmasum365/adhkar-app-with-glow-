@@ -86,7 +86,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Padding(
       padding: EdgeInsets.only(bottom: R.px(12)),
       child: Text(text,
-          style: AppText.label(color: AppColors.primary.withOpacity(0.8))),
+          style:
+              AppText.label(color: AppColors.primary.withValues(alpha: 0.8))),
     );
   }
 
@@ -96,7 +97,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       style: AppText.manrope(fontSize: 16, color: AppColors.textPrimary),
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3)),
+          borderSide:
+              BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
         ),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: AppColors.primary),

@@ -237,5 +237,8 @@
   "welcome_signin_body": "अपनी पसंदीदा दुआएं और कस्टम प्लान खाते में सेव करके किसी भी डिवाइस पर वापस पाने के लिए Google या Apple से साइन इन करें। यह पूरी तरह वैकल्पिक है — बाद में Settings से भी कर सकते हैं।",
   "continue_without_account": "बिना खाते के जारी रखें",
   "donation_not_available": "इस बिल्ड में अभी डोनेशन सेट अप नहीं है — जल्द ही दोबारा देखें।",
-  "donation_not_available_short": "अभी उपलब्ध नहीं"
+  "donation_not_available_short": "अभी उपलब्ध नहीं",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

@@ -237,5 +237,8 @@
   "welcome_signin_body": "Connectez-vous avec Google ou Apple pour que vos douas favorites et votre plan personnalisé soient enregistrés sur votre compte et restaurés sur tout appareil. Totalement facultatif — vous pourrez le faire plus tard depuis les paramètres.",
   "continue_without_account": "Continuer sans compte",
   "donation_not_available": "Les dons ne sont pas encore configurés dans cette version — revenez bientôt.",
-  "donation_not_available_short": "Pas encore disponible"
+  "donation_not_available_short": "Pas encore disponible",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

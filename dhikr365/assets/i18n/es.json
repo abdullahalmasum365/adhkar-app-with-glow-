@@ -237,5 +237,8 @@
   "welcome_signin_body": "Inicia sesión con Google o Apple para que tus duas favoritas y tu plan personalizado se guarden en tu cuenta y se restauren en cualquier dispositivo. Totalmente opcional — puedes hacerlo más tarde desde Configuración.",
   "continue_without_account": "Continuar sin cuenta",
   "donation_not_available": "Las donaciones aún no están habilitadas en esta versión — vuelve pronto.",
-  "donation_not_available_short": "Aún no disponible"
+  "donation_not_available_short": "Aún no disponible",
+  "travel": "Travel & Journey",
+  "shifa": "Healing & Relief",
+  "distress": "Anxiety & Debt Relief"
 }

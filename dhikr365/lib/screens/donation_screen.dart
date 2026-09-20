@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/purchase_provider.dart';
 import '../services/purchase_service.dart';
+import '../models/sadaqah_dedication.dart';
+import '../widgets/sadaqah_certificate_dialog.dart';
 
 /// A single donation package the user can pick — see [DonationScreen].
 /// Price comes from Play Store at runtime (PurchaseProvider.products), in
@@ -32,23 +34,41 @@ class DonationScreen extends StatefulWidget {
 
 class _DonationScreenState extends State<DonationScreen> {
   static const _tiers = [
-    _Tier(nameKey: 'donation_tier_seed_name', descKey: 'donation_tier_seed_desc', productId: DonationProductIds.seed),
-    _Tier(nameKey: 'donation_tier_supporter_name', descKey: 'donation_tier_supporter_desc', productId: DonationProductIds.supporter, featured: true),
-    _Tier(nameKey: 'donation_tier_patron_name', descKey: 'donation_tier_patron_desc', productId: DonationProductIds.patron),
+    _Tier(
+        nameKey: 'donation_tier_seed_name',
+        descKey: 'donation_tier_seed_desc',
+        productId: DonationProductIds.seed),
+    _Tier(
+        nameKey: 'donation_tier_supporter_name',
+        descKey: 'donation_tier_supporter_desc',
+        productId: DonationProductIds.supporter,
+        featured: true),
+    _Tier(
+        nameKey: 'donation_tier_patron_name',
+        descKey: 'donation_tier_patron_desc',
+        productId: DonationProductIds.patron),
+    _Tier(
+        nameKey: 'donation_tier_annual_name',
+        descKey: 'donation_tier_annual_desc',
+        productId: DonationProductIds.annual),
   ];
 
-  // Supporter pre-selected — the tier the app itself recommends as the
-  // steady, sustainable middle ground (matches the "featured" tier above).
   int _selected = 1;
+  DedicationType _selectedDedication = DedicationType.parents;
+  final TextEditingController _recipientNameController =
+      TextEditingController();
 
   bool _wasPurchasing = false;
   String? _lastShownError;
 
+  @override
+  void dispose() {
+    _recipientNameController.dispose();
+    super.dispose();
+  }
+
   void _selectFixedTier(int i) => setState(() => _selected = i);
 
-  /// Fires success/error feedback exactly once per purchase attempt, after
-  /// the frame finishes — purchase results arrive asynchronously via
-  /// PurchaseProvider's stream listener, not from a direct button callback.
   void _handlePurchaseSideEffects(PurchaseProvider pp, LanguageProvider lp) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -61,10 +81,17 @@ class _DonationScreenState extends State<DonationScreen> {
                 backgroundColor: Colors.redAccent),
           );
         } else if (pp.hasActiveSubscription) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(lp.getText('donation_thank_you')),
-                backgroundColor: AppColors.primary),
+          final selectedTier = _tiers[_selected];
+          showSadaqahCertificateDialog(
+            context,
+            dedication: SadaqahDedication(
+              type: _selectedDedication,
+              recipientName: _recipientNameController.text.trim().isNotEmpty
+                  ? _recipientNameController.text.trim()
+                  : null,
+              timestamp: DateTime.now(),
+            ),
+            tierName: lp.getText(selectedTier.nameKey),
           );
         }
       }
@@ -149,7 +176,8 @@ class _DonationScreenState extends State<DonationScreen> {
                               color: textWhite,
                             ),
                             children: [
-                              TextSpan(text: '${lp.getText('donation_become')}\n'),
+                              TextSpan(
+                                  text: '${lp.getText('donation_become')}\n'),
                               TextSpan(
                                 text: lp.getText('donation_patron'),
                                 style: TextStyle(color: primary),
@@ -177,16 +205,19 @@ class _DonationScreenState extends State<DonationScreen> {
                                 fontWeight: FontWeight.w300,
                               ),
                               children: [
-                                TextSpan(text: '${lp.getText('donation_pitch_1')} '),
+                                TextSpan(
+                                    text: '${lp.getText('donation_pitch_1')} '),
                                 TextSpan(
                                   text: priceLabel != null
                                       ? '$priceLabel${lp.getText('donation_per_month')}'
-                                      : lp.getText('donation_tier_supporter_name'),
+                                      : lp.getText(
+                                          'donation_tier_supporter_name'),
                                   style: TextStyle(
                                       color: textWhite,
                                       fontWeight: FontWeight.w600),
                                 ),
-                                TextSpan(text: ' ${lp.getText('donation_pitch_2')}'),
+                                TextSpan(
+                                    text: ' ${lp.getText('donation_pitch_2')}'),
                               ],
                             ),
                           ),
@@ -212,7 +243,8 @@ class _DonationScreenState extends State<DonationScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(children: [
-                                Icon(Icons.dns_rounded, color: primary, size: 18),
+                                Icon(Icons.dns_rounded,
+                                    color: primary, size: 18),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
@@ -248,18 +280,21 @@ class _DonationScreenState extends State<DonationScreen> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: primary.withOpacity(0.08),
+                            color: primary.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: primary.withOpacity(0.25)),
+                            border: Border.all(
+                                color: primary.withValues(alpha: 0.25)),
                           ),
                           child: Column(children: [
-                            Icon(Icons.favorite_rounded, color: primary, size: 22),
+                            Icon(Icons.favorite_rounded,
+                                color: primary, size: 22),
                             const SizedBox(height: 14),
                             Text(
                               lp.getText('donation_hadith_ar'),
                               textAlign: TextAlign.center,
                               textDirection: TextDirection.rtl,
-                              style: AppText.amiri(fontSize: 22, color: textWhite),
+                              style:
+                                  AppText.amiri(fontSize: 22, color: textWhite),
                             ),
                             const SizedBox(height: 14),
                             Text(
@@ -276,7 +311,7 @@ class _DonationScreenState extends State<DonationScreen> {
                             Text(
                               lp.getText('donation_hadith_ref').toUpperCase(),
                               style: GoogleFonts.spaceMono(
-                                color: primary.withOpacity(0.8),
+                                color: primary.withValues(alpha: 0.8),
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
@@ -332,15 +367,17 @@ class _DonationScreenState extends State<DonationScreen> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                               colors: [
-                                primary.withOpacity(0.16),
-                                primary.withOpacity(0.04),
+                                primary.withValues(alpha: 0.16),
+                                primary.withValues(alpha: 0.04),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: primary.withOpacity(0.3)),
+                            border: Border.all(
+                                color: primary.withValues(alpha: 0.3)),
                           ),
                           child: Column(children: [
-                            Icon(Icons.wb_twilight_rounded, color: primary, size: 26),
+                            Icon(Icons.wb_twilight_rounded,
+                                color: primary, size: 26),
                             const SizedBox(height: 14),
                             Text(
                               lp.getText('donation_multiply_title'),
@@ -362,7 +399,168 @@ class _DonationScreenState extends State<DonationScreen> {
                               ),
                             ),
                           ]),
-                        ).animate().fadeIn(delay: 350.ms).scale(begin: const Offset(0.96, 0.96)),
+                        )
+                            .animate()
+                            .fadeIn(delay: 350.ms)
+                            .scale(begin: const Offset(0.96, 0.96)),
+
+                        const SizedBox(height: 36),
+
+                        // ── Dedication Engine (কার উদ্দেশ্যে উৎসর্গকৃত) ───────
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: surfaceContainerHigh,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: const Color(0xFFE5A93C).withValues(alpha: 0.35),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE5A93C).withValues(alpha: 0.15),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.favorite_rounded,
+                                      color: Color(0xFFE5A93C),
+                                      size: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      lp.getText('dedicate_title'),
+                                      style: GoogleFonts.spaceMono(
+                                        color: textWhite,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1.2,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                lp.getText('dedicate_desc'),
+                                style: GoogleFonts.publicSans(
+                                  color: onSurfaceVariant,
+                                  fontSize: 13,
+                                  height: 1.4,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // Dedication Options Chips
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  _DedicationChip(
+                                    label: lp.getText('dedicate_self'),
+                                    icon: Icons.person_outline_rounded,
+                                    isSelected: _selectedDedication == DedicationType.self,
+                                    onTap: () => setState(() => _selectedDedication = DedicationType.self),
+                                  ),
+                                  _DedicationChip(
+                                    label: lp.getText('dedicate_parents'),
+                                    icon: Icons.favorite_border_rounded,
+                                    isSelected: _selectedDedication == DedicationType.parents,
+                                    onTap: () => setState(() => _selectedDedication = DedicationType.parents),
+                                  ),
+                                  _DedicationChip(
+                                    label: lp.getText('dedicate_deceased'),
+                                    icon: Icons.spa_outlined,
+                                    isSelected: _selectedDedication == DedicationType.deceased,
+                                    onTap: () => setState(() => _selectedDedication = DedicationType.deceased),
+                                  ),
+                                  _DedicationChip(
+                                    label: lp.getText('dedicate_family'),
+                                    icon: Icons.family_restroom_rounded,
+                                    isSelected: _selectedDedication == DedicationType.family,
+                                    onTap: () => setState(() => _selectedDedication = DedicationType.family),
+                                  ),
+                                ],
+                              ),
+
+                              // Optional Name Input for Parents / Deceased
+                              if (_selectedDedication == DedicationType.parents ||
+                                  _selectedDedication == DedicationType.deceased) ...[
+                                const SizedBox(height: 16),
+                                TextField(
+                                  controller: _recipientNameController,
+                                  style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                                  decoration: InputDecoration(
+                                    hintText: lp.locale.languageCode == 'bn'
+                                        ? 'যার নামে উৎসর্গ করছেন (যেমন: মরহুম পিতা আব্দুল্লাহ)'
+                                        : 'Name of your loved one (optional)',
+                                    hintStyle: TextStyle(
+                                      color: AppColors.textSlate400,
+                                      fontSize: 12.5,
+                                    ),
+                                    prefixIcon: const Icon(
+                                      Icons.edit_note_rounded,
+                                      color: Color(0xFFE5A93C),
+                                      size: 20,
+                                    ),
+                                    filled: true,
+                                    fillColor: background,
+                                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(color: AppColors.ink(0.1)),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: const BorderSide(color: Color(0xFFE5A93C)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+
+                              const SizedBox(height: 14),
+
+                              // Preview Certificate Button
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    final selectedTier = _tiers[_selected];
+                                    showSadaqahCertificateDialog(
+                                      context,
+                                      dedication: SadaqahDedication(
+                                        type: _selectedDedication,
+                                        recipientName: _recipientNameController.text.trim().isNotEmpty
+                                            ? _recipientNameController.text.trim()
+                                            : null,
+                                        timestamp: DateTime.now(),
+                                      ),
+                                      tierName: lp.getText(selectedTier.nameKey),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.card_membership_rounded, size: 16, color: Color(0xFFE5A93C)),
+                                  label: Text(
+                                    lp.getText('preview_certificate'),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      color: Color(0xFFE5A93C),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(delay: 380.ms),
 
                         const SizedBox(height: 36),
 
@@ -372,7 +570,7 @@ class _DonationScreenState extends State<DonationScreen> {
                           child: Text(
                             lp.getText('donation_choose_tier').toUpperCase(),
                             style: GoogleFonts.spaceMono(
-                              color: onSurfaceVariant.withOpacity(0.7),
+                              color: onSurfaceVariant.withValues(alpha: 0.7),
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.5,
@@ -393,13 +591,11 @@ class _DonationScreenState extends State<DonationScreen> {
                                     horizontal: 20, vertical: 18),
                                 decoration: BoxDecoration(
                                   color: sel
-                                      ? primary.withOpacity(0.12)
+                                      ? primary.withValues(alpha: 0.12)
                                       : surfaceContainerHigh,
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: sel
-                                        ? primary
-                                        : AppColors.ink(0.1),
+                                    color: sel ? primary : AppColors.ink(0.1),
                                     width: sel ? 1.6 : 1,
                                   ),
                                 ),
@@ -439,16 +635,18 @@ class _DonationScreenState extends State<DonationScreen> {
                                           if (t.featured) ...[
                                             const SizedBox(width: 8),
                                             Container(
-                                              padding: const EdgeInsets
-                                                  .symmetric(
-                                                  horizontal: 8, vertical: 3),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 3),
                                               decoration: BoxDecoration(
                                                 color: primary,
                                                 borderRadius:
                                                     BorderRadius.circular(6),
                                               ),
                                               child: Text(
-                                                lp.getText('donation_most_loved'),
+                                                lp.getText(
+                                                    'donation_most_loved'),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: GoogleFonts.spaceMono(
@@ -490,7 +688,8 @@ class _DonationScreenState extends State<DonationScreen> {
                                                       ?.price ??
                                                   '···'),
                                           TextSpan(
-                                            text: lp.getText('donation_per_month'),
+                                            text: lp
+                                                .getText('donation_per_month'),
                                             style: GoogleFonts.spaceMono(
                                               color: onSurfaceVariant,
                                               fontSize: 11,
@@ -504,7 +703,10 @@ class _DonationScreenState extends State<DonationScreen> {
                                 ]),
                               ),
                             ),
-                          ).animate().fadeIn(delay: (380 + i * 60).ms).slideX(begin: 0.05);
+                          )
+                              .animate()
+                              .fadeIn(delay: (380 + i * 60).ms)
+                              .slideX(begin: 0.05);
                         }),
 
                         const SizedBox(height: 16),
@@ -520,10 +722,10 @@ class _DonationScreenState extends State<DonationScreen> {
                             padding: const EdgeInsets.all(16),
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: Colors.amber.withOpacity(0.08),
+                              color: Colors.amber.withValues(alpha: 0.08),
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                  color: Colors.amber.withOpacity(0.25)),
+                                  color: Colors.amber.withValues(alpha: 0.25)),
                             ),
                             child: Row(children: [
                               const Icon(Icons.info_outline_rounded,
@@ -550,14 +752,17 @@ class _DonationScreenState extends State<DonationScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: (selectedProduct == null || pp.isPurchasing)
-                                ? null
-                                : () => pp.buy(selectedTier.productId),
+                            onPressed:
+                                (selectedProduct == null || pp.isPurchasing)
+                                    ? null
+                                    : () => pp.buy(selectedTier.productId),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primary,
                               foregroundColor: AppColors.onPrimary,
-                              disabledBackgroundColor: primary.withOpacity(0.3),
-                              disabledForegroundColor: AppColors.onPrimary.withOpacity(0.6),
+                              disabledBackgroundColor:
+                                  primary.withValues(alpha: 0.3),
+                              disabledForegroundColor:
+                                  AppColors.onPrimary.withValues(alpha: 0.6),
                               padding: const EdgeInsets.symmetric(vertical: 20),
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
@@ -579,11 +784,13 @@ class _DonationScreenState extends State<DonationScreen> {
                                     fit: BoxFit.scaleDown,
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           selectedProduct == null
-                                              ? lp.getText('donation_not_available_short')
+                                              ? lp.getText(
+                                                  'donation_not_available_short')
                                               : '${lp.getText('donation_cta')} - $priceLabel/MONTH',
                                           maxLines: 1,
                                           style: GoogleFonts.spaceMono(
@@ -593,7 +800,8 @@ class _DonationScreenState extends State<DonationScreen> {
                                           ),
                                         ),
                                         const SizedBox(width: 12),
-                                        const Icon(Icons.arrow_forward, size: 20),
+                                        const Icon(Icons.arrow_forward,
+                                            size: 20),
                                       ],
                                     ),
                                   ),
@@ -602,7 +810,8 @@ class _DonationScreenState extends State<DonationScreen> {
                             .animate()
                             .fadeIn(delay: 600.ms)
                             .slideY(begin: 0.2)
-                            .animate(onPlay: (controller) => controller.repeat())
+                            .animate(
+                                onPlay: (controller) => controller.repeat())
                             .shimmer(
                                 duration: 2500.ms,
                                 color: AppColors.ink(0.4),
@@ -611,7 +820,8 @@ class _DonationScreenState extends State<DonationScreen> {
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           style: TextButton.styleFrom(
-                            foregroundColor: onSurfaceVariant.withOpacity(0.7),
+                            foregroundColor:
+                                onSurfaceVariant.withValues(alpha: 0.7),
                           ),
                           child: Text(
                             lp.getText('donation_maybe_later'),
@@ -632,6 +842,61 @@ class _DonationScreenState extends State<DonationScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DedicationChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _DedicationChip({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const activeColor = Color(0xFFE5A93C);
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? activeColor.withValues(alpha: 0.15)
+              : AppColors.ink(0.05),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? activeColor : AppColors.ink(0.12),
+            width: isSelected ? 1.4 : 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 15,
+              color: isSelected ? activeColor : AppColors.textSlate400,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: isSelected ? Colors.white : AppColors.textSlate400,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

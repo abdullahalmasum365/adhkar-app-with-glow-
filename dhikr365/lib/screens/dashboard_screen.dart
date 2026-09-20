@@ -34,7 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     Icons.home_filled,
     Icons.access_time_filled,
     Icons.menu_book,
-    Icons.explore,          // Qibla compass
+    Icons.explore, // Qibla compass
     Icons.bar_chart,
     Icons.settings,
   ];
@@ -54,10 +54,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final lp = Provider.of<LanguageProvider>(context);
 
     // Bottom nav height adapts to screen
-    final navBottom  = R.adaptive(20.0, 28.0, 36.0);
-    final navTop     = R.px(10);
-    final iconSize   = R.sp(R.adaptive(20.0, 22.0, 26.0));
-    final labelSize  = R.sp(R.adaptive(8.0, 9.0, 11.0));
+    final navBottom = R.adaptive(20.0, 28.0, 36.0);
+    final navTop = R.px(10);
+    final iconSize = R.sp(R.adaptive(20.0, 22.0, 26.0));
+    final labelSize = R.sp(R.adaptive(8.0, 9.0, 11.0));
 
     return Scaffold(
       extendBody: true,
@@ -70,9 +70,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: EdgeInsets.only(
                 top: navTop, bottom: navBottom, left: R.px(6), right: R.px(6)),
             decoration: BoxDecoration(
-              color: AppColors.bgDark.withOpacity(0.92),
-              border: Border(
-                  top: BorderSide(color: AppColors.ink(0.05))),
+              color: AppColors.bgDark.withValues(alpha: 0.92),
+              border: Border(top: BorderSide(color: AppColors.ink(0.05))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -87,14 +86,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         horizontal: R.px(10), vertical: R.px(6)),
                     decoration: BoxDecoration(
                       color: selected
-                          ? AppColors.primary.withOpacity(0.12)
+                          ? AppColors.primary.withValues(alpha: 0.12)
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(R.px(12)),
                     ),
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Icon(_navIcons[i],
                           color: selected
-                              ? AppColors.primary : AppColors.textSlate400,
+                              ? AppColors.primary
+                              : AppColors.textSlate400,
                           size: iconSize),
                       SizedBox(height: R.px(3)),
                       Text(
@@ -103,7 +103,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           fontSize: labelSize,
                           fontWeight: FontWeight.w700,
                           color: selected
-                              ? AppColors.primary : AppColors.textSlate500,
+                              ? AppColors.primary
+                              : AppColors.textSlate500,
                           letterSpacing: 1.2,
                         ),
                       ),
@@ -118,4 +119,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-
