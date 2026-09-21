@@ -686,18 +686,19 @@ class NotificationService {
       interruptionLevel: InterruptionLevel.timeSensitive,
     );
 
-    // Standard Android alarm mode used by top prayer apps (Muslim Pro / Pillars).
-    // exactAllowWhileIdle fires precisely even when the device is in deep Doze / locked.
-    // If not granted, falls back to inexactAllowWhileIdle.
+    // Top-tier Android alarm mode: alarmClock.
+    // Uses AlarmManager.setAlarmClock — the most authoritative wake-from-deep-Doze
+    // mechanism in Android OS. Critical on Samsung One UI, Xiaomi MIUI, and Oppo,
+    // which otherwise throttle exactAllowWhileIdle alarms.
     AndroidScheduleMode scheduleMode;
     if (Platform.isAndroid) {
       final canExact = await isExactAlarmGranted();
       lastScheduleUsedExact = canExact;
       scheduleMode = canExact
-          ? AndroidScheduleMode.exactAllowWhileIdle
-          : AndroidScheduleMode.inexactAllowWhileIdle;
+          ? AndroidScheduleMode.alarmClock
+          : AndroidScheduleMode.exactAllowWhileIdle;
     } else {
-      scheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
+      scheduleMode = AndroidScheduleMode.alarmClock;
     }
 
     Future<void> doSchedule(AndroidScheduleMode mode) {
@@ -718,19 +719,20 @@ class NotificationService {
       await doSchedule(scheduleMode);
       debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime ($scheduleMode)');
     } catch (e) {
-      // If exact scheduling fails for ANY reason (permission revoked, OEM security policy, etc.),
-      // fall back to inexactAllowWhileIdle so the user never loses the reminder.
-      if (scheduleMode != AndroidScheduleMode.inexactAllowWhileIdle) {
+      debugPrint('[Scheduler] Primary schedule mode ($scheduleMode) failed: $e. Trying exactAllowWhileIdle...');
+      try {
+        await doSchedule(AndroidScheduleMode.exactAllowWhileIdle);
+        debugPrint('[Scheduler] OK id=$id "$title" (fallback exactAllowWhileIdle)');
+      } catch (e2) {
+        debugPrint('[Scheduler] exactAllowWhileIdle failed: $e2. Trying inexactAllowWhileIdle...');
         _cachedCanExact = false;
         lastScheduleUsedExact = false;
         try {
           await doSchedule(AndroidScheduleMode.inexactAllowWhileIdle);
           debugPrint('[Scheduler] OK id=$id "$title" (fallback inexactAllowWhileIdle)');
-        } catch (e2) {
-          debugPrint('[Scheduler] FAILED id=$id "$title": $e2');
+        } catch (e3) {
+          debugPrint('[Scheduler] FAILED ALL MODES id=$id "$title": $e3');
         }
-      } else {
-        debugPrint('[Scheduler] FAILED id=$id "$title": $e');
       }
     }
   }
