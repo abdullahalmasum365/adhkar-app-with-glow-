@@ -867,6 +867,7 @@ class NotificationService {
             'Adhkar Reminders',
             importance: Importance.max,
             priority: Priority.max,
+            icon: 'ic_stat_notification',
           ),
         );
         await _local.show(
