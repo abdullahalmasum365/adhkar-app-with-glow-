@@ -317,17 +317,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       if (!hasPermission) {
                         await svc.requestPermissions();
                       }
-                      await svc.showInstantTestNotification();
+                      final success = await svc.showInstantTestNotification();
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: success ? AppColors.primary : Colors.red.shade700,
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),
                             content: Text(
-                              lp.getText('notif_test_sent'),
-                              style: AppText.body(color: AppColors.onPrimary),
+                              success
+                                  ? lp.getText('notif_test_sent')
+                                  : (lp.locale.languageCode == 'bn'
+                                      ? 'নোটিফিকেশন পাঠানো সম্ভব হয়নি। অনুগ্রহ করে ফোনের সেটিংসে নোটিফিকেশন অন আছে কিনা চেক করুন।'
+                                      : 'Could not send notification. Please check system notification permission.'),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ),
                         );

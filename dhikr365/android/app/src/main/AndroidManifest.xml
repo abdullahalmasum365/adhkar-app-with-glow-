@@ -57,6 +57,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_notification" />
+        <meta-data
+            android:name="flutter_local_notifications.default_icon"
+            android:resource="@drawable/ic_stat_notification" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

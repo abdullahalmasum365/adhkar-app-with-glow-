@@ -165,12 +165,6 @@ class NotificationService {
   // ══════════════════════════════════════════════════════════════════════════
 
   Future<void> _initLocalNotifications() async {
-    // '@drawable/ic_stat_notification' is a monochrome white crescent/star.
-    // Android 5+ REQUIRES status-bar icons to be white-only — a full-colour
-    // launcher icon renders as a white rectangle blob. This dedicated white
-    // drawable is the correct approach used by Muslim Pro and all major apps.
-    const android = AndroidInitializationSettings('@drawable/ic_stat_notification');
-
     // ── iOS / macOS settings ──
     const darwin = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -178,16 +172,44 @@ class NotificationService {
       requestSoundPermission: true,
     );
 
-    const settings = InitializationSettings(android: android, iOS: darwin);
+    // Multi-tier icon fallback for Android:
+    // 1. 'ic_stat_notification' — dedicated monochrome white PNG (in all res/drawable-* folders)
+    // 2. 'launcher_icon' — PNG in res/drawable-*
+    // 3. '@mipmap/launcher_icon' — Android standard mipmap launcher icon
+    // NOTE: Android requires the resource NAME without '@drawable/' prefix.
+    bool initialized = false;
+    for (final iconName in ['ic_stat_notification', 'launcher_icon', '@mipmap/launcher_icon']) {
+      try {
+        final android = AndroidInitializationSettings(iconName);
+        final settings = InitializationSettings(android: android, iOS: darwin);
+        await _local.initialize(
+          settings,
+          onDidReceiveNotificationResponse: _onLocalNotificationTap,
+          onDidReceiveBackgroundNotificationResponse:
+              _onBackgroundLocalNotificationTap,
+        );
+        debugPrint('[NotificationService] Local notifications initialized with icon: $iconName');
+        initialized = true;
+        break;
+      } catch (e) {
+        debugPrint('[NotificationService] Failed to init with icon $iconName: $e');
+      }
+    }
 
-    await _local.initialize(
-      settings,
-      // Called when user taps a local notification while app is open
-      onDidReceiveNotificationResponse: _onLocalNotificationTap,
-      // Called when user taps a background notification (Android)
-      onDidReceiveBackgroundNotificationResponse:
-          _onBackgroundLocalNotificationTap,
-    );
+    if (!initialized) {
+      debugPrint('[NotificationService] CRITICAL: Fallback initialize without specific icon');
+      try {
+        const android = AndroidInitializationSettings('@mipmap/launcher_icon');
+        await _local.initialize(
+          const InitializationSettings(android: android, iOS: darwin),
+          onDidReceiveNotificationResponse: _onLocalNotificationTap,
+          onDidReceiveBackgroundNotificationResponse:
+              _onBackgroundLocalNotificationTap,
+        );
+      } catch (e) {
+        debugPrint('[NotificationService] Emergency init error: $e');
+      }
+    }
 
     // Create Android notification channels
     await _createChannels();
@@ -620,13 +642,10 @@ class NotificationService {
       channelName,
       importance: Importance.max,
       priority: Priority.max,
-      // Status-bar small icon MUST be monochrome white (Android 5+ rule).
-      // Full-colour launcher icons appear as a grey blob on the status bar.
-      icon: '@drawable/ic_stat_notification',
-      // Full-colour app logo shown on the RIGHT side of the notification panel —
-      // this is the "large icon" slot which DOES accept colour. Makes the
-      // notification instantly recognisable as Adhkaar 365.
-      largeIcon: const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
+      // Status-bar small icon: monochrome white PNG in res/drawable-*
+      icon: 'ic_stat_notification',
+      // Full-colour app logo shown on the RIGHT side of the notification panel
+      largeIcon: const DrawableResourceAndroidBitmap('launcher_icon'),
       // Small category label in the notification header (next to app name),
       // e.g. "Prayer Time" / "Adhkar Reminder".
       subText: subText,
@@ -803,55 +822,78 @@ class NotificationService {
 
   /// FOR TESTING: Fires one notification immediately + one scheduled in 10 seconds.
   /// Use this to verify both instant and scheduled delivery work on the device.
-  Future<void> showInstantTestNotification() async {
-    final details = NotificationDetails(
-      android: AndroidNotificationDetails(
-        _IDs.adhkarChannelId,
-        'Adhkar Reminders',
-        importance: Importance.max,
-        priority: Priority.max,
-        icon: '@drawable/ic_stat_notification',
-        largeIcon:
-            const DrawableResourceAndroidBitmap('@mipmap/launcher_icon'),
-        subText: 'Test',
-        playSound: true,
-        enableVibration: true,
-        color: AppColors.primary,
-        styleInformation: const BigTextStyleInformation(
-          'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।\nInstant delivery works! Checking 10-second scheduled alarm…',
-          contentTitle: '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
-          summaryText: 'Adhkaar 365 ☪',
+  Future<bool> showInstantTestNotification() async {
+    try {
+      final details = NotificationDetails(
+        android: AndroidNotificationDetails(
+          _IDs.adhkarChannelId,
+          'Adhkar Reminders',
+          importance: Importance.max,
+          priority: Priority.max,
+          icon: 'ic_stat_notification',
+          largeIcon: const DrawableResourceAndroidBitmap('launcher_icon'),
+          subText: 'Test',
+          playSound: true,
+          enableVibration: true,
+          color: AppColors.primary,
+          styleInformation: const BigTextStyleInformation(
+            'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।\nInstant delivery works! Checking 10-second scheduled alarm…',
+            contentTitle: '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+            summaryText: 'Adhkaar 365 ☪',
+          ),
         ),
-      ),
-      iOS: const DarwinNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      ),
-    );
+        iOS: const DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      );
 
-    // 1. Instant notification
-    await _local.show(
-      999,
-      '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
-      'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।',
-      details,
-    );
+      // 1. Instant notification
+      try {
+        await _local.show(
+          999,
+          '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+          'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।',
+          details,
+        );
+      } catch (e) {
+        debugPrint('[TestNotification] Detailed show failed ($e), retrying with basic fallback...');
+        const fallbackDetails = NotificationDetails(
+          android: AndroidNotificationDetails(
+            _IDs.adhkarChannelId,
+            'Adhkar Reminders',
+            importance: Importance.max,
+            priority: Priority.max,
+          ),
+        );
+        await _local.show(
+          999,
+          '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+          'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।',
+          fallbackDetails,
+        );
+      }
 
-    // 2. Scheduled notification 10 seconds from now — proves the alarm scheduler works
-    await _scheduleLocalNotification(
-      id: 998,
-      title: '⏰ Adhkaar 365 — শিডিউল অ্যালার্ম সফল!',
-      body: 'আলহামদুলিল্লাহ! শিডিউল অ্যালার্ম সফলভাবে কাজ করেছে। নামাজের ওয়াক্তে সময়মতো নোটিফিকেশন আসবে ইনশাআল্লাহ।',
-      scheduledTime: DateTime.now().add(const Duration(seconds: 10)),
-      channelId: _IDs.adhkarChannelId,
-      channelName: 'Adhkar Reminders',
-      payload: 'test',
-      sound: null,
-      subText: 'Schedule Test',
-    );
+      // 2. Scheduled notification 10 seconds from now — proves the alarm scheduler works
+      await _scheduleLocalNotification(
+        id: 998,
+        title: '⏰ Adhkaar 365 — শিডিউল অ্যালার্ম সফল!',
+        body: 'আলহামদুলিল্লাহ! শিডিউল অ্যালার্ম সফলভাবে কাজ করেছে। নামাজের ওয়াক্তে সময়মতো নোটিফিকেশন আসবে ইনশাআল্লাহ।',
+        scheduledTime: DateTime.now().add(const Duration(seconds: 10)),
+        channelId: _IDs.adhkarChannelId,
+        channelName: 'Adhkar Reminders',
+        payload: 'test',
+        sound: null,
+        subText: 'Schedule Test',
+      );
 
-    debugPrint('[Test] Instant sent. Scheduled test fires in 10 seconds.');
+      debugPrint('[Test] Instant sent. Scheduled test fires in 10 seconds.');
+      return true;
+    } catch (e) {
+      debugPrint('[TestNotification] Failed completely: $e');
+      return false;
+    }
   }
 }
 
