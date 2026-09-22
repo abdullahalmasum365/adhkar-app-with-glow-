@@ -561,11 +561,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   /// Priority: JSON audioPath → auto-derived audio/{id}.mp3 (added by user).
   /// Never falls back to the category compilation — that would play all duas.
   String? _resolveAudioPath(Dhikr d) {
-    if (d.audioPath != null && d.audioPath!.isNotEmpty) {
-      return d.audioPath!.replaceFirst('assets/', '');
-    }
-    // Auto-derived: user can drop assets/audio/{dhikr_id}.mp3 to enable audio
-    return 'audio/${d.id}.mp3';
+    return AudioService.resolveAudioPath(d.id, d.audioPath);
   }
 
   // ── Playback helpers ─────────────────────────────────────────────────────

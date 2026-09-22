@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/dhikr.dart';
+import '../services/audio_service.dart';
 
 class DhikrProvider extends ChangeNotifier {
   List<Dhikr> _dhikrs = [];
@@ -387,12 +388,11 @@ class DhikrProvider extends ChangeNotifier {
         // When prefix is empty the key already contains the full ID (e.g.
       // parents_rabbir_hamhuma, food_bismillah).  Otherwise prepend the prefix.
       final id = prefix.isEmpty ? key : '${prefix}_$key';
-        // audioPath from JSON wins; otherwise check if a file named after the
-        // dhikr ID exists in assets/audio/ (auto-derive: audio/{id}.mp3).
+        // audioPath: JSON audioPath wins if present; otherwise auto-resolves
+        // to audio/{id}.mp3 if an audio file exists in assets/audio/.
+        // If no recording exists, it remains null (so no play button is shown).
         final jsonAudioPath = entry['audioPath'] as String?;
-        final audioPath = (jsonAudioPath != null && jsonAudioPath.isNotEmpty)
-            ? jsonAudioPath
-            : null; // caller can check assets/audio/$id.mp3 at runtime
+        final audioPath = AudioService.resolveAudioPath(id, jsonAudioPath);
 
         list.add(Dhikr(
           id: id,

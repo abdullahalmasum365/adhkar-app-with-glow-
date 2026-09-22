@@ -29,6 +29,8 @@ class Dhikr {
 
   bool get isCompleted => currentCount >= targetCount;
 
+  bool get hasAudio => audioPath != null && audioPath!.isNotEmpty;
+
   double get progress =>
       targetCount > 0 ? (currentCount / targetCount).clamp(0.0, 1.0) : 0.0;
 

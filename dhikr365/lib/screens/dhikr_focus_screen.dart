@@ -129,9 +129,8 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
   }
 
   String? _resolveAudioPath() {
-    final p = widget.dhikr.audioPath;
-    if (p != null && p.isNotEmpty) return p.replaceFirst('assets/', '');
-    return 'audio/${widget.dhikr.id}.mp3';
+    return AudioService.resolveAudioPath(
+        widget.dhikr.id, widget.dhikr.audioPath);
   }
 
   /// Shows why nothing is audible and resets the player — a playing state
@@ -585,11 +584,9 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                   Row(children: [
                     _Btn(Icons.refresh,
                         onTap: () => setState(() => _count = 0)),
-                    // Audio is only available for Morning/Evening Adhkar —
-                    // hidden entirely for every other category instead of
-                    // showing a button with no recording behind it.
-                    if (widget.dhikr.category == DhikrCategory.morning ||
-                        widget.dhikr.category == DhikrCategory.evening) ...[
+                    // Audio button: shown for every dhikr that has an audio recording available.
+                    // If no recording is available, it is omitted.
+                    if (widget.dhikr.hasAudio) ...[
                       SizedBox(width: R.px(8)),
                       _Btn(
                         _showPlayer

@@ -303,11 +303,9 @@ class _DhikrCardState extends State<DhikrCard> {
                       maxLines: 2,
                     ),
                   ),
-                  // Audio is only available for Morning/Evening Adhkar —
-                  // every other category has no recording, so the play
-                  // button is hidden entirely there instead of doing nothing.
-                  if (widget.dhikr.category == DhikrCategory.morning ||
-                      widget.dhikr.category == DhikrCategory.evening) ...[
+                  // Audio is shown for every dhikr that has an audio recording available.
+                  // If no audio is available for a dhikr, the button is omitted.
+                  if (widget.dhikr.hasAudio) ...[
                     SizedBox(width: R.px(8)),
                     GestureDetector(
                       onTap: _onPlayTapped,
