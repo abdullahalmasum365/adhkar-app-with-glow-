@@ -696,7 +696,7 @@ class NotificationService {
       lastScheduleUsedExact = canExact;
       scheduleMode = canExact
           ? AndroidScheduleMode.alarmClock
-          : AndroidScheduleMode.exactAllowWhileIdle;
+          : AndroidScheduleMode.inexactAllowWhileIdle;
     } else {
       scheduleMode = AndroidScheduleMode.alarmClock;
     }
@@ -719,20 +719,21 @@ class NotificationService {
       await doSchedule(scheduleMode);
       debugPrint('[Scheduler] OK id=$id "$title" at $scheduledTime ($scheduleMode)');
     } catch (e) {
-      debugPrint('[Scheduler] Primary schedule mode ($scheduleMode) failed: $e. Trying exactAllowWhileIdle...');
-      try {
-        await doSchedule(AndroidScheduleMode.exactAllowWhileIdle);
-        debugPrint('[Scheduler] OK id=$id "$title" (fallback exactAllowWhileIdle)');
-      } catch (e2) {
-        debugPrint('[Scheduler] exactAllowWhileIdle failed: $e2. Trying inexactAllowWhileIdle...');
-        _cachedCanExact = false;
-        lastScheduleUsedExact = false;
+      debugPrint('[Scheduler] Primary schedule mode ($scheduleMode) failed: $e. Trying fallback...');
+      if (scheduleMode == AndroidScheduleMode.alarmClock) {
         try {
-          await doSchedule(AndroidScheduleMode.inexactAllowWhileIdle);
-          debugPrint('[Scheduler] OK id=$id "$title" (fallback inexactAllowWhileIdle)');
-        } catch (e3) {
-          debugPrint('[Scheduler] FAILED ALL MODES id=$id "$title": $e3');
-        }
+          await doSchedule(AndroidScheduleMode.exactAllowWhileIdle);
+          debugPrint('[Scheduler] OK id=$id "$title" (fallback exactAllowWhileIdle)');
+          return;
+        } catch (_) {}
+      }
+      _cachedCanExact = false;
+      lastScheduleUsedExact = false;
+      try {
+        await doSchedule(AndroidScheduleMode.inexactAllowWhileIdle);
+        debugPrint('[Scheduler] OK id=$id "$title" (fallback inexactAllowWhileIdle)');
+      } catch (e3) {
+        debugPrint('[Scheduler] FAILED ALL MODES id=$id "$title": $e3');
       }
     }
   }

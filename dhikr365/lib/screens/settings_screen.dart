@@ -20,7 +20,26 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      NotificationService().invalidateExactAlarmCache();
+      if (mounted) setState(() {});
+    }
+  }
   void _langSheet(
       {required String title,
       required String current,
@@ -219,10 +238,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
               // ── Notifications ──
               _Lbl(lp.getText('notifications')),
-              FutureBuilder<bool>(
-                future: NotificationService().areNotificationsEnabled(),
+              FutureBuilder<List<bool>>(
+                future: Future.wait([
+                  NotificationService().areNotificationsEnabled(),
+                  NotificationService().isExactAlarmGranted(),
+                ]),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data == false) {
+                  if (!snapshot.hasData) return const SizedBox.shrink();
+                  final notifEnabled = snapshot.data![0];
+                  final exactEnabled = snapshot.data![1];
+
+                  if (!notifEnabled) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 14),
                       padding: const EdgeInsets.all(14),
@@ -274,6 +300,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     );
                   }
+
+                  if (!exactEnabled) {
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 14),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.blueGrey.shade900.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.tealAccent.shade400, width: 1.2),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.alarm_on_rounded, color: Colors.tealAccent, size: 28),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lp.locale.languageCode == 'bn'
+                                      ? 'সঠিক সময়ে অ্যালার্ম পারমিশন'
+                                      : 'Exact Alarms Permission',
+                                  style: AppText.body(color: Colors.tealAccent)
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  lp.locale.languageCode == 'bn'
+                                      ? 'নামাজের ওয়াক্তে সঠিক সময়ে অ্যালার্ম বাজতে Alarms & Reminders চালু করুন'
+                                      : 'Allow Alarms & Reminders so prayer alerts ring precisely on time',
+                                  style: AppText.manrope(
+                                      fontSize: 12, color: Colors.white70),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          TextButton(
+                            onPressed: () async {
+                              await NotificationService().openExactAlarmSettings();
+                              NotificationService().invalidateExactAlarmCache();
+                              if (context.mounted) setState(() {});
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            ),
+                            child: Text(
+                              lp.locale.languageCode == 'bn' ? 'অনুমতি দিন' : 'Allow',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
                   return const SizedBox.shrink();
                 },
               ),
@@ -316,7 +401,89 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       final hasPermission = await svc.areNotificationsEnabled();
                       if (!hasPermission) {
                         await svc.requestPermissions();
+                        final stillOff = !(await svc.areNotificationsEnabled());
+                        if (stillOff) {
+                          if (context.mounted) {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                backgroundColor: AppColors.bgTeal,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                title: Text(lp.getText('notif_status_disabled'), style: AppText.heading(18)),
+                                content: Text(lp.getText('notif_permission_body'), style: AppText.body(color: Colors.white70)),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(ctx),
+                                    child: Text(lp.getText('cancel'), style: AppText.body(color: AppColors.textSlate400)),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                      svc.openNotificationSettings();
+                                    },
+                                    child: Text(lp.getText('notif_fix_btn'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return;
+                        }
                       }
+
+                      final canExact = await svc.isExactAlarmGranted();
+                      if (!canExact && context.mounted) {
+                        final proceed = await showDialog<bool>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            backgroundColor: AppColors.bgTeal,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            title: Row(
+                              children: [
+                                const Icon(Icons.alarm_on_rounded, color: Colors.amberAccent, size: 24),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    lp.locale.languageCode == 'bn'
+                                        ? 'অ্যালার্ম ও রিমাইন্ডার পারমিশন'
+                                        : 'Alarms & Reminders Permission',
+                                    style: AppText.heading(16),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            content: Text(
+                              lp.locale.languageCode == 'bn'
+                                  ? '১০ সেকেন্ডের শিডিউল অ্যালার্ম ও নামাজের ওয়াক্তের সঠিক নোটিফিকেশনের জন্য "Alarms & Reminders" পারমিশন অন করতে হবে। আপনি কি সেটিংস ওপেন করতে চান?'
+                                  : 'Exact alarm permission is required for on-time prayer alerts and the 10-second test alarm. Would you like to open Settings to allow it?',
+                              style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.4),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: Text(
+                                  lp.locale.languageCode == 'bn' ? 'এমনিতেই টেস্ট করুন' : 'Test Anyway',
+                                  style: AppText.body(color: AppColors.textSlate400),
+                                ),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+                                onPressed: () async {
+                                  Navigator.pop(ctx, false);
+                                  await svc.openExactAlarmSettings();
+                                },
+                                child: Text(
+                                  lp.locale.languageCode == 'bn' ? 'অনুমতি দিন (Allow)' : 'Allow in Settings',
+                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                        if (proceed != true) return;
+                      }
+
                       final success = await svc.showInstantTestNotification();
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -327,7 +494,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 borderRadius: BorderRadius.circular(10)),
                             content: Text(
                               success
-                                  ? lp.getText('notif_test_sent')
+                                  ? (canExact
+                                      ? lp.getText('notif_test_sent')
+                                      : (lp.locale.languageCode == 'bn'
+                                          ? 'ইনস্ট্যান্ট নোটিফিকেশন পাঠানো হয়েছে। Alarms & Reminders পারমিশন ছাড়া ১০ সেকেন্ডের অ্যালার্ম বিলম্বিত হতে পারে।'
+                                          : 'Instant test sent. Without Exact Alarms permission, scheduled alarms may be delayed.'))
                                   : (lp.locale.languageCode == 'bn'
                                       ? 'নোটিফিকেশন পাঠানো সম্ভব হয়নি। অনুগ্রহ করে ফোনের সেটিংসে নোটিফিকেশন অন আছে কিনা চেক করুন।'
                                       : 'Could not send notification. Please check system notification permission.'),
