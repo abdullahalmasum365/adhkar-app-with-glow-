@@ -252,7 +252,7 @@
   "notif_status_disabled_sub": "Ketuk untuk mengaktifkan pengingat shalat & dzikir",
   "notif_fix_btn": "Perbaiki Notifikasi",
   "notif_battery_fix": "Perbaikan Baterai Notifikasi",
-  "notif_battery_fix_sub": "Cegah Samsung/Xiaomi mematikan pengingat",
+  "notif_battery_fix_sub": "Pastikan pengingat andal di latar belakang",
   "notif_battery_fixed": "Optimasi baterai berhasil diperbaiki!",
   "notif_test_btn": "Kirim Notifikasi Uji Coba",
   "notif_test_sub": "Uji peringatan instan & alarm terjadwal 10 detik",

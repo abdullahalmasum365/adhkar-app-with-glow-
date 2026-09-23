@@ -272,7 +272,7 @@
   "notif_status_disabled_sub": "Tap to enable prayer & adhkar reminders",
   "notif_fix_btn": "Fix Notifications",
   "notif_battery_fix": "Notification Battery Fix",
-  "notif_battery_fix_sub": "Prevent Samsung/Xiaomi from killing reminders",
+  "notif_battery_fix_sub": "Ensure reliable reminders in background",
   "notif_battery_fixed": "Battery optimization fixed!",
   "notif_test_btn": "Send Test Notification",
   "notif_test_sub": "Test instant alert & 10s scheduled alarm",

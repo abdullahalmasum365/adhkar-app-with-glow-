@@ -252,7 +252,7 @@
   "notif_status_disabled_sub": "Toque para ativar lembretes de oração e adhkar",
   "notif_fix_btn": "Corrigir notificações",
   "notif_battery_fix": "Correção de bateria de notificações",
-  "notif_battery_fix_sub": "Impedir Samsung/Xiaomi de encerrar lembretes",
+  "notif_battery_fix_sub": "Garantir lembretes confiáveis em segundo plano",
   "notif_battery_fixed": "Otimização de bateria corrigida!",
   "notif_test_btn": "Enviar notificação de teste",
   "notif_test_sub": "Testar alerta instantâneo e alarme agendado de 10s",

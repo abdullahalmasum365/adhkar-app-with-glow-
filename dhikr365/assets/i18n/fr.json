@@ -252,7 +252,7 @@
   "notif_status_disabled_sub": "Appuyez pour activer les rappels de prière et d'adhkar",
   "notif_fix_btn": "Réparer les notifications",
   "notif_battery_fix": "Correction batterie notifications",
-  "notif_battery_fix_sub": "Empêcher Samsung/Xiaomi de tuer les rappels",
+  "notif_battery_fix_sub": "Garantir des rappels fiables en arrière-plan",
   "notif_battery_fixed": "Optimisation de la batterie corrigée !",
   "notif_test_btn": "Envoyer une notification de test",
   "notif_test_sub": "Tester une alerte instantanée et une alarme à 10s",

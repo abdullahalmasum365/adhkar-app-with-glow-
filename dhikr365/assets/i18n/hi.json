@@ -252,7 +252,7 @@
   "notif_status_disabled_sub": "नमाज़ और अज़कार रिमाइंडर चालू करने के लिए टैप करें",
   "notif_fix_btn": "नोटिफिकेशन ठीक करें",
   "notif_battery_fix": "नोटिफिकेशन बैटरी फिक्स",
-  "notif_battery_fix_sub": "Samsung/Xiaomi को रिमाइंडर बंद करने से रोकें",
+  "notif_battery_fix_sub": "बैकग्राउंड में विश्वसनीय रिमाइंडर सुनिश्चित करें",
   "notif_battery_fixed": "बैटरी ऑप्टिमाइज़ेशन ठीक हो गई!",
   "notif_test_btn": "टेस्ट नोटिफिकेशन भेजें",
   "notif_test_sub": "तत्काल अलर्ट और 10s अनुसूचित अलार्म परीक्षण",

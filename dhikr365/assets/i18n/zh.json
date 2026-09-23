@@ -252,7 +252,7 @@
   "notif_status_disabled_sub": "点击启用祈祷和赞念提醒",
   "notif_fix_btn": "修复通知",
   "notif_battery_fix": "通知电池修复",
-  "notif_battery_fix_sub": "防止Samsung/Xiaomi关闭提醒",
+  "notif_battery_fix_sub": "确保后台提醒准时运行",
   "notif_battery_fixed": "电池优化已修复！",
   "notif_test_btn": "发送测试通知",
   "notif_test_sub": "测试即时提醒和10秒定时闹钟",

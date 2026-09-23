@@ -122,14 +122,14 @@
     },
     "e_allahumma_fatir": {
       "dhikr_no": 11,
-      "title": "Allahumma Fatiras Samawati (Creator of the Heavens)",
+      "title": "Allahumma 'Alimal Ghayb",
       "frequency": "1x (Morning & Evening)",
       "targetCount": 1,
-      "arabicText": "اللَّهُمَّ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ، عَالِمَ الْغَيْبِ وَالشَّهَادَةِ، لَا إِلَهَ إِلَّا أَنْتَ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطَانِ وَشِرْكِهِ، وَأَنْ أَقْتَرِفَ عَلَى نَفْسِي سُوءًا أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ",
-      "transliteration": "Allāhumma fāṭiras-samāwāti wal-arḍ, 'ālamal-ghaybi wash-shahādah, lā ilāha illā ant, rabba kulli shay'in wamalīkah. A'ūdhu bika min sharri nafsī wamin sharrish-shayṭāni washirakihi, wa'an aqtarifa 'alā nafsī sū'an, aw ajurrahu ilā muslim.",
-      "translation": "O Allah, Creator of the heavens and the earth, Knower of the unseen and the seen, there is no deity except You, Lord and Sovereign of all things. I seek refuge in You from the evil of my own soul and from the evil of Satan and his traps, and from committing wrong against myself or bringing it upon any Muslim.",
+      "arabicText": "اللَّهُمَّ عَالِمَ الغَيْبِ وَالشَّهَادَةِ فَاطِرَ السَّمَوَاتِ وَالْأَرْضِ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَشْهَدُ أَنْ لاَ إِلَهَ إِلاَّ أَنْتَ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي، وَمِنْ شَرِّ الشَّيْطانِ وَشَرَكِهِ، وَأَنْ أَقْتَرِفَ عَلَى  نَفْسِي سُوءاً، أَوْ أَجُرَّهُ إِلَى مُسْلِمٍ",
+      "transliteration": "Allāhumma 'ālima al-ghaybi wash-shahādah, fāṭiras-samāwāti wal-arḍ, rabba kulli shay'in wamalīkah, ash-hadu allā ilāha illā ant. A'ūdhu bika min sharri nafsī, wamin sharrish-shayṭāni washirkihi, wa-an aqtarifa 'alā nafsī sū'an aw ajurrahu ilā muslim.",
+      "translation": "O Allah, Knower of the unseen and the seen, Creator of the heavens and the earth, Lord and Sovereign of all things, I bear witness that there is no deity except You. I seek refuge in You from the evil of my soul and from the evil of Satan and his traps, and from committing wrong against myself or bringing it upon any Muslim.",
       "benefit": "Protection from the whispers and traps of the soul and Satan.",
-      "reference": "Al-Adabul Mufrad, 1204; Musnad Ahmad, 6851.",
+      "reference": "At-Tirmidhi, 3392, 3529; Abu Dawud, 5067; Hisnul Muslim, 85.",
       "category": "evening"
     },
     "e_afwa_wal_afiyah": {

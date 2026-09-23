@@ -252,7 +252,7 @@
   "notif_status_disabled_sub": "Toca para activar recordatorios de oración y adhkar",
   "notif_fix_btn": "Reparar notificaciones",
   "notif_battery_fix": "Reparación de batería de notificaciones",
-  "notif_battery_fix_sub": "Evitar que Samsung/Xiaomi elimine recordatorios",
+  "notif_battery_fix_sub": "Garantizar recordatorios confiables en segundo plano",
   "notif_battery_fixed": "¡Optimización de batería corregida!",
   "notif_test_btn": "Enviar notificación de prueba",
   "notif_test_sub": "Probar alerta instantánea y alarma programada a 10s",
