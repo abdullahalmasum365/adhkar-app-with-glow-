@@ -51,3 +51,6 @@ app.*.map.json
 *.apk
 *.aab
 scratch/
+
+# Firebase configuration (contains project API keys)
+/android/app/google-services.json

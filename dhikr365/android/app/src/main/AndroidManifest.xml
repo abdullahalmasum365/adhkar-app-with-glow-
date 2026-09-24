@@ -5,10 +5,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- SCHEDULE_EXACT_ALARM for Android 12+ (API 31+) -->
+    <!-- SCHEDULE_EXACT_ALARM for Android 12+ (API 31+) — compliant with Play Store Reminder policy -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <!-- USE_EXACT_ALARM for Android 13+ (API 33+) -->
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <!-- wakelock_plus: keeps screen on during dhikr sessions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- Allows app to request battery optimization exemption so alarms fire reliably -->
@@ -17,7 +15,8 @@
     <application
         android:label="Adhkaar 365"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:allowBackup="false">
         
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
         <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" />
