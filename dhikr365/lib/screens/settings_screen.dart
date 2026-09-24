@@ -735,6 +735,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               _Card(
                   child: Column(children: [
                 _Tile(
+                    icon: Icons.description_outlined,
+                    color: AppColors.textSlate400,
+                    title: lp.getText('terms_of_service'),
+                    onTap: () => launchUrl(
+                        Uri.parse(
+                            'https://abdullahalmasum365.github.io/adhkar-app-with-glow-/terms-of-service.html'),
+                        mode: LaunchMode.externalApplication)),
+                _div(),
+                _Tile(
                     icon: Icons.policy_outlined,
                     color: AppColors.textSlate400,
                     title: lp.getText('privacy_policy'),

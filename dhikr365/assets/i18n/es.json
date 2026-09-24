@@ -256,5 +256,12 @@
   "notif_battery_fixed": "¡Optimización de batería corregida!",
   "notif_test_btn": "Enviar notificación de prueba",
   "notif_test_sub": "Probar alerta instantánea y alarma programada a 10s",
-  "notif_test_sent": "¡Prueba enviada! Llegará una notificación instantánea y una alarma a los 10s."
+  "notif_test_sent": "¡Prueba enviada! Llegará una notificación instantánea y una alarma a los 10s.",
+  "terms_of_service": "Términos de servicio",
+  "account_delete": "Eliminar cuenta",
+  "account_delete_confirm": "¿Estás seguro de que deseas eliminar tu cuenta? Todas las rutinas sincronizadas y la copia de seguridad se eliminarán permanentemente.",
+  "account_delete_btn": "Eliminar definitivamente",
+  "account_deleted_toast": "Tu cuenta y datos han sido eliminados permanentemente.",
+  "terms_consent_prefix": "Al continuar, aceptas nuestros ",
+  "terms_consent_and": " y "
 }

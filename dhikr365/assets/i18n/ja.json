@@ -256,5 +256,12 @@
   "notif_battery_fixed": "バッテリー最適化が修正されました！",
   "notif_test_btn": "テスト通知を送信",
   "notif_test_sub": "即時アラートと10秒スケジュールアラームをテスト",
-  "notif_test_sent": "テスト送信完了！即時通知と10秒後のスケジュールアラームが届きます。"
+  "notif_test_sent": "テスト送信完了！即時通知と10秒後のスケジュールアラームが届きます。",
+  "terms_of_service": "利用規約",
+  "account_delete": "アカウントを削除",
+  "account_delete_confirm": "本当にアカウントを削除しますか？同期されたカスタムルーティンとクラウドバックアップは完全に削除されます。",
+  "account_delete_btn": "完全に削除",
+  "account_deleted_toast": "アカウントとデータが完全に削除されました。",
+  "terms_consent_prefix": "続行することにより、",
+  "terms_consent_and": "および"
 }

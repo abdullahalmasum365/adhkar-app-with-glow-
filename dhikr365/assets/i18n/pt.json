@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Otimização de bateria corrigida!",
   "notif_test_btn": "Enviar notificação de teste",
   "notif_test_sub": "Testar alerta instantâneo e alarme agendado de 10s",
-  "notif_test_sent": "Teste enviado! Uma notificação instantânea e um alarme de 10s chegarão."
+  "notif_test_sent": "Teste enviado! Uma notificação instantânea e um alarme de 10s chegarão.",
+  "terms_of_service": "Termos de serviço",
+  "account_delete": "Excluir conta",
+  "account_delete_confirm": "Tem certeza de que deseja excluir sua conta? Todas as rotinas sincronizadas e o backup na nuvem serão excluídos permanentemente.",
+  "account_delete_btn": "Excluir permanentemente",
+  "account_deleted_toast": "Sua conta e dados foram excluídos permanentemente.",
+  "terms_consent_prefix": "Ao continuar, você concorda com nossos ",
+  "terms_consent_and": " e "
 }

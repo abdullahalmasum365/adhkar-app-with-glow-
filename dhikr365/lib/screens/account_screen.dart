@@ -13,6 +13,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/app_theme.dart';
 import '../providers/auth_provider.dart';
@@ -148,6 +149,49 @@ class _SignedOutCard extends StatelessWidget {
             onTap: () => _handleSignIn(context, ap.signInWithApple),
           ),
         ],
+        const SizedBox(height: 16),
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(
+              lp.getText('terms_consent_prefix'),
+              style: AppText.body(color: AppColors.textSlate400).copyWith(fontSize: 11),
+            ),
+            GestureDetector(
+              onTap: () => launchUrl(
+                Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/terms-of-service.html'),
+                mode: LaunchMode.externalApplication,
+              ),
+              child: Text(
+                lp.getText('terms_of_service'),
+                style: AppText.body(color: AppColors.primary).copyWith(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+            Text(
+              lp.getText('terms_consent_and'),
+              style: AppText.body(color: AppColors.textSlate400).copyWith(fontSize: 11),
+            ),
+            GestureDetector(
+              onTap: () => launchUrl(
+                Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/privacy-policy.html'),
+                mode: LaunchMode.externalApplication,
+              ),
+              child: Text(
+                lp.getText('privacy_policy'),
+                style: AppText.body(color: AppColors.primary).copyWith(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
+            ),
+          ],
+        ),
       ]),
     );
   }
@@ -182,6 +226,55 @@ class _SignedInCard extends StatelessWidget {
       ),
     );
     if (ok == true) await ap.signOut();
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext context) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.bgTeal,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(lp.getText('account_delete'),
+            style: AppText.heading(18).copyWith(color: Colors.redAccent)),
+        content: Text(lp.getText('account_delete_confirm'),
+            style: AppText.body(color: AppColors.textSlate300)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(lp.getText('cancel'),
+                style: AppText.body(color: AppColors.textSlate400)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(lp.getText('account_delete_btn'),
+                style: AppText.body(color: Colors.redAccent)
+                    .copyWith(fontWeight: FontWeight.w800)),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      final success = await ap.deleteAccount();
+      if (!context.mounted) return;
+      if (success) {
+        final cp = Provider.of<CustomPlanProvider>(context, listen: false);
+        await cp.attachUser(null);
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(lp.getText('account_deleted_toast')),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      } else if (ap.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(ap.errorMessage!),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -266,6 +359,19 @@ class _SignedInCard extends StatelessWidget {
               child: Text(lp.getText('account_sign_out'),
                   style: AppText.manrope(
                       fontWeight: FontWeight.w700, color: Colors.redAccent)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextButton.icon(
+          onPressed: () => _confirmDeleteAccount(context),
+          icon: Icon(Icons.delete_forever_rounded,
+              size: 16, color: AppColors.textSlate500),
+          label: Text(
+            lp.getText('account_delete'),
+            style: AppText.body(color: AppColors.textSlate500).copyWith(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),

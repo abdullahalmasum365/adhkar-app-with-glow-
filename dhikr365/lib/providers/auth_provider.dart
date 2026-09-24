@@ -104,6 +104,31 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> deleteAccount() async {
+    _errorMessage = null;
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _authService.deleteAccount();
+      _user = null;
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        _errorMessage = 'For security, please sign out, sign in again, and retry account deletion.';
+      } else {
+        _errorMessage = e.message ?? 'Failed to delete account.';
+      }
+      return false;
+    } catch (e) {
+      _errorMessage = 'Failed to delete account. Please try again.';
+      debugPrint('[AuthProvider] deleteAccount failed: $e');
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   @override
   void dispose() {
     _authSub?.cancel();

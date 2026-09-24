@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Pil optimizasyonu düzeltildi!",
   "notif_test_btn": "Test Bildirimi Gönder",
   "notif_test_sub": "Anında uyarı ve 10s zamanlı alarm testi",
-  "notif_test_sent": "Test gönderildi! Anında bildirim ve 10s alarm gelecek."
+  "notif_test_sent": "Test gönderildi! Anında bildirim ve 10s alarm gelecek.",
+  "terms_of_service": "Hizmet Şartları",
+  "account_delete": "Hesabı Sil",
+  "account_delete_confirm": "Hesabınızı silmek istediğinizden emin misiniz? Tüm senkronize edilmiş rutinler ve bulut yedeklemesi kalıcı olarak silinecektir.",
+  "account_delete_btn": "Kalıcı Olarak Sil",
+  "account_deleted_toast": "Hesabınız ve verileriniz kalıcı olarak silindi.",
+  "terms_consent_prefix": "Devam ederek ",
+  "terms_consent_and": " ve "
 }

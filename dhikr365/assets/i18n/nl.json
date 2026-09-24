@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Batterijoptimalisatie gerepareerd!",
   "notif_test_btn": "Testmelding sturen",
   "notif_test_sub": "Directe waarschuwing en 10s gepland alarm testen",
-  "notif_test_sent": "Test verzonden! Een directe melding en 10s alarm zullen aankomen."
+  "notif_test_sent": "Test verzonden! Een directe melding en 10s alarm zullen aankomen.",
+  "terms_of_service": "Servicevoorwaarden",
+  "account_delete": "Account verwijderen",
+  "account_delete_confirm": "Weet u zeker dat u uw account wilt verwijderen? Alle gesynchroniseerde routines en cloudback-ups worden permanent verwijderd.",
+  "account_delete_btn": "Permanent verwijderen",
+  "account_deleted_toast": "Uw account en gegevens zijn permanent verwijderd.",
+  "terms_consent_prefix": "Door verder te gaan, gaat u akkoord met onze ",
+  "terms_consent_and": " en "
 }

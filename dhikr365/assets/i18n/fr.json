@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Optimisation de la batterie corrigée !",
   "notif_test_btn": "Envoyer une notification de test",
   "notif_test_sub": "Tester une alerte instantanée et une alarme à 10s",
-  "notif_test_sent": "Test envoyé ! Une notification instantanée et une alarme à 10s arriveront."
+  "notif_test_sent": "Test envoyé ! Une notification instantanée et une alarme à 10s arriveront.",
+  "terms_of_service": "Conditions d'utilisation",
+  "account_delete": "Supprimer le compte",
+  "account_delete_confirm": "Êtes-vous sûr de vouloir supprimer votre compte ? Toutes les routines synchronisées et la sauvegarde cloud seront définitivement supprimées.",
+  "account_delete_btn": "Supprimer définitivement",
+  "account_deleted_toast": "Votre compte et vos données ont été définitivement supprimés.",
+  "terms_consent_prefix": "En continuant, vous acceptez nos ",
+  "terms_consent_and": " et notre "
 }

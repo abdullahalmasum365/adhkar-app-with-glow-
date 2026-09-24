@@ -276,5 +276,12 @@
   "notif_battery_fixed": "Battery optimization fixed!",
   "notif_test_btn": "Send Test Notification",
   "notif_test_sub": "Test instant alert & 10s scheduled alarm",
-  "notif_test_sent": "Test sent! Instant notification and a 10s scheduled alarm will arrive."
+  "notif_test_sent": "Test sent! Instant notification and a 10s scheduled alarm will arrive.",
+  "terms_of_service": "Terms of Service",
+  "account_delete": "Delete Account",
+  "account_delete_confirm": "Are you sure you want to delete your account? All synced custom routines and cloud backup will be permanently deleted. This cannot be undone.",
+  "account_delete_btn": "Delete Permanently",
+  "account_deleted_toast": "Your account and data have been permanently deleted.",
+  "terms_consent_prefix": "By continuing, you agree to our ",
+  "terms_consent_and": " and "
 }

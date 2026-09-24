@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Pengoptimuman bateri berjaya diperbaiki!",
   "notif_test_btn": "Hantar Pemberitahuan Ujian",
   "notif_test_sub": "Uji amaran segera & penggera berjadual 10s",
-  "notif_test_sent": "Ujian dihantar! Pemberitahuan segera dan penggera 10s akan tiba."
+  "notif_test_sent": "Ujian dihantar! Pemberitahuan segera dan penggera 10s akan tiba.",
+  "terms_of_service": "Syarat Perkhidmatan",
+  "account_delete": "Padam Akaun",
+  "account_delete_confirm": "Adakah anda pasti mahu memadamkan akaun anda? Semua rutin yang disegerakkan dan sandaran awan akan dipadamkan secara kekal.",
+  "account_delete_btn": "Padam Kekal",
+  "account_deleted_toast": "Akaun dan data anda telah dipadamkan secara kekal.",
+  "terms_consent_prefix": "Dengan meneruskan, anda bersetuju dengan ",
+  "terms_consent_and": " dan "
 }

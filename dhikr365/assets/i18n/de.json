@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Akkuoptimierung behoben!",
   "notif_test_btn": "Testbenachrichtigung senden",
   "notif_test_sub": "Sofortige Benachrichtigung & 10-Sekunden-Alarm testen",
-  "notif_test_sent": "Test gesendet! Sofortige Benachrichtigung und 10-Sekunden-Alarm werden eintreffen."
+  "notif_test_sent": "Test gesendet! Sofortige Benachrichtigung und 10-Sekunden-Alarm werden eintreffen.",
+  "terms_of_service": "Nutzungsbedingungen",
+  "account_delete": "Konto löschen",
+  "account_delete_confirm": "Möchten Sie Ihr Konto wirklich löschen? Alle synchronisierten Routinen und Cloud-Backups werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden.",
+  "account_delete_btn": "Dauerhaft löschen",
+  "account_deleted_toast": "Ihr Konto und Ihre Daten wurden dauerhaft gelöscht.",
+  "terms_consent_prefix": "Indem Sie fortfahren, stimmen Sie unseren ",
+  "terms_consent_and": " und "
 }

@@ -256,5 +256,12 @@
   "notif_battery_fixed": "Optimasi baterai berhasil diperbaiki!",
   "notif_test_btn": "Kirim Notifikasi Uji Coba",
   "notif_test_sub": "Uji peringatan instan & alarm terjadwal 10 detik",
-  "notif_test_sent": "Uji berhasil dikirim! Notifikasi instan dan alarm 10 detik akan segera tiba."
+  "notif_test_sent": "Uji berhasil dikirim! Notifikasi instan dan alarm 10 detik akan segera tiba.",
+  "terms_of_service": "Ketentuan Layanan",
+  "account_delete": "Hapus Akun",
+  "account_delete_confirm": "Apakah Anda yakin ingin menghapus akun Anda? Semua rutinitas yang disinkronkan dan cadangan cloud akan dihapus secara permanen.",
+  "account_delete_btn": "Hapus Permanen",
+  "account_deleted_toast": "Akun dan data Anda telah dihapus secara permanen.",
+  "terms_consent_prefix": "Dengan melanjutkan, Anda menyetujui ",
+  "terms_consent_and": " dan "
 }

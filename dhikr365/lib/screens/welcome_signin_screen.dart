@@ -14,6 +14,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/app_theme.dart';
 import '../providers/auth_provider.dart';
@@ -119,7 +120,50 @@ class WelcomeSignInScreen extends StatelessWidget {
                     onTap: () => _handleSignIn(context, ap, ap.signInWithApple),
                   ),
                 ],
-                const SizedBox(height: 18),
+                const SizedBox(height: 16),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Text(
+                      lp.getText('terms_consent_prefix'),
+                      style: AppText.body(color: AppColors.textSlate400).copyWith(fontSize: 11),
+                    ),
+                    GestureDetector(
+                      onTap: () => launchUrl(
+                        Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/terms-of-service.html'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      child: Text(
+                        lp.getText('terms_of_service'),
+                        style: AppText.body(color: AppColors.primary).copyWith(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      lp.getText('terms_consent_and'),
+                      style: AppText.body(color: AppColors.textSlate400).copyWith(fontSize: 11),
+                    ),
+                    GestureDetector(
+                      onTap: () => launchUrl(
+                        Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/privacy-policy.html'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      child: Text(
+                        lp.getText('privacy_policy'),
+                        style: AppText.body(color: AppColors.primary).copyWith(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 GestureDetector(
                   onTap: ap.isLoading ? null : () => _enterDashboard(context),
                   child: Padding(

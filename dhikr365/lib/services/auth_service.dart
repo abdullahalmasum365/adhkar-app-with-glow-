@@ -13,6 +13,7 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -124,6 +125,37 @@ class AuthService {
       FirebaseAuth.instance.signOut(),
       _googleSignIn.signOut().catchError((_) => null),
     ]);
+  }
+
+  Future<void> deleteAccount() async {
+    if (!isFirebaseReady) throw AuthNotConfiguredException();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+    final uid = user.uid;
+
+    // 1. Delete Firestore user records
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('plan')
+          .doc('data')
+          .delete();
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .delete();
+    } catch (_) {
+      // Proceed even if Firestore fails or collection doesn't exist
+    }
+
+    // 2. Delete the Firebase Auth user
+    await user.delete();
+
+    // 3. Clean up Google / Apple sign in session
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {}
   }
 
   /// Cryptographically random nonce for the Apple Sign-In replay-attack
