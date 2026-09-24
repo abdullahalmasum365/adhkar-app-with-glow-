@@ -45,8 +45,8 @@ class ProPaywallSheet extends StatelessWidget {
         ? 'আযকার ৩৬৫ প্রো'
         : 'Adhkaar 365 PRO';
     final subtitle = isBn
-        ? 'ব্যক্তিগত সুবিধার জন্য কাস্টম রুটিন তৈরি করুন, ১২+ প্রিমিয়াম থিম আনলক করুন ও ক্লাউডে নিরাপদ সিঙ্ক রাখুন।'
-        : 'Personalize your dhikr routine, unlock 12+ premium themes, and sync securely across all your devices.';
+        ? 'ব্যক্তিগত সুবিধার জন্য কাস্টম রুটিন তৈরি করুন, ক্লাউডে নিরাপদ সিঙ্ক রাখুন ও অ্যাপের উন্নয়নে অংশ নিন।'
+        : 'Personalize your dhikr routine, sync securely across all your devices, and support ongoing development.';
 
     return Container(
       decoration: BoxDecoration(
@@ -167,19 +167,19 @@ class ProPaywallSheet extends StatelessWidget {
             ),
             SizedBox(height: R.px(10)),
             _FeatureRow(
-              icon: Icons.palette_rounded,
-              title: isBn ? '১২+ প্রিমিয়াম থিম ও ফন্ট' : '12+ Premium Themes & Fonts',
-              desc: isBn
-                  ? 'গোল্ডেন, এমারেল্ড, মিডনাইট সহ আকর্ষণীয় প্রিমিয়াম ইসলামিক থিম।'
-                  : 'Unlock Golden, Emerald, Midnight and exclusive Arabic typography.',
-            ),
-            SizedBox(height: R.px(10)),
-            _FeatureRow(
               icon: Icons.cloud_sync_rounded,
               title: isBn ? 'নিরাপদ ক্লাউড ব্যাকআপ' : 'Secure Cloud Backup',
               desc: isBn
                   ? 'ফোন পরিবর্তন বা অ্যাপ রি-ইন্সটল করলেও আপনার কাস্টম লিস্ট কখনোই হারাবে না।'
                   : 'Your routine stays synced and safely restored across all your devices.',
+            ),
+            SizedBox(height: R.px(10)),
+            _FeatureRow(
+              icon: Icons.volunteer_activism_rounded,
+              title: isBn ? 'সাদাকায়ে জারিয়া ও সাপোর্ট' : 'Sadaqah Jariyah & Support',
+              desc: isBn
+                  ? 'বিজ্ঞাপনমুক্ত খাঁটি দ্বীনি খেদমত ও নিয়মিত অ্যাপ উন্নয়নে সহায়তা করুন।'
+                  : 'Support continuous ad-free Islamic app development and authentic content.',
             ),
 
             SizedBox(height: R.px(20)),
