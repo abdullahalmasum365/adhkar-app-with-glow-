@@ -58,7 +58,7 @@ class _DuaScreenState extends State<DuaScreen> {
         icon: Icons.filter_center_focus,
         titleKey: 'focus',
         title: 'Focus & Dhikr',
-        count: 6,
+        count: 10,
         color: Color(0xFF10B981),
         category: DhikrCategory.focus),
     _Cat(

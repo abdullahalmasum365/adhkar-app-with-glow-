@@ -71,6 +71,54 @@
       "benefit": "आसमानों और ज़मीन के बीच की जगह भर देता है।",
       "reference": "Muslim, 2691.",
       "category": "focus"
+    },
+    "focus_7": {
+      "dhikr_no": 7,
+      "title": "ला इलाहा इल्लल्लाह (तौहीद की घोषणा)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "ला इलाहा इल्लल्लाहु वह्दहू ला शरीक लहू, लहुल मुल्कु वलहुल हम्दु वहुव अला कुल्लि शय्यिन क़दीर।",
+      "translation": "अल्लाह के सिवा कोई पूज्य नहीं, वह अकेला है उसका कोई शरीक नहीं, बादशाही उसी की है और तारीफ़ भी उसी के लिए, और वह हर चीज़ पर क़ादिर है।",
+      "benefit": "Whoever says this 100 times in a day will have a reward equal to freeing 10 slaves, 100 good deeds recorded, 100 sins erased, and protection from Satan until evening.",
+      "reference": "Al-Bukhari 4/95, Muslim 4/2071 | Hisnul Muslim 255",
+      "category": "focus"
+    },
+    "focus_8": {
+      "dhikr_no": 8,
+      "title": "नबी (ﷺ) पर दरूद",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+      "transliteration": "अल्लाहुम्मा सल्लि वसल्लिम अला नबिय्यिना मुहम्मद।",
+      "translation": "ऐ अल्लाह! हमारे नबी मुहम्मद पर दरूद और सलाम भेज।",
+      "benefit": "The Prophet (ﷺ) said: Whoever sends blessings upon me once, Allah sends ten blessings upon him, erases ten sins, and raises him ten ranks.",
+      "reference": "Muslim 1/288, An-Nasa'i 1297 | Hisnul Muslim 248",
+      "category": "focus"
+    },
+    "focus_9": {
+      "dhikr_no": 9,
+      "title": "La Hawla wa La Quwwata illa Billah (Treasure of Paradise)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "transliteration": "Lā ḥawla wa lā quwwata illā billāh.",
+      "translation": "There is no power and no strength except with Allah.",
+      "benefit": "The Prophet (ﷺ) said: Shall I not guide you to a treasure from the treasures of Paradise? It is: La hawla wa la quwwata illa billah.",
+      "reference": "Al-Bukhari 11/500, Muslim 4/2076 | Hisnul Muslim 261",
+      "category": "focus"
+    },
+    "focus_10": {
+      "dhikr_no": 10,
+      "title": "SubhanAllah, Alhamdulillah, La ilaha illAllah, Allahu Akbar",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ",
+      "transliteration": "Subḥānallāh, wal-ḥamdu lillāh, wa lā ilāha illallāh, wallāhu akbar.",
+      "translation": "Glory be to Allah, praise be to Allah, there is no deity worthy of worship except Allah, and Allah is the Greatest.",
+      "benefit": "The Prophet (ﷺ) said: For me to say this is dearer to me than all over which the sun rises.",
+      "reference": "Muslim 3/1685 | Hisnul Muslim 257",
+      "category": "focus"
     }
   }
 }

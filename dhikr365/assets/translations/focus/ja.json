@@ -71,6 +71,54 @@
       "benefit": "天と地の間の空間を満たす。",
       "reference": "Muslim, 2691.",
       "category": "focus"
+    },
+    "focus_7": {
+      "dhikr_no": 7,
+      "title": "ラー・イラーハ・イッラッラー（唯一神の宣言）",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+      "transliteration": "ラー・イラーハ・イッラッラーフ・ワフダフー・ラー・シャリーカ・ラフ、ラフル＝ムルク・ワ・ラフル＝ハムド・ワ・フワ・アラー・クッリ・シャイイン・カディール",
+      "translation": "アッラーの他に礼拝に値する神はなく、彼は唯一にして何者も彼に並ぶ者はいない。統治権は彼のものであり、すべての称賛は彼のものであり、彼はすべてのことに対して全能である。",
+      "benefit": "Whoever says this 100 times in a day will have a reward equal to freeing 10 slaves, 100 good deeds recorded, 100 sins erased, and protection from Satan until evening.",
+      "reference": "Al-Bukhari 4/95, Muslim 4/2071 | Hisnul Muslim 255",
+      "category": "focus"
+    },
+    "focus_8": {
+      "dhikr_no": 8,
+      "title": "預言者（ﷺ）へのサラワート",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+      "transliteration": "アッラーフンマ・サッリ・ワ・サッリム・アラー・ナビイイナー・ムハンマド",
+      "translation": "ああアッラーよ、私たちの預言者ムハンマドに祝福と平安をお与えください。",
+      "benefit": "The Prophet (ﷺ) said: Whoever sends blessings upon me once, Allah sends ten blessings upon him, erases ten sins, and raises him ten ranks.",
+      "reference": "Muslim 1/288, An-Nasa'i 1297 | Hisnul Muslim 248",
+      "category": "focus"
+    },
+    "focus_9": {
+      "dhikr_no": 9,
+      "title": "La Hawla wa La Quwwata illa Billah (Treasure of Paradise)",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+      "transliteration": "Lā ḥawla wa lā quwwata illā billāh.",
+      "translation": "There is no power and no strength except with Allah.",
+      "benefit": "The Prophet (ﷺ) said: Shall I not guide you to a treasure from the treasures of Paradise? It is: La hawla wa la quwwata illa billah.",
+      "reference": "Al-Bukhari 11/500, Muslim 4/2076 | Hisnul Muslim 261",
+      "category": "focus"
+    },
+    "focus_10": {
+      "dhikr_no": 10,
+      "title": "SubhanAllah, Alhamdulillah, La ilaha illAllah, Allahu Akbar",
+      "frequency": "100x",
+      "targetCount": 100,
+      "arabicText": "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ",
+      "transliteration": "Subḥānallāh, wal-ḥamdu lillāh, wa lā ilāha illallāh, wallāhu akbar.",
+      "translation": "Glory be to Allah, praise be to Allah, there is no deity worthy of worship except Allah, and Allah is the Greatest.",
+      "benefit": "The Prophet (ﷺ) said: For me to say this is dearer to me than all over which the sun rises.",
+      "reference": "Muslim 3/1685 | Hisnul Muslim 257",
+      "category": "focus"
     }
   }
 }
