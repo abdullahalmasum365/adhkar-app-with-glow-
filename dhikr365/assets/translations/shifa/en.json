@@ -3,15 +3,15 @@
     "shifa_pain_in_body": {
       "dhikr_no": 1,
       "title": "When Feeling Pain in the Body",
-      "frequency": "1x (Bismillah 3x, Dua 7x)",
+      "frequency": "Bismillah 3x + Du'a 7x",
       "targetCount": 7,
       "arabicText": "بِسْمِ اللَّهِ (٣ مَرَّاتٍ)، أَعُوذُ بِاللَّهِ وَقُدْرَتِهِ مِنْ شَرِّ مَا أَجِدُ وَأُحَاذِرُ (٧ مَرَّاتٍ)",
       "transliteration": "Bismillāh (3x). A'ūdhu billāhi wa qudratihī min sharri mā ajidu wa uḥādhir (7x).",
-      "translation": "Place your hand at the site of the pain and say: In the name of Allah (3 times). Then say 7 times: I seek refuge in Allah and within His omnipotence from the evil that I feel and am wary of.",
+      "translation": "Place your hand on the area of pain, say 'Bismillah' three times, then say seven times: 'I seek refuge in Allah and in His power from the evil of what I find and of what I fear.'",
       "benefit": "Uthman ibn Abi al-As reported that he complained of pain to the Prophet (ﷺ), who taught him this remedy. He said: 'I did that and Allah removed my suffering.'",
       "reference": "Sahih Muslim 4/1728 | Hisnul Muslim 243",
       "grading": "Sahih",
-      "occasion": "Place your right hand on where it hurts and recite.",
+      "occasion": "Place your right hand on the painful area, say Bismillah 3 times, then tap the counter to recite the supplication 7 times.",
       "category": "shifa",
       "audioPath": "assets/audio/shifa_pain_in_body.mp3"
     },

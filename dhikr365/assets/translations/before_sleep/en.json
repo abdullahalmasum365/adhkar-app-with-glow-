@@ -111,11 +111,11 @@
     "sleep_tasbih_fatimi": {
       "dhikr_no": 10,
       "title": "Tasbih Fatimi (33x Subhanallah, 33x Alhamdulillah, 34x Allahu Akbar)",
-      "frequency": "33x, 33x, then 34x before sleeping",
-      "targetCount": 33,
+      "frequency": "1 set before sleep (33x, 33x, 34x)",
+      "targetCount": 1,
       "arabicText": "سُبْحَانَ اللَّهِ (ثَلَاثاً وَثَلَاثِينَ) وَالْحَمْدُ لِلَّهِ (ثَلَاثاً وَثَلَاثِينَ) وَاللَّهُ أَكْبَرُ (أَرْبَعاً وَثَلَاثِينَ)",
       "transliteration": "Subḥānallāh (33 times). Wal-ḥamdu lillāh (33 times). Wallāhu akbar (34 times).",
-      "translation": "Glory is to Allah (thirty-three times), praise is to Allah (thirty-three times), and Allah is the Most Great (thirty-four times).",
+      "translation": "Glory be to Allah (33 times), praise be to Allah (33 times), and Allah is the Greatest (34 times). Recite in this sequence when taking to your bed.",
       "benefit": "The Prophet (peace be upon him) taught this tasbih to his daughter Fatimah (may Allah be pleased with her) before sleeping, telling her it was better for her than a servant.",
       "reference": "Al-Bukhari, cf. Al-Asqalani, Fathul-Bari 7/71; Muslim 4/2091 | Hisnul Muslim 106",
       "category": "before_sleep"
