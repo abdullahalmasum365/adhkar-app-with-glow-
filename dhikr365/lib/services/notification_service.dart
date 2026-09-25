@@ -491,7 +491,7 @@ class NotificationService {
       if (fajr.isAfter(now)) {
         await _scheduleLocalNotification(
           id: _IDs.morning + i, // 1000–1009
-          title: '🌄 أذكار الصباح • Morning Adhkar',
+          title: 'Morning Adhkar • أذكار الصباح 🌄',
           body: 'Fajr has begun — read your morning adhkar now. '
               '"وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ الشَّمْسِ"',
           scheduledTime: fajr,
@@ -499,14 +499,14 @@ class NotificationService {
           channelName: 'Adhkar Reminders',
           payload: 'morning',
           sound: null,
-          subText: 'Morning Adhkar',
+          subText: null,
         );
       }
 
       if (asr.isAfter(now)) {
         await _scheduleLocalNotification(
           id: _IDs.evening + i, // 1100–1109
-          title: '🌆 أذكار المساء • Evening Adhkar',
+          title: 'Evening Adhkar • أذكار المساء 🌆',
           body: 'Asr time — the evening adhkar period has begun. '
               '"وَسَبِّحْ بِحَمْدِهِ قَبْلَ غُرُوبِهَا"',
           scheduledTime: asr,
@@ -514,7 +514,7 @@ class NotificationService {
           channelName: 'Adhkar Reminders',
           payload: 'evening',
           sound: null,
-          subText: 'Evening Adhkar',
+          subText: null,
         );
       }
     }
@@ -553,22 +553,22 @@ class NotificationService {
 
     final prayerConfig = [
       const _PrayerConfig('Fajr', _IDs.fajrBase,
-          '🌄 الفجر • Fajr Prayer',
+          'Fajr Prayer • الفجر 🌄',
           'Rise and pray Fajr — "الصَّلَاةُ خَيْرٌ مِنَ النَّوْمِ" Prayer is better than sleep.'),
       const _PrayerConfig('Sunrise', _IDs.sunriseBase,
-          '🌅 الشروق • Sunrise',
+          'Sunrise • الشروق 🌅',
           'The sun has risen. Open Adhkaar 365 for your morning supplications.'),
       const _PrayerConfig('Dhuhr', _IDs.dhuhrBase,
-          '☀️ الظهر • Dhuhr Prayer',
+          'Dhuhr Prayer • الظهر ☀️',
           'Midday prayer time. Take a moment to stand before Allah.'),
       const _PrayerConfig('Asr', _IDs.asrBase,
-          '🌤 العصر • Asr Prayer',
+          'Asr Prayer • العصر 🌤',
           'Asr time has begun. "وَالْعَصْرِ ۙ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ"'),
       const _PrayerConfig('Maghrib', _IDs.maghribBase,
-          '🌇 المغرب • Maghrib Prayer',
+          'Maghrib Prayer • المغرب 🌇',
           'Sunset — pray Maghrib and open your evening adhkar.'),
       const _PrayerConfig('Isha', _IDs.ishaBase,
-          '🌙 العشاء • Isha Prayer',
+          'Isha Prayer • العشاء 🌙',
           'Night has come. End your day in the remembrance of Allah.'),
     ];
 
@@ -591,7 +591,7 @@ class NotificationService {
             channelName: 'Prayer Alerts',
             payload: 'prayer:${cfg.name.toLowerCase()}',
             sound: null,
-            subText: 'Prayer Time',
+            subText: null,
           );
         }
       }
@@ -644,10 +644,6 @@ class NotificationService {
       priority: Priority.max,
       // Status-bar small icon: monochrome white PNG in res/drawable-*
       icon: 'ic_stat_notification',
-      // Full-colour app logo shown on the RIGHT side of the notification panel
-      largeIcon: const DrawableResourceAndroidBitmap('launcher_icon'),
-      // Small category label in the notification header (next to app name),
-      // e.g. "Prayer Time" / "Adhkar Reminder".
       subText: subText,
       // Custom Islamic tone — file must be in android/app/src/main/res/raw/
       sound: sound != null ? RawResourceAndroidNotificationSound(sound) : null,
@@ -673,7 +669,6 @@ class NotificationService {
       styleInformation: BigTextStyleInformation(
         body,
         contentTitle: title,
-        summaryText: 'Adhkaar 365 ☪',
       ),
     );
 
@@ -834,15 +829,12 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.max,
           icon: 'ic_stat_notification',
-          largeIcon: const DrawableResourceAndroidBitmap('launcher_icon'),
-          subText: 'Test',
           playSound: true,
           enableVibration: true,
           color: AppColors.primary,
           styleInformation: const BigTextStyleInformation(
             'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।\nInstant delivery works! Checking 10-second scheduled alarm…',
             contentTitle: '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
-            summaryText: 'Adhkaar 365 ☪',
           ),
         ),
         iOS: const DarwinNotificationDetails(
