@@ -89,7 +89,7 @@
       "title": "Lâ ilâhe illallâh (Tevhid İkrarı)",
       "frequency": "10× (sabah ve akşam)",
       "targetCount": 10,
-      "arabicText": "لآ إِلهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الُحَمْدُ وَهُوَ عَلى كُلِّ شَىْءٍ قَدِيْرٌ",
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "Lâ ilâhe illallâhü vahdehû lâ şerîke leh, lehü'l-mülkü ve lehü'l-hamdü, ve Hüve alâ külli şey'in Kadîr.",
       "translation": "Allah'tan başka ilah yoktur, O tektir, ortağı yoktur; mülk O'nundur ve hamd O'nadır; O her şeye kadirdir.",
       "benefit": "Sabah ve akşam 10 kez söyleyen: 10 sevap kazanır, 10 günahı silinir, 10 derece yükseltilir, 4 köle azat etmiş gibi sevap alır ve şeytandan korunur.",
@@ -333,7 +333,7 @@
       "transliteration": "Allâhümme salli ve sellim alâ Nebiyyinâ Muhammed.",
       "translation": "Allah'ım! Peygamberimiz Hz. Muhammed'e salât ve selam eyle.",
       "benefit": "Allah Rasûlü (sav) şöyle buyurdu: 'Bana sabah 10 bere ve akşam 10 bere salât getiren, kıyamet günü şefaatime nail olur.'",
-      "reference": "Imam At-Tabarani (chain of transmission is good/hasan).",
+      "reference": "At-Tabarani (Al-Mu'jam al-Kabir); classed as Da'if by Al-Albani in Da'if al-Targhib 396",
       "category": "morning"
     }
   }

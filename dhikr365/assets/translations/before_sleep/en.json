@@ -111,7 +111,7 @@
     "sleep_tasbih_fatimi": {
       "dhikr_no": 10,
       "title": "Tasbih Fatimi (33x Subhanallah, 33x Alhamdulillah, 34x Allahu Akbar)",
-      "frequency": "1 set before sleep (33x, 33x, 34x)",
+      "frequency": "1 set: SubhanAllah 33x, Alhamdulillah 33x, Allahu Akbar 34x",
       "targetCount": 1,
       "arabicText": "سُبْحَانَ اللَّهِ (ثَلَاثاً وَثَلَاثِينَ) وَالْحَمْدُ لِلَّهِ (ثَلَاثاً وَثَلَاثِينَ) وَاللَّهُ أَكْبَرُ (أَرْبَعاً وَثَلَاثِينَ)",
       "transliteration": "Subḥānallāh (33 times). Wal-ḥamdu lillāh (33 times). Wallāhu akbar (34 times).",

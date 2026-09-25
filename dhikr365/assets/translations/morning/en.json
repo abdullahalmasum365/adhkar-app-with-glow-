@@ -7,7 +7,7 @@
       "targetCount": 1,
       "arabicText": "اَللّٰهُ لَاۤ اِلٰهَ اِلَّا هُوَۚ اَلۡحَیُّ الۡقَیُّوۡمُ ۬ۚ لَا تَاۡخُذُهٗ سِنَۃٌ وَّ لَا نَوۡمٌ ؕ لَهٗ مَا فِی السَّمٰوٰتِ وَ مَا فِی الۡاَرۡضِ ؕ مَنۡ ذَا الَّذِیۡ یَشۡفَعُ عِنۡدَهٗۤ اِلَّا بِاِذۡنِهٖ ؕ یَعۡلَمُ مَا بَیۡنَ اَیۡدِیۡهِمۡ وَ مَا خَلۡفَهُمۡ ۚ وَ لَا یُحِیۡطُوۡنَ بِشَیۡءٍ مِّنۡ عِلۡمِهٖۤ اِلَّا بِمَا شَآءَ ۚ وَسِعَ كُرۡسِیُّهُ السَّمٰوٰتِ وَ الۡاَرۡضَ ۚ وَ لَا یَـُٔوۡدُهٗ حِفۡظُهُمَا ۚ وَ هُوَ الۡعَلِیُّ الۡعَظِیۡمُ",
       "transliteration": "Allāhu lā ilāha illā huw, al-ḥayyu al-qayyūm, lā ta'khudhuhū sinatun wa lā nawm, lahū mā fī as-samāwāti wa mā fī al-arḍ, man dhā alladhī yashfa'u 'indahū illā bi-idhnih, ya'lamu mā bayna aydīhim wa mā khalfahum, wa lā yuḥīṭūna bi-shay'in min 'ilmihī illā bimā shā'a, wasi'a kursiyyuhū as-samāwāti wa al-arḍa, wa lā ya'ūduhū ḥifẓuhumā, wa huwa al-'aliyyu al-'aẓīm",
-      "translation": "Allah – there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi (Throne) extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great.",
+      "translation": "Allah – there is no deity except Him, the Ever-Living, the Sustainer of existence. Neither drowsiness overtakes Him nor sleep. To Him belongs whatever is in the heavens and whatever is on the earth. Who is it that can intercede with Him except by His permission? He knows what is before them and what will be after them, and they encompass not a thing of His knowledge except for what He wills. His Kursi extends over the heavens and the earth, and their preservation tires Him not. And He is the Most High, the Most Great.",
       "benefit": "Whoever recites it in the morning and evening will be protected from jinn throughout the day and night. Reciting it before sleep prevents Satan from drawing near. Reciting it after each of the five obligatory prayers, nothing prevents entry to Paradise except death.",
       "reference": "Surah Al-Baqarah: 255 | Al-Hakim, 2064; Bukhari, 2311; Nasa'i, As-Sunanul Kubra.",
       "category": "morning"
@@ -89,7 +89,7 @@
       "title": "La Ilaha Illallah (Tahlil – The Declaration of Unity)",
       "frequency": "10x (Morning & Evening)",
       "targetCount": 10,
-      "arabicText": "لآ إِلهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الُحَمْدُ وَهُوَ عَلى كُلِّ شَىْءٍ قَدِيْرٌ",
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "Lā ilāha illallāhu waḥdahū lā sharīka lah, lahul mulku wa lahul ḥamdu wa huwa 'alā kulli shay'in qadīr",
       "translation": "There is no deity worthy of worship except Allah alone, with no partner. To Him belongs the dominion and to Him belongs all praise, and He is over all things All-Powerful.",
       "benefit": "Saying it 10 times each morning and evening earns 10 good deeds, erases 10 sins, grants 10 ranks, the reward of freeing 4 slaves, and protection from Satan. Saying it 100 times in the morning brings the reward of freeing 10 slaves, 100 good deeds, erasing 100 sins, and protection from Satan until evening.",
@@ -333,7 +333,7 @@
       "transliteration": "Allāhumma ṣalli wa sallim 'alā nabiyyinā Muḥammad",
       "translation": "O Allah, bestow Your prayers (blessings) and peace upon our Prophet Muhammad.",
       "benefit": "The Messenger of Allah (peace be upon him) said: Whoever sends blessings upon me ten times in the morning and ten times in the evening will be fortunate to receive my intercession on the Day of Resurrection.",
-      "reference": "Imam At-Tabarani (chain of transmission is good/hasan).",
+      "reference": "At-Tabarani (Al-Mu'jam al-Kabir); classed as Da'if by Al-Albani in Da'if al-Targhib 396",
       "category": "morning"
     }
   }

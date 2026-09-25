@@ -89,7 +89,7 @@
       "title": "Lā ilāha illa-llāh — Déclaration du Tawḥīd",
       "frequency": "10 fois (matin et soir)",
       "targetCount": 10,
-      "arabicText": "لآ إِلهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الُحَمْدُ وَهُوَ عَلى كُلِّ شَىْءٍ قَدِيْرٌ",
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "Lā ilāha illa-llāhou waḥdahou lā charīka lah, lahou-l-moulkou wa-lahou-l-ḥamd, wa-Houwa ʿalā koulli chayʾin Qadīr.",
       "translation": "Il n'y a de divinité qu'Allāh, Seul, sans associé ; à Lui la souveraineté, à Lui toute la louange, et Il est sur toute chose Tout-Puissant.",
       "benefit": "Quiconque le dit 10 fois matin et soir reçoit 10 bonnes actions, 10 péchés lui sont effacés, il est élevé de 10 degrés, reçoit la récompense d'avoir affranchi 4 esclaves, et est protégé contre le Shayṭān.",
@@ -221,7 +221,7 @@
       "title": "Aʿūdhu bi-kalimāti-llāh — Refuge dans les Paroles parfaites d'Allāh",
       "frequency": "3 fois (soir)",
       "targetCount": 3,
-      "arabicText": "أَعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "arabicText": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
       "transliteration": "Aʿoūdhou bi-kalimāti-llāhi-t-tāmmāti min charri mā khalaq.",
       "translation": "Je cherche refuge dans les Paroles parfaites d'Allāh contre le mal de ce qu'Il a créé.",
       "benefit": "Quiconque dit cela 3 fois le soir — aucune créature venimeuse ne lui causera de tort cette nuit-là.",
@@ -321,7 +321,7 @@
       "transliteration": "Allāhoumma ṣalli wa-sallim ʿalā Nabiyyinā Mouḥammad.",
       "translation": "Ô Allāh, accorde Tes bénédictions et la paix à notre Prophète Muḥammad.",
       "benefit": "Le Prophète ﷺ a dit : « Quiconque m'envoie des ṣalawāt dix fois le matin et dix fois le soir sera béni de mon intercession au Jour de la Résurrection. »",
-      "reference": "Imam At-Tabarani (good chain of narration).",
+      "reference": "At-Tabarani (Al-Mu'jam al-Kabir); classed as Da'if by Al-Albani in Da'if al-Targhib 396",
       "category": "evening"
     }
   }

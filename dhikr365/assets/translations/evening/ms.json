@@ -89,7 +89,7 @@
       "title": "La Ilaha Illallah (Kalimah Tauhid)",
       "frequency": "10 kali (pagi dan petang)",
       "targetCount": 10,
-      "arabicText": "لآ إِلهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الُحَمْدُ وَهُوَ عَلى كُلِّ شَىْءٍ قَدِيْرٌ",
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "Lā ilāha illallāhu wahdahu lā syarīka lah, lahul-mulku walahul-hamd, wahuwa 'alā kulli syai'in Qadīr.",
       "translation": "Tiada tuhan yang berhak disembah selain Allah, Yang Maha Esa tiada sekutu bagi-Nya. Bagi-Nya kerajaan dan bagi-Nya segala pujian, dan Dia Maha Berkuasa atas segala sesuatu.",
       "benefit": "Mengucapkannya 10 kali setiap pagi dan petang mendapat 10 kebaikan, menghapus 10 dosa, meningkatkan 10 darjat, pahala memerdekakan 4 orang hamba, dan perlindungan daripada syaitan.",
@@ -221,7 +221,7 @@
       "title": "A'udhu Bikalimatiillah (Berlindung dengan Kalimah Allah)",
       "frequency": "3 kali (petang)",
       "targetCount": 3,
-      "arabicText": "أَعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "arabicText": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
       "transliteration": "A'ūzhu bikalimātil-lāhit-tāmmāti min syarri mā khalaq.",
       "translation": "Aku berlindung dengan kalimah-kalimah Allah yang sempurna daripada kejahatan apa yang diciptakan-Nya.",
       "benefit": "Sesiapa yang mengucapkannya 3 kali pada waktu petang, tiada binatang berbisa yang akan menyakitinya pada malam itu.",
@@ -321,7 +321,7 @@
       "transliteration": "Allāhumma shalli wasallim 'alā nabiyyinā Muhammad.",
       "translation": "Ya Allah, cucurilah rahmat dan kesejahteraan ke atas nabi kami Muhammad.",
       "benefit": "Rasulullah (ﷺ) bersabda: Sesiapa yang berselawat ke atasku sepuluh kali pada waktu pagi dan sepuluh kali pada waktu petang, dia akan beruntung mendapat syafaatku pada Hari Kiamat.",
-      "reference": "Imam At-Tabarani (good chain of narration).",
+      "reference": "At-Tabarani (Al-Mu'jam al-Kabir); classed as Da'if by Al-Albani in Da'if al-Targhib 396",
       "category": "evening"
     }
   }

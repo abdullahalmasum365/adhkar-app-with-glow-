@@ -89,7 +89,7 @@
       "title": "Lā ilāha illallāh (Declaración del Tawhīd)",
       "frequency": "10x (Mañana y tarde)",
       "targetCount": 10,
-      "arabicText": "لآ إِلهَ إِلاَّ اللهُ وَحْدَهُ لاَ شَرِيْكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الُحَمْدُ وَهُوَ عَلى كُلِّ شَىْءٍ قَدِيْرٌ",
+      "arabicText": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
       "transliteration": "Lā ilāha illā llāhu waḥdahu lā sharīka lah, lahu l-mulku wa-lahu l-ḥamd, wa-Huwa 'alā kulli shay'in Qadīr.",
       "translation": "No hay divinidad salvo Allāh, Único, sin asociado; a Él pertenece el dominio y a Él toda la alabanza, y Él es sobre toda cosa Omnipotente.",
       "benefit": "Quien lo diga 10 veces mañana y tarde recibirá 10 buenas obras, se le perdonarán 10 pecados, subirá 10 grados, obtendrá la recompensa de haber liberado a 4 esclavos y estará protegido del Shayṭān.",
@@ -221,7 +221,7 @@
       "title": "A'ūdhu bi-kalimātillāh (Refugio en las palabras perfectas de Allāh)",
       "frequency": "3x (Tarde)",
       "targetCount": 3,
-      "arabicText": "أَعُوْذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+      "arabicText": "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
       "transliteration": "A'ūdhu bi-kalimāti llāhi t-tāmmāti min sharri mā khalaq.",
       "translation": "Me refugio en las palabras perfectas de Allāh del mal de lo que Él ha creado.",
       "benefit": "Quien lo diga 3 veces por la tarde, ninguna criatura venenosa le dañará esa noche.",
@@ -321,7 +321,7 @@
       "transliteration": "Allāhumma ṣalli wa-sallim 'alā nabiyyinā Muḥammad.",
       "translation": "Oh Allāh, envía tus bendiciones y salutaciones sobre nuestro Profeta Muḥammad.",
       "benefit": "El Profeta (ﷺ) dijo: «Quien me envíe ṣalawāt diez veces por la mañana y diez veces por la tarde será bendecido con mi intercesión en el Día de la Resurrección».",
-      "reference": "Imam At-Tabarani (good chain of narration).",
+      "reference": "At-Tabarani (Al-Mu'jam al-Kabir); classed as Da'if by Al-Albani in Da'if al-Targhib 396",
       "category": "evening"
     }
   }
