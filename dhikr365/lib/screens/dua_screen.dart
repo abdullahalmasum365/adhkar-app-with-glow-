@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
 import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
+import '../services/dua_search_service.dart';
+import 'dhikr_focus_screen.dart';
 import 'dhikr_list_screen.dart';
 
 class DuaScreen extends StatefulWidget {
@@ -24,7 +27,6 @@ class _DuaScreenState extends State<DuaScreen> {
     super.dispose();
   }
 
-  // titleKey = i18n key; title = fallback for null-category items with no key yet
   static const List<_Cat> _cats = [
     _Cat(
         icon: Icons.wb_sunny_outlined,
@@ -112,6 +114,86 @@ class _DuaScreenState extends State<DuaScreen> {
         category: DhikrCategory.distress),
   ];
 
+  static _Cat getCategoryMeta(DhikrCategory category) {
+    return _cats.firstWhere(
+      (c) => c.category == category,
+      orElse: () => _cats.first,
+    );
+  }
+
+  static void openCategory(
+    BuildContext context,
+    _Cat cat,
+    String resolvedTitle,
+  ) {
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
+
+    if (cat.category == DhikrCategory.parents) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _NoteSheet(
+          color: const Color(0xFFEC4899),
+          icon: Icons.family_restroom_outlined,
+          title: lp.getText('parents_note_title'),
+          body: lp.getText('parents_note_body'),
+          buttonLabel: resolvedTitle,
+          onContinue: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    const DhikrListScreen(category: DhikrCategory.parents),
+              ),
+            );
+          },
+        ),
+      );
+    } else if (cat.category == DhikrCategory.graveyard) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (_) => _NoteSheet(
+          color: const Color(0xFF64748B),
+          icon: Icons.landscape_outlined,
+          title: lp.getText('graveyard_note_title'),
+          body: lp.getText('graveyard_note_body'),
+          buttonLabel: resolvedTitle,
+          onContinue: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) =>
+                    const DhikrListScreen(category: DhikrCategory.graveyard),
+              ),
+            );
+          },
+        ),
+      );
+    } else if (cat.category != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => DhikrListScreen(category: cat.category!),
+        ),
+      );
+    } else {
+      final comingSoon = lp.getText('coming_soon');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('$resolvedTitle — $comingSoon',
+              style: TextStyle(color: AppColors.onPrimary)),
+          backgroundColor: AppColors.primary,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final lp = Provider.of<LanguageProvider>(context);
@@ -132,40 +214,44 @@ class _DuaScreenState extends State<DuaScreen> {
       DhikrCategory.distress: dp.getDistressDhikrs().length,
     };
 
-    // Pre-resolve translated strings once — passed down to cards
     final duasLabel = lp.getText('duas_count');
     final comingSoon = lp.getText('coming_soon');
 
-    // Build resolved list (translated titles) then filter by query
+    // Build resolved categories list (translated titles)
     final resolvedCats = _cats.map((cat) {
       final resolvedTitle =
           cat.titleKey != null ? lp.getText(cat.titleKey!) : cat.title;
       return (cat: cat, resolvedTitle: resolvedTitle);
     }).toList();
 
-    final filteredCats = _query.isEmpty
-        ? resolvedCats
-        : resolvedCats
-            .where(
-              (e) =>
-                  e.resolvedTitle
-                      .toLowerCase()
-                      .contains(_query.toLowerCase()) ||
-                  e.cat.title.toLowerCase().contains(_query.toLowerCase()),
-            )
-            .toList();
+    final isSearching = _query.trim().isNotEmpty;
 
-    // FIX: LayoutBuilder reads real screen dimensions
+    // Filter categories that match query
+    final matchedCats = !isSearching
+        ? resolvedCats
+        : resolvedCats.where((e) {
+            final q = _query.toLowerCase();
+            return e.resolvedTitle.toLowerCase().contains(q) ||
+                e.cat.title.toLowerCase().contains(q);
+          }).toList();
+
+    // Google-like Deep Dua Search across all 120+ Dhikrs
+    final searchResults = isSearching
+        ? DuaSearchService.search(
+            allDhikrs: dp.dhikrs,
+            query: _query,
+          )
+        : <DuaSearchResult>[];
+
     return LayoutBuilder(builder: (context, constraints) {
       final h = constraints.maxHeight;
       final w = constraints.maxWidth;
-      final isSmall = h < 680; // compact phone (SE, A03 …)
-      final isTablet = w >= 600; // tablet → 3-column grid
+      final isSmall = h < 680;
+      final isTablet = w >= 600;
 
-      // Responsive values — no hardcoded px that overflow
       final hPad = isTablet ? 32.0 : 24.0;
       final topPad = isSmall ? 12.0 : 20.0;
-      final searchH = isSmall ? 40.0 : 46.0;
+      final searchH = isSmall ? 42.0 : 48.0;
       final crossCount = isTablet ? 3 : 2;
       final childRatio = isTablet ? 1.3 : (isSmall ? 1.15 : 1.25);
       final gridBottom = isSmall ? 80.0 : 120.0;
@@ -175,7 +261,6 @@ class _DuaScreenState extends State<DuaScreen> {
         backgroundColor: AppColors.bgDark,
         body: Container(
           decoration: AppDeco.radialBg(center: Alignment.topLeft),
-          // FIX: SafeArea on every side — prevents status-bar + nav-bar overlap
           child: SafeArea(
             bottom: true,
             child: Column(
@@ -192,7 +277,6 @@ class _DuaScreenState extends State<DuaScreen> {
                         style: AppText.label(color: AppColors.primary),
                       ),
                       const SizedBox(height: 4),
-                      // FIX: font size shrinks on small screens
                       Text(
                         lp.getText('dua_collection'),
                         style: AppText.heading(titleSize),
@@ -212,82 +296,95 @@ class _DuaScreenState extends State<DuaScreen> {
                   child: Container(
                     height: searchH,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
-                    decoration: AppDeco.glassCard(),
+                    decoration: BoxDecoration(
+                      color: AppColors.ink(0.06),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: isSearching
+                            ? AppColors.primary.withValues(alpha: 0.6)
+                            : AppColors.ink(0.12),
+                        width: isSearching ? 1.5 : 1.0,
+                      ),
+                      boxShadow: isSearching
+                          ? [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.15),
+                                blurRadius: 12,
+                                offset: const Offset(0, 2),
+                              )
+                            ]
+                          : null,
+                    ),
                     child: Row(children: [
-                      Icon(Icons.search,
-                          color: AppColors.textSlate500, size: 20),
+                      Icon(
+                        Icons.search_rounded,
+                        color: isSearching
+                            ? AppColors.primary
+                            : AppColors.textSlate500,
+                        size: 22,
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: TextField(
                           controller: _searchController,
                           onChanged: (val) => setState(() => _query = val),
-                          style: AppText.body(),
+                          style: AppText.body(color: AppColors.textPrimary)
+                              .copyWith(fontSize: 14),
                           decoration: InputDecoration(
                             hintText: lp.getText('search_duas'),
                             hintStyle:
-                                AppText.body(color: AppColors.textSlate500),
+                                AppText.body(color: AppColors.textSlate500)
+                                    .copyWith(fontSize: 14),
                             border: InputBorder.none,
                             isDense: true,
                             contentPadding: EdgeInsets.zero,
                           ),
                         ),
                       ),
-                      // Clear button — only visible when there is text
-                      if (_query.isNotEmpty)
+                      if (isSearching)
                         GestureDetector(
                           onTap: () {
                             _searchController.clear();
                             setState(() => _query = '');
                           },
-                          child: Icon(Icons.close_rounded,
-                              color: AppColors.textSlate500, size: 18),
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: AppColors.ink(0.15),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(Icons.close_rounded,
+                                color: AppColors.textSlate300, size: 16),
+                          ),
                         ),
                     ]),
                   ),
                 ).animate().fadeIn(delay: 150.ms),
 
-                // ── Grid or empty state ───────────────────────────────────────
+                // ── Body: Category Grid OR Search Results ───────────────────
                 Expanded(
-                  child: filteredCats.isEmpty
-                      ? _buildNoResults(lp, isSmall)
-                      : GridView.builder(
-                          // FIX: padding uses gridBottom so content clears the nav bar
-                          padding:
-                              EdgeInsets.fromLTRB(hPad, 4, hPad, gridBottom),
-                          physics: const BouncingScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: crossCount,
-                            mainAxisSpacing: 12,
-                            crossAxisSpacing: 12,
-                            // FIX: childAspectRatio responds to screen size
-                            childAspectRatio: childRatio,
-                          ),
-                          itemCount: filteredCats.length,
-                          itemBuilder: (context, i) {
-                            final entry = filteredCats[i];
-                            final cat = entry.cat;
-                            return _CatCard(
-                              cat: cat,
-                              isSmall: isSmall,
-                              count: cat.category != null
-                                  ? (liveCounts[cat.category] ?? cat.count)
-                                  : cat.count,
-                              resolvedTitle: entry.resolvedTitle,
-                              duasLabel: duasLabel,
-                              comingSoon: comingSoon,
-                            )
-                                .animate()
-                                .fadeIn(
-                                    delay: Duration(milliseconds: 50 + i * 40))
-                                .slideY(begin: 0.08)
-                                .shimmer(
-                                  delay: Duration(milliseconds: 200 + i * 60),
-                                  duration: const Duration(milliseconds: 600),
-                                  color: AppColors.ink(0.18),
-                                  angle: 0.3,
-                                );
-                          },
+                  child: !isSearching
+                      ? _buildCategoryGrid(
+                          filteredCats: resolvedCats,
+                          hPad: hPad,
+                          gridBottom: gridBottom,
+                          crossCount: crossCount,
+                          childRatio: childRatio,
+                          isSmall: isSmall,
+                          liveCounts: liveCounts,
+                          duasLabel: duasLabel,
+                          comingSoon: comingSoon,
+                        )
+                      : _buildSearchResultsView(
+                          lp: lp,
+                          query: _query,
+                          matchedCats: matchedCats,
+                          searchResults: searchResults,
+                          hPad: hPad,
+                          gridBottom: gridBottom,
+                          isSmall: isSmall,
+                          liveCounts: liveCounts,
+                          duasLabel: duasLabel,
                         ),
                 ),
               ],
@@ -298,33 +395,244 @@ class _DuaScreenState extends State<DuaScreen> {
     });
   }
 
-  Widget _buildNoResults(LanguageProvider lp, bool isSmall) {
+  /// Default Category Grid view when search is empty
+  Widget _buildCategoryGrid({
+    required List<({_Cat cat, String resolvedTitle})> filteredCats,
+    required double hPad,
+    required double gridBottom,
+    required int crossCount,
+    required double childRatio,
+    required bool isSmall,
+    required Map<DhikrCategory, int> liveCounts,
+    required String duasLabel,
+    required String comingSoon,
+  }) {
+    return GridView.builder(
+      padding: EdgeInsets.fromLTRB(hPad, 4, hPad, gridBottom),
+      physics: const BouncingScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossCount,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: childRatio,
+      ),
+      itemCount: filteredCats.length,
+      itemBuilder: (context, i) {
+        final entry = filteredCats[i];
+        final cat = entry.cat;
+        return _CatCard(
+          cat: cat,
+          isSmall: isSmall,
+          count: cat.category != null
+              ? (liveCounts[cat.category] ?? cat.count)
+              : cat.count,
+          resolvedTitle: entry.resolvedTitle,
+          duasLabel: duasLabel,
+          comingSoon: comingSoon,
+        )
+            .animate()
+            .fadeIn(delay: Duration(milliseconds: 30 + i * 30))
+            .slideY(begin: 0.08);
+      },
+    );
+  }
+
+  /// Google-like Search Results View (Categorical Quick Jump + Rich Dua Cards)
+  Widget _buildSearchResultsView({
+    required LanguageProvider lp,
+    required String query,
+    required List<({_Cat cat, String resolvedTitle})> matchedCats,
+    required List<DuaSearchResult> searchResults,
+    required double hPad,
+    required double gridBottom,
+    required bool isSmall,
+    required Map<DhikrCategory, int> liveCounts,
+    required String duasLabel,
+  }) {
+    if (matchedCats.isEmpty && searchResults.isEmpty) {
+      return _buildNoResults(lp, query, isSmall);
+    }
+
+    return ListView(
+      padding: EdgeInsets.fromLTRB(hPad, 4, hPad, gridBottom),
+      physics: const BouncingScrollPhysics(),
+      children: [
+        // ── 1. Matching Categories Quick-Chips ──────────────────────────────
+        if (matchedCats.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8, top: 4),
+            child: Row(
+              children: [
+                Icon(Icons.folder_outlined,
+                    size: 14, color: AppColors.textSlate400),
+                const SizedBox(width: 6),
+                Text(
+                  'CATEGORIES (${matchedCats.length})',
+                  style: AppText.label(color: AppColors.textSlate400)
+                      .copyWith(fontSize: 11, letterSpacing: 1.2),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 38,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: matchedCats.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, idx) {
+                final entry = matchedCats[idx];
+                final cat = entry.cat;
+                final count = liveCounts[cat.category] ?? cat.count;
+                return GestureDetector(
+                  onTap: () => openCategory(context, cat, entry.resolvedTitle),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: cat.color.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                      border:
+                          Border.all(color: cat.color.withValues(alpha: 0.35)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(cat.icon, size: 15, color: cat.color),
+                        const SizedBox(width: 6),
+                        Text(
+                          entry.resolvedTitle,
+                          style: AppText.manrope(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: cat.color.withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            '$count',
+                            style: AppText.manrope(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+
+        // ── 2. Matching Duas Header ─────────────────────────────────────────
+        if (searchResults.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12, top: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.auto_awesome,
+                        size: 14, color: AppColors.primary),
+                    const SizedBox(width: 6),
+                    Text(
+                      'SUPPLICATIONS (${searchResults.length})',
+                      style: AppText.label(color: AppColors.primary)
+                          .copyWith(fontSize: 11, letterSpacing: 1.2),
+                    ),
+                  ],
+                ),
+                Text(
+                  '${searchResults.length} $duasLabel found',
+                  style: AppText.body(color: AppColors.textSlate400)
+                      .copyWith(fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+
+          // ── 3. Dua Search Result Cards ─────────────────────────────────────
+          ...List.generate(searchResults.length, (i) {
+            final res = searchResults[i];
+            final dhikr = res.dhikr;
+            final catMeta = getCategoryMeta(dhikr.category);
+            final resolvedCatTitle = catMeta.titleKey != null
+                ? lp.getText(catMeta.titleKey!)
+                : catMeta.title;
+
+            return _SearchResultCard(
+              result: res,
+              query: query,
+              catMeta: catMeta,
+              resolvedCatTitle: resolvedCatTitle,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => DhikrFocusScreen(dhikr: dhikr),
+                  ),
+                );
+              },
+              onCategoryTap: () {
+                openCategory(context, catMeta, resolvedCatTitle);
+              },
+            )
+                .animate()
+                .fadeIn(delay: Duration(milliseconds: (i * 25).clamp(0, 400)))
+                .slideY(begin: 0.05);
+          }),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildNoResults(LanguageProvider lp, String query, bool isSmall) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.search_off_rounded,
-              size: isSmall ? 48 : 60,
-              color: AppColors.textSlate500,
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.ink(0.04),
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.ink(0.08)),
+              ),
+              child: Icon(
+                Icons.search_off_rounded,
+                size: isSmall ? 40 : 48,
+                color: AppColors.textSlate500,
+              ),
             ),
             const SizedBox(height: 16),
             Text(
-              'No results for "$_query"',
+              'No results for "$query"',
               textAlign: TextAlign.center,
               style: AppText.manrope(
                 fontSize: isSmall ? 15 : 17,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textSlate400,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Try a different keyword',
+              'Try searching by keyword, meaning, or topic:\n"kursi", "forgiveness", "ঘুম", "খাবার", "ক্ষমা", "ঋণ", "রিজিক"',
               textAlign: TextAlign.center,
-              style: AppText.body(color: AppColors.textSlate500),
+              style: AppText.body(color: AppColors.textSlate400)
+                  .copyWith(fontSize: 12.5, height: 1.5),
             ),
           ],
         ),
@@ -333,9 +641,344 @@ class _DuaScreenState extends State<DuaScreen> {
   }
 }
 
+// ── Search Result Card ────────────────────────────────────────────────────────
+
+class _SearchResultCard extends StatelessWidget {
+  final DuaSearchResult result;
+  final String query;
+  final _Cat catMeta;
+  final String resolvedCatTitle;
+  final VoidCallback onTap;
+  final VoidCallback onCategoryTap;
+
+  const _SearchResultCard({
+    required this.result,
+    required this.query,
+    required this.catMeta,
+    required this.resolvedCatTitle,
+    required this.onTap,
+    required this.onCategoryTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final d = result.dhikr;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: AppColors.ink(0.04),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.ink(0.08)),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          highlightColor: catMeta.color.withValues(alpha: 0.08),
+          splashColor: catMeta.color.withValues(alpha: 0.12),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Top Meta row (Category Chip + Target Count badge)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: onCategoryTap,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 9, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: catMeta.color.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              color: catMeta.color.withValues(alpha: 0.25)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(catMeta.icon, size: 12, color: catMeta.color),
+                            const SizedBox(width: 5),
+                            Text(
+                              resolvedCatTitle,
+                              style: AppText.manrope(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: catMeta.color,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (d.targetCount > 0)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.ink(0.08),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          '${d.targetCount}x',
+                          style: AppText.manrope(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.textSlate300,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Title with matched highlight
+                HighlightedText(
+                  text: d.title,
+                  query: query,
+                  baseStyle: AppText.manrope(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                  highlightStyle: AppText.manrope(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFFFBBF24),
+                  ),
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 8),
+
+                // Arabic Text snippet
+                if (d.arabicText.isNotEmpty) ...[
+                  Text(
+                    d.arabicText,
+                    textDirection: TextDirection.rtl,
+                    textAlign: TextAlign.right,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.amiri(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                      height: 1.6,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+
+                // Translation with matched highlight
+                if (d.translation.isNotEmpty) ...[
+                  HighlightedText(
+                    text: d.translation,
+                    query: query,
+                    baseStyle: AppText.body(color: AppColors.textSlate400)
+                        .copyWith(fontSize: 12.5, height: 1.45),
+                    highlightStyle: AppText.body(color: const Color(0xFFFDE68A))
+                        .copyWith(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.bold,
+                            height: 1.45),
+                    maxLines: 3,
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // Matched Context Snippet (if matched in benefit, reference, etc.)
+                if (result.snippet != null) ...[
+                  Container(
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.ink(0.06),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.ink(0.08)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(Icons.lightbulb_outline_rounded,
+                            size: 13, color: AppColors.primary),
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            'Matched: ${result.snippet!}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppText.body(color: AppColors.textSlate300)
+                                .copyWith(
+                              fontSize: 11,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+
+                // Bottom Action Footer
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (d.reference != null && d.reference!.isNotEmpty)
+                      Flexible(
+                        child: Text(
+                          d.reference!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.body(color: AppColors.textSlate500)
+                              .copyWith(fontSize: 10.5),
+                        ),
+                      )
+                    else
+                      const SizedBox.shrink(),
+                    Row(
+                      children: [
+                        Text(
+                          'Read & Count',
+                          style: AppText.manrope(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.arrow_forward_ios_rounded,
+                            size: 10, color: AppColors.primary),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Highlighted Text Widget ───────────────────────────────────────────────────
+
+class HighlightedText extends StatelessWidget {
+  final String text;
+  final String query;
+  final TextStyle baseStyle;
+  final TextStyle highlightStyle;
+  final int maxLines;
+  final TextOverflow overflow;
+  final TextAlign textAlign;
+
+  const HighlightedText({
+    super.key,
+    required this.text,
+    required this.query,
+    required this.baseStyle,
+    required this.highlightStyle,
+    this.maxLines = 2,
+    this.overflow = TextOverflow.ellipsis,
+    this.textAlign = TextAlign.start,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cleanQuery = query.trim().toLowerCase();
+    if (cleanQuery.isEmpty) {
+      return Text(text,
+          style: baseStyle,
+          maxLines: maxLines,
+          overflow: overflow,
+          textAlign: textAlign);
+    }
+
+    final lower = text.toLowerCase();
+    final spans = <TextSpan>[];
+    int start = 0;
+
+    // Search query or first token
+    final searchTerms = cleanQuery
+        .split(' ')
+        .where((t) => t.length >= 2)
+        .toList();
+    if (searchTerms.isEmpty) searchTerms.add(cleanQuery);
+
+    // Simplest robust highlight: highlight occurrences of any search term
+    final matchIndices = <({int start, int end})>[];
+    for (final term in searchTerms) {
+      int s = 0;
+      while (s < lower.length) {
+        final idx = lower.indexOf(term, s);
+        if (idx == -1) break;
+        matchIndices.add((start: idx, end: idx + term.length));
+        s = idx + term.length;
+      }
+    }
+
+    // Sort and merge overlapping match ranges
+    matchIndices.sort((a, b) => a.start.compareTo(b.start));
+    final merged = <({int start, int end})>[];
+    for (final m in matchIndices) {
+      if (merged.isEmpty) {
+        merged.add(m);
+      } else {
+        final last = merged.last;
+        if (m.start <= last.end) {
+          merged[merged.length - 1] =
+              (start: last.start, end: m.end > last.end ? m.end : last.end);
+        } else {
+          merged.add(m);
+        }
+      }
+    }
+
+    if (merged.isEmpty) {
+      return Text(text,
+          style: baseStyle,
+          maxLines: maxLines,
+          overflow: overflow,
+          textAlign: textAlign);
+    }
+
+    for (final range in merged) {
+      if (range.start > start) {
+        spans.add(TextSpan(
+          text: text.substring(start, range.start),
+          style: baseStyle,
+        ));
+      }
+      spans.add(TextSpan(
+        text: text.substring(range.start, range.end),
+        style: highlightStyle,
+      ));
+      start = range.end;
+    }
+
+    if (start < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(start),
+        style: baseStyle,
+      ));
+    }
+
+    return Text.rich(
+      TextSpan(children: spans),
+      maxLines: maxLines,
+      overflow: overflow,
+      textAlign: textAlign,
+    );
+  }
+}
+
 // ── Category note bottom sheet ────────────────────────────────────────────────
-// Shown when the user opens a category that has an introductory note.
-// Parameterised by color and icon so it works for any category.
 
 class _NoteSheet extends StatelessWidget {
   final Color color;
@@ -362,8 +1005,7 @@ class _NoteSheet extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.bgTeal,
-          borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(28)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         ),
         child: SafeArea(
           top: false,
@@ -373,7 +1015,6 @@ class _NoteSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── Drag handle ───────────────────────────────────────────────
                 Center(
                   child: Container(
                     width: 40,
@@ -385,8 +1026,6 @@ class _NoteSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // ── Icon + title row ──────────────────────────────────────────
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -396,11 +1035,7 @@ class _NoteSheet extends StatelessWidget {
                         color: color.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(
-                        icon,
-                        color: color,
-                        size: 22,
-                      ),
+                      child: Icon(icon, color: color, size: 22),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -414,27 +1049,18 @@ class _NoteSheet extends StatelessWidget {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 16),
-
-                // ── Divider ───────────────────────────────────────────────────
                 Container(
                   height: 1,
                   color: AppColors.ink(0.08),
                 ),
-
                 const SizedBox(height: 16),
-
-                // ── Body text ─────────────────────────────────────────────────
                 Text(
                   body,
                   style: AppText.body(color: AppColors.textSlate300)
                       .copyWith(fontSize: 13.5, height: 1.7),
                 ),
-
                 const SizedBox(height: 28),
-
-                // ── Continue button ───────────────────────────────────────────
                 SizedBox(
                   width: double.infinity,
                   height: 52,
@@ -468,13 +1094,12 @@ class _NoteSheet extends StatelessWidget {
   }
 }
 
-// ── Data model ────────────────────────────────────────────────────────────────
+// ── Category Data Model ───────────────────────────────────────────────────────
 
 class _Cat {
   final IconData icon;
-  final String?
-      titleKey; // i18n key; null for categories without translation yet
-  final String title; // English fallback
+  final String? titleKey;
+  final String title;
   final int count;
   final Color color;
   final DhikrCategory? category;
@@ -489,15 +1114,15 @@ class _Cat {
   });
 }
 
-// ── Card widget ───────────────────────────────────────────────────────────────
+// ── Category Card widget ──────────────────────────────────────────────────────
 
 class _CatCard extends StatelessWidget {
   final _Cat cat;
   final bool isSmall;
   final int count;
-  final String resolvedTitle; // already-translated title from parent
-  final String duasLabel; // translated word for "duas"
-  final String comingSoon; // translated "coming soon"
+  final String resolvedTitle;
+  final String duasLabel;
+  final String comingSoon;
 
   const _CatCard({
     required this.cat,
@@ -508,81 +1133,11 @@ class _CatCard extends StatelessWidget {
     required this.comingSoon,
   });
 
-  void _onTap(BuildContext context) {
-    if (cat.category == DhikrCategory.parents) {
-      // Show the informational note before entering the parents duas list.
-      final lp = Provider.of<LanguageProvider>(context, listen: false);
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (_) => _NoteSheet(
-          color: const Color(0xFFEC4899),
-          icon: Icons.family_restroom_outlined,
-          title: lp.getText('parents_note_title'),
-          body: lp.getText('parents_note_body'),
-          buttonLabel: resolvedTitle,
-          onContinue: () {
-            Navigator.pop(context); // close sheet
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    const DhikrListScreen(category: DhikrCategory.parents),
-              ),
-            );
-          },
-        ),
-      );
-    } else if (cat.category == DhikrCategory.graveyard) {
-      final lp = Provider.of<LanguageProvider>(context, listen: false);
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.transparent,
-        builder: (_) => _NoteSheet(
-          color: const Color(0xFF64748B),
-          icon: Icons.landscape_outlined,
-          title: lp.getText('graveyard_note_title'),
-          body: lp.getText('graveyard_note_body'),
-          buttonLabel: resolvedTitle,
-          onContinue: () {
-            Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    const DhikrListScreen(category: DhikrCategory.graveyard),
-              ),
-            );
-          },
-        ),
-      );
-    } else if (cat.category != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => DhikrListScreen(category: cat.category!),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('$resolvedTitle — $comingSoon',
-              style: TextStyle(color: AppColors.onPrimary)),
-          backgroundColor: AppColors.primary,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => _onTap(context),
+      onTap: () => _DuaScreenState.openCategory(context, cat, resolvedTitle),
       child: Container(
-        // FIX: padding uses EdgeInsets not const so it can adapt if needed
         padding: EdgeInsets.all(isSmall ? 10 : 14),
         decoration: BoxDecoration(
           color: AppColors.ink(0.03),
@@ -593,7 +1148,6 @@ class _CatCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Icon box
             Container(
               width: 34,
               height: 34,
@@ -603,12 +1157,9 @@ class _CatCard extends StatelessWidget {
               ),
               child: Icon(cat.icon, color: cat.color, size: 18),
             ),
-
-            // Title + count
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // FIX: FittedBox ensures long translated titles don't overflow
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
