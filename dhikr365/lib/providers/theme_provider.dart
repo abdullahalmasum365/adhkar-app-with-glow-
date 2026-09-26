@@ -8,6 +8,7 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeMode _themeMode = ThemeMode.dark;
   bool _showTransliteration = true;
+  bool _showHabitTracker = true;
   String _paletteId = AppPalettes.emeraldNight.id;
 
   ThemeMode get themeMode => _themeMode;
@@ -19,6 +20,9 @@ class ThemeProvider extends ChangeNotifier {
 
   /// When false, the Latin-script phonetic line is hidden on every dhikr card.
   bool get showTransliteration => _showTransliteration;
+
+  /// When false, habit tracking charts, rings, and streak metrics are hidden in ProgressScreen.
+  bool get showHabitTracker => _showHabitTracker;
 
   // Legacy names kept for DhikrCard / widgets that still reference them —
   // now palette-backed so they follow the active theme.
@@ -55,6 +59,7 @@ class ThemeProvider extends ChangeNotifier {
     AppColors.apply(AppPalettes.byId(_paletteId));
     _themeMode = palette.isDark ? ThemeMode.dark : ThemeMode.light;
     _showTransliteration = prefs.getBool('show_transliteration') ?? true;
+    _showHabitTracker = prefs.getBool('show_habit_tracker') ?? true;
     notifyListeners();
   }
 
@@ -102,6 +107,13 @@ class ThemeProvider extends ChangeNotifier {
     _showTransliteration = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('show_transliteration', value);
+    notifyListeners();
+  }
+
+  Future<void> toggleHabitTracker(bool value) async {
+    _showHabitTracker = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('show_habit_tracker', value);
     notifyListeners();
   }
 

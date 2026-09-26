@@ -38,6 +38,26 @@ class DhikrProvider extends ChangeNotifier {
   }
 
   int _cachedStreak = 0;
+  bool _earlyBirdBadge = false;
+  bool _nightPrayerBadge = false;
+
+  bool get earlyBirdBadge => _earlyBirdBadge;
+  bool get nightPrayerBadge => _nightPrayerBadge;
+
+  Map<int, int> _monthlyActivity = {};
+  Map<int, int> get monthlyActivity => _monthlyActivity;
+
+  int getCategoryCompletedCount(DhikrCategory cat) =>
+      _dhikrs.where((d) => d.category == cat && d.targetCount > 0 && d.currentCount >= d.targetCount).length;
+
+  int getCategoryTotalCount(DhikrCategory cat) =>
+      _dhikrs.where((d) => d.category == cat).length;
+
+  double getCategoryProgress(DhikrCategory cat) {
+    final total = getCategoryTotalCount(cat);
+    if (total == 0) return 0.0;
+    return (getCategoryCompletedCount(cat) / total).clamp(0.0, 1.0);
+  }
 
   /// Last 7 days activity (count per day, oldest→newest)
   List<int> get weeklyActivity {
@@ -59,6 +79,8 @@ class DhikrProvider extends ChangeNotifier {
   Future<void> _loadDhikrs() async {
     final prefs = await SharedPreferences.getInstance();
     _cachedStreak = prefs.getInt('streak_days') ?? 0;
+    _earlyBirdBadge = prefs.getBool('badge_early_bird') ?? false;
+    _nightPrayerBadge = prefs.getBool('badge_night_prayer') ?? false;
 
     // Load weekly data
     for (int i = 0; i < 7; i++) {
@@ -66,6 +88,16 @@ class DhikrProvider extends ChangeNotifier {
       final val = prefs.getInt('daily_$key') ?? 0;
       _weeklyData[key] = [val];
     }
+
+    // Load monthly activity for current month
+    final now = DateTime.now();
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final activity = <int, int>{};
+    for (int day = 1; day <= daysInMonth; day++) {
+      final key = '${now.year}-${now.month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+      activity[day] = prefs.getInt('daily_$key') ?? 0;
+    }
+    _monthlyActivity = activity;
 
     final savedUiLang = prefs.getString('language_code') ?? 'en';
     final savedTransLang = prefs.getString('translation_language') ?? savedUiLang;
@@ -128,6 +160,8 @@ class DhikrProvider extends ChangeNotifier {
     }
     final today = _dateKey(DateTime.now());
     await prefs.setInt('daily_$today', totalDhikrCount);
+    _weeklyData[today] = [totalDhikrCount];
+    _monthlyActivity[DateTime.now().day] = totalDhikrCount;
   }
 
   Future incrementDhikr(String id) async {
@@ -154,6 +188,25 @@ class DhikrProvider extends ChangeNotifier {
     if (catDhikrs.every((d) => d.currentCount >= d.targetCount)) {
       _completedToday.add(category);
       await _updateStreak();
+
+      final prefs = await SharedPreferences.getInstance();
+      final currentHour = DateTime.now().hour;
+
+      if (category == DhikrCategory.morning && currentHour < 11) {
+        if (!_earlyBirdBadge) {
+          _earlyBirdBadge = true;
+          await prefs.setBool('badge_early_bird', true);
+        }
+      }
+
+      if (category == DhikrCategory.beforeSleep ||
+          (category == DhikrCategory.evening && (currentHour >= 18 || currentHour < 5))) {
+        if (!_nightPrayerBadge) {
+          _nightPrayerBadge = true;
+          await prefs.setBool('badge_night_prayer', true);
+        }
+      }
+
       notifyListeners();
     }
   }

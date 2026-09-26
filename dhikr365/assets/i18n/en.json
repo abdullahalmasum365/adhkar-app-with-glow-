@@ -283,5 +283,17 @@
   "account_delete_btn": "Delete Permanently",
   "account_deleted_toast": "Your account and data have been permanently deleted.",
   "terms_consent_prefix": "By continuing, you agree to our ",
-  "terms_consent_and": " and "
+  "terms_consent_and": " and ",
+  "habit_tracker": "Habit Tracker & Analytics",
+  "habit_tracker_desc": "Show daily progress, streak charts, and monthly activity",
+  "today_adhkar_progress": "Today's Adhkar Progress",
+  "monthly_activity": "Monthly Activity",
+  "spiritual_reflection": "Spiritual Reflection",
+  "quran_dhikr_verse": "Verily, in the remembrance of Allah do hearts find rest. (Surah Ar-Ra'd: 28)",
+  "hadith_consistency": "The most beloved deeds to Allah are those done regularly, even if small. (Sahih al-Bukhari)",
+  "contemplative_mode_desc": "You are in Contemplative Mode. Numerical tracking is hidden so you can focus purely on presence of the heart and sincerity in every remembrance.",
+  "enable_tracker_btn": "Enable Habit Analytics",
+  "all_completed_today": "All done today! Alhamdulillah",
+  "less": "Less",
+  "more": "More"
 }

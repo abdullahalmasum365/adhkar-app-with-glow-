@@ -727,6 +727,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       onChanged: tp.toggleTransliteration,
                     ),
                   ),
+                  _div(),
+                  _Tile(
+                    icon: Icons.insights_rounded,
+                    color: AppColors.primary,
+                    title: lp.getText('habit_tracker'),
+                    subtitle: lp.getText('habit_tracker_desc'),
+                    trailing: Switch(
+                      value: tp.showHabitTracker,
+                      onChanged: tp.toggleHabitTracker,
+                    ),
+                  ),
                 ]),
               ),
               const SizedBox(height: 22),
