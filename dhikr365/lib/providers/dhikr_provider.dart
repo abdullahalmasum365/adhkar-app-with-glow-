@@ -56,7 +56,7 @@ class DhikrProvider extends ChangeNotifier {
     _loadDhikrs();
   }
 
-  Future<void> _loadDhikrs({String langCode = 'en'}) async {
+  Future<void> _loadDhikrs() async {
     final prefs = await SharedPreferences.getInstance();
     _cachedStreak = prefs.getInt('streak_days') ?? 0;
 
@@ -67,7 +67,23 @@ class DhikrProvider extends ChangeNotifier {
       _weeklyData[key] = [val];
     }
 
-    _dhikrs = await _buildDhikrsFromAssets(langCode: langCode);
+    final savedUiLang = prefs.getString('language_code') ?? 'en';
+    final savedTransLang = prefs.getString('translation_language') ?? savedUiLang;
+    final savedTranslitLang = prefs.getString('transliteration_language') ?? savedTransLang;
+
+    _currentLanguageCode = savedUiLang;
+    final transLang = _resolveAssetLang(savedTransLang);
+    _dhikrs = await _buildDhikrsFromAssets(langCode: transLang);
+
+    if (savedTranslitLang != savedTransLang) {
+      final transliLang = _resolveAssetLang(savedTranslitLang);
+      final transliList = await _buildDhikrsFromAssets(langCode: transliLang);
+      _dhikrs = _dhikrs.map((d) {
+        final match = transliList.firstWhere(
+          (t) => t.id == d.id, orElse: () => d);
+        return d.copyWith(transliteration: match.transliteration);
+      }).toList();
+    }
 
     // ── FIX #5: Daily reset ───────────────────────────────────────────────────
     // If the date has changed since the last session, wipe all counts so every
