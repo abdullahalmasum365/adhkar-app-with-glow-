@@ -1,4 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +13,7 @@ class DhikrProvider extends ChangeNotifier {
   List<Dhikr> _dhikrs = [];
   String _currentLanguageCode = 'en';
   final Map<String, List<int>> _weeklyData = {}; // date-string -> [counts]
+  String? _uid;
 
   List<Dhikr> get dhikrs => _dhikrs;
   String get currentLanguageCode => _currentLanguageCode;
@@ -26,7 +31,7 @@ class DhikrProvider extends ChangeNotifier {
   }
 
   // ── Stats getters used by ProgressScreen ──
-  int get totalDhikrCount => _dhikrs.fold(0, (sum, d) => sum + d.currentCount);
+  int get totalDhikrCount => _dhikrs.fold(0, (acc, d) => acc + d.currentCount);
 
   int get completedSets => _dhikrs
       .where((d) => d.targetCount > 0 && d.currentCount >= d.targetCount)
@@ -207,6 +212,7 @@ class DhikrProvider extends ChangeNotifier {
         }
       }
 
+      if (_uid != null) unawaited(_pushToCloud());
       notifyListeners();
     }
   }
@@ -254,7 +260,90 @@ class DhikrProvider extends ChangeNotifier {
 
     await prefs.setInt('streak_days', _cachedStreak);
     await prefs.setString('last_active_date', today);
+    if (_uid != null) unawaited(_pushToCloud());
     notifyListeners(); // refresh streak stat immediately after first tap
+  }
+
+  // ── Cloud sync ────────────────────────────────────────────────────────
+
+  DocumentReference<Map<String, dynamic>>? get _cloudDoc {
+    if (_uid == null || Firebase.apps.isEmpty) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('progress')
+        .doc('data');
+  }
+
+  /// Restores progress from Firestore when user logs in with Google/Apple,
+  /// preserving whichever streak or badges are highest/achieved.
+  Future<void> attachUser(String? uid) async {
+    if (uid == _uid) return;
+    _uid = uid;
+    if (uid == null || Firebase.apps.isEmpty) return;
+
+    try {
+      final doc = _cloudDoc;
+      if (doc == null) return;
+      final snap = await doc.get();
+
+      final prefs = await SharedPreferences.getInstance();
+
+      if (snap.exists) {
+        final data = snap.data()!;
+        final cloudStreak = (data['streak_days'] as num?)?.toInt() ?? 0;
+        final cloudEarlyBird = data['badge_early_bird'] as bool? ?? false;
+        final cloudNightPrayer = data['badge_night_prayer'] as bool? ?? false;
+        final cloudLastActive = data['last_active_date'] as String? ?? '';
+
+        // Merge: keep highest streak and unlocked badges
+        if (cloudStreak > _cachedStreak) {
+          _cachedStreak = cloudStreak;
+          await prefs.setInt('streak_days', _cachedStreak);
+        }
+        if (cloudEarlyBird && !_earlyBirdBadge) {
+          _earlyBirdBadge = true;
+          await prefs.setBool('badge_early_bird', true);
+        }
+        if (cloudNightPrayer && !_nightPrayerBadge) {
+          _nightPrayerBadge = true;
+          await prefs.setBool('badge_night_prayer', true);
+        }
+        if (cloudLastActive.isNotEmpty) {
+          final localLastActive = prefs.getString('last_active_date') ?? '';
+          if (localLastActive.isEmpty) {
+            await prefs.setString('last_active_date', cloudLastActive);
+          }
+        }
+        notifyListeners();
+      }
+
+      await _pushToCloud();
+    } catch (e) {
+      debugPrint('[DhikrProvider] cloud progress sync on sign-in failed: $e');
+    }
+  }
+
+  Future<void> _pushToCloud() async {
+    final doc = _cloudDoc;
+    if (doc == null) return;
+    try {
+      final currentAuthUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentAuthUid == null || currentAuthUid != _uid) return;
+
+      final prefs = await SharedPreferences.getInstance();
+      final lastActive = prefs.getString('last_active_date') ?? '';
+
+      await doc.set({
+        'streak_days': _cachedStreak,
+        'badge_early_bird': _earlyBirdBadge,
+        'badge_night_prayer': _nightPrayerBadge,
+        'last_active_date': lastActive,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('[DhikrProvider] cloud progress push failed: $e');
+    }
   }
 
   double calculateProgressFor(List<Dhikr> list) {

@@ -189,11 +189,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => DhikrProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, DhikrProvider>(
+          create: (_) => DhikrProvider(),
+          update: (_, auth, previous) {
+            final dp = previous ?? DhikrProvider();
+            dp.attachUser(auth.user?.uid);
+            return dp;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
         // Linked to AuthProvider: whenever the signed-in account changes,
         // the plan/favorites are merged with (and then kept in sync with)
         // that account's cloud copy. Untouched (stays local-only) for
