@@ -295,5 +295,14 @@
   "enable_tracker_btn": "Enable Habit Analytics",
   "all_completed_today": "All done today! Alhamdulillah",
   "less": "Less",
-  "more": "More"
+  "more": "More",
+  "interface_language": "Interface language",
+  "meaning_language": "Meaning language",
+  "reading_aid": "Reading aid",
+  "voice_recitation": "Voice Recitation",
+  "now_playing": "Now Playing",
+  "reciting_arabic": "Reciting Arabic...",
+  "paused": "Paused",
+  "refund_policy": "Refund Policy",
+  "cookie_policy": "Cookie Policy"
 }
