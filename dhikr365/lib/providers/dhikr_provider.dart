@@ -235,6 +235,34 @@ class DhikrProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── DEV / TEST ONLY: full progress wipe ──────────────────────────────────
+  /// Resets EVERYTHING — counts, streak, badges, daily history, last_reset_date.
+  /// Used by the hidden Dev Panel in Settings for clean-slate testing.
+  Future<void> devResetAllProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+    for (final d in _dhikrs) {
+      await prefs.remove('count_${d.id}');
+    }
+    await prefs.remove('streak_days');
+    await prefs.remove('last_active_date');
+    await prefs.remove('badge_early_bird');
+    await prefs.remove('badge_night_prayer');
+    await prefs.remove('last_reset_date');
+    for (int i = 0; i < 31; i++) {
+      final day = DateTime.now().subtract(Duration(days: i));
+      await prefs.remove('daily_${_dateKey(day)}');
+    }
+    _dhikrs = _dhikrs.map((d) => d.copyWith(currentCount: 0)).toList();
+    _completedToday.clear();
+    _cachedStreak = 0;
+    _earlyBirdBadge = false;
+    _nightPrayerBadge = false;
+    _weeklyData.clear();
+    _monthlyActivity.clear();
+    notifyListeners();
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   Future<void> _updateStreak() async {
     final prefs = await SharedPreferences.getInstance();
     final lastActive = prefs.getString('last_active_date') ?? '';

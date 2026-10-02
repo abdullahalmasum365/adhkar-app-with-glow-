@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -11,8 +12,10 @@ import '../utils/responsive.dart';
 import 'account_screen.dart';
 import 'edit_profile_screen.dart';
 import 'splash_screen.dart';
+import '../providers/purchase_provider.dart';
 import '../providers/notification_provider.dart';
 import '../services/notification_service.dart';
+import '../models/dhikr.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -140,6 +143,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     final up = Provider.of<UserProvider>(context);
     final np = Provider.of<NotificationProvider>(context);
     final ap = Provider.of<AuthProvider>(context);
+    final pp = Provider.of<PurchaseProvider>(context);
 
     final name = (up.userName?.isNotEmpty == true)
         ? up.userName!
@@ -535,6 +539,51 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         );
                       }
                     }),
+                if (kDebugMode) ...[
+                  _div(),
+                  _Tile(
+                      icon: Icons.workspace_premium_rounded,
+                      color: ThemeProvider.divineAmber,
+                      title: lp.locale.languageCode == 'bn'
+                          ? 'প্রো ভার্সন (টেস্ট মোড)'
+                          : 'Pro Version (Test Mode)',
+                      subtitle: pp.isPro
+                          ? (lp.locale.languageCode == 'bn'
+                              ? 'সক্রিয় (কাস্টম প্ল্যান ও সব ফিচার আনলক)'
+                              : 'Active (Custom plan & features unlocked)')
+                          : (lp.locale.languageCode == 'bn'
+                              ? 'নিষ্ক্রিয় (ট্যাপ করে আনলক করুন)'
+                              : 'Inactive (Tap switch to unlock)'),
+                      trailing: Switch(
+                        activeThumbColor: ThemeProvider.divineAmber,
+                        value: pp.isPro,
+                        onChanged: (_) async {
+                          await pp.toggleProForTesting();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.amber.shade800,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                content: Text(
+                                  pp.isPro
+                                      ? (lp.locale.languageCode == 'bn'
+                                          ? '🎉 টেস্ট মোড: প্রো ভার্সন সক্রিয় হয়েছে!'
+                                          : '🎉 Test Mode: Pro Version Activated!')
+                                      : (lp.locale.languageCode == 'bn'
+                                          ? 'টেস্ট মোড: প্রো ভার্সন নিষ্ক্রিয় করা হয়েছে।'
+                                          : 'Test Mode: Pro Version Deactivated.'),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      )),
+                ],
               ])),
               const SizedBox(height: 22),
 
@@ -611,15 +660,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         title: lp.getText('app_language'),
                         current: lp.locale.languageCode,
                         onPick: (c) async {
+                          final dp = Provider.of<DhikrProvider>(context, listen: false);
+                          final up = Provider.of<UserProvider>(context, listen: false);
+                          final np = Provider.of<NotificationProvider>(context, listen: false);
                           await lp.setLanguage(c);
-                          if (context.mounted) {
-                            await Provider.of<DhikrProvider>(context,
-                                    listen: false)
-                                .reloadDhikrs(
-                                    uiLanguageCode: c,
-                                    transliterationCode: lp.transliterationCode,
-                                    translationCode: lp.translationCode);
-                          }
+                          await dp.reloadDhikrs(
+                              uiLanguageCode: c,
+                              transliterationCode: lp.transliterationCode,
+                              translationCode: lp.translationCode);
+                          await np.refreshAllSchedules(up);
                         })),
                 _div(),
                 _Tile(
@@ -764,6 +813,24 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         mode: LaunchMode.externalApplication)),
                 _div(),
                 _Tile(
+                    icon: Icons.assignment_return_outlined,
+                    color: AppColors.textSlate400,
+                    title: lp.getText('refund_policy'),
+                    onTap: () => launchUrl(
+                        Uri.parse(
+                            'https://abdullahalmasum365.github.io/adhkar-app-with-glow-/refund-policy.html'),
+                        mode: LaunchMode.externalApplication)),
+                _div(),
+                _Tile(
+                    icon: Icons.cookie_outlined,
+                    color: AppColors.textSlate400,
+                    title: lp.getText('cookie_policy'),
+                    onTap: () => launchUrl(
+                        Uri.parse(
+                            'https://abdullahalmasum365.github.io/adhkar-app-with-glow-/cookie-policy.html'),
+                        mode: LaunchMode.externalApplication)),
+                _div(),
+                _Tile(
                     icon: Icons.logout,
                     color: Colors.redAccent,
                     title: lp.getText('logout'),
@@ -771,9 +838,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     onTap: _logout),
               ])),
               const SizedBox(height: 14),
-              Center(
-                  child: Text('${lp.getText('version').toUpperCase()} 1.0.0',
-                      style: AppText.label(color: AppColors.textSlate500))),
+              const _DevVersionTap(),
               const SizedBox(height: 32),
             ],
           )),
@@ -1006,3 +1071,446 @@ class _Tile extends StatelessWidget {
         onTap: onTap,
       );
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DEV PANEL — tap version text 7 times to unlock
+// ═══════════════════════════════════════════════════════════════════════════
+
+class _DevVersionTap extends StatefulWidget {
+  const _DevVersionTap();
+  @override
+  State<_DevVersionTap> createState() => _DevVersionTapState();
+}
+
+class _DevVersionTapState extends State<_DevVersionTap> {
+  int _taps = 0;
+  static const _required = 7;
+
+  void _onTap() {
+    setState(() => _taps++);
+    if (_taps >= _required) {
+      _taps = 0;
+      _openDevPanel(context);
+    }
+  }
+
+  void _openDevPanel(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const _DevPanelSheet(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!kDebugMode) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Center(
+          child: Text('VERSION 1.0.0',
+              style: AppText.label(color: AppColors.textSlate500)),
+        ),
+      );
+    }
+    final remaining = _required - _taps;
+    return GestureDetector(
+      onTap: _onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Center(
+          child: Column(
+            children: [
+              Text('VERSION 1.0.0',
+                  style: AppText.label(color: AppColors.textSlate500)),
+              if (_taps > 0 && _taps < _required)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    '🔧 $remaining more taps for Dev Panel',
+                    style: AppText.label(color: AppColors.primary)
+                        .copyWith(fontSize: 10),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Dev Panel bottom sheet ──────────────────────────────────────────────────
+class _DevPanelSheet extends StatelessWidget {
+  const _DevPanelSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer2<PurchaseProvider, DhikrProvider>(
+      builder: (ctx, pp, dp, _) {
+        final isPro = pp.isPro;
+        final streak = dp.streakDays;
+        final totalTaps = dp.totalDhikrCount;
+        final completed = dp.completedSets;
+        final earlyBird = dp.earlyBirdBadge;
+        final nightPrayer = dp.nightPrayerBadge;
+        const categories = DhikrCategory.values;
+
+        return Container(
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(ctx).size.height * 0.88),
+          decoration: BoxDecoration(
+            color: AppColors.bgTeal,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(24)),
+            border: Border.all(
+                color: Colors.orange.withValues(alpha: 0.5), width: 1.5),
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(2)),
+                  ),
+                ),
+                Row(children: [
+                  const Icon(Icons.developer_mode_rounded,
+                      color: Colors.orange, size: 22),
+                  const SizedBox(width: 8),
+                  Text('DEV PANEL',
+                      style: AppText.manrope(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.orange)),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                        color: Colors.orange.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Text('TEST ONLY',
+                        style: AppText.label(color: Colors.orange)),
+                  ),
+                ]),
+                const SizedBox(height: 4),
+                Text(
+                    'Internal testing panel. Not visible to users without 7 taps on version.',
+                    style: AppText.body(color: AppColors.textSlate400)
+                        .copyWith(fontSize: 11)),
+                const SizedBox(height: 20),
+
+                // ── PRO TOGGLE ────────────────────────────────────────────
+                _devSection(
+                  icon: Icons.workspace_premium_rounded,
+                  label: 'SUBSCRIPTION STATUS',
+                  color: ThemeProvider.divineAmber,
+                  child: Column(
+                    children: [
+                      _devRow(
+                        'Current Status',
+                        isPro
+                            ? '✅ PRO ACTIVE'
+                            : '🔒 FREE (Non-Pro)',
+                        valueColor: isPro ? Colors.green : Colors.grey,
+                      ),
+                      if (pp.activeSubscriptionId != null)
+                        _devRow('Product ID', pp.activeSubscriptionId!),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: Icon(
+                              isPro
+                                  ? Icons.lock_open_rounded
+                                  : Icons.workspace_premium_rounded,
+                              size: 18),
+                          label: Text(isPro
+                              ? 'SWITCH TO FREE (Non-Pro)'
+                              : 'UNLOCK PRO (Simulate Purchase)'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isPro
+                                ? Colors.redAccent.withValues(alpha: 0.15)
+                                : ThemeProvider.divineAmber
+                                    .withValues(alpha: 0.2),
+                            foregroundColor:
+                                isPro ? Colors.redAccent : ThemeProvider.divineAmber,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(
+                                    color: isPro
+                                        ? Colors.redAccent
+                                        : ThemeProvider.divineAmber,
+                                    width: 1)),
+                            elevation: 0,
+                          ),
+                          onPressed: () => pp.toggleProForTesting(),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                          '📌 Pro unlocks: Custom Plan (Customize routine), priority cloud sync',
+                          style: AppText.body(color: AppColors.textSlate400)
+                              .copyWith(fontSize: 11)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // ── PROGRESS STATE ────────────────────────────────────────
+                _devSection(
+                  icon: Icons.bar_chart_rounded,
+                  label: 'PROGRESS STATE',
+                  color: Colors.tealAccent,
+                  child: Column(
+                    children: [
+                      _devRow('Streak', '$streak days 🔥'),
+                      _devRow('Today Total Taps', '$totalTaps'),
+                      _devRow('Completed Sets', '$completed / ${dp.dhikrs.length}'),
+                      _devRow(
+                          'Early Bird Badge (Morning < 11am)',
+                          earlyBird ? '🏅 UNLOCKED' : '🔒 Locked',
+                          valueColor:
+                              earlyBird ? Colors.amber : AppColors.textSlate400),
+                      _devRow(
+                          'Night Prayer Badge (Evening/Sleep ≥ 18h)',
+                          nightPrayer ? '🏅 UNLOCKED' : '🔒 Locked',
+                          valueColor:
+                              nightPrayer ? Colors.amber : AppColors.textSlate400),
+                      const SizedBox(height: 8),
+                      Text('── Per Category ──',
+                          style: AppText.label(
+                              color: AppColors.textSlate400)),
+                      const SizedBox(height: 4),
+                      ...categories.map((cat) {
+                        final done = dp.getCategoryCompletedCount(cat);
+                        final total = dp.getCategoryTotalCount(cat);
+                        final pct = total > 0
+                            ? (done / total * 100).round()
+                            : 0;
+                        return _devRow(
+                            cat.name.toUpperCase(),
+                            '$done/$total ($pct%)',
+                            valueColor: done == total && total > 0
+                                ? Colors.green
+                                : AppColors.textSlate400);
+                      }),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // ── RESET ACTIONS ─────────────────────────────────────────
+                _devSection(
+                  icon: Icons.refresh_rounded,
+                  label: 'RESET ACTIONS',
+                  color: Colors.redAccent,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          icon:
+                              const Icon(Icons.today_rounded, size: 18),
+                          label:
+                              const Text('Reset Today\'s Counts Only'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.orangeAccent,
+                            side: const BorderSide(
+                                color: Colors.orangeAccent),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          onPressed: () {
+                            dp.resetAll();
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    '✅ Today\'s counts reset (streak kept)'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.delete_forever_rounded,
+                              size: 18),
+                          label: const Text(
+                              '⚠️ FULL RESET (Streak + Badges + All History)'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.redAccent,
+                            side: const BorderSide(
+                                color: Colors.redAccent),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: ctx,
+                              builder: (c) => AlertDialog(
+                                backgroundColor: AppColors.bgTeal,
+                                title: const Text('Full Reset?',
+                                    style: TextStyle(color: Colors.white)),
+                                content: const Text(
+                                    'This will wipe ALL progress: streak, badges, all daily history. Cannot be undone.',
+                                    style:
+                                        TextStyle(color: Colors.white70)),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(c, false),
+                                      child: const Text('Cancel')),
+                                  TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(c, true),
+                                      child: const Text('YES, RESET ALL',
+                                          style: TextStyle(
+                                              color: Colors.redAccent))),
+                                ],
+                              ),
+                            );
+                            if (confirm == true && ctx.mounted) {
+                              await dp.devResetAllProgress();
+                              if (ctx.mounted) {
+                                ScaffoldMessenger.of(ctx).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('🗑️ Full progress reset done'),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // ── HOW PROGRESS WORKS ────────────────────────────────────
+                _devSection(
+                  icon: Icons.info_outline_rounded,
+                  label: 'HOW PROGRESS WORKS',
+                  color: Colors.blueAccent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _rule('🔥 Streak',
+                          'Increments when any category is fully completed. +1 per day (not per category). Resets to 1 if a day is missed.'),
+                      _rule('🏅 Early Bird Badge',
+                          'Unlock: Complete Morning adhkar BEFORE 11:00 AM. One-time — never revokes.'),
+                      _rule('🌙 Night Prayer Badge',
+                          'Unlock: Complete Before Sleep OR Evening adhkar AFTER 18:00 (6 PM). One-time.'),
+                      _rule('📊 Monthly Heatmap',
+                          'Color = total dhikr taps that day. Stored in SharedPreferences key: daily_YYYY-MM-DD.'),
+                      _rule('☁️ Cloud Sync',
+                          'Streak + badges saved to Firestore (users/{uid}/progress/data) when logged in. Merge rule: keep highest streak, never revoke badges.'),
+                      _rule('🔄 Daily Reset',
+                          'All counts reset to 0 on midnight when app opens. Detected via last_reset_date key in SharedPreferences.'),
+                      _rule('💎 Pro Access',
+                          'isPro = true when active_subscription_id key exists in SharedPreferences. Pro unlocks: Custom Plan screen, cloud plan sync.'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _devSection({
+    required IconData icon,
+    required String label,
+    required Color color,
+    required Widget child,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.05),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.all(14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(icon, color: color, size: 16),
+            const SizedBox(width: 6),
+            Text(label,
+                style: AppText.label(color: color)
+                    .copyWith(fontSize: 11, letterSpacing: 1.2)),
+          ]),
+          const SizedBox(height: 12),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _devRow(String label, String value,
+      {Color? valueColor}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Row(
+        children: [
+          Expanded(
+              child: Text(label,
+                  style: AppText.body(color: AppColors.textSlate400)
+                      .copyWith(fontSize: 12))),
+          Text(value,
+              style: AppText.manrope(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: valueColor ?? AppColors.textPrimary)
+                  .copyWith()),
+        ],
+      ),
+    );
+  }
+
+  Widget _rule(String title, String desc) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title,
+              style: AppText.manrope(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary)),
+          const SizedBox(height: 2),
+          Text(desc,
+              style: AppText.body(color: AppColors.textSlate400)
+                  .copyWith(fontSize: 12)),
+        ],
+      ),
+    );
+  }
+}
+
