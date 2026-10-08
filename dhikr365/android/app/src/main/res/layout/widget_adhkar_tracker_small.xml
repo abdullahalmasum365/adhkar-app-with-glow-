@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Dynamic Rounded Background -->
+    <ImageView
+        android:id="@+id/widget_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_bg_rounded" />
+
+    <!-- Dynamic Border Outline -->
+    <ImageView
+        android:id="@+id/widget_border"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_border_rounded" />
+
+    <!-- Content Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔥"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/small_streak_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="7"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/small_streak_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DAYS STREAK"
+            android:textColor="#B3FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <!-- Status Pills Row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/small_morning_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌅 ✓"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="4dp"
+                android:text="•"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+
+            <TextView
+                android:id="@+id/small_evening_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌆 ○"
+                android:textColor="#80FFFFFF"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

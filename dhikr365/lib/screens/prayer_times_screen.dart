@@ -11,6 +11,7 @@ import '../providers/notification_provider.dart';
 import '../providers/language_provider.dart';
 import '../services/location_service.dart';
 import '../constants/app_theme.dart';
+import '../providers/theme_provider.dart';
 import '../utils/responsive.dart';
 import '../utils/prayer_calculation_helper.dart';
 import 'location_setup_screen.dart';
@@ -633,6 +634,58 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
           ]),
         );
       }),
+
+      // ── Awqat an-Nahy (Forbidden prayer times warning card) ───────────────
+      Padding(
+        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.ink(0.04),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppColors.ink(0.08)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded,
+                      size: 16, color: ThemeProvider.divineAmber),
+                  const SizedBox(width: 8),
+                  Text(
+                    lp.locale.languageCode == 'bn'
+                        ? 'নামাজের নিষিদ্ধ ওয়াক্ত (আওকাতুন নাহয়)'
+                        : 'Forbidden Prayer Times (Awqat an-Nahy)',
+                    style: AppText.manrope(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: ThemeProvider.divineAmber,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                lp.locale.languageCode == 'bn'
+                    ? '১. সূর্যোদয়কালীন সময় (সূর্য পুরোপুরি ওপরে ওঠার আগ পর্যন্ত প্রায় ১৫ মিনিট)\n'
+                      '২. ঠিক দ্বিপ্রহর/যাওয়াল (সূর্য ঠিক মাথার ওপর থাকার সময় প্রায় ১০ মিনিট)\n'
+                      '৩. সূর্যাস্তের পূর্বমুহূর্ত (মাগরিবের পূর্বের প্রায় ১৫ মিনিট)\n'
+                      'রাসূলুল্লাহ (ﷺ) এই সময়ে সকল প্রকার নফল নামাজ আদায় করতে কঠোরভাবে নিষেধ করেছেন (সহীহ মুসলিম ৮৩২)।'
+                    : '1. Sunrise (approx. 15 mins until the sun has fully risen)\n'
+                      '2. Midday / Zawal (approx. 10 mins while sun is at its zenith)\n'
+                      '3. Sunset (approx. 15 mins before Maghrib until sunset)\n'
+                      'The Prophet (ﷺ) strictly forbade voluntary prayers during these times (Sahih Muslim 832).',
+                style: AppText.manrope(
+                  fontSize: 11,
+                  color: AppColors.textSlate400,
+                  height: 1.45,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     ]);
   }
 }

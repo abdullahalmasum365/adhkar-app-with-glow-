@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:adhan/adhan.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
@@ -65,6 +66,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  bool _isMorningTime(UserProvider userProvider, DateTime now) {
+    if (userProvider.hasSavedCoordinates) {
+      try {
+        final coords = Coordinates(userProvider.lat!, userProvider.lng!);
+        final params = userProvider.calculationMethod.getParameters()
+          ..madhab = userProvider.madhab.toLowerCase() == 'hanafi'
+              ? Madhab.hanafi
+              : Madhab.shafi;
+        final date = DateComponents.from(now);
+        final times = PrayerTimes(coords, date, params);
+
+        // Morning adhkar: From Fajr time until Asr prayer time starts
+        // Evening adhkar: From Asr time until next Fajr
+        return now.isAfter(times.fajr) && now.isBefore(times.asr);
+      } catch (_) {}
+    }
+    // Fallback if coordinates are not available:
+    // Islamic morning starts at dawn (~4:00 AM) until Asr (~3:30 PM / 15:30)
+    return now.hour >= 4 && (now.hour < 15 || (now.hour == 15 && now.minute < 30));
+  }
+
   @override
   Widget build(BuildContext context) {
     R.init(context);
@@ -84,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
 
     final now = DateTime.now();
-    final isMorning = now.hour >= 5 && now.hour < 18;
+    final isMorning = _isMorningTime(userProvider, now);
     final langCode = lp.locale.languageCode;
     // Locale-aware date: apply digit localization for languages that use
     // non-Latin numeral systems (Arabic, Hindi, Bengali, Tamil, Thai, Urdu).
@@ -561,30 +583,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                   SizedBox(height: R.px(12)),
 
-                  // ── Category Cards ────────────────────────────────────────────
-                  Row(children: [
-                    Expanded(
-                        child: _CategoryCard(
-                      icon: Icons.shield_outlined,
-                      label: lp.getText('protection'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const DhikrListScreen(
-                                  category: DhikrCategory.protection))),
-                    )),
-                    SizedBox(width: R.px(12)),
-                    Expanded(
-                        child: _CategoryCard(
-                      icon: Icons.filter_center_focus,
-                      label: lp.getText('focus'),
-                      onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const DhikrListScreen(
-                                  category: DhikrCategory.focus))),
-                    )),
-                  ]).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2),
+                  // ── Category Cards (Personalized by Onboarding Goal) ───────────
+                  Builder(builder: (context) {
+                    final goal = userProvider.onboardingGoal;
+                    final DhikrCategory primaryCat = (goal == 'peace')
+                        ? DhikrCategory.distress
+                        : DhikrCategory.protection;
+                    final DhikrCategory secondaryCat = (goal == 'habit')
+                        ? DhikrCategory.focus
+                        : (goal == 'sunnah')
+                            ? DhikrCategory.afterSalah
+                            : (goal == 'peace')
+                                ? DhikrCategory.protection
+                                : DhikrCategory.focus;
+
+                    return Row(children: [
+                      Expanded(
+                          child: _CategoryCard(
+                        icon: primaryCat.icon,
+                        label: lp.getText(primaryCat.titleKey),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    DhikrListScreen(category: primaryCat))),
+                      )),
+                      SizedBox(width: R.px(12)),
+                      Expanded(
+                          child: _CategoryCard(
+                        icon: secondaryCat.icon,
+                        label: lp.getText(secondaryCat.titleKey),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    DhikrListScreen(category: secondaryCat))),
+                      )),
+                    ]).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2);
+                  }),
 
                   SizedBox(height: R.px(24)),
                 ],

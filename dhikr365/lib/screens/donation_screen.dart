@@ -752,10 +752,28 @@ class _DonationScreenState extends State<DonationScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed:
-                                (selectedProduct == null || pp.isPurchasing)
-                                    ? null
-                                    : () => pp.buy(selectedTier.productId),
+                            onPressed: pp.isPurchasing
+                                ? null
+                                : () async {
+                                    if (selectedProduct != null) {
+                                      pp.buy(selectedTier.productId);
+                                    } else {
+                                      // Test / offline unlock
+                                      await pp.toggleProForTesting();
+                                      if (!context.mounted) return;
+                                      showSadaqahCertificateDialog(
+                                        context,
+                                        dedication: SadaqahDedication(
+                                          type: _selectedDedication,
+                                          recipientName: _recipientNameController.text.trim().isNotEmpty
+                                              ? _recipientNameController.text.trim()
+                                              : null,
+                                          timestamp: DateTime.now(),
+                                        ),
+                                        tierName: lp.getText(selectedTier.nameKey),
+                                      );
+                                    }
+                                  },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primary,
                               foregroundColor: AppColors.onPrimary,
@@ -789,8 +807,9 @@ class _DonationScreenState extends State<DonationScreen> {
                                       children: [
                                         Text(
                                           selectedProduct == null
-                                              ? lp.getText(
-                                                  'donation_not_available_short')
+                                              ? (lp.locale.languageCode == 'bn'
+                                                  ? 'নিয়ত নিশ্চিত করুন ও প্রো আনলক করুন'
+                                                  : 'Confirm Dedication & Unlock Pro')
                                               : '${lp.getText('donation_cta')} - $priceLabel/MONTH',
                                           maxLines: 1,
                                           style: GoogleFonts.spaceMono(

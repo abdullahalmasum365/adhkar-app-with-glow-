@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,6 +9,16 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/dhikr.dart';
 import '../services/audio_service.dart';
+import '../services/widget_service.dart';
+
+/// Milestone categories for tasbih counting and haptic/animation feedback.
+enum MilestoneType {
+  none,
+  thirtyThree,
+  sixtySix,
+  hundred,
+  target,
+}
 
 class DhikrProvider extends ChangeNotifier {
   List<Dhikr> _dhikrs = [];
@@ -130,7 +141,10 @@ class DhikrProvider extends ChangeNotifier {
 
     if (lastResetDate != today) {
       // New day — reset all counts to zero
-      _dhikrs = _dhikrs.map((d) => d.copyWith(currentCount: 0)).toList();
+      _dhikrs = _dhikrs.map((d) {
+        final isSaved = prefs.getBool('bookmark_${d.id}') ?? false;
+        return d.copyWith(currentCount: 0, isBookmarked: isSaved);
+      }).toList();
       await prefs.setString('last_reset_date', today);
       // Clear all saved per-dhikr counts
       for (final d in _dhikrs) {
@@ -142,7 +156,8 @@ class DhikrProvider extends ChangeNotifier {
       // Same day — restore in-progress counts
       _dhikrs = _dhikrs.map((d) {
         final saved = prefs.getInt('count_${d.id}') ?? 0;
-        return d.copyWith(currentCount: saved);
+        final isSaved = prefs.getBool('bookmark_${d.id}') ?? false;
+        return d.copyWith(currentCount: saved, isBookmarked: isSaved);
       }).toList();
       // Re-derive which categories were already complete at last save
       for (final cat in DhikrCategory.values) {
@@ -156,6 +171,28 @@ class DhikrProvider extends ChangeNotifier {
     // ─────────────────────────────────────────────────────────────────────────
 
     notifyListeners();
+    _syncHomeWidget();
+  }
+
+  void _syncHomeWidget() {
+    try {
+      final morningDone = getCategoryCompletedCount(DhikrCategory.morning);
+      final morningTotal = getCategoryTotalCount(DhikrCategory.morning);
+      final eveningDone = getCategoryCompletedCount(DhikrCategory.evening);
+      final eveningTotal = getCategoryTotalCount(DhikrCategory.evening);
+
+      WidgetService().updateAdhkarTrackerData(
+        streakDays: streakDays,
+        morningDone: morningDone,
+        morningTotal: morningTotal,
+        eveningDone: eveningDone,
+        eveningTotal: eveningTotal,
+      ).catchError((e) {
+        debugPrint('[DhikrProvider] WidgetService update error: $e');
+      });
+    } catch (e) {
+      debugPrint('[DhikrProvider] WidgetService update error: $e');
+    }
   }
 
   Future<void> _saveCounts() async {
@@ -167,21 +204,114 @@ class DhikrProvider extends ChangeNotifier {
     await prefs.setInt('daily_$today', totalDhikrCount);
     _weeklyData[today] = [totalDhikrCount];
     _monthlyActivity[DateTime.now().day] = totalDhikrCount;
+    _syncHomeWidget();
   }
 
-  Future incrementDhikr(String id) async {
+  /// Checks if [count] reached a tasbih milestone or the target count.
+  /// - `target`: when `targetCount > 0 && count >= targetCount`
+  /// - `hundred`: when `count == 100` (and not already target)
+  /// - `sixtySix`: when `count == 66` (and not target)
+  /// - `thirtyThree`: when `count == 33` or `(count > 0 && count % 33 == 0 && count <= 99)`
+  /// - `none`: otherwise
+  static MilestoneType checkMilestone({
+    required int count,
+    required int targetCount,
+  }) {
+    if (targetCount > 0 && count >= targetCount) {
+      return MilestoneType.target;
+    }
+    if (count == 100) {
+      return MilestoneType.hundred;
+    }
+    if (count == 66) {
+      return MilestoneType.sixtySix;
+    }
+    if (count == 33 || (count > 0 && count % 33 == 0 && count <= 99)) {
+      return MilestoneType.thirtyThree;
+    }
+    return MilestoneType.none;
+  }
+
+  /// Triggers tasbih milestone haptic patterns:
+  /// - normal tap / none: single lightImpact
+  /// - 33 / 66: double medium buzz with 120ms gap
+  /// - 100 / target: triple heavy buzz with 100ms gaps
+  static Future<void> triggerMilestoneHaptic(MilestoneType milestone) async {
+    try {
+      switch (milestone) {
+        case MilestoneType.none:
+          await HapticFeedback.lightImpact();
+          break;
+        case MilestoneType.thirtyThree:
+        case MilestoneType.sixtySix:
+          await HapticFeedback.mediumImpact();
+          await Future.delayed(const Duration(milliseconds: 120));
+          await HapticFeedback.mediumImpact();
+          break;
+        case MilestoneType.hundred:
+        case MilestoneType.target:
+          await HapticFeedback.heavyImpact();
+          await Future.delayed(const Duration(milliseconds: 100));
+          await HapticFeedback.heavyImpact();
+          await Future.delayed(const Duration(milliseconds: 100));
+          await HapticFeedback.heavyImpact();
+          break;
+      }
+    } catch (_) {
+      // Ignored gracefully on platforms/emulators without vibrator support
+    }
+  }
+
+  /// Safely plays a completion chime if an asset exists; skips silently otherwise.
+  static Future<void> playCompletionSound() async {
+    try {
+      const candidatePaths = [
+        'assets/audio/chime.mp3',
+        'assets/audio/ding.mp3',
+        'assets/audio/completion_chime.mp3',
+      ];
+      String? foundAsset;
+      for (final path in candidatePaths) {
+        try {
+          await rootBundle.load(path);
+          foundAsset = path;
+          break;
+        } catch (_) {}
+      }
+      if (foundAsset != null) {
+        final player = AudioPlayer();
+        await player
+            .play(AssetSource(foundAsset.replaceFirst('assets/', '')))
+            .catchError((_) {});
+      }
+    } catch (_) {
+      // Silently skip
+    }
+  }
+
+  Future<MilestoneType> incrementDhikr(String id) async {
     final idx = _dhikrs.indexWhere((d) => d.id == id);
-    if (idx == -1) return;
+    if (idx == -1) return MilestoneType.none;
     final d = _dhikrs[idx];
     if (d.currentCount < d.targetCount || d.targetCount == 0) {
-      _dhikrs[idx] = d.copyWith(currentCount: d.currentCount + 1);
+      final newCount = d.currentCount + 1;
+      _dhikrs[idx] = d.copyWith(currentCount: newCount);
       notifyListeners();
+
+      final milestone = checkMilestone(
+        count: newCount,
+        targetCount: d.targetCount,
+      );
+
       // Only update the streak when the full category is completed, not on
       // every individual tap.  _checkCategoryCompletion is a no-op if the
       // category is already in _completedToday.
       await _checkCategoryCompletion(d.category);
       await _saveCounts();
+
+      return milestone;
     }
+    return MilestoneType.none;
   }
 
   /// Marks [category] as completed today and updates the streak the first time
@@ -242,6 +372,7 @@ class DhikrProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     for (final d in _dhikrs) {
       await prefs.remove('count_${d.id}');
+      await prefs.remove('bookmark_${d.id}');
     }
     await prefs.remove('streak_days');
     await prefs.remove('last_active_date');
@@ -252,7 +383,7 @@ class DhikrProvider extends ChangeNotifier {
       final day = DateTime.now().subtract(Duration(days: i));
       await prefs.remove('daily_${_dateKey(day)}');
     }
-    _dhikrs = _dhikrs.map((d) => d.copyWith(currentCount: 0)).toList();
+    _dhikrs = _dhikrs.map((d) => d.copyWith(currentCount: 0, isBookmarked: false)).toList();
     _completedToday.clear();
     _cachedStreak = 0;
     _earlyBirdBadge = false;
@@ -260,6 +391,7 @@ class DhikrProvider extends ChangeNotifier {
     _weeklyData.clear();
     _monthlyActivity.clear();
     notifyListeners();
+    _syncHomeWidget();
   }
   // ─────────────────────────────────────────────────────────────────────────
 
@@ -419,6 +551,25 @@ class DhikrProvider extends ChangeNotifier {
   List<Dhikr> getDhikrsByCategory(DhikrCategory category) =>
       _dhikrs.where((d) => d.category == category).toList();
 
+  /// All duas bookmarked/favorited by the user across all categories.
+  List<Dhikr> get bookmarkedDhikrs =>
+      _dhikrs.where((d) => d.isBookmarked).toList();
+
+  /// Whether a specific dhikr is currently bookmarked.
+  bool isBookmarked(String dhikrId) =>
+      _dhikrs.any((d) => d.id == dhikrId && d.isBookmarked);
+
+  /// Toggles the bookmark state for [dhikrId] and persists it with key `bookmark_<id>`.
+  Future<void> toggleBookmark(String dhikrId) async {
+    final idx = _dhikrs.indexWhere((d) => d.id == dhikrId);
+    if (idx == -1) return;
+    final updated = !_dhikrs[idx].isBookmarked;
+    _dhikrs[idx] = _dhikrs[idx].copyWith(isBookmarked: updated);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('bookmark_$dhikrId', updated);
+    notifyListeners();
+  }
+
   Future reloadDhikrs({
     required String uiLanguageCode,
     required String transliterationCode,
@@ -442,7 +593,8 @@ class DhikrProvider extends ChangeNotifier {
 
     _dhikrs = _dhikrs.map((d) {
       final saved = prefs.getInt('count_${d.id}') ?? 0;
-      return d.copyWith(currentCount: saved);
+      final isSaved = prefs.getBool('bookmark_${d.id}') ?? false;
+      return d.copyWith(currentCount: saved, isBookmarked: isSaved);
     }).toList();
 
     notifyListeners();

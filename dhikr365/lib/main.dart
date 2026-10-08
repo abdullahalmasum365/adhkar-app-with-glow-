@@ -20,8 +20,11 @@ import 'providers/user_provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/audio_service.dart';
 import 'services/notification_service.dart';
+import 'services/widget_service.dart';
 import 'utils/app_navigator.dart';
 import 'utils/responsive.dart';
+import 'package:adhan/adhan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,14 +36,61 @@ import 'package:workmanager/workmanager.dart';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    // Reinitialize the notification service (timezone + channels)
-    // then reschedule the rolling 10-day notification window.
     try {
       await NotificationService().init();
       debugPrint('[WorkManager] Reschedule task fired: $task');
-      // The actual scheduling is triggered from the Dart provider on app open.
-      // Here we just ensure the notification service is live so that the
-      // OS-level alarm slots created by flutter_local_notifications survive.
+
+      final prefs = await SharedPreferences.getInstance();
+      final latStr = prefs.getString('saved_lat');
+      final lngStr = prefs.getString('saved_lng');
+
+      if (latStr != null && lngStr != null) {
+        final lat = double.tryParse(latStr);
+        final lng = double.tryParse(lngStr);
+
+        if (lat != null && lng != null) {
+          final madhab = prefs.getString('madhab') ?? 'shafii';
+          final methodStr = prefs.getString('calc_method');
+          CalculationMethod method = CalculationMethod.muslim_world_league;
+          if (methodStr != null) {
+            method = CalculationMethod.values.firstWhere(
+              (e) => e.name == methodStr,
+              orElse: () => CalculationMethod.muslim_world_league,
+            );
+          }
+
+          final morningEnabled = prefs.getBool('notif_morning') ?? true;
+          final eveningEnabled = prefs.getBool('notif_evening') ?? true;
+          final prayerEnabled = prefs.getBool('notif_prayer_alerts') ?? true;
+
+          if (morningEnabled || eveningEnabled) {
+            await NotificationService().scheduleAdhkarReminders(
+              lat,
+              lng,
+              calculationMethod: method,
+              madhab: madhab,
+            );
+          }
+
+          if (prayerEnabled) {
+            await NotificationService().schedulePrayerTimes(
+              lat,
+              lng,
+              calculationMethod: method,
+              madhab: madhab,
+              enabledPrayers: {
+                'Fajr': prefs.getBool('notif_fajr') ?? true,
+                'Sunrise': prefs.getBool('notif_sunrise') ?? true,
+                'Dhuhr': prefs.getBool('notif_dhuhr') ?? true,
+                'Asr': prefs.getBool('notif_asr') ?? true,
+                'Maghrib': prefs.getBool('notif_maghrib') ?? true,
+                'Isha': prefs.getBool('notif_isha') ?? true,
+              },
+            );
+          }
+          debugPrint('[WorkManager] Rolling 10-day notification window rescheduled successfully');
+        }
+      }
     } catch (e) {
       debugPrint('[WorkManager] Task error: $e');
     }
@@ -66,6 +116,13 @@ void main() async {
     await NotificationService().init();
   } catch (e) {
     debugPrint('[main] NotificationService init failed: $e');
+  }
+
+  // 3a. Initialize Universal Multi-Theme Home Screen Widget engine
+  try {
+    await WidgetService().init();
+  } catch (e) {
+    debugPrint('[main] WidgetService init failed: $e');
   }
 
   // 3b. WorkManager — registers a periodic background task that fires every
@@ -226,7 +283,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             minTextAdapt: true,
             splitScreenMode: true, // correct layout on tablets / foldables
             builder: (_, __) => MaterialApp(
-              title: 'Adhkaar 365',
+              title: 'Adhkar 365',
               debugShowCheckedModeBanner: false,
               navigatorKey: appNavigatorKey,
               themeMode: themeProvider.themeMode,

@@ -66,7 +66,9 @@ dependencies:
   in_app_purchase: ^3.2.0
   url_launcher: ^6.3.1
   workmanager: ^0.10.10
-
+  home_widget: ^0.10.0
+  screenshot: ^3.0.0
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:

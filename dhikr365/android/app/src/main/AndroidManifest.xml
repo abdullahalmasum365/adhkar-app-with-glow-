@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     
     <application
-        android:label="Adhkaar 365"
+        android:label="Adhkar 365"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon"
         android:allowBackup="false">
@@ -52,7 +52,95 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Deep linking intent filter for home screen widgets -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="adhkaar365" />
+            </intent-filter>
         </activity>
+
+        <!-- HomeWidget Background and Scheduled Receivers -->
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
+            android:exported="true" />
+        <receiver
+            android:name="es.antonborri.home_widget.HomeWidgetScheduledUpdateReceiver"
+            android:exported="true" />
+
+        <!-- Widget 1: Prayer Countdown Medium (4x2) -->
+        <receiver
+            android:name=".PrayerCountdownWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_prayer_countdown_info" />
+        </receiver>
+
+        <!-- Widget 2: Prayer Countdown Compact (2x2) -->
+        <receiver
+            android:name=".PrayerCompactWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_prayer_compact_info" />
+        </receiver>
+
+        <!-- Widget 3: Daily Adhkar Tracker Medium (4x2) -->
+        <receiver
+            android:name=".AdhkarTrackerWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_adhkar_tracker_info" />
+        </receiver>
+
+        <!-- Widget 4: Daily Adhkar Tracker Small (2x2) -->
+        <receiver
+            android:name=".AdhkarTrackerSmallWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_adhkar_tracker_small_info" />
+        </receiver>
+
+        <!-- Widget 5: Dua of the Day Medium (4x2) -->
+        <receiver
+            android:name=".DuaOfTheDayWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_dua_of_day_info" />
+        </receiver>
+
+        <!-- Widget 6: Quick Tasbih Small (2x2) -->
+        <receiver
+            android:name=".TasbihWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_tasbih_info" />
+        </receiver>
+
         <!-- Default small icon for notifications (FCM + local).
              MUST be monochrome white — Android 5+ only renders white pixels
              in the status bar. Colour icons appear as a solid grey blob. -->

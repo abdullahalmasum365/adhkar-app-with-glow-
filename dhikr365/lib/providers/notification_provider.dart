@@ -210,16 +210,22 @@ class NotificationProvider extends ChangeNotifier {
     // Clear everything first to avoid duplicates
     await svc.cancelMorningNotification();
     await svc.cancelEveningNotification();
+    await svc.cancelBeforeSleepNotification();
+    await svc.cancelJumuahNotification();
     await svc.cancelAllPrayerNotifications();
 
     // Adhkar reminders
-    if (_morningEnabled || _eveningEnabled) {
+    if (_morningEnabled || _eveningEnabled || _specialTimesEnabled) {
       await svc.scheduleAdhkarReminders(up.lat!, up.lng!,
         calculationMethod: up.calculationMethod,
         madhab: up.madhab,
       );
       if (!_morningEnabled) await svc.cancelMorningNotification();
       if (!_eveningEnabled) await svc.cancelEveningNotification();
+      if (!_specialTimesEnabled) {
+        await svc.cancelBeforeSleepNotification();
+        await svc.cancelJumuahNotification();
+      }
     }
 
     // Prayer alerts

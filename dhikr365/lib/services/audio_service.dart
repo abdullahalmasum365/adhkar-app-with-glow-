@@ -271,6 +271,9 @@ class AudioService {
     try { await _player.seek(position); } catch (_) {}
   }
 
+  /// Jump directly to an exact millisecond timestamp (used by synced lyrics/segments).
+  Future<void> seekMs(int ms) => seek(Duration(milliseconds: ms));
+
   Future<void> play(String? path, {int repeatCount = 1}) async {
     if (path == null || path.isEmpty) return;
     try {

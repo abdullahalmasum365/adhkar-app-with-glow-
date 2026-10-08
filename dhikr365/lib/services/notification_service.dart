@@ -20,11 +20,15 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/app_theme.dart';
 import '../models/dhikr.dart';
 import '../screens/dhikr_list_screen.dart';
 import '../utils/app_navigator.dart';
+import 'smart_notification_engine.dart';
+import 'widget_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Notification ID Registry
@@ -32,8 +36,11 @@ import '../utils/app_navigator.dart';
 // ─────────────────────────────────────────────────────────────────────────────
 class _IDs {
   // Adhkar reminders
-  static const int morning = 1000; // 1000–1009
-  static const int evening = 1100; // 1100–1109, safe gap
+  static const int morning     = 1000; // 1000–1009
+  static const int evening     = 1100; // 1100–1109, safe gap
+  static const int beforeSleep = 1200; // 1200–1209
+  static const int jumuah      = 1300; // 1300–1309
+  static const int snooze      = 1400; // 1400–1409
 
   // Prayer-time alerts — one slot per day in the rolling window.
   // Bases are 10 apart, so kDaysAhead must never exceed 10.
@@ -254,7 +261,11 @@ class NotificationService {
   // ── Notification tap handler (foreground) ──────────────────────────────────
   static void _onLocalNotificationTap(NotificationResponse response) {
     final payload = response.payload ?? '';
-    debugPrint('[Local] Tapped: id=${response.id}, payload=$payload');
+    debugPrint('[Local] Tapped: id=${response.id}, actionId=${response.actionId}, payload=$payload');
+    if (response.actionId == SmartNotificationEngine.actionSnooze) {
+      NotificationService().scheduleSnooze(payload);
+      return;
+    }
     _routeForPayload(payload);
   }
 
@@ -262,7 +273,11 @@ class NotificationService {
   @pragma('vm:entry-point')
   static void _onBackgroundLocalNotificationTap(NotificationResponse response) {
     final payload = response.payload ?? '';
-    debugPrint('[Local BG] Tapped: id=${response.id}, payload=$payload');
+    debugPrint('[Local BG] Tapped: id=${response.id}, actionId=${response.actionId}, payload=$payload');
+    if (response.actionId == SmartNotificationEngine.actionSnooze) {
+      NotificationService().scheduleSnooze(payload);
+      return;
+    }
     _routeForPayload(payload);
   }
 
@@ -287,8 +302,18 @@ class NotificationService {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.evening),
       ));
+    } else if (payload == 'sleep' || payload == 'prayer:isha') {
+      // Before sleep period → open Before Sleep Adhkar screen
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.beforeSleep),
+      ));
+    } else if (payload == 'jumuah') {
+      // Jumu'ah Hour of Acceptance → open Protection / General Adhkar
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.protection),
+      ));
     }
-    // Other prayer alerts (Dhuhr, Isha) just bring the app to foreground —
+    // Other prayer alerts (Dhuhr) just bring the app to foreground —
     // the Dashboard already shows all prayer times.
   }
 
@@ -465,61 +490,183 @@ class NotificationService {
     int daysAhead = kDaysAhead,
     CalculationMethod calculationMethod = CalculationMethod.muslim_world_league,
     String madhab = 'shafii',
+    String? langCode,
   }) async {
     // Cancel existing before rescheduling to avoid duplicates
     await cancelMorningNotification();
     await cancelEveningNotification();
+    await cancelBeforeSleepNotification();
+    await cancelJumuahNotification();
+
+    final prefs = await SharedPreferences.getInstance();
+    final lang = langCode ?? prefs.getString('language_code') ?? 'en';
+    final streak = prefs.getInt('streak_days') ?? 0;
 
     final coords = Coordinates(lat, lng);
     final params = calculationMethod.getParameters()
       ..madhab =
           madhab.toLowerCase() == 'hanafi' ? Madhab.hanafi : Madhab.shafi;
 
+    final now = DateTime.now();
+
+    final actions = [
+      AndroidNotificationAction(
+        SmartNotificationEngine.actionRead,
+        SmartNotificationEngine.getReadActionLabel(lang),
+        showsUserInterface: true,
+      ),
+      AndroidNotificationAction(
+        SmartNotificationEngine.actionSnooze,
+        SmartNotificationEngine.getSnoozeActionLabel(lang),
+        showsUserInterface: false,
+      ),
+    ];
+
     for (int i = 0; i < daysAhead; i++) {
-      final day = DateTime.now().add(Duration(days: i));
+      final day = now.add(Duration(days: i));
       final dateComp = DateComponents.from(day);
       final times = PrayerTimes(coords, dateComp, params);
 
-      // Morning adhkar starts at Fajr — the prescribed time begins at dawn.
-      // Evening adhkar starts at Asr — scholars agree the evening period
-      // begins from Asr until sunset.
-      final fajr = times.fajr.toLocal();
-      final asr  = times.asr.toLocal();
+      // 1. Morning Adhkar: 18 mins after Fajr (prime Sunnah window before sunrise)
+      final morningTime = times.fajr.toLocal().add(SmartNotificationEngine.morningFajrOffset);
+      final morningHook = SmartNotificationEngine.getMorningHook(lang, i, streak: streak);
 
-      // Only schedule future times (skip if already passed today)
-      final now = DateTime.now();
-      if (fajr.isAfter(now)) {
+      if (morningTime.isAfter(now)) {
         await _scheduleLocalNotification(
           id: _IDs.morning + i, // 1000–1009
-          title: 'Morning Adhkar • أذكار الصباح 🌄',
-          body: 'Fajr has begun — read your morning adhkar now. '
-              '"وَسَبِّحْ بِحَمْدِ رَبِّكَ قَبْلَ طُلُوعِ الشَّمْسِ"',
-          scheduledTime: fajr,
+          title: morningHook.title,
+          body: morningHook.body,
+          scheduledTime: morningTime,
           channelId: _IDs.adhkarChannelId,
           channelName: 'Adhkar Reminders',
           payload: 'morning',
           sound: null,
           subText: null,
+          actions: actions,
         );
       }
 
-      if (asr.isAfter(now)) {
+      // 2. Evening Adhkar: 12 mins after Asr (prime Sunnah window before Maghrib)
+      final eveningTime = times.asr.toLocal().add(SmartNotificationEngine.eveningAsrOffset);
+      final eveningHook = SmartNotificationEngine.getEveningHook(lang, i, streak: streak);
+
+      if (eveningTime.isAfter(now)) {
         await _scheduleLocalNotification(
           id: _IDs.evening + i, // 1100–1109
-          title: 'Evening Adhkar • أذكار المساء 🌆',
-          body: 'Asr time — the evening adhkar period has begun. '
-              '"وَسَبِّحْ بِحَمْدِهِ قَبْلَ غُرُوبِهَا"',
-          scheduledTime: asr,
+          title: eveningHook.title,
+          body: eveningHook.body,
+          scheduledTime: eveningTime,
           channelId: _IDs.adhkarChannelId,
           channelName: 'Adhkar Reminders',
           payload: 'evening',
           sound: null,
           subText: null,
+          actions: actions,
         );
+      }
+
+      // 3. Before Sleep Adhkar: 35 mins after Isha
+      final sleepTime = times.isha.toLocal().add(SmartNotificationEngine.beforeSleepIshaOffset);
+      final sleepHook = SmartNotificationEngine.getBeforeSleepHook(lang, i);
+
+      if (sleepTime.isAfter(now)) {
+        await _scheduleLocalNotification(
+          id: _IDs.beforeSleep + i, // 1200–1209
+          title: sleepHook.title,
+          body: sleepHook.body,
+          scheduledTime: sleepTime,
+          channelId: _IDs.adhkarChannelId,
+          channelName: 'Adhkar Reminders',
+          payload: 'sleep',
+          sound: null,
+          subText: null,
+          actions: actions,
+        );
+      }
+
+      // 4. Jumu'ah Hour of Acceptance: Fridays 60 mins before Maghrib
+      if (day.weekday == DateTime.friday) {
+        final jumuahTime = times.maghrib.toLocal().add(SmartNotificationEngine.jumuahMaghribOffset);
+        final jumuahHook = SmartNotificationEngine.getJumuahHook(lang, i);
+
+        if (jumuahTime.isAfter(now)) {
+          await _scheduleLocalNotification(
+            id: _IDs.jumuah + i, // 1300–1309
+            title: jumuahHook.title,
+            body: jumuahHook.body,
+            scheduledTime: jumuahTime,
+            channelId: _IDs.adhkarChannelId,
+            channelName: 'Adhkar Reminders',
+            payload: 'jumuah',
+            sound: null,
+            subText: null,
+            actions: actions,
+          );
+        }
       }
     }
 
-    debugPrint('[Scheduler] Adhkar reminders scheduled for $daysAhead days');
+    debugPrint('[Scheduler] Smart Sunnah Adhkar reminders scheduled for $daysAhead days (lang: $lang)');
+  }
+
+  Future<void> cancelBeforeSleepNotification() async {
+    for (int i = 0; i < kDaysAhead; i++) {
+      await _local.cancel(_IDs.beforeSleep + i);
+    }
+  }
+
+  Future<void> cancelJumuahNotification() async {
+    for (int i = 0; i < kDaysAhead; i++) {
+      await _local.cancel(_IDs.jumuah + i);
+    }
+  }
+
+  Future<void> scheduleSnooze(String payload) async {
+    final prefs = await SharedPreferences.getInstance();
+    final lang = prefs.getString('language_code') ?? 'en';
+    final isBn = lang == 'bn';
+    final snoozeTime = DateTime.now().add(const Duration(minutes: 15));
+
+    String title;
+    String body;
+    if (payload.contains('morning')) {
+      title = isBn ? '⏰ সকালের আযকার রিমাইন্ডার' : '⏰ Morning Adhkar Reminder';
+      body = isBn
+          ? '১৫ মিনিট অতিক্রান্ত হয়েছে। সকালের বরকতময় আযকার পাঠ করে দিনটি শুরু করুন।'
+          : '15 minutes have passed. Start your day with the blessed Morning Adhkar.';
+    } else if (payload.contains('evening')) {
+      title = isBn ? '⏰ সন্ধ্যার আযকার রিমাইন্ডার' : '⏰ Evening Adhkar Reminder';
+      body = isBn
+          ? '১৫ মিনিট অতিক্রান্ত হয়েছে। মাগরিবের পূর্বেই সন্ধ্যার আযকার পড়ে নিন।'
+          : '15 minutes have passed. Complete your Evening Adhkar before sunset.';
+    } else if (payload.contains('sleep')) {
+      title = isBn ? '⏰ ঘুমের আগের আযকার' : '⏰ Before Sleep Adhkar';
+      body = isBn
+          ? 'ঘুমের পূর্বে দোয়া ও সূরাগুলো পাঠ করে অন্তরে প্রশান্তি আনুন।'
+          : 'Recite your bedtime duas and surahs for peaceful sleep.';
+    } else {
+      title = isBn ? '⏰ আযকার রিমাইন্ডার' : '⏰ Adhkar Reminder';
+      body = isBn ? 'আপনার দৈনিক জিকির সম্পন্ন করুন।' : 'Complete your daily remembrance.';
+    }
+
+    final actions = [
+      AndroidNotificationAction(
+        SmartNotificationEngine.actionRead,
+        SmartNotificationEngine.getReadActionLabel(lang),
+        showsUserInterface: true,
+      ),
+    ];
+
+    await _scheduleLocalNotification(
+      id: _IDs.snooze,
+      title: title,
+      body: body,
+      scheduledTime: snoozeTime,
+      channelId: _IDs.adhkarChannelId,
+      channelName: 'Adhkar Reminders',
+      payload: payload,
+      actions: actions,
+    );
   }
 
   // ══════════════════════════════════════════════════════════════════════════
@@ -542,8 +689,12 @@ class NotificationService {
     int daysAhead = kDaysAhead,
     CalculationMethod calculationMethod = CalculationMethod.muslim_world_league,
     String madhab = 'shafii',
+    String? langCode,
   }) async {
     await cancelAllPrayerNotifications();
+
+    final prefs = await SharedPreferences.getInstance();
+    final lang = langCode ?? prefs.getString('language_code') ?? 'en';
 
     final coords = Coordinates(lat, lng);
     final params = calculationMethod.getParameters()
@@ -551,31 +702,87 @@ class NotificationService {
           madhab.toLowerCase() == 'hanafi' ? Madhab.hanafi : Madhab.shafi;
     final now = DateTime.now();
 
-    final prayerConfig = [
-      const _PrayerConfig('Fajr', _IDs.fajrBase,
-          'Fajr Prayer • الفجر 🌄',
-          'Rise and pray Fajr — "الصَّلَاةُ خَيْرٌ مِنَ النَّوْمِ" Prayer is better than sleep.'),
-      const _PrayerConfig('Sunrise', _IDs.sunriseBase,
-          'Sunrise • الشروق 🌅',
-          'The sun has risen. Open Adhkaar 365 for your morning supplications.'),
-      const _PrayerConfig('Dhuhr', _IDs.dhuhrBase,
-          'Dhuhr Prayer • الظهر ☀️',
-          'Midday prayer time. Take a moment to stand before Allah.'),
-      const _PrayerConfig('Asr', _IDs.asrBase,
-          'Asr Prayer • العصر 🌤',
-          'Asr time has begun. "وَالْعَصْرِ ۙ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ"'),
-      const _PrayerConfig('Maghrib', _IDs.maghribBase,
-          'Maghrib Prayer • المغرب 🌇',
-          'Sunset — pray Maghrib and open your evening adhkar.'),
-      const _PrayerConfig('Isha', _IDs.ishaBase,
-          'Isha Prayer • العشاء 🌙',
-          'Night has come. End your day in the remembrance of Allah.'),
-    ];
+    const prayerBases = {
+      'Fajr': _IDs.fajrBase,
+      'Sunrise': _IDs.sunriseBase,
+      'Dhuhr': _IDs.dhuhrBase,
+      'Asr': _IDs.asrBase,
+      'Maghrib': _IDs.maghribBase,
+      'Isha': _IDs.ishaBase,
+    };
+
+    final prayerConfig = prayerBases.entries.map((e) {
+      final text = _NotificationLocale.getPrayer(e.key, lang);
+      return _PrayerConfig(e.key, e.value, text.title, text.body);
+    }).toList();
 
     for (int i = 0; i < daysAhead; i++) {
       final day = now.add(Duration(days: i));
       final dateComp = DateComponents.from(day);
       final times = PrayerTimes(coords, dateComp, params);
+
+      if (i == 0) {
+        // Sync today's prayer times to Home Screen Widgets
+        try {
+          final fmt = DateFormat('hh:mm a');
+          final city = prefs.getString('saved_city');
+          final country = prefs.getString('saved_country');
+          final locationName = (city != null && city.isNotEmpty)
+              ? (country != null && country.isNotEmpty ? '$city, $country' : city)
+              : 'Prayer Times';
+
+          String nextPrayer = 'Fajr';
+          DateTime nextTime = times.fajr;
+          String currentWaqt = 'Isha';
+
+          if (now.isBefore(times.fajr)) {
+            nextPrayer = 'Fajr';
+            nextTime = times.fajr;
+            currentWaqt = 'Tahajjud';
+          } else if (now.isBefore(times.dhuhr)) {
+            nextPrayer = 'Dhuhr';
+            nextTime = times.dhuhr;
+            currentWaqt = now.isBefore(times.sunrise) ? 'Fajr' : 'Duha';
+          } else if (now.isBefore(times.asr)) {
+            nextPrayer = 'Asr';
+            nextTime = times.asr;
+            currentWaqt = 'Dhuhr';
+          } else if (now.isBefore(times.maghrib)) {
+            nextPrayer = 'Maghrib';
+            nextTime = times.maghrib;
+            currentWaqt = 'Asr';
+          } else if (now.isBefore(times.isha)) {
+            nextPrayer = 'Isha';
+            nextTime = times.isha;
+            currentWaqt = 'Maghrib';
+          } else {
+            nextPrayer = 'Fajr';
+            nextTime = times.fajr.add(const Duration(days: 1));
+            currentWaqt = 'Isha';
+          }
+
+          final diff = nextTime.difference(now);
+          final h = diff.inHours;
+          final m = diff.inMinutes % 60;
+          final countdown = h > 0 ? 'in ${h}h ${m}m' : 'in ${m}m';
+
+          WidgetService().updatePrayerData(
+            location: locationName,
+            currentWaqt: '$currentWaqt Waqt',
+            nextPrayerName: nextPrayer,
+            nextPrayerTime: fmt.format(nextTime.toLocal()),
+            countdownText: countdown,
+            progressPercent: 50,
+            fajrTime: fmt.format(times.fajr.toLocal()),
+            dhuhrTime: fmt.format(times.dhuhr.toLocal()),
+            asrTime: fmt.format(times.asr.toLocal()),
+            maghribTime: fmt.format(times.maghrib.toLocal()),
+            ishaTime: fmt.format(times.isha.toLocal()),
+          );
+        } catch (e) {
+          debugPrint('[NotificationService] WidgetService.updatePrayerData error: $e');
+        }
+      }
 
       for (final cfg in prayerConfig) {
         if (!(enabledPrayers[cfg.name] ?? true)) continue;
@@ -597,7 +804,7 @@ class NotificationService {
       }
     }
 
-    debugPrint('[Scheduler] Prayer times scheduled for $daysAhead days');
+    debugPrint('[Scheduler] Prayer times scheduled for $daysAhead days (lang: $lang)');
   }
 
   DateTime _getPrayerTime(PrayerTimes times, String name) {
@@ -633,6 +840,7 @@ class NotificationService {
     required String payload,
     String? sound,
     String? subText,
+    List<AndroidNotificationAction>? actions,
   }) async {
     // Convert to TZDateTime — required by flutter_local_notifications
     final tzTime = tz.TZDateTime.from(scheduledTime, tz.local);
@@ -642,6 +850,7 @@ class NotificationService {
       channelName,
       importance: Importance.max,
       priority: Priority.max,
+      actions: actions,
       // Status-bar small icon: monochrome white PNG in res/drawable-*
       icon: 'ic_stat_notification',
       subText: subText,
@@ -900,4 +1109,108 @@ class _PrayerConfig {
   final String title;
   final String body;
   const _PrayerConfig(this.name, this.baseId, this.title, this.body);
+}
+
+class _NotifText {
+  final String title;
+  final String body;
+  const _NotifText(this.title, this.body);
+}
+
+class _NotificationLocale {
+  static _NotifText getPrayer(String name, String lang) {
+    if (lang == 'bn') {
+      switch (name) {
+        case 'Fajr':
+          return const _NotifText('ফজর নামাজ • الفجر 🌄', 'ফজরের ওয়াক্ত হয়েছে — "নামাজ ঘুমের চেয়ে উত্তম"');
+        case 'Sunrise':
+          return const _NotifText('সূর্যোদয় • الشروق 🌅', 'সূর্য উদিত হয়েছে — নতুন দিনের সূচনা। সকালের আযকার বাকি থাকলে সম্পন্ন করে নিন।');
+        case 'Dhuhr':
+          return const _NotifText('যোহর নামাজ • الظهر ☀️', 'দুপুরের নামাজের ওয়াক্ত হয়েছে — আল্লাহর সন্তুষ্টিতে নামাজ আদায় করুন।');
+        case 'Asr':
+          return const _NotifText('আসর নামাজ • العصر 🌤', 'আসরের ওয়াক্ত হয়েছে — "সময়ের শপথ! নিশ্চয়ই মানুষ ক্ষতিগ্রস্ত।"');
+        case 'Maghrib':
+          return const _NotifText('মাগরিব নামাজ • المغرب 🌇', 'সূর্যাস্ত হয়েছে — মাগরিব নামাজ আদায় করুন। সন্ধ্যার আযকার বাকি থাকলে পড়ে নিন।');
+        case 'Isha':
+          return const _NotifText('ইশা নামাজ • العشاء 🌙', 'রাতের আগমন — ইশার নামাজ আদায় করে দিনটি আল্লাহর স্মরণে সমাপ্ত করুন।');
+      }
+    } else if (lang == 'ar') {
+      switch (name) {
+        case 'Fajr':
+          return const _NotifText('صلاة الفجر • الفجر 🌄', 'الصلاة خير من النوم — قوموا إلى صلاة الفجر.');
+        case 'Sunrise':
+          return const _NotifText('الشروق • الشروق 🌅', 'أشرقت الشمس — بداية يوم جديد. أتمم أذكار الصباح إن لم تكن قرأتها.');
+        case 'Dhuhr':
+          return const _NotifText('صلاة الظهر • الظهر ☀️', 'حان وقت صلاة الظهر — أقم الصلاة لذكر الله.');
+        case 'Asr':
+          return const _NotifText('صلاة العصر • العصر 🌤', 'حان وقت صلاة العصر — حافظوا على الصلوات والصلاة الوسطى.');
+        case 'Maghrib':
+          return const _NotifText('صلاة المغرب • المغرب 🌇', 'غربت الشمس — صلِّ المغرب وأتمم أذكار المساء إن لم تكن قرأتها.');
+        case 'Isha':
+          return const _NotifText('صلاة العشاء • العشاء 🌙', 'حان وقت صلاة العشاء — اختم يومك بذكر الله.');
+      }
+    } else if (lang == 'id' || lang == 'ms') {
+      switch (name) {
+        case 'Fajr':
+          return const _NotifText('Salat Subuh • الفجر 🌄', 'As-shalatu khairum minan naum — Mari tunaikan salat Subuh.');
+        case 'Sunrise':
+          return const _NotifText('Syuruq • الشروق 🌅', 'Matahari telah terbit — awal hari baru. Selesaikan zikir pagi jika belum.');
+        case 'Dhuhr':
+          return const _NotifText('Salat Zuhur • الظهر ☀️', 'Waktu Zuhur telah tiba — luangkan waktu menghadap Allah.');
+        case 'Asr':
+          return const _NotifText('Salat Asar • العصر 🌤', 'Waktu Asar telah tiba — tunaikan salat.');
+        case 'Maghrib':
+          return const _NotifText('Salat Magrib • المغرب 🌇', 'Matahari telah terbenam — tunaikan salat Magrib dan selesaikan zikir petang.');
+        case 'Isha':
+          return const _NotifText('Salat Isya • العشاء 🌙', 'Malam telah tiba — akhiri harimu dengan mengingat Allah.');
+      }
+    } else if (lang == 'tr') {
+      switch (name) {
+        case 'Fajr':
+          return const _NotifText('Sabah Namazı • الفجر 🌄', 'Namaz uykudan hayırlıdır — Haydin sabah namazına.');
+        case 'Sunrise':
+          return const _NotifText('Güneş Doğuşu • الشروق 🌅', 'Güneş doğdu — yeni bir gün başladı. Kalan sabah zikirlerinizi tamamlayın.');
+        case 'Dhuhr':
+          return const _NotifText('Öğle Namazı • الظهر ☀️', 'Öğle namazı vakti girdi — Allah\'ın huzuruna durma zamanı.');
+        case 'Asr':
+          return const _NotifText('İkindi Namazı • العصر 🌤', 'İkindi vakti girdi — namazınızı eda edin.');
+        case 'Maghrib':
+          return const _NotifText('Akşam Namazı • المغرب 🌇', 'Güneş battı — akşam namazını kılın ve kalan akşam zikirlerinizi okuyun.');
+        case 'Isha':
+          return const _NotifText('Yatsı Namazı • العشاء 🌙', 'Gece geldi — gününüzü Allah\'ı anarak tamamlayın.');
+      }
+    } else if (lang == 'ur') {
+      switch (name) {
+        case 'Fajr':
+          return const _NotifText('نماز فجر • الفجر 🌄', 'الصلٰوۃ خیر من النوم — نماز نیند سے بہتر ہے۔');
+        case 'Sunrise':
+          return const _NotifText('طلوع آفتاب • الشروق 🌅', 'سورج طلوع ہو چکا ہے — نئے دن کا آغاز۔ اگر صبح کے اذکار باقی ہیں تو مکمل کر لیں۔');
+        case 'Dhuhr':
+          return const _NotifText('نماز ظہر • الظهر ☀️', 'ظہر کا وقت ہو چکا ہے — اللہ کے حضور سجدہ ریز ہوں۔');
+        case 'Asr':
+          return const _NotifText('نماز عصر • العصر 🌤', 'عصر کا وقت شروع ہو چکا ہے — نماز ادا کریں۔');
+        case 'Maghrib':
+          return const _NotifText('نماز مغرب • المغرب 🌇', 'غروب آفتاب ہو چکا ہے — نماز مغرب ادا کریں اور شام کے اذکار مکمل کریں۔');
+        case 'Isha':
+          return const _NotifText('نماز عشاء • العشاء 🌙', 'রাত ہو چکی ہے — اپنے دن کا اختتام اللہ کے ذکر کے ساتھ کریں۔');
+      }
+    }
+    // Default English
+    switch (name) {
+      case 'Fajr':
+        return const _NotifText('Fajr Prayer • الفجر 🌄', 'Rise and pray Fajr — "Prayer is better than sleep."');
+      case 'Sunrise':
+        return const _NotifText('Sunrise • الشروق 🌅', 'The sun has risen — a new day begins. Complete any remaining morning adhkar.');
+      case 'Dhuhr':
+        return const _NotifText('Dhuhr Prayer • الظهر ☀️', 'Midday prayer time. Take a moment to stand before Allah.');
+      case 'Asr':
+        return const _NotifText('Asr Prayer • العصر 🌤', 'Asr time has begun. "By time, indeed, mankind is in loss."');
+      case 'Maghrib':
+        return const _NotifText('Maghrib Prayer • المغرب 🌇', 'Sunset — pray Maghrib and complete your evening adhkar if remaining.');
+      case 'Isha':
+        return const _NotifText('Isha Prayer • العشاء 🌙', 'Night has come. End your day in the remembrance of Allah.');
+      default:
+        return _NotifText('$name Prayer', 'Time to pray $name.');
+    }
+  }
 }

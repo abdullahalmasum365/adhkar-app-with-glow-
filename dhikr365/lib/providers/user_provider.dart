@@ -16,6 +16,8 @@ class UserProvider extends ChangeNotifier {
   String? _timezone; // IANA name of the SELECTED location (e.g. "Asia/Dhaka")
   bool _hasDonated = false;
   bool _hasCompletedOnboarding = false;
+  String? _onboardingGoal;
+  String? _preferredDhikrTime;
 
   String? get userName => _userName;
   String get madhab => _madhab;
@@ -27,6 +29,8 @@ class UserProvider extends ChangeNotifier {
   String? get timezone => _timezone;
   bool get hasDonated => _hasDonated;
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
+  String? get onboardingGoal => _onboardingGoal;
+  String? get preferredDhikrTime => _preferredDhikrTime;
 
   bool get hasSavedCoordinates => _lat != null && _lng != null;
 
@@ -58,6 +62,8 @@ class UserProvider extends ChangeNotifier {
       _timezone = prefs.getString('saved_timezone');
       _hasDonated = prefs.getBool('has_donated') ?? false;
       _hasCompletedOnboarding = prefs.getBool('onboarding_done') ?? false;
+      _onboardingGoal = prefs.getString('onboarding_goal');
+      _preferredDhikrTime = prefs.getString('preferred_dhikr_time');
     } catch (_) {
       // Unexpected error — proceed with defaults so the app isn't stuck.
     } finally {
@@ -141,6 +147,20 @@ class UserProvider extends ChangeNotifier {
     _hasCompletedOnboarding = true;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_done', true);
+    notifyListeners();
+  }
+
+  Future<void> setOnboardingGoal(String goal) async {
+    _onboardingGoal = goal;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('onboarding_goal', goal);
+    notifyListeners();
+  }
+
+  Future<void> setPreferredDhikrTime(String time) async {
+    _preferredDhikrTime = time;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('preferred_dhikr_time', time);
     notifyListeners();
   }
 

@@ -82,31 +82,51 @@ class ProPaywallSheet extends StatelessWidget {
             ),
             SizedBox(height: R.px(20)),
 
-            // Crown / Star Icon badge
-            Container(
-              width: 68,
-              height: 68,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    ThemeProvider.divineAmber.withValues(alpha: 0.25),
-                    AppColors.primary.withValues(alpha: 0.15),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            // Crown / Star Icon badge (Long press to test unlock Pro)
+            GestureDetector(
+              onLongPress: () async {
+                await pp.toggleProForTesting();
+                if (!context.mounted) return;
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: Colors.amber.shade800,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    content: Text(
+                      pp.isPro
+                          ? (isBn ? '🎉 টেস্ট মোড: প্রো ভার্সন আনলক করা হয়েছে!' : '🎉 Test Mode: Pro Version Unlocked!')
+                          : (isBn ? 'টেস্ট মোড: প্রো ভার্সন লক করা হয়েছে।' : 'Test Mode: Pro Version Locked.'),
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: 68,
+                height: 68,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [
+                      ThemeProvider.divineAmber.withValues(alpha: 0.25),
+                      AppColors.primary.withValues(alpha: 0.15),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  border: Border.all(
+                    color: ThemeProvider.divineAmber.withValues(alpha: 0.5),
+                    width: 1.5,
+                  ),
                 ),
-                border: Border.all(
-                  color: ThemeProvider.divineAmber.withValues(alpha: 0.5),
-                  width: 1.5,
+                child: Icon(
+                  Icons.workspace_premium_rounded,
+                  size: 36,
+                  color: ThemeProvider.divineAmber,
                 ),
-              ),
-              child: Icon(
-                Icons.workspace_premium_rounded,
-                size: 36,
-                color: ThemeProvider.divineAmber,
-              ),
-            ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
+              ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
+            ),
 
             SizedBox(height: R.px(14)),
 
@@ -189,14 +209,28 @@ class ProPaywallSheet extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (proProduct != null) {
                     pp.buy(DonationProductIds.proLifetime);
                   } else {
+                    // Instantly unlock Pro (testing / pre-store launch)
+                    await pp.toggleProForTesting();
+                    if (!context.mounted) return;
                     Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const DonationScreen()),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.amber.shade800,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        content: Text(
+                          isBn
+                              ? '🎉 আলহামদুলিল্লাহ! প্রো ভার্সন সক্রিয় হয়েছে!'
+                              : '🎉 Alhamdulillah! Pro Version Activated!',
+                          style: const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
                     );
                   }
                 },

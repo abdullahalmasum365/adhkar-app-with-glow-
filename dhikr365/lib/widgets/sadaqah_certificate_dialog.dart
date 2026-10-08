@@ -53,16 +53,14 @@ class SadaqahCertificateSheet extends StatelessWidget {
         : targetLabel;
 
     final shareText = isBn
-        ? '🌙 সদকায়ে জারিয়াহ ও দোয়া সনদ\n'
+        ? '🌙 সদকা ও দোয়ার স্মারক\n'
           'উৎসর্গকৃত: $nameLine\n'
-          'প্যাকেজ: $tierName\n'
           'দোয়া: ${dedication.getDuaArabic()}\n'
           '${dedication.getDuaTranslation("bn")}\n\n'
           'তারিখ: $dateStr\n'
           '— Adhkaar 365 অ্যাপের মাধ্যমে প্রেরিত'
-        : '🌙 Sadaqah Jariyah Certificate\n'
+        : '🌙 Sadaqah & Du\'a Remembrance\n'
           'Dedicated to: $nameLine\n'
-          'Tier: $tierName\n'
           'Du\'a: ${dedication.getDuaArabic()}\n'
           '${dedication.getDuaTranslation("en")}\n\n'
           'Date: $dateStr\n'

@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +12,7 @@ import '../providers/theme_provider.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
 import '../screens/dhikr_focus_screen.dart';
+import 'social_share_card.dart';
 
 class DhikrCard extends StatefulWidget {
   final Dhikr dhikr;
@@ -23,12 +26,16 @@ class DhikrCard extends StatefulWidget {
   /// True when this card's audio is actively playing (subset of isActive).
   final bool isPlaying;
 
+  /// Whether to display a category pill above the title.
+  final bool showCategoryBadge;
+
   const DhikrCard({
     super.key,
     required this.dhikr,
     this.onPlayTapped,
     this.isActive = false,
     this.isPlaying = false,
+    this.showCategoryBadge = false,
   });
 
   @override
@@ -36,6 +43,9 @@ class DhikrCard extends StatefulWidget {
 }
 
 class _DhikrCardState extends State<DhikrCard> {
+  int _scaleAnimKey = 0;
+  bool _isGlowActive = false;
+
   /// Builds the plain-text blob that gets sent to the OS share sheet.
   String _buildShareText(LanguageProvider lp, bool showTranslit) {
     final d = widget.dhikr;
@@ -147,9 +157,12 @@ class _DhikrCardState extends State<DhikrCard> {
             Padding(
               padding: EdgeInsets.fromLTRB(
                   16, 16, 16, MediaQuery.of(context).padding.bottom + 20),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Copy
+                  Row(
+                    children: [
+                      // Copy
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
@@ -233,7 +246,48 @@ class _DhikrCardState extends State<DhikrCard> {
                   ),
                 ],
               ),
-            ),
+              const SizedBox(height: 12),
+              // Share as Image Card Option
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  SocialShareCard.shareDhikrAsImage(
+                    context: context,
+                    dhikr: widget.dhikr,
+                    showTransliteration: showTranslit,
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.image_rounded,
+                          color: AppColors.primary, size: 19),
+                      const SizedBox(width: 8),
+                      Text(
+                        lp.getText('share_as_image'),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
           ],
         ),
       ),
@@ -241,6 +295,43 @@ class _DhikrCardState extends State<DhikrCard> {
   }
 
   void _onPlayTapped() => widget.onPlayTapped?.call(widget.dhikr);
+
+  Widget _buildRemainingText({
+    required int remaining,
+    required bool isDone,
+    required double counterNum,
+  }) {
+    Widget text = Text(
+      '$remaining',
+      style: TextStyle(
+        fontSize: counterNum,
+        fontWeight: FontWeight.w900,
+        height: 1.0,
+        color: (_isGlowActive || isDone)
+            ? ThemeProvider.divineAmber
+            : AppColors.textPrimary,
+      ),
+    );
+
+    if (_scaleAnimKey > 0) {
+      text = text
+          .animate(key: ValueKey('card_milestone_$_scaleAnimKey'))
+          .scale(
+            duration: 125.ms,
+            begin: const Offset(1.0, 1.0),
+            end: const Offset(1.3, 1.3),
+            curve: Curves.easeOut,
+          )
+          .then()
+          .scale(
+            duration: 125.ms,
+            begin: const Offset(1.3, 1.3),
+            end: const Offset(1.0, 1.0),
+            curve: Curves.easeIn,
+          );
+    }
+    return text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -260,6 +351,10 @@ class _DhikrCardState extends State<DhikrCard> {
     final btnSize = R.adaptive(32.0, 36.0, 42.0);
     final counterNum = R.adaptive(38.0, 44.0, 52.0);
     final countBtnV = R.adaptive(16.0, 20.0, 26.0);
+
+    final isBookmarked = context.select<DhikrProvider, bool>(
+      (dp) => dp.isBookmarked(widget.dhikr.id),
+    );
 
     return GestureDetector(
       onLongPress: () {
@@ -284,23 +379,88 @@ class _DhikrCardState extends State<DhikrCard> {
           padding: EdgeInsets.all(cardPad),
           child: Column(
             children: [
+              // ── Optional Category Badge ─────────────────────────────────────
+              if (widget.showCategoryBadge) ...[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: R.px(10)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: widget.dhikr.category.color
+                          .withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: widget.dhikr.category.color
+                            .withValues(alpha: 0.35),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(widget.dhikr.category.icon,
+                            size: 13, color: widget.dhikr.category.color),
+                        const SizedBox(width: 6),
+                        Text(
+                          lp.getText(widget.dhikr.category.titleKey),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: widget.dhikr.category.color,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+
               // ── Header ──────────────────────────────────────────────────────
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(
-                      widget.dhikr.title.toUpperCase(),
-                      style: TextStyle(
-                        // Plain TextStyle — system font handles Arabic, Bengali,
-                        // Hindi, etc. when the dhikr title is in a non-Latin script.
-                        fontWeight: FontWeight.w900,
-                        fontSize: R.sp(11),
-                        letterSpacing: 1.6,
-                        color: AppColors.textPrimary,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.dhikr.title.toUpperCase(),
+                          style: TextStyle(
+                            // Plain TextStyle — system font handles Arabic, Bengali,
+                            // Hindi, etc. when the dhikr title is in a non-Latin script.
+                            fontWeight: FontWeight.w900,
+                            fontSize: R.sp(11),
+                            letterSpacing: 1.6,
+                            color: AppColors.textPrimary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                        if (widget.dhikr.hasTimestamps) ...[
+                          SizedBox(height: R.px(2)),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.lyrics_rounded,
+                                size: R.sp(10),
+                                color: ThemeProvider.divineAmber,
+                              ),
+                              SizedBox(width: R.px(3)),
+                              Text(
+                                'SYNCED',
+                                style: TextStyle(
+                                  fontSize: R.sp(8.0),
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: 0.8,
+                                  color: ThemeProvider.divineAmber,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                   // Audio is shown for every dhikr that has an audio recording available.
@@ -337,6 +497,73 @@ class _DhikrCardState extends State<DhikrCard> {
                       ),
                     ),
                   ],
+                  SizedBox(width: R.px(8)),
+                  // Bookmark button
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      dhikrProvider.toggleBookmark(widget.dhikr.id);
+                    },
+                    child: Container(
+                      height: btnSize,
+                      width: btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isBookmarked
+                            ? AppColors.primary.withValues(alpha: 0.16)
+                            : AppColors.ink(0.06),
+                        border: Border.all(
+                          color: isBookmarked
+                              ? AppColors.primary.withValues(alpha: 0.40)
+                              : AppColors.ink(0.10),
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        isBookmarked
+                            ? Icons.bookmark_rounded
+                            : Icons.bookmark_border_rounded,
+                        color: isBookmarked
+                            ? AppColors.primary
+                            : AppColors.textSlate400,
+                        size: R.sp(18),
+                      )
+                          .animate(key: ValueKey(isBookmarked))
+                          .scale(
+                            duration: 250.ms,
+                            curve: Curves.easeOutBack,
+                            begin: const Offset(0.7, 0.7),
+                            end: const Offset(1.0, 1.0),
+                          ),
+                    ),
+                  ),
+                  SizedBox(width: R.px(8)),
+                  // Share button
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      _showShareSheet(context);
+                    },
+                    child: Container(
+                      height: btnSize,
+                      width: btnSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.ink(0.06),
+                        border: Border.all(
+                          color: AppColors.ink(0.10),
+                          width: 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.share_rounded,
+                        color: AppColors.textSlate400,
+                        size: R.sp(16),
+                      ),
+                    ),
+                  ),
                 ],
               ),
 
@@ -467,95 +694,141 @@ class _DhikrCardState extends State<DhikrCard> {
                 ),
 
               // ── Counter Button ───────────────────────────────────────────────
-              GestureDetector(
-                onTap: isDone
-                    ? null
-                    : () {
-                        HapticFeedback.lightImpact();
-                        dhikrProvider.incrementDhikr(widget.dhikr.id);
-                      },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(vertical: countBtnV),
-                  decoration: BoxDecoration(
-                    gradient: isDone
-                        ? null
-                        : LinearGradient(
-                            colors: [AppColors.primary, AppColors.accent],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                    color: isDone ? AppColors.ink(0.05) : null,
-                    borderRadius: BorderRadius.circular(R.px(18)),
-                    border:
-                        isDone ? Border.all(color: AppColors.ink(0.1)) : null,
-                    boxShadow: isDone
-                        ? []
-                        : [
-                            BoxShadow(
-                              color: AppColors.accent.withValues(alpha: 0.3),
-                              blurRadius: 30,
-                              offset: const Offset(0, 8),
+              Semantics(
+                button: true,
+                enabled: !isDone,
+                label: isDone
+                    ? '${lp.getText('completed')} ${widget.dhikr.targetCount}'
+                    : '${lp.getText('tap_to_count')}, $remaining ${lp.getText('remaining')}',
+                child: GestureDetector(
+                  onTap: isDone
+                      ? null
+                      : () async {
+                          final milestone = await dhikrProvider
+                              .incrementDhikr(widget.dhikr.id);
+                          await DhikrProvider.triggerMilestoneHaptic(milestone);
+
+                          if (milestone == MilestoneType.thirtyThree ||
+                              milestone == MilestoneType.sixtySix) {
+                            if (mounted) {
+                              setState(() {
+                                _scaleAnimKey++;
+                              });
+                            }
+                          } else if (milestone == MilestoneType.target ||
+                              milestone == MilestoneType.hundred) {
+                            unawaited(DhikrProvider.playCompletionSound());
+                            if (mounted) {
+                              setState(() {
+                                _isGlowActive = true;
+                              });
+                              Future.delayed(
+                                  const Duration(milliseconds: 600), () {
+                                if (mounted) {
+                                  setState(() => _isGlowActive = false);
+                                }
+                              });
+                            }
+                          }
+                        },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(vertical: countBtnV),
+                    decoration: BoxDecoration(
+                      gradient: (_isGlowActive || isDone)
+                          ? null
+                          : LinearGradient(
+                              colors: [AppColors.primary, AppColors.accent],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
                             ),
-                          ],
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        isDone
-                            ? '${lp.getText('completed').toUpperCase()} ✓'
-                            : lp.getText('tap_to_count').toUpperCase(),
-                        style: TextStyle(
-                          fontSize: R.sp(10),
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.8,
-                          color:
-                              isDone ? AppColors.ink(0.54) : AppColors.ink(0.7),
+                      color: _isGlowActive
+                          ? ThemeProvider.divineAmber
+                          : (isDone ? AppColors.ink(0.05) : null),
+                      borderRadius: BorderRadius.circular(R.px(18)),
+                      border: (_isGlowActive || isDone)
+                          ? Border.all(
+                              color: _isGlowActive
+                                  ? ThemeProvider.divineAmber
+                                  : AppColors.ink(0.1),
+                            )
+                          : null,
+                      boxShadow: _isGlowActive
+                          ? [
+                              BoxShadow(
+                                color: ThemeProvider.divineAmber
+                                    .withValues(alpha: 0.65),
+                                blurRadius: 36,
+                                spreadRadius: 4,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : (isDone
+                              ? []
+                              : [
+                                  BoxShadow(
+                                    color: AppColors.accent
+                                        .withValues(alpha: 0.3),
+                                    blurRadius: 30,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ]),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          isDone
+                              ? '${lp.getText('completed').toUpperCase()} ✓'
+                              : lp.getText('tap_to_count').toUpperCase(),
+                          style: TextStyle(
+                            fontSize: R.sp(10),
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.8,
+                            color: _isGlowActive
+                                ? AppColors.textPrimary
+                                : (isDone
+                                    ? AppColors.ink(0.54)
+                                    : AppColors.ink(0.7)),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: R.px(6)),
-                      // Flexible row prevents overflow if count digits are wide
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                '$remaining',
-                                style: TextStyle(
-                                  fontSize: counterNum,
-                                  fontWeight: FontWeight.w900,
-                                  height: 1.0,
-                                  color: isDone
-                                      ? ThemeProvider.divineAmber
-                                      : AppColors.textPrimary,
+                        SizedBox(height: R.px(6)),
+                        // Flexible row prevents overflow if count digits are wide
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: _buildRemainingText(
+                                  remaining: remaining,
+                                  isDone: isDone,
+                                  counterNum: counterNum,
                                 ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: R.px(4)),
-                          Text(
-                            '/ ${widget.dhikr.targetCount}',
-                            style: TextStyle(
-                              fontSize: R.sp(13),
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary
-                                  .withValues(alpha: isDone ? 0.3 : 0.5),
+                            SizedBox(width: R.px(4)),
+                            Text(
+                              '/ ${widget.dhikr.targetCount}',
+                              style: TextStyle(
+                                fontSize: R.sp(13),
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary
+                                    .withValues(alpha: isDone ? 0.3 : 0.5),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
 
-              SizedBox(height: R.px(20)),
+            SizedBox(height: R.px(20)),
 
               // ── Focus Mode ───────────────────────────────────────────────────
               Container(

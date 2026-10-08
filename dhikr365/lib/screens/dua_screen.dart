@@ -7,6 +7,7 @@ import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../services/dua_search_service.dart';
+import '../widgets/dhikr_card.dart';
 import 'dhikr_focus_screen.dart';
 import 'dhikr_list_screen.dart';
 
@@ -20,6 +21,7 @@ class DuaScreen extends StatefulWidget {
 class _DuaScreenState extends State<DuaScreen> {
   final _searchController = TextEditingController();
   String _query = '';
+  int _selectedTab = 0; // 0 = All Categories, 1 = Bookmarks
 
   @override
   void dispose() {
@@ -361,21 +363,34 @@ class _DuaScreenState extends State<DuaScreen> {
                   ),
                 ).animate().fadeIn(delay: 150.ms),
 
-                // ── Body: Category Grid OR Search Results ───────────────────
+                // ── Filter Chips (All Categories / Bookmarks) ────────────────
+                if (!isSearching)
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 12),
+                    child: Row(
+                      children: [
+                        _FilterChip(
+                          icon: Icons.grid_view_rounded,
+                          label: lp.getText('all_categories'),
+                          isSelected: _selectedTab == 0,
+                          onTap: () => setState(() => _selectedTab = 0),
+                        ),
+                        const SizedBox(width: 8),
+                        _FilterChip(
+                          icon: Icons.bookmark_rounded,
+                          label: lp.getText('bookmarks'),
+                          count: dp.bookmarkedDhikrs.length,
+                          isSelected: _selectedTab == 1,
+                          onTap: () => setState(() => _selectedTab = 1),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn(delay: 180.ms),
+
+                // ── Body: Category Grid OR Bookmarks OR Search Results ─────
                 Expanded(
-                  child: !isSearching
-                      ? _buildCategoryGrid(
-                          filteredCats: resolvedCats,
-                          hPad: hPad,
-                          gridBottom: gridBottom,
-                          crossCount: crossCount,
-                          childRatio: childRatio,
-                          isSmall: isSmall,
-                          liveCounts: liveCounts,
-                          duasLabel: duasLabel,
-                          comingSoon: comingSoon,
-                        )
-                      : _buildSearchResultsView(
+                  child: isSearching
+                      ? _buildSearchResultsView(
                           lp: lp,
                           query: _query,
                           matchedCats: matchedCats,
@@ -385,7 +400,26 @@ class _DuaScreenState extends State<DuaScreen> {
                           isSmall: isSmall,
                           liveCounts: liveCounts,
                           duasLabel: duasLabel,
-                        ),
+                        )
+                      : _selectedTab == 0
+                          ? _buildCategoryGrid(
+                              filteredCats: resolvedCats,
+                              hPad: hPad,
+                              gridBottom: gridBottom,
+                              crossCount: crossCount,
+                              childRatio: childRatio,
+                              isSmall: isSmall,
+                              liveCounts: liveCounts,
+                              duasLabel: duasLabel,
+                              comingSoon: comingSoon,
+                            )
+                          : _buildBookmarksView(
+                              lp: lp,
+                              dp: dp,
+                              hPad: hPad,
+                              gridBottom: gridBottom,
+                              isSmall: isSmall,
+                            ),
                 ),
               ],
             ),
@@ -634,6 +668,212 @@ class _DuaScreenState extends State<DuaScreen> {
               style: AppText.body(color: AppColors.textSlate400)
                   .copyWith(fontSize: 12.5, height: 1.5),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBookmarksView({
+    required LanguageProvider lp,
+    required DhikrProvider dp,
+    required double hPad,
+    required double gridBottom,
+    required bool isSmall,
+  }) {
+    final bookmarked = dp.bookmarkedDhikrs;
+
+    if (bookmarked.isEmpty) {
+      return Center(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: hPad, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 76,
+                height: 76,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.primary.withValues(alpha: 0.12),
+                  border: Border.all(
+                    color: AppColors.primary.withValues(alpha: 0.35),
+                    width: 1.5,
+                  ),
+                ),
+                child: Icon(
+                  Icons.bookmark_border_rounded,
+                  size: 38,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                lp.getText('no_bookmarks'),
+                style: AppText.heading(isSmall ? 18.0 : 20.0),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 320),
+                child: Text(
+                  lp.getText('no_bookmarks_desc'),
+                  textAlign: TextAlign.center,
+                  style: AppText.body(color: AppColors.textSlate400).copyWith(
+                    fontSize: 13.5,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              GestureDetector(
+                onTap: () => setState(() => _selectedTab = 0),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.primary, AppColors.accent],
+                    ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.grid_view_rounded,
+                          size: 16, color: AppColors.onPrimary),
+                      const SizedBox(width: 8),
+                      Text(
+                        lp.getText('all_categories'),
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.onPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ).animate().fadeIn().scale(begin: const Offset(0.95, 0.95));
+    }
+
+    return ListView.builder(
+      padding: EdgeInsets.fromLTRB(0, 4, 0, gridBottom),
+      physics: const BouncingScrollPhysics(),
+      itemCount: bookmarked.length,
+      itemBuilder: (context, i) {
+        final d = bookmarked[i];
+        return DhikrCard(
+          dhikr: d,
+          showCategoryBadge: true,
+          onPlayTapped: (dhikr) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => DhikrFocusScreen(dhikr: dhikr),
+              ),
+            );
+          },
+        )
+            .animate()
+            .fadeIn(delay: Duration(milliseconds: (i * 30).clamp(0, 300)))
+            .slideY(begin: 0.05);
+      },
+    );
+  }
+}
+
+class _FilterChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final int? count;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _FilterChip({
+    required this.icon,
+    required this.label,
+    this.count,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primary : AppColors.ink(0.06),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.ink(0.12),
+            width: 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 15,
+              color: isSelected ? AppColors.onPrimary : AppColors.textSlate400,
+            ),
+            const SizedBox(width: 7),
+            Text(
+              label,
+              style: AppText.manrope(
+                fontSize: 12.5,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                color: isSelected ? AppColors.onPrimary : AppColors.textPrimary,
+              ),
+            ),
+            if (count != null && count! > 0) ...[
+              const SizedBox(width: 6),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? AppColors.onPrimary.withValues(alpha: 0.25)
+                      : AppColors.primary.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '$count',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w800,
+                    color: isSelected
+                        ? AppColors.onPrimary
+                        : AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,6 +15,8 @@ import '../providers/purchase_provider.dart';
 import '../providers/notification_provider.dart';
 import '../services/notification_service.dart';
 import '../models/dhikr.dart';
+import '../widgets/pro_paywall_sheet.dart';
+import 'widget_preview_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -539,51 +540,74 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         );
                       }
                     }),
-                if (kDebugMode) ...[
-                  _div(),
-                  _Tile(
-                      icon: Icons.workspace_premium_rounded,
-                      color: ThemeProvider.divineAmber,
-                      title: lp.locale.languageCode == 'bn'
-                          ? 'প্রো ভার্সন (টেস্ট মোড)'
-                          : 'Pro Version (Test Mode)',
-                      subtitle: pp.isPro
-                          ? (lp.locale.languageCode == 'bn'
-                              ? 'সক্রিয় (কাস্টম প্ল্যান ও সব ফিচার আনলক)'
-                              : 'Active (Custom plan & features unlocked)')
-                          : (lp.locale.languageCode == 'bn'
-                              ? 'নিষ্ক্রিয় (ট্যাপ করে আনলক করুন)'
-                              : 'Inactive (Tap switch to unlock)'),
-                      trailing: Switch(
-                        activeThumbColor: ThemeProvider.divineAmber,
-                        value: pp.isPro,
-                        onChanged: (_) async {
-                          await pp.toggleProForTesting();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.amber.shade800,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                content: Text(
-                                  pp.isPro
-                                      ? (lp.locale.languageCode == 'bn'
-                                          ? '🎉 টেস্ট মোড: প্রো ভার্সন সক্রিয় হয়েছে!'
-                                          : '🎉 Test Mode: Pro Version Activated!')
-                                      : (lp.locale.languageCode == 'bn'
-                                          ? 'টেস্ট মোড: প্রো ভার্সন নিষ্ক্রিয় করা হয়েছে।'
-                                          : 'Test Mode: Pro Version Deactivated.'),
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                _div(),
+                _Tile(
+                    icon: Icons.workspace_premium_rounded,
+                    color: ThemeProvider.divineAmber,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'আযকার ৩৬৫ প্রো (Pro Version)'
+                        : 'Adhkar 365 PRO',
+                    subtitle: pp.isPro
+                        ? (lp.locale.languageCode == 'bn'
+                            ? 'সক্রিয় — কাস্টম প্ল্যান ও সব প্রিমিয়াম ফিচার আনলক রয়েছে'
+                            : 'Active — Custom plan & premium features unlocked')
+                        : (lp.locale.languageCode == 'bn'
+                            ? 'নিষ্ক্রিয় — ট্যাপ করে এখনই আনলক করুন'
+                            : 'Inactive — Tap switch to unlock'),
+                    trailing: Switch(
+                      activeThumbColor: ThemeProvider.divineAmber,
+                      value: pp.isPro,
+                      onChanged: (_) async {
+                        await pp.toggleProForTesting();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: Colors.amber.shade800,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              content: Text(
+                                pp.isPro
+                                    ? (lp.locale.languageCode == 'bn'
+                                        ? '🎉 আলহামদুলিল্লাহ! প্রো ভার্সন সক্রিয় হয়েছে!'
+                                        : '🎉 Alhamdulillah! Pro Version Activated!')
+                                    : (lp.locale.languageCode == 'bn'
+                                        ? 'প্রো ভার্সন বন্ধ করা হয়েছে।'
+                                        : 'Pro Version Deactivated.'),
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
-                            );
-                          }
-                        },
-                      )),
-                ],
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    onTap: () async {
+                      await pp.toggleProForTesting();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.amber.shade800,
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                            content: Text(
+                              pp.isPro
+                                  ? (lp.locale.languageCode == 'bn'
+                                      ? '🎉 আলহামদুলিল্লাহ! প্রো ভার্সন সক্রিয় হয়েছে!'
+                                      : '🎉 Alhamdulillah! Pro Version Activated!')
+                                  : (lp.locale.languageCode == 'bn'
+                                      ? 'প্রো ভার্সন বন্ধ করা হয়েছে।'
+                                      : 'Pro Version Deactivated.'),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      }
+                    }),
               ])),
               const SizedBox(height: 22),
 
@@ -749,6 +773,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               Expanded(
                                   child: _ThemeChoice.fromPalette(
                                       AppPalettes.all[i], tp,
+                                      isUserPro: pp.isPro,
+                                      context: context,
                                       onSelected: () =>
                                           np.refreshAllSchedules(up))),
                               const SizedBox(width: 12),
@@ -756,6 +782,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 child: i + 1 < AppPalettes.all.length
                                     ? _ThemeChoice.fromPalette(
                                         AppPalettes.all[i + 1], tp,
+                                        isUserPro: pp.isPro,
+                                        context: context,
                                         onSelected: () =>
                                             np.refreshAllSchedules(up))
                                     : const SizedBox(),
@@ -764,6 +792,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           ),
                         ),
                     ]),
+                  ),
+                  _div(),
+                  _Tile(
+                    icon: Icons.widgets_rounded,
+                    color: Colors.amberAccent,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'হোম স্ক্রিন উইজেট'
+                        : 'Home Screen Widgets',
+                    subtitle: lp.locale.languageCode == 'bn'
+                        ? 'কাস্টম থিমযুক্ত উইজেট প্রিভিউ ও পিন করুন'
+                        : 'Live-themed widget preview & setup',
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const WidgetPreviewScreen()),
+                    ),
                   ),
                   _div(),
                   _Tile(
@@ -870,6 +914,8 @@ class _ThemeChoice extends StatelessWidget {
   final bool selected;
   final List<Color> swatches; // [background, surface, accent]
   final Color previewText;
+  final bool isPro;
+  final bool isLocked;
   final VoidCallback onTap;
 
   const _ThemeChoice({
@@ -878,6 +924,8 @@ class _ThemeChoice extends StatelessWidget {
     required this.selected,
     required this.swatches,
     required this.previewText,
+    this.isPro = false,
+    this.isLocked = false,
     required this.onTap,
   });
 
@@ -887,15 +935,24 @@ class _ThemeChoice extends StatelessWidget {
   factory _ThemeChoice.fromPalette(
     AppPalette p,
     ThemeProvider tp, {
+    required bool isUserPro,
+    required BuildContext context,
     Future<void> Function()? onSelected,
   }) {
+    final locked = p.isPro && !isUserPro;
     return _ThemeChoice(
       title: p.label,
       subtitle: p.tagline,
       selected: tp.paletteId == p.id,
       swatches: [p.homeGradient[0], p.homeGradient[1], p.primary],
       previewText: p.textPrimary,
+      isPro: p.isPro,
+      isLocked: locked,
       onTap: () async {
+        if (locked) {
+          showProPaywallModal(context);
+          return;
+        }
         if (tp.paletteId == p.id) return;
         await tp.setPalette(p.id);
         await onSelected?.call();
@@ -916,7 +973,11 @@ class _ThemeChoice extends StatelessWidget {
               : AppColors.ink(0.03),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.ink(0.10),
+            color: selected
+                ? AppColors.primary
+                : (isLocked
+                    ? ThemeProvider.divineAmber.withValues(alpha: 0.3)
+                    : AppColors.ink(0.10)),
             width: selected ? 1.6 : 1,
           ),
         ),
@@ -940,13 +1001,39 @@ class _ThemeChoice extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 44,
-                    height: 7,
-                    decoration: BoxDecoration(
-                      color: previewText.withValues(alpha: 0.75),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          color: previewText.withValues(alpha: 0.75),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      if (isPro)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 1.5),
+                          decoration: BoxDecoration(
+                            color: ThemeProvider.divineAmber
+                                .withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                                color: ThemeProvider.divineAmber, width: 0.8),
+                          ),
+                          child: Text(
+                            'PRO',
+                            style: TextStyle(
+                              fontSize: 8.5,
+                              fontWeight: FontWeight.w900,
+                              color: ThemeProvider.divineAmber,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                   Row(children: [
                     Container(
@@ -980,9 +1067,17 @@ class _ThemeChoice extends StatelessWidget {
                         fontSize: 12.5, fontWeight: FontWeight.w800)),
               ),
               Icon(
-                selected ? Icons.check_circle_rounded : Icons.circle_outlined,
+                selected
+                    ? Icons.check_circle_rounded
+                    : (isLocked
+                        ? Icons.lock_rounded
+                        : Icons.circle_outlined),
                 size: 16,
-                color: selected ? AppColors.primary : AppColors.ink(0.25),
+                color: selected
+                    ? AppColors.primary
+                    : (isLocked
+                        ? ThemeProvider.divineAmber
+                        : AppColors.ink(0.25)),
               ),
             ]),
             const SizedBox(height: 2),
@@ -1105,15 +1200,6 @@ class _DevVersionTapState extends State<_DevVersionTap> {
 
   @override
   Widget build(BuildContext context) {
-    if (!kDebugMode) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Center(
-          child: Text('VERSION 1.0.0',
-              style: AppText.label(color: AppColors.textSlate500)),
-        ),
-      );
-    }
     final remaining = _required - _taps;
     return GestureDetector(
       onTap: _onTap,

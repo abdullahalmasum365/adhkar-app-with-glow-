@@ -13,10 +13,10 @@ import 'package:flutter/material.dart';
 /// ─────────────────────────────────────────────────────────────────────────────
 
 class R {
-  static late double _width;
-  static late double _height;
-  static late bool _isTablet;
-  static late bool _isSmallPhone;
+  static double _width = 390.0;
+  static double _height = 844.0;
+  static bool _isTablet = false;
+  static bool _isSmallPhone = false;
 
   /// Call this ONCE at the top of every build() method.
   static void init(BuildContext context) {

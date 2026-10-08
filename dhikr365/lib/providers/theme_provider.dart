@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/app_theme.dart';
+import '../services/widget_service.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const _paletteKey = 'app_palette';
@@ -17,6 +18,7 @@ class ThemeProvider extends ChangeNotifier {
   /// & purple). The palette itself is applied globally via [AppColors].
   String get paletteId => _paletteId;
   AppPalette get palette => AppPalettes.byId(_paletteId);
+  AppPalette get activePalette => palette;
 
   /// When false, the Latin-script phonetic line is hidden on every dhikr card.
   bool get showTransliteration => _showTransliteration;
@@ -61,6 +63,7 @@ class ThemeProvider extends ChangeNotifier {
     _showTransliteration = prefs.getBool('show_transliteration') ?? true;
     _showHabitTracker = prefs.getBool('show_habit_tracker') ?? true;
     notifyListeners();
+    WidgetService().updateTheme(palette);
   }
 
   /// Switches the whole app to palette [id], persists the choice, and
@@ -81,6 +84,7 @@ class ThemeProvider extends ChangeNotifier {
     _rebuildWholeApp();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_paletteKey, id);
+    await WidgetService().updateTheme(palette);
   }
 
   /// Marks every element in the app dirty so all screens — including routes

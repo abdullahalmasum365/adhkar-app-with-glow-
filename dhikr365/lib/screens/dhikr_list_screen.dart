@@ -19,6 +19,7 @@ import '../services/audio_service.dart';
 import '../services/tts_service.dart';
 import '../providers/purchase_provider.dart';
 import '../widgets/pro_paywall_sheet.dart';
+import '../widgets/social_share_card.dart';
 import 'edit_plan_screen.dart';
 
 // ============================================================================
@@ -237,6 +238,251 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     }
   }
 
+  void _showDhikrSharePicker(BuildContext context, List<Dhikr> list) {
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
+    final theme = Provider.of<ThemeProvider>(context, listen: false);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: AppColors.shadow(0.4),
+      builder: (BuildContext sheetCtx) {
+        return Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(sheetCtx).size.height * 0.75,
+          ),
+          decoration: BoxDecoration(
+            color: AppColors.playerSurface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border.all(color: AppColors.ink(0.08)),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow(0.3),
+                blurRadius: 24,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Drag handle
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                width: 44,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.ink(0.20),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+
+              // Title Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 4, 20, 14),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: ThemeProvider.divineAmber.withValues(alpha: 0.15),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.image_rounded,
+                        color: ThemeProvider.divineAmber,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            lp.getText('share_as_image'),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            lp.locale.languageCode == 'bn'
+                                ? 'কার্ড তৈরির জন্য দোয়া নির্বাচন করুন'
+                                : 'Select which dua to share as an image card',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.ink(0.55),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close_rounded,
+                          color: AppColors.ink(0.50), size: 20),
+                      onPressed: () => Navigator.pop(sheetCtx),
+                    ),
+                  ],
+                ),
+              ),
+              Divider(height: 1, color: AppColors.ink(0.08)),
+
+              // Scrollable Dua List
+              Expanded(
+                child: ListView.separated(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  itemCount: list.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, i) {
+                    final d = list[i];
+                    final isNowPlaying = _activeDhikr?.id == d.id;
+
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.pop(sheetCtx);
+                          SocialShareCard.shareDhikrAsImage(
+                            context: context,
+                            dhikr: d,
+                            showTransliteration: theme.showTransliteration,
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isNowPlaying
+                                ? ThemeProvider.divineAmber.withValues(alpha: 0.12)
+                                : AppColors.ink(0.03),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isNowPlaying
+                                  ? ThemeProvider.divineAmber
+                                      .withValues(alpha: 0.35)
+                                  : AppColors.ink(0.06),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              // Index Badge or Playing Indicator
+                              Container(
+                                width: 28,
+                                height: 28,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: isNowPlaying
+                                      ? ThemeProvider.divineAmber
+                                      : AppColors.ink(0.08),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: isNowPlaying
+                                    ? Icon(
+                                        Icons.volume_up_rounded,
+                                        size: 15,
+                                        color: AppColors.onAccent,
+                                      )
+                                    : Text(
+                                        '${i + 1}',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.ink(0.60),
+                                        ),
+                                      ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Title and Arabic snippet
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      d.title,
+                                      style: TextStyle(
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w700,
+                                        color: isNowPlaying
+                                            ? ThemeProvider.divineAmber
+                                            : AppColors.textPrimary,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      d.arabicText,
+                                      style: AppText.amiri(
+                                        fontSize: 13,
+                                        color: AppColors.ink(0.50),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              // Share icon pill
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: ThemeProvider.divineAmber
+                                      .withValues(alpha: 0.16),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.share_rounded,
+                                      size: 14,
+                                      color: ThemeProvider.divineAmber,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'SHARE',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w800,
+                                        letterSpacing: 0.8,
+                                        color: ThemeProvider.divineAmber,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _showSettingsModal(BuildContext context) {
     final dhikrProvider = Provider.of<DhikrProvider>(context, listen: false);
 
@@ -332,7 +578,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           label: langProvider
                               .getText('app_language')
                               .toUpperCase(),
-                          subLabel: "Interface language",
+                          subLabel: langProvider.getText('interface_language'),
                           icon: Icons.language,
                           value: selectedAppLang,
                           onChanged: (val) {
@@ -348,7 +594,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           label: langProvider
                               .getText('translation_lang')
                               .toUpperCase(),
-                          subLabel: "Meaning language",
+                          subLabel: langProvider.getText('meaning_language'),
                           icon: Icons.subtitles_outlined,
                           value: selectedTranslationLang,
                           onChanged: (val) {
@@ -365,7 +611,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           label: langProvider
                               .getText('transliteration_lang')
                               .toUpperCase(),
-                          subLabel: "Reading aid",
+                          subLabel: langProvider.getText('reading_aid'),
                           icon: Icons.spellcheck,
                           value: selectedTransliterationLang,
                           onChanged: (val) {
@@ -691,6 +937,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
   }
 
   Widget _buildMiniPlayer(Dhikr dhikr) {
+    final lp = Provider.of<LanguageProvider>(context);
     final progress = _duration.inMilliseconds > 0
         ? (_position.inMilliseconds / _duration.inMilliseconds).clamp(0.0, 1.0)
         : 0.0;
@@ -764,7 +1011,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_usingTts ? 'VOICE RECITATION' : 'NOW PLAYING',
+                          Text((_usingTts ? lp.getText('voice_recitation') : lp.getText('now_playing')).toUpperCase(),
                               style: TextStyle(
                                   fontSize: 9,
                                   fontWeight: FontWeight.w900,
@@ -812,7 +1059,7 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                               color: amber, size: 16),
                           const SizedBox(width: 8),
                           Text(
-                            _playerPlaying ? 'RECITING ARABIC...' : 'PAUSED',
+                            (_playerPlaying ? lp.getText('reciting_arabic') : lp.getText('paused')).toUpperCase(),
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w800,
@@ -1242,6 +1489,20 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                         color: ThemeProvider.divineAmber,
                                         size: 22),
                                   ),
+                                IconButton(
+                                  onPressed: () {
+                                    final dp = Provider.of<DhikrProvider>(
+                                        context,
+                                        listen: false);
+                                    final list = _navList ??
+                                        dp.getDhikrsByCategory(
+                                            widget.category);
+                                    if (list.isEmpty) return;
+                                    _showDhikrSharePicker(context, list);
+                                  },
+                                  icon: Icon(Icons.share_rounded,
+                                      color: AppColors.textPrimary, size: 21),
+                                ),
                                 IconButton(
                                   onPressed: () {
                                     _showSettingsModal(context);

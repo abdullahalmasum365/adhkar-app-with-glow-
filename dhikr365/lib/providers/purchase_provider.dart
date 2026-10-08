@@ -129,7 +129,44 @@ class PurchaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> restorePurchases() => _service.restorePurchases();
+  Future<void> restorePurchases() async {
+    _isLoading = true;
+    _lastError = null;
+    notifyListeners();
+    try {
+      await _service.restorePurchases();
+    } catch (e) {
+      _lastError = 'Could not restore purchases.';
+      debugPrint('[PurchaseProvider] restore failed: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> clearSubscription() async {
+    _activeSubscriptionId = null;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_prefKeyActiveSub);
+    } catch (e) {
+      debugPrint('[PurchaseProvider] clearSubscription error: $e');
+    }
+    notifyListeners();
+  }
+
+  /// Toggle Pro status for developer testing / QA without real payment
+  Future<void> toggleProForTesting() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (isPro) {
+      _activeSubscriptionId = null;
+      await prefs.remove(_prefKeyActiveSub);
+    } else {
+      _activeSubscriptionId = DonationProductIds.proLifetime;
+      await prefs.setString(_prefKeyActiveSub, DonationProductIds.proLifetime);
+    }
+    notifyListeners();
+  }
 
   @override
   void dispose() {
