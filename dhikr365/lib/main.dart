@@ -169,21 +169,9 @@ void main() async {
     debugPrint('[main] WorkManager init failed: $e');
   }
 
-  // 3c. Silently request battery optimization exemption.
-  //     This fires the OFFICIAL Android system dialog asking the user to
-  //     exempt this app from battery optimization — the same dialog that
-  //     Muslim Pro, Athan, and all major prayer apps show on first launch.
-  //     Play Store compliant: REQUEST_IGNORE_BATTERY_OPTIMIZATIONS is
-  //     explicitly allowed for apps whose core function is time-critical
-  //     alarms/reminders (prayer times, medication reminders, etc.).
-  //     We do NOT force the user — if they cancel, notifications still work
-  //     via WorkManager; they just may be slightly delayed on extreme battery
-  //     saver modes.
-  try {
-    await NotificationService().requestBatteryOptimizationExemption();
-  } catch (e) {
-    debugPrint('[main] Battery optimization exemption request failed: $e');
-  }
+  // 3c. Battery optimization is NOT requested automatically on startup
+  //     (complying with Google Play policy). Users can optionally enable it
+  //     from Settings → Notification Battery Fix when troubleshooting reminders.
 
   // 4. Initialize Firebase for account sign-in + cloud plan sync.
   //    Wrapped in try-catch: until the Firebase project is configured
