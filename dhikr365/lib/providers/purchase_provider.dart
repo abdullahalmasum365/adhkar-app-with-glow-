@@ -11,7 +11,7 @@
 
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +27,9 @@ class PurchaseProvider extends ChangeNotifier {
   String? _lastError;
   Map<String, ProductDetails> _products = {};
   String? _activeSubscriptionId;
+
+  bool _isDebugOverride = false;
+  final Set<String> _restoredProductIds = {};
 
   bool get isAvailable => _isAvailable;
   bool get isLoading => _isLoading;
@@ -71,8 +74,56 @@ class PurchaseProvider extends ChangeNotifier {
       debugPrint('[PurchaseProvider] queryProducts failed: $e');
     }
 
+    // Automatically synchronize & verify purchases with Google Play Store
+    await syncPurchases();
+
     _isLoading = false;
     notifyListeners();
+  }
+
+  /// Syncs active purchases with Google Play Store at startup.
+  /// If online and Play Billing is active, restores purchases to ensure
+  /// canceled or expired subscriptions are not kept indefinitely in local cache.
+  Future<void> syncPurchases() async {
+    if (!_isAvailable) return;
+    if (kDebugMode && _isDebugOverride) return;
+
+    try {
+      _restoredProductIds.clear();
+      await _service.restorePurchases();
+      // Allow async stream events to be delivered and processed
+      await Future.delayed(const Duration(milliseconds: 600));
+
+      if (kDebugMode && _isDebugOverride) return;
+
+      // If user had a cached active subscription or Pro status:
+      if (_activeSubscriptionId != null) {
+        if (!_restoredProductIds.contains(_activeSubscriptionId)) {
+          // If other valid products were restored, adopt the best valid one
+          final valid = _restoredProductIds.firstWhere(
+            (id) => DonationProductIds.all.contains(id),
+            orElse: () => '',
+          );
+          if (valid.isNotEmpty) {
+            _activeSubscriptionId = valid;
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString(_prefKeyActiveSub, valid);
+            notifyListeners();
+            return;
+          }
+
+          // Not found among active Play Store purchases -> expired/canceled
+          debugPrint(
+              '[PurchaseProvider] Play Store sync: $_activeSubscriptionId is not active. Clearing cache.');
+          _activeSubscriptionId = null;
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove(_prefKeyActiveSub);
+          notifyListeners();
+        }
+      }
+    } catch (e) {
+      debugPrint('[PurchaseProvider] syncPurchases error: $e');
+    }
   }
 
   Future<void> buy(String productId) async {
@@ -100,12 +151,19 @@ class PurchaseProvider extends ChangeNotifier {
           break;
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
-          _activeSubscriptionId = purchase.productID;
-          try {
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString(_prefKeyActiveSub, purchase.productID);
-          } catch (e) {
-            debugPrint('[PurchaseProvider] save subscription error: $e');
+          if (DonationProductIds.all.contains(purchase.productID)) {
+            _restoredProductIds.add(purchase.productID);
+            // Retain proLifetime if already held; otherwise update active product
+            if (_activeSubscriptionId != DonationProductIds.proLifetime ||
+                purchase.productID == DonationProductIds.proLifetime) {
+              _activeSubscriptionId = purchase.productID;
+            }
+            try {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setString(_prefKeyActiveSub, _activeSubscriptionId!);
+            } catch (e) {
+              debugPrint('[PurchaseProvider] save subscription error: $e');
+            }
           }
           if (purchase.pendingCompletePurchase) {
             await _service.completePurchase(purchase);
@@ -146,6 +204,7 @@ class PurchaseProvider extends ChangeNotifier {
 
   Future<void> clearSubscription() async {
     _activeSubscriptionId = null;
+    _restoredProductIds.clear();
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_prefKeyActiveSub);
@@ -155,8 +214,10 @@ class PurchaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Toggle Pro status for developer testing / QA without real payment
+  /// Toggle Pro status for developer testing / QA without real payment (Debug only)
   Future<void> toggleProForTesting() async {
+    if (!kDebugMode) return;
+    _isDebugOverride = true;
     final prefs = await SharedPreferences.getInstance();
     if (isPro) {
       _activeSubscriptionId = null;

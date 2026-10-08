@@ -158,7 +158,8 @@ class _LocationSetupScreenState extends State<LocationSetupScreen> {
         'addressdetails': '1',
       });
       final resp = await http.get(uri, headers: {
-        'User-Agent': 'Adhkaar365App/1.0 (adhkaar365@example.com)',
+        'User-Agent':
+            'Adhkaar365App/1.0 (https://github.com/abdullahalmasum365/adhkar-app-with-glow-; abdullahalmasum365@gmail.com)',
         'Accept-Language': 'en',
       }).timeout(const Duration(seconds: 6));
 

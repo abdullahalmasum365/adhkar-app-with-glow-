@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -134,6 +135,122 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         (_) => false,
       );
     }
+  }
+
+  void _showAboutCreditsDialog(BuildContext context, LanguageProvider lp) {
+    final isBn = lp.locale.languageCode == 'bn';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.bgTeal,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.info_outline_rounded,
+                color: AppColors.primary, size: 22),
+            const SizedBox(width: 10),
+            Text(
+              isBn ? 'অ্যাপ পরিচিতি ও উৎস' : 'About & Attributions',
+              style: AppText.heading(18),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Adhkar 365 (v1.0.0)',
+                style: AppText.manrope(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                isBn
+                    ? 'ডেভেলপার: আব্দুল্লাহ আল মাসুম\nএকটি সম্পূর্ণ বিজ্ঞাপনমুক্ত ইসলামিক অ্যাপ।'
+                    : 'Developer: Abdullah Al Masum\nA 100% ad-free, spiritual companion for daily dhikr.',
+                style: AppText.manrope(
+                    fontSize: 13, color: AppColors.textSlate300),
+              ),
+              const SizedBox(height: 14),
+              const Divider(color: Colors.white12),
+              const SizedBox(height: 8),
+              Text(
+                isBn
+                    ? '📖 দোয়ার উৎস ও সত্যতা:'
+                    : '📖 Islamic Texts & Authenticity:',
+                style: AppText.manrope(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                isBn
+                    ? 'সকল দোয়া ও যিকির সংকলিত হয়েছে শায়খ সাঈদ বিন আলী বিন ওয়াহফ আল-কাহত্বানী (রহি.) রচিত "হিসনুল মুসলিম" কিতাব থেকে, সহীহ বুখারী, সহীহ মুসলিম ও সুনানের সনদসহ।'
+                    : 'All supplications are compiled from "Hisn al-Muslim" (Fortress of the Muslim) by Sheikh Saeed bin Ali bin Wahf Al-Qahtani, cross-referenced with Sahih al-Bukhari, Sahih Muslim, and classical Sunan.',
+                style: AppText.manrope(
+                    fontSize: 12, color: AppColors.textSlate400),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                isBn
+                    ? '🎙️ অডিও তিলাওয়াত (ওয়াক্ফ):'
+                    : '🎙️ Audio Recitations (Public Waqf):',
+                style: AppText.manrope(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                isBn
+                    ? 'অ্যাপের ১২৫টি অডিও তিলাওয়াত পাবলিক ইসলামিক ওয়াক্ফ (Hisnul Muslim audio archive) থেকে সংগৃহীত। এটি উম্মাহর জন্য ১০০% উন্মুক্ত ও ফ্রি।'
+                    : 'All 125 audio recitations are compiled from public Islamic endowment (Waqf) archives (Hisnul Muslim audio archive). They are 100% free and unmonetized for all users.',
+                style: AppText.manrope(
+                    fontSize: 12, color: AppColors.textSlate400),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                isBn ? '⚖️ ফন্ট ও লাইব্রেরি:' : '⚖️ Fonts & Libraries:',
+                style: AppText.manrope(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Amiri, Space Mono, Manrope, Public Sans (SIL Open Font License). Prayer calculations by Adhan Library.',
+                style: AppText.manrope(
+                    fontSize: 12, color: AppColors.textSlate400),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              isBn ? 'ঠিক আছে' : 'Close',
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -541,73 +658,68 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       }
                     }),
                 _div(),
-                _Tile(
-                    icon: Icons.workspace_premium_rounded,
-                    color: ThemeProvider.divineAmber,
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'আযকার ৩৬৫ প্রো (Pro Version)'
-                        : 'Adhkar 365 PRO',
-                    subtitle: pp.isPro
-                        ? (lp.locale.languageCode == 'bn'
-                            ? 'সক্রিয় — কাস্টম প্ল্যান ও সব প্রিমিয়াম ফিচার আনলক রয়েছে'
-                            : 'Active — Custom plan & premium features unlocked')
-                        : (lp.locale.languageCode == 'bn'
-                            ? 'নিষ্ক্রিয় — ট্যাপ করে এখনই আনলক করুন'
-                            : 'Inactive — Tap switch to unlock'),
-                    trailing: Switch(
-                      activeThumbColor: ThemeProvider.divineAmber,
-                      value: pp.isPro,
-                      onChanged: (_) async {
-                        await pp.toggleProForTesting();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              backgroundColor: Colors.amber.shade800,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              content: Text(
-                                pp.isPro
-                                    ? (lp.locale.languageCode == 'bn'
-                                        ? '🎉 আলহামদুলিল্লাহ! প্রো ভার্সন সক্রিয় হয়েছে!'
-                                        : '🎉 Alhamdulillah! Pro Version Activated!')
-                                    : (lp.locale.languageCode == 'bn'
-                                        ? 'প্রো ভার্সন বন্ধ করা হয়েছে।'
-                                        : 'Pro Version Deactivated.'),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+                if (kDebugMode) ...[
+                  _Tile(
+                      icon: Icons.workspace_premium_rounded,
+                      color: ThemeProvider.divineAmber,
+                      title: lp.locale.languageCode == 'bn'
+                          ? 'আযকার ৩৬৫ প্রো (DEBUG)'
+                          : 'Adhkar 365 PRO (DEBUG)',
+                      subtitle: pp.isPro
+                          ? (lp.locale.languageCode == 'bn'
+                              ? 'সক্রিয় — কাস্টম প্ল্যান ও সব ফিচার আনলক (DEBUG)'
+                              : 'Active — All features unlocked (DEBUG)')
+                          : (lp.locale.languageCode == 'bn'
+                              ? 'নিষ্ক্রিয় — ট্যাপ করে টেস্ট আনলক করুন'
+                              : 'Inactive — Tap switch to test unlock'),
+                      trailing: Switch(
+                        activeThumbColor: ThemeProvider.divineAmber,
+                        value: pp.isPro,
+                        onChanged: (_) async {
+                          await pp.toggleProForTesting();
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.amber.shade800,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                content: Text(
+                                  pp.isPro
+                                      ? '🎉 [DEBUG] Pro Activated!'
+                                      : '[DEBUG] Pro Deactivated.',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                               ),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    onTap: () async {
-                      await pp.toggleProForTesting();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: Colors.amber.shade800,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            content: Text(
-                              pp.isPro
-                                  ? (lp.locale.languageCode == 'bn'
-                                      ? '🎉 আলহামদুলিল্লাহ! প্রো ভার্সন সক্রিয় হয়েছে!'
-                                      : '🎉 Alhamdulillah! Pro Version Activated!')
-                                  : (lp.locale.languageCode == 'bn'
-                                      ? 'প্রো ভার্সন বন্ধ করা হয়েছে।'
-                                      : 'Pro Version Deactivated.'),
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        );
-                      }
-                    }),
+                            );
+                          }
+                        },
+                      )),
+                ] else ...[
+                  _Tile(
+                      icon: Icons.workspace_premium_rounded,
+                      color: ThemeProvider.divineAmber,
+                      title: lp.locale.languageCode == 'bn'
+                          ? 'আযকার ৩৬৫ প্রো'
+                          : 'Adhkar 365 PRO',
+                      subtitle: pp.isPro
+                          ? (lp.locale.languageCode == 'bn'
+                              ? 'সক্রিয় (লাইফটাইম সাবস্ক্রিপশন)'
+                              : 'Active (Lifetime Subscription)')
+                          : (lp.locale.languageCode == 'bn'
+                              ? 'আপগ্রেড করুন'
+                              : 'Upgrade to Pro'),
+                      trailing: pp.isPro
+                          ? const Icon(Icons.check_circle_rounded,
+                              color: Colors.green, size: 20)
+                          : const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 14, color: Colors.grey),
+                      onTap: pp.isPro
+                          ? null
+                          : () => showProPaywallModal(context)),
+                ],
               ])),
               const SizedBox(height: 22),
 
@@ -873,6 +985,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         Uri.parse(
                             'https://abdullahalmasum365.github.io/adhkar-app-with-glow-/cookie-policy.html'),
                         mode: LaunchMode.externalApplication)),
+                _div(),
+                _Tile(
+                    icon: Icons.info_outline_rounded,
+                    color: AppColors.primary,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'অ্যাপ পরিচিতি ও উৎস (ক্রেডিট)'
+                        : 'About & Attributions',
+                    onTap: () => _showAboutCreditsDialog(context, lp)),
                 _div(),
                 _Tile(
                     icon: Icons.logout,
@@ -1200,6 +1320,15 @@ class _DevVersionTapState extends State<_DevVersionTap> {
 
   @override
   Widget build(BuildContext context) {
+    if (!kDebugMode) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Center(
+          child: Text('VERSION 1.0.0',
+              style: AppText.label(color: AppColors.textSlate500)),
+        ),
+      );
+    }
     final remaining = _required - _taps;
     return GestureDetector(
       onTap: _onTap,

@@ -7,6 +7,7 @@
 // seamlessly routes to the donation/supporter purchase flow.
 // ============================================================================
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -82,26 +83,28 @@ class ProPaywallSheet extends StatelessWidget {
             ),
             SizedBox(height: R.px(20)),
 
-            // Crown / Star Icon badge (Long press to test unlock Pro)
+            // Crown / Star Icon badge (Long press to test unlock Pro in debug mode only)
             GestureDetector(
-              onLongPress: () async {
-                await pp.toggleProForTesting();
-                if (!context.mounted) return;
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: Colors.amber.shade800,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    content: Text(
-                      pp.isPro
-                          ? (isBn ? '🎉 টেস্ট মোড: প্রো ভার্সন আনলক করা হয়েছে!' : '🎉 Test Mode: Pro Version Unlocked!')
-                          : (isBn ? 'টেস্ট মোড: প্রো ভার্সন লক করা হয়েছে।' : 'Test Mode: Pro Version Locked.'),
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                );
-              },
+              onLongPress: kDebugMode
+                  ? () async {
+                      await pp.toggleProForTesting();
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.amber.shade800,
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          content: Text(
+                            pp.isPro
+                                ? (isBn ? '🎉 [DEBUG] প্রো ভার্সন আনলক করা হয়েছে!' : '🎉 [DEBUG] Pro Version Unlocked!')
+                                : (isBn ? '[DEBUG] প্রো ভার্সন লক করা হয়েছে।' : '[DEBUG] Pro Version Locked.'),
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      );
+                    }
+                  : null,
               child: Container(
                 width: 68,
                 height: 68,
@@ -209,34 +212,38 @@ class ProPaywallSheet extends StatelessWidget {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () async {
-                  if (proProduct != null) {
-                    pp.buy(DonationProductIds.proLifetime);
-                  } else {
-                    // Instantly unlock Pro (testing / pre-store launch)
-                    await pp.toggleProForTesting();
-                    if (!context.mounted) return;
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.amber.shade800,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        content: Text(
-                          isBn
-                              ? '🎉 আলহামদুলিল্লাহ! প্রো ভার্সন সক্রিয় হয়েছে!'
-                              : '🎉 Alhamdulillah! Pro Version Activated!',
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    );
-                  }
-                },
+                onPressed: (proProduct == null || pp.isPurchasing)
+                    ? (kDebugMode
+                        ? () async {
+                            await pp.toggleProForTesting();
+                            if (!context.mounted) return;
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.amber.shade800,
+                                behavior: SnackBarBehavior.floating,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                content: Text(
+                                  isBn
+                                      ? '🎉 [DEBUG] প্রো ভার্সন সক্রিয় হয়েছে!'
+                                      : '🎉 [DEBUG] Pro Version Activated!',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            );
+                          }
+                        : null)
+                    : () => pp.buy(DonationProductIds.proLifetime),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ThemeProvider.divineAmber,
                   foregroundColor: ThemeProvider.brandDark,
+                  disabledBackgroundColor:
+                      ThemeProvider.divineAmber.withValues(alpha: 0.3),
+                  disabledForegroundColor:
+                      ThemeProvider.brandDark.withValues(alpha: 0.5),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -248,9 +255,19 @@ class ProPaywallSheet extends StatelessWidget {
                     const Icon(Icons.star_rounded, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      proPriceLabel != null
-                          ? (isBn ? 'প্রো আনলক করুন ($proPriceLabel)' : 'Unlock Pro ($proPriceLabel)')
-                          : (isBn ? 'প্রো ভার্সন আনলক করুন' : 'Unlock Pro Version'),
+                      proProduct != null
+                          ? (proPriceLabel != null
+                              ? (isBn
+                                  ? 'প্রো আনলক করুন ($proPriceLabel)'
+                                  : 'Unlock Pro ($proPriceLabel)')
+                              : (isBn
+                                  ? 'প্রো ভার্সন আনলক করুন'
+                                  : 'Unlock Pro Version'))
+                          : (kDebugMode
+                              ? 'DEBUG: UNLOCK PRO'
+                              : (isBn
+                                  ? 'প্লে স্টোরে পণ্য লোড হচ্ছে...'
+                                  : 'Loading Play Store...')),
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -746,34 +747,65 @@ class _DonationScreenState extends State<DonationScreen> {
 
                         const SizedBox(height: 12),
 
+                        // Transparency / Legal Disclosure Card (Play Store Policy Compliance)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: surfaceContainerHigh.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.ink(0.08)),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.volunteer_activism_outlined,
+                                  size: 16, color: primary),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  lp.locale.languageCode == 'bn'
+                                      ? 'সহায়তা সরাসরি স্বাধীন ডেভেলপারকে সার্ভার পরিচালনা ও অ্যাপটি ১০০% বিজ্ঞাপনমুক্ত রাখতে সহায়তা করে। এটি চলমান সওয়াবের (সাদাকাহ জারিয়া) নিয়তে সফটওয়্যার স্পনসরশিপ, কোনো নিবন্ধিত দাতব্য প্রতিষ্ঠানে কর-ছাড়যোগ্য অনুদান নয়।'
+                                      : 'Sponsorship directly supports the independent developer with server costs & keeping the app 100% ad-free. This is voluntary software patronage dedicated for continuous spiritual reward, not a tax-deductible donation to a registered charity.',
+                                  style: GoogleFonts.publicSans(
+                                    color:
+                                        onSurfaceVariant.withValues(alpha: 0.8),
+                                    fontSize: 11,
+                                    height: 1.45,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
                         // Call to Action — subscribes to the selected tier
                         // via Google Play Billing. Disabled until real
                         // Play Store products are loaded.
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: pp.isPurchasing
-                                ? null
-                                : () async {
-                                    if (selectedProduct != null) {
-                                      pp.buy(selectedTier.productId);
-                                    } else {
-                                      // Test / offline unlock
-                                      await pp.toggleProForTesting();
-                                      if (!context.mounted) return;
-                                      showSadaqahCertificateDialog(
-                                        context,
-                                        dedication: SadaqahDedication(
-                                          type: _selectedDedication,
-                                          recipientName: _recipientNameController.text.trim().isNotEmpty
-                                              ? _recipientNameController.text.trim()
-                                              : null,
-                                          timestamp: DateTime.now(),
-                                        ),
-                                        tierName: lp.getText(selectedTier.nameKey),
-                                      );
-                                    }
-                                  },
+                            onPressed: (selectedProduct == null || pp.isPurchasing)
+                                ? (kDebugMode
+                                    ? () async {
+                                        await pp.toggleProForTesting();
+                                        if (!context.mounted) return;
+                                        showSadaqahCertificateDialog(
+                                          context,
+                                          dedication: SadaqahDedication(
+                                            type: _selectedDedication,
+                                            recipientName: _recipientNameController.text.trim().isNotEmpty
+                                                ? _recipientNameController.text.trim()
+                                                : null,
+                                            timestamp: DateTime.now(),
+                                          ),
+                                          tierName: lp.getText(selectedTier.nameKey),
+                                        );
+                                      }
+                                    : null)
+                                : () => pp.buy(selectedTier.productId),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primary,
                               foregroundColor: AppColors.onPrimary,
@@ -807,9 +839,10 @@ class _DonationScreenState extends State<DonationScreen> {
                                       children: [
                                         Text(
                                           selectedProduct == null
-                                              ? (lp.locale.languageCode == 'bn'
-                                                  ? 'নিয়ত নিশ্চিত করুন ও প্রো আনলক করুন'
-                                                  : 'Confirm Dedication & Unlock Pro')
+                                              ? (kDebugMode
+                                                  ? 'DEBUG: UNLOCK PRO'
+                                                  : lp.getText(
+                                                      'donation_not_available_short'))
                                               : '${lp.getText('donation_cta')} - $priceLabel/MONTH',
                                           maxLines: 1,
                                           style: GoogleFonts.spaceMono(

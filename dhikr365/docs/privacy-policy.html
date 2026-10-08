@@ -63,25 +63,27 @@
 
 <div class="highlight-box">
   <strong>Privacy First Commitment:</strong> <strong>Adhkar 365</strong> is designed with privacy at its core. 
-  The app is 100% ad-free, does not track your personal activities, does not use advertising identifiers, 
-  and fully functions offline. Creating an account is completely optional.
+  The app is 100% ad-free, does not track your personal activities, does not profile users, and does not use advertising identifiers. 
+  The core Islamic features (daily adhkar, audio playback, prayer calculations, and offline city database) work fully offline without an internet connection. 
+  Network access is used strictly for optional features: cloud sync, small-town search fallback via OpenStreetMap Nominatim, runtime Google Fonts typography delivery, and Google Play Billing.
 </div>
 
 <p>
   This Privacy Policy describes how <strong>Adhkar 365</strong> ("the App", "we", "us", or "our"), 
-  developed and maintained by <strong>Abdullah Al Masum</strong>, collects, protects, and uses information.
+  developed and maintained by <strong>Abdullah Al Masum</strong>, collects, protects, and handles information.
 </p>
 
-<h2>1. Information We Collect and Why (No Unnecessary Data)</h2>
+<h2>1. Information We Collect and Why (Data Minimization)</h2>
 <p>
-  We adhere strictly to the principle of <strong>data minimization</strong>. We only access device resources that are strictly necessary to provide Islamic remembrance and prayer calculation features.
+  We adhere strictly to the principle of <strong>data minimization</strong>. We only access device resources that are strictly necessary to provide Islamic remembrance, prayer schedules, and optional account synchronization.
 </p>
 
 <h3>1.1 Location Data (Coarse &amp; Precise)</h3>
 <ul>
   <li><strong>Purpose:</strong> Used exclusively to calculate local Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) and the Qibla compass direction using astronomical calculations (Adhan algorithm).</li>
-  <li><strong>Handling:</strong> All prayer calculations occur <strong>locally on your device</strong>. Your coordinates are never uploaded to any remote server, sold, or shared with third parties.</li>
-  <li><strong>User Choice:</strong> Location permission is optional. You can deny GPS access and manually select your city from our offline world city database.</li>
+  <li><strong>Local Processing:</strong> All mathematical prayer calculations occur <strong>locally on your device</strong>. Your GPS coordinates are never uploaded to our servers, never stored remotely, and never sold or shared with any commercial parties.</li>
+  <li><strong>Offline World City Database:</strong> The app bundles a pre-compiled offline database of over 100,000 cities worldwide. You can select your city manually without granting any GPS permission.</li>
+  <li><strong>Online Small Town Search Fallback (OpenStreetMap Nominatim):</strong> If you search for an uncommon small town not in the bundled offline database, the app makes an HTTPS query to <code>nominatim.openstreetmap.org</code> (OpenStreetMap Foundation) to resolve the city name into coordinates. Only the searched city name and our developer contact User-Agent (<code>Adhkaar365App/1.0</code>) are transmitted. No personal identifiers or GPS coordinates are sent. The OpenStreetMap Foundation privacy policy applies to such requests.</li>
 </ul>
 
 <h3>1.2 Local Notifications &amp; Exact Alarms</h3>
@@ -100,17 +102,23 @@
   <li>Your custom routine list and favorite dhikr IDs, to restore them upon signing in on another device.</li>
 </ul>
 
-<h3>1.4 Data We Do NOT Collect</h3>
+<h3>1.4 Purchase History &amp; Supporter Sponsorships</h3>
+<ul>
+  <li><strong>Processing:</strong> All optional Pro upgrades and voluntary supporter sponsorships are processed exclusively by <strong>Google Play Billing</strong>.</li>
+  <li><strong>Data Handled:</strong> We receive only anonymized purchase tokens and product IDs to activate features and verify active subscription states across devices.</li>
+  <li><strong>No Card Data:</strong> We NEVER receive, process, or store your credit card, debit card, or banking details.</li>
+</ul>
+
+<h3>1.5 Data We Do NOT Collect</h3>
 <ul>
   <li><strong>No Advertising IDs:</strong> We do NOT collect Google Advertising ID (GAID) or Apple IDFA.</li>
   <li><strong>No Cookies or Tracking Pixels:</strong> We do not use web cookies, flash cookies, or tracking beacons in the mobile application. (See our <a href="cookie-policy.html">Cookie Policy</a>).</li>
-  <li><strong>No Financial / Card Data:</strong> All voluntary donations and Pro upgrades are handled exclusively by Google Play Billing or Apple In-App Purchase. We never receive or store your credit or debit card numbers.</li>
   <li><strong>No Biometric or Contact Data:</strong> We do not access your contacts, phone state, microphone, camera, or photo gallery.</li>
 </ul>
 
 <h2>2. Third-Party SDKs &amp; Service Providers Audit</h2>
 <p>
-  We maintain full transparency regarding all third-party software development kits (SDKs) integrated into the App:
+  We maintain full transparency regarding all third-party software development kits (SDKs) and network endpoints integrated into the App:
 </p>
 <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 10px;">
   <thead style="background: #f3f4f6;">
@@ -126,7 +134,7 @@
       <td><strong>Firebase Authentication</strong></td>
       <td>Google LLC</td>
       <td>Optional secure sign-in (Google / Apple)</td>
-      <td>Email, Name, User UID</td>
+      <td>Email, Name, User UID (encrypted in transit)</td>
     </tr>
     <tr>
       <td><strong>Cloud Firestore</strong></td>
@@ -137,8 +145,20 @@
     <tr>
       <td><strong>Google Play Billing</strong></td>
       <td>Google LLC</td>
-      <td>In-App Purchase &amp; voluntary Sadaqah donations</td>
-      <td>Purchase tokens, subscription state (no card data)</td>
+      <td>In-App Purchase &amp; voluntary supporter sponsorships</td>
+      <td>Purchase tokens, subscription state (no payment card data)</td>
+    </tr>
+    <tr>
+      <td><strong>OpenStreetMap Nominatim</strong></td>
+      <td>OpenStreetMap Foundation</td>
+      <td>Optional geocoding search for small towns not in offline DB</td>
+      <td>Searched city query string, User-Agent, device IP address</td>
+    </tr>
+    <tr>
+      <td><strong>Google Fonts CDN</strong></td>
+      <td>Google LLC</td>
+      <td>Runtime delivery of open-source Arabic &amp; Latin fonts</td>
+      <td>Device IP address &amp; technical HTTP headers during font fetch</td>
     </tr>
     <tr>
       <td><strong>Adhan Library</strong></td>
@@ -161,7 +181,7 @@
 <h2>3. User Consent &amp; Transparency (No Dark Patterns)</h2>
 <ul>
   <li><strong>Clear Consent on Forms:</strong> All sign-in and account creation forms clearly display links to this Privacy Policy and our Terms of Service before submission.</li>
-  <li><strong>No Dark Patterns or Hidden Fees:</strong> Upgrades and voluntary donations are explicitly described with their local currency price directly from Google Play Billing. There are no hidden fees, drip pricing, or deceptive subscription locks. Free users enjoy full access to all standard adhkar, audio, and prayer times without restriction.</li>
+  <li><strong>No Dark Patterns or Hidden Fees:</strong> Upgrades and voluntary developer sponsorships are explicitly described with their local currency price directly from Google Play Billing. There are no hidden fees, drip pricing, or deceptive subscription locks. Free users enjoy full access to all standard adhkar, audio, and prayer times without restriction.</li>
 </ul>
 
 <h2>4. Email Policy &amp; Unsubscribe Mechanism</h2>
@@ -199,12 +219,26 @@
   Adhkar 365 is a general-audience spiritual utility. We do not target or knowingly collect personal information from children under the age of 13 (or under 16 in the European Union). If you are a parent or guardian and believe your child has submitted personal data to us, please contact us immediately, and we will promptly erase such records.
 </p>
 
-<h2>7. Font &amp; Asset Licensing</h2>
-<p>
-  All typography utilized in the application (including Amiri, Space Mono, Manrope, and Public Sans) is licensed under the <strong>SIL Open Font License (OFL)</strong>. All graphic emblems, iconography, and code are proprietary or open-source under permissive software licenses.
-</p>
+<h2>7. Audio Recitations (Waqf) &amp; Font Licensing</h2>
+<ul>
+  <li><strong>Hisn al-Muslim Audio Recitations (Public Endowment / Waqf):</strong> All 125 du'a and adhkar audio recitations in the App are sourced from public Islamic endowment (Waqf) archives (Hisnul Muslim audio resources) dedicated for free public benefit of Muslims worldwide. All audio files are 100% free and unmonetized for all users, never locked behind paywalls.</li>
+  <li><strong>Typography:</strong> All typography utilized in the application (including Amiri, Space Mono, Manrope, and Public Sans) is licensed under the <strong>SIL Open Font License (OFL)</strong>.</li>
+</ul>
 
-<h2>8. Developer &amp; Business Details</h2>
+<h2>8. Google Play Console Data Safety Form Reference</h2>
+<div class="box">
+  <p>For complete compliance with the Google Play Data Safety policy, our declarations are summarized below:</p>
+  <ul>
+    <li><strong>Location (Approximate &amp; Precise):</strong> Collected optionally, processed ephemerally on-device for prayer calculations and Qibla. Small town searches optionally query OpenStreetMap Nominatim with the searched query string. Not shared with third-party advertisers.</li>
+    <li><strong>Personal Info (Name &amp; Email):</strong> Collected optionally only when the user signs in with Google/Apple for multi-device sync. Never shared with third parties or advertisers.</li>
+    <li><strong>Financial Info (Purchase History):</strong> Processed securely via Google Play Billing. Used solely for app functionality (activating Pro and supporter perks).</li>
+    <li><strong>Device / Technical Identifiers (IP address):</strong> Ephemeral IP processing occurs by Google Fonts CDN, OpenStreetMap Nominatim, and Firebase during network requests. Not logged or used for tracking or profiling.</li>
+    <li><strong>Data Security:</strong> All data in transit is encrypted using standard HTTPS/TLS encryption.</li>
+    <li><strong>Data Deletion Mechanism:</strong> Users can delete their account and all stored data directly in-app or via email request.</li>
+  </ul>
+</div>
+
+<h2>9. Developer &amp; Business Details</h2>
 <div class="box">
   <p><strong>Publisher / Developer:</strong> Abdullah Al Masum</p>
   <p><strong>Application:</strong> Adhkar 365 (Package: <code>com.adhkaar365.app</code>)</p>
@@ -213,7 +247,7 @@
   <p><strong>Open Source Repository:</strong> <a href="https://github.com/abdullahalmasum365/adhkar-app-with-glow-" target="_blank" rel="noopener">github.com/abdullahalmasum365/adhkar-app-with-glow-</a></p>
 </div>
 
-<h2>9. Changes to This Privacy Policy</h2>
+<h2>10. Changes to This Privacy Policy</h2>
 <p>
   We may update this policy periodically to reflect operational, legal, or regulatory updates. Any changes will be posted on this page with an updated revision date.
 </p>
