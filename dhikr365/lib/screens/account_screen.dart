@@ -20,6 +20,7 @@ import '../providers/auth_provider.dart';
 import '../providers/custom_plan_provider.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/theme_provider.dart';
 import '../utils/responsive.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -263,6 +264,12 @@ class _SignedInCard extends StatelessWidget {
         if (!context.mounted) return;
         final dp = Provider.of<DhikrProvider>(context, listen: false);
         await dp.attachUser(null);
+        if (!context.mounted) return;
+        final tp = Provider.of<ThemeProvider>(context, listen: false);
+        await tp.attachUser(null);
+        if (!context.mounted) return;
+        final lpProvider = Provider.of<LanguageProvider>(context, listen: false);
+        await lpProvider.attachUser(null);
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

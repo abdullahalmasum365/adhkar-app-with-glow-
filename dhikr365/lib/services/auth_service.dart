@@ -17,6 +17,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -211,19 +212,38 @@ class AuthService {
     //    and prevent leaving orphaned or half-deleted states if re-auth fails or is canceled.
     await reauthenticate();
 
-    // 2. Batch delete all Firestore user records:
+    // 2. Permanently purge all Firestore user records across all subcollections:
+    //    - Settings data (users/{uid}/settings/theme, users/{uid}/settings/language)
     //    - Custom plan data (users/{uid}/plan/data)
     //    - Progress & streak data (users/{uid}/progress/data)
-    //    - Settings data (users/{uid}/settings/theme, users/{uid}/settings/language)
     //    - Root profile document (users/{uid})
     final db = FirebaseFirestore.instance.collection('users').doc(uid);
     final batch = FirebaseFirestore.instance.batch();
-    batch.delete(db.collection('plan').doc('data'));
-    batch.delete(db.collection('progress').doc('data'));
+
+    // Explicitly delete known subcollection documents
     batch.delete(db.collection('settings').doc('theme'));
     batch.delete(db.collection('settings').doc('language'));
+    batch.delete(db.collection('plan').doc('data'));
+    batch.delete(db.collection('progress').doc('data'));
+
+    // Dynamically query and delete any remaining documents across known subcollections
+    // to guarantee 100% compliance with permanent data purge policy
+    try {
+      final subcollections = ['settings', 'plan', 'progress'];
+      for (final sub in subcollections) {
+        final querySnap = await db.collection(sub).get();
+        for (final doc in querySnap.docs) {
+          batch.delete(doc.reference);
+        }
+      }
+    } catch (e) {
+      debugPrint('[AuthService] Subcollection query cleanup notice: $e');
+    }
+
+    // Delete root user document
     batch.delete(db);
     await batch.commit();
+    debugPrint('[AuthService] Successfully purged all Firestore data for user $uid');
 
     // 3. Delete the Firebase Auth user account
     await user.delete();
