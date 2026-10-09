@@ -28,6 +28,8 @@ import 'package:adhan/adhan.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'firebase_options.dart';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // WorkManager background callback
 // MUST be a top-level function annotated @pragma('vm:entry-point') so the
@@ -181,9 +183,16 @@ void main() async {
   //    touching any Firebase API, so a failed init here just means the
   //    Account screen shows "not configured" and everything else is normal.
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
-    debugPrint('[main] Firebase init skipped (not configured yet): $e');
+    debugPrint('[main] Firebase init with options failed: $e');
+    try {
+      await Firebase.initializeApp();
+    } catch (e2) {
+      debugPrint('[main] Firebase fallback init failed: $e2');
+    }
   }
 
   runApp(const MyApp());
