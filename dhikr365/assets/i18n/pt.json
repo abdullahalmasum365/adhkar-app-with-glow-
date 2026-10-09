@@ -336,5 +336,8 @@
   "onb_summary_location": "Localização",
   "share_as_image": "Compartilhar como imagem",
   "generating_card": "Gerando cartão…",
-  "card_ready": "Cartão pronto para compartilhar!"
+  "card_ready": "Cartão pronto para compartilhar!",
+  "health_disclaimer_title": "Aviso sobre súplicas espirituais",
+  "health_disclaimer": "Estas súplicas autênticas destinam-se ao conforto espiritual e devoção. NÃO constituem nem substituem aconselhamento, diagnóstico ou tratamento médico profissional. Consulte sempre um médico qualificado.",
+  "health_disclaimer_short": "Lembrança espiritual • Não substitui o tratamento médico"
 }

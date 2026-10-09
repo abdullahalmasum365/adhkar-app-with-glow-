@@ -5,7 +5,7 @@ Script to add missing i18n translation keys to all language JSON files.
 import json
 import os
 
-I18N_DIR = r"C:\Users\UNSTOPPABLE\Music\apps\Adhkar365 working\dhikr365\assets\i18n"
+I18N_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "i18n")
 
 # ── Bengali (bn) — only 11 keys ──────────────────────────────────────────────
 BN_KEYS = {

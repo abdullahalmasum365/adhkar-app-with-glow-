@@ -1612,29 +1612,44 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         horizontal: R.px(16), vertical: R.px(4)),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: R.px(12), vertical: R.px(8)),
+                          horizontal: R.px(12), vertical: R.px(10)),
                       decoration: BoxDecoration(
                         color: Colors.amber.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                             color: Colors.amber.withValues(alpha: 0.25)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.health_and_safety_outlined,
-                              size: 16, color: Colors.amber.shade400),
-                          SizedBox(width: R.px(8)),
+                          Padding(
+                            padding: EdgeInsets.only(top: R.px(2)),
+                            child: Icon(Icons.health_and_safety_outlined,
+                                size: 18, color: Colors.amber.shade400),
+                          ),
+                          SizedBox(width: R.px(10)),
                           Expanded(
-                            child: Text(
-                              lp.locale.languageCode == 'bn'
-                                  ? 'আত্মিক প্রশান্তির জন্য এই দোয়াগুলো পাঠ্য। এগুলো কোনো চিকিৎসकीय পরামর্শ বা চিকিৎসার বিকল্প নয়। স্বাস্থ্য সমস্যায় ডাক্তারের পরামর্শ নিন।'
-                                  : 'These authentic supplications are for spiritual comfort and devotional remembrance. They do not constitute or replace professional medical consultation, diagnosis, or treatment.',
-                              style: TextStyle(
-                                fontSize: 11,
-                                height: 1.4,
-                                color: AppColors.textSlate400,
-                              ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lp.getText('health_disclaimer_title'),
+                                  style: AppText.manrope(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.amber.shade300,
+                                  ),
+                                ),
+                                SizedBox(height: R.px(3)),
+                                Text(
+                                  lp.getText('health_disclaimer'),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    height: 1.42,
+                                    color: AppColors.textSlate300,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

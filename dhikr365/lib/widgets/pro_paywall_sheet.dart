@@ -7,7 +7,6 @@
 // seamlessly routes to the donation/supporter purchase flow.
 // ============================================================================
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
@@ -83,31 +82,10 @@ class ProPaywallSheet extends StatelessWidget {
             ),
             SizedBox(height: R.px(20)),
 
-            // Crown / Star Icon badge (Long press to test unlock Pro in debug mode only)
-            GestureDetector(
-              onLongPress: kDebugMode
-                  ? () async {
-                      await pp.toggleProForTesting();
-                      if (!context.mounted) return;
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: Colors.amber.shade800,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          content: Text(
-                            pp.isPro
-                                ? (isBn ? '🎉 [DEBUG] প্রো ভার্সন আনলক করা হয়েছে!' : '🎉 [DEBUG] Pro Version Unlocked!')
-                                : (isBn ? '[DEBUG] প্রো ভার্সন লক করা হয়েছে।' : '[DEBUG] Pro Version Locked.'),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      );
-                    }
-                  : null,
-              child: Container(
-                width: 68,
-                height: 68,
+            // Crown / Star Icon badge
+            Container(
+              width: 68,
+              height: 68,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
@@ -129,7 +107,6 @@ class ProPaywallSheet extends StatelessWidget {
                   color: ThemeProvider.divineAmber,
                 ),
               ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
-            ),
 
             SizedBox(height: R.px(14)),
 
@@ -213,29 +190,7 @@ class ProPaywallSheet extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: (proProduct == null || pp.isPurchasing)
-                    ? (kDebugMode
-                        ? () async {
-                            await pp.toggleProForTesting();
-                            if (!context.mounted) return;
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.amber.shade800,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                content: Text(
-                                  isBn
-                                      ? '🎉 [DEBUG] প্রো ভার্সন সক্রিয় হয়েছে!'
-                                      : '🎉 [DEBUG] Pro Version Activated!',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            );
-                          }
-                        : null)
+                    ? null
                     : () => pp.buy(DonationProductIds.proLifetime),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ThemeProvider.divineAmber,
@@ -255,16 +210,16 @@ class ProPaywallSheet extends StatelessWidget {
                     const Icon(Icons.star_rounded, size: 20),
                     const SizedBox(width: 8),
                     Text(
-                      proProduct != null
-                          ? (proPriceLabel != null
-                              ? (isBn
-                                  ? 'প্রো আনলক করুন ($proPriceLabel)'
-                                  : 'Unlock Pro ($proPriceLabel)')
-                              : (isBn
-                                  ? 'প্রো ভার্সন আনলক করুন'
-                                  : 'Unlock Pro Version'))
-                          : (kDebugMode
-                              ? 'DEBUG: UNLOCK PRO'
+                      pp.isPurchasing
+                          ? (isBn ? 'প্রসেসিং হচ্ছে...' : 'Processing...')
+                          : (proProduct != null
+                              ? (proPriceLabel != null
+                                  ? (isBn
+                                      ? 'প্রো আনলক করুন ($proPriceLabel)'
+                                      : 'Unlock Pro ($proPriceLabel)')
+                                  : (isBn
+                                      ? 'প্রো ভার্সন আনলক করুন'
+                                      : 'Unlock Pro Version'))
                               : (isBn
                                   ? 'প্লে স্টোরে পণ্য লোড হচ্ছে...'
                                   : 'Loading Play Store...')),
@@ -319,7 +274,7 @@ class ProPaywallSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            isBn ? 'পিতা-মাতা বা আপনজনদের জন্য সদকা?' : 'Sadaqah Jariyah for Parents?',
+                            isBn ? 'অ্যাপ স্পনসরশিপ ও দোয়ার নিয়ত?' : 'Sponsor the App & Dedicate Du\'a?',
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -329,8 +284,8 @@ class ProPaywallSheet extends StatelessWidget {
                           const SizedBox(height: 2),
                           Text(
                             isBn
-                                ? 'মাসিক/বাৎসরিক সদকা দিয়ে ডিজিটাল দোয়া সনদ পান →'
-                                : 'Give ongoing charity & receive a Du\'a Certificate →',
+                                ? 'ডেভেলপারকে সাপোর্ট করুন ও ডিজিটাল দোয়া সনদ পান →'
+                                : 'Support the developer & receive a digital Du\'a Certificate →',
                             style: TextStyle(
                               fontSize: 11.5,
                               color: AppColors.textSlate400,

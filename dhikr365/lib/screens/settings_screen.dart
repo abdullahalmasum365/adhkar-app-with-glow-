@@ -17,6 +17,7 @@ import '../providers/notification_provider.dart';
 import '../services/notification_service.dart';
 import '../models/dhikr.dart';
 import '../widgets/pro_paywall_sheet.dart';
+import '../widgets/battery_reliability_dialogs.dart';
 import 'widget_preview_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -200,8 +201,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               const SizedBox(height: 12),
               Text(
                 isBn
-                    ? '🎙️ অডিও তিলাওয়াত (ওয়াক্ফ):'
-                    : '🎙️ Audio Recitations (Public Waqf):',
+                    ? '🎙️ অডিও তিলাওয়াত ও ক্বারীগণ:'
+                    : '🎙️ Audio Recitations & Reciters:',
                 style: AppText.manrope(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -211,8 +212,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               const SizedBox(height: 4),
               Text(
                 isBn
-                    ? 'অ্যাপের ১২৫টি অডিও তিলাওয়াত পাবলিক ইসলামিক ওয়াক্ফ (Hisnul Muslim audio archive) থেকে সংগৃহীত। এটি উম্মাহর জন্য ১০০% উন্মুক্ত ও ফ্রি।'
-                    : 'All 125 audio recitations are compiled from public Islamic endowment (Waqf) archives (Hisnul Muslim audio archive). They are 100% free and unmonetized for all users.',
+                    ? 'হিসনুল মুসলিম দোয়ার অডিও তিলাওয়াত: ক্বারী হামাদ আদ-দুরাইহিম (حمد الدريهم)। আয়াতুল কুরসী ও নির্বাচিত আয়াত: শায়খ মিশারী রাশিদ আল-আফাসী। শিক্ষা ও আত্মিক উপকারের জন্য সকল অডিও সম্পূর্ণ বিনামূল্যে ও উন্মুক্ত।'
+                    : 'Hisn al-Muslim supplications recited by Qari Hamad Al-Duraihem (حمد الدريهم). Ayatul Kursi & Qur\'anic verses recited by Sheikh Mishary Rashid Alafasy. Provided 100% free and unmonetized for educational and devotional benefit.',
                 style: AppText.manrope(
                     fontSize: 12, color: AppColors.textSlate400),
               ),
@@ -636,90 +637,29 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     color: Colors.amberAccent,
                     title: lp.getText('notif_battery_fix'),
                     subtitle: lp.getText('notif_battery_fix_sub'),
-                    onTap: () async {
-                      final svc = NotificationService();
-                      // 1. Request battery optimization exemption (system dialog)
-                      await svc.requestBatteryOptimizationExemption();
-                      // 2. Request exact alarm permission (system dialog)
-                      await svc.openExactAlarmSettings();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: Colors.green.shade700,
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            content: Text(
-                              lp.getText('notif_battery_fixed'),
-                              style: AppText.body(color: Colors.white),
-                            ),
-                          ),
-                        );
-                      }
-                    }),
+                    onTap: () => runNotificationReliabilityTips(context)),
                 _div(),
-                if (kDebugMode) ...[
-                  _Tile(
-                      icon: Icons.workspace_premium_rounded,
-                      color: ThemeProvider.divineAmber,
-                      title: lp.locale.languageCode == 'bn'
-                          ? 'আযকার ৩৬৫ প্রো (DEBUG)'
-                          : 'Adhkar 365 PRO (DEBUG)',
-                      subtitle: pp.isPro
-                          ? (lp.locale.languageCode == 'bn'
-                              ? 'সক্রিয় — কাস্টম প্ল্যান ও সব ফিচার আনলক (DEBUG)'
-                              : 'Active — All features unlocked (DEBUG)')
-                          : (lp.locale.languageCode == 'bn'
-                              ? 'নিষ্ক্রিয় — ট্যাপ করে টেস্ট আনলক করুন'
-                              : 'Inactive — Tap switch to test unlock'),
-                      trailing: Switch(
-                        activeThumbColor: ThemeProvider.divineAmber,
-                        value: pp.isPro,
-                        onChanged: (_) async {
-                          await pp.toggleProForTesting();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: Colors.amber.shade800,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                content: Text(
-                                  pp.isPro
-                                      ? '🎉 [DEBUG] Pro Activated!'
-                                      : '[DEBUG] Pro Deactivated.',
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      )),
-                ] else ...[
-                  _Tile(
-                      icon: Icons.workspace_premium_rounded,
-                      color: ThemeProvider.divineAmber,
-                      title: lp.locale.languageCode == 'bn'
-                          ? 'আযকার ৩৬৫ প্রো'
-                          : 'Adhkar 365 PRO',
-                      subtitle: pp.isPro
-                          ? (lp.locale.languageCode == 'bn'
-                              ? 'সক্রিয় (লাইফটাইম সাবস্ক্রিপশন)'
-                              : 'Active (Lifetime Subscription)')
-                          : (lp.locale.languageCode == 'bn'
-                              ? 'আপগ্রেড করুন'
-                              : 'Upgrade to Pro'),
-                      trailing: pp.isPro
-                          ? const Icon(Icons.check_circle_rounded,
-                              color: Colors.green, size: 20)
-                          : const Icon(Icons.arrow_forward_ios_rounded,
-                              size: 14, color: Colors.grey),
-                      onTap: pp.isPro
-                          ? null
-                          : () => showProPaywallModal(context)),
-                ],
+                _Tile(
+                    icon: Icons.workspace_premium_rounded,
+                    color: ThemeProvider.divineAmber,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'আযকার ৩৬৫ প্রো'
+                        : 'Adhkar 365 PRO',
+                    subtitle: pp.isPro
+                        ? (lp.locale.languageCode == 'bn'
+                            ? 'সক্রিয় (লাইফটাইম সাবস্ক্রিপশন)'
+                            : 'Active (Lifetime Subscription)')
+                        : (lp.locale.languageCode == 'bn'
+                            ? 'আপগ্রেড করুন'
+                            : 'Upgrade to Pro'),
+                    trailing: pp.isPro
+                        ? const Icon(Icons.check_circle_rounded,
+                            color: Colors.green, size: 20)
+                        : const Icon(Icons.arrow_forward_ios_rounded,
+                            size: 14, color: Colors.grey),
+                    onTap: pp.isPro
+                        ? null
+                        : () => showProPaywallModal(context)),
               ])),
               const SizedBox(height: 22),
 
@@ -1471,7 +1411,7 @@ class _DevPanelSheet extends StatelessWidget {
                                     width: 1)),
                             elevation: 0,
                           ),
-                          onPressed: () => pp.toggleProForTesting(),
+                          onPressed: kDebugMode ? () => pp.toggleProForTesting() : null,
                         ),
                       ),
                       const SizedBox(height: 8),

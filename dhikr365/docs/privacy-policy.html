@@ -82,8 +82,8 @@
 <ul>
   <li><strong>Purpose:</strong> Used exclusively to calculate local Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) and the Qibla compass direction using astronomical calculations (Adhan algorithm).</li>
   <li><strong>Local Processing:</strong> All mathematical prayer calculations occur <strong>locally on your device</strong>. Your GPS coordinates are never uploaded to our servers, never stored remotely, and never sold or shared with any commercial parties.</li>
-  <li><strong>Offline World City Database:</strong> The app bundles a pre-compiled offline database of over 100,000 cities worldwide. You can select your city manually without granting any GPS permission.</li>
-  <li><strong>Online Small Town Search Fallback (OpenStreetMap Nominatim):</strong> If you search for an uncommon small town not in the bundled offline database, the app makes an HTTPS query to <code>nominatim.openstreetmap.org</code> (OpenStreetMap Foundation) to resolve the city name into coordinates. Only the searched city name and our developer contact User-Agent (<code>Adhkaar365App/1.0</code>) are transmitted. No personal identifiers or GPS coordinates are sent. The OpenStreetMap Foundation privacy policy applies to such requests.</li>
+  <li><strong>Offline World City Database:</strong> The app bundles a pre-compiled offline database of over 34,000 cities worldwide (GeoNames cities15000, licensed CC-BY 4.0). You can select your city manually without granting GPS permission or requiring an internet connection.</li>
+  <li><strong>Online Small Town Search Fallback (OpenStreetMap Nominatim):</strong> If you search for an uncommon small town not found in the bundled offline database, the app makes an HTTPS geocoding request to <code>nominatim.openstreetmap.org</code> (operated by the OpenStreetMap Foundation) to resolve the town name into geographic coordinates. In accordance with Nominatim's strict Usage Policy, requests transmit our verified contact User-Agent: <code>Adhkaar365App/1.0 (https://github.com/abdullahalmasum365/adhkar-app-with-glow-; abdullahalmasum365@gmail.com)</code>. Only the user-typed search string is transmitted; your real-time GPS coordinates, user account, and device identifiers are NEVER transmitted to Nominatim. The OpenStreetMap Foundation Privacy Policy applies to these geocoding queries.</li>
 </ul>
 
 <h3>1.2 Local Notifications &amp; Exact Alarms</h3>
@@ -109,7 +109,13 @@
   <li><strong>No Card Data:</strong> We NEVER receive, process, or store your credit card, debit card, or banking details.</li>
 </ul>
 
-<h3>1.5 Data We Do NOT Collect</h3>
+<h3>1.5 Offline Pre-Bundled Typography &amp; Google Fonts Engine</h3>
+<ul>
+  <li><strong>Pre-Bundled Font Assets:</strong> All primary font families utilized across the app (including Amiri Arabic, Manrope, Noto Serif diacritic transliteration, Space Mono, and Public Sans) are pre-bundled directly within the application's local asset bundle. These open-source fonts render 100% offline without initiating network requests or transmitting device IP addresses to font CDNs during standard usage.</li>
+  <li><strong>Fallback Runtime Fetching:</strong> The application incorporates the open-source <code>google_fonts</code> Flutter library. In the rare event that an unbundled font style is requested, the library connects over HTTPS to Google Fonts CDN (<code>fonts.gstatic.com</code>). In such cases, Google LLC processes technical device IP and standard HTTP request headers solely to deliver the font binary. No personal data, user accounts, or analytics are collected or profiled.</li>
+</ul>
+
+<h3>1.6 Data We Do NOT Collect</h3>
 <ul>
   <li><strong>No Advertising IDs:</strong> We do NOT collect Google Advertising ID (GAID) or Apple IDFA.</li>
   <li><strong>No Cookies or Tracking Pixels:</strong> We do not use web cookies, flash cookies, or tracking beacons in the mobile application. (See our <a href="cookie-policy.html">Cookie Policy</a>).</li>
@@ -219,23 +225,95 @@
   Adhkar 365 is a general-audience spiritual utility. We do not target or knowingly collect personal information from children under the age of 13 (or under 16 in the European Union). If you are a parent or guardian and believe your child has submitted personal data to us, please contact us immediately, and we will promptly erase such records.
 </p>
 
-<h2>7. Audio Recitations (Waqf) &amp; Font Licensing</h2>
+<h2>7. Audio Recitations &amp; Intellectual Property Notice</h2>
 <ul>
-  <li><strong>Hisn al-Muslim Audio Recitations (Public Endowment / Waqf):</strong> All 125 du'a and adhkar audio recitations in the App are sourced from public Islamic endowment (Waqf) archives (Hisnul Muslim audio resources) dedicated for free public benefit of Muslims worldwide. All audio files are 100% free and unmonetized for all users, never locked behind paywalls.</li>
-  <li><strong>Typography:</strong> All typography utilized in the application (including Amiri, Space Mono, Manrope, and Public Sans) is licensed under the <strong>SIL Open Font License (OFL)</strong>.</li>
+  <li><strong>Sacred Texts &amp; Du'as:</strong> The prophetic supplications and Qur'anic verses contained in the App are derived from authentic classical Islamic compilations (including <em>Hisn al-Muslim</em>) and constitute shared Islamic cultural and religious heritage.</li>
+  <li><strong>Audio Recitations &amp; Attributions:</strong> Audio supplications are recited by respected reciters:
+    <ul>
+      <li><strong>Hisn al-Muslim Supplications:</strong> Recited by <strong>Qari Hamad Al-Duraihem (حمد الدريهم)</strong>, widely circulated across Islamic educational repositories for public community benefit.</li>
+      <li><strong>Ayatul Kursi &amp; Qur'anic Verses:</strong> Recited by <strong>Sheikh Mishary Rashid Alafasy</strong>.</li>
+    </ul>
+    All audio files are provided 100% free of charge strictly for educational guidance, pronunciation assistance, and personal spiritual devotion. Audio playback is unmonetized and universally accessible to all users without any restriction. No audio recordings, Qur'anic verses, or sacred texts are monetized, licensed, or sold under Pro subscriptions. Optional purchases exclusively unlock non-religious UI customizations and developer support.
+  </li>
+  <li><strong>Notice to Rights Holders &amp; DMCA Takedown Policy:</strong> We respect intellectual property and creative rights. If you are a reciter, content creator, or copyright holder (or an authorized representative) and believe that any audio recording included in this application has been incorporated without proper authorization, or if you request attribution or immediate removal, please contact us at <a href="mailto:abdullahalmasum365@gmail.com?subject=Audio%20Copyright%20Notice">abdullahalmasum365@gmail.com</a> with the relevant details. We are committed to responding promptly and will remove or replace the specified audio file within 48 to 72 hours.</li>
+  <li><strong>Typography:</strong> All typography utilized in the application (including Amiri, Space Mono, Manrope, Public Sans, and Noto Serif) is licensed under the <strong>SIL Open Font License (OFL) 1.1</strong>.</li>
 </ul>
 
 <h2>8. Google Play Console Data Safety Form Reference</h2>
 <div class="box">
-  <p>For complete compliance with the Google Play Data Safety policy, our declarations are summarized below:</p>
+  <p>To assist reviewers and maintain absolute compliance with Google Play's Data Safety requirements, our specific declarations are detailed below:</p>
+  
+  <h3>8.1 Data Collection &amp; Security Overview</h3>
   <ul>
-    <li><strong>Location (Approximate &amp; Precise):</strong> Collected optionally, processed ephemerally on-device for prayer calculations and Qibla. Small town searches optionally query OpenStreetMap Nominatim with the searched query string. Not shared with third-party advertisers.</li>
-    <li><strong>Personal Info (Name &amp; Email):</strong> Collected optionally only when the user signs in with Google/Apple for multi-device sync. Never shared with third parties or advertisers.</li>
-    <li><strong>Financial Info (Purchase History):</strong> Processed securely via Google Play Billing. Used solely for app functionality (activating Pro and supporter perks).</li>
-    <li><strong>Device / Technical Identifiers (IP address):</strong> Ephemeral IP processing occurs by Google Fonts CDN, OpenStreetMap Nominatim, and Firebase during network requests. Not logged or used for tracking or profiling.</li>
-    <li><strong>Data Security:</strong> All data in transit is encrypted using standard HTTPS/TLS encryption.</li>
-    <li><strong>Data Deletion Mechanism:</strong> Users can delete their account and all stored data directly in-app or via email request.</li>
+    <li><strong>Data Collection:</strong> The app collects specific data types solely to provide app functionality and optional cross-device account synchronization.</li>
+    <li><strong>Data Sharing:</strong> <strong>NO user data is shared with third parties or data brokers for advertising, marketing, or commercial tracking.</strong></li>
+    <li><strong>Encryption in Transit:</strong> <strong>Yes.</strong> All network transmissions are strictly encrypted in transit using industry-standard HTTPS / TLS (Transport Layer Security).</li>
+    <li><strong>Data Deletion:</strong> <strong>Yes.</strong> Users can permanently delete their account and associated data directly in-app (Settings → Account &amp; Sync → Delete Account) or via email request.</li>
   </ul>
+
+  <h3>8.2 Detailed Data Types &amp; Purpose Breakdown</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px;">
+    <thead style="background: #f3f4f6;">
+      <tr>
+        <th align="left">Data Category &amp; Type</th>
+        <th align="left">Collected?</th>
+        <th align="left">Shared?</th>
+        <th align="left">Ephemeral?</th>
+        <th align="left">Optional / Required</th>
+        <th align="left">Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Location: Approximate Location</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes (on-device calculation)</td>
+        <td>Optional (user can select offline city manually)</td>
+        <td>App functionality (calculating prayer times, Qibla direction, local adhan)</td>
+      </tr>
+      <tr>
+        <td><strong>Location: Precise Location</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes (on-device calculation)</td>
+        <td>Optional (user-initiated GPS button only)</td>
+        <td>App functionality (astronomical solar calculations for prayer times and Qibla)</td>
+      </tr>
+      <tr>
+        <td><strong>Personal Info: Name</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No (stored in Firebase Auth)</td>
+        <td>Optional (only if signing in with Google/Apple)</td>
+        <td>Account management / personalization</td>
+      </tr>
+      <tr>
+        <td><strong>Personal Info: Email address</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No (stored in Firebase Auth)</td>
+        <td>Optional (only if signing in with Google/Apple)</td>
+        <td>Account management, cloud backup of custom dhikr routines</td>
+      </tr>
+      <tr>
+        <td><strong>Financial Info: Purchase history</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No (stored locally &amp; verified via Google Play Billing)</td>
+        <td>Optional (only if user purchases Pro or supporter tiers)</td>
+        <td>App functionality (activating cosmetic palettes, custom playlists, verifying licenses)</td>
+      </tr>
+      <tr>
+        <td><strong>Device or Other IDs (Technical IP)</strong></td>
+        <td>No persistent ID collected</td>
+        <td>No</td>
+        <td>Yes (ephemeral transit IP during HTTPS queries)</td>
+        <td>Automatic for network features</td>
+        <td>App functionality (Firebase sync, OpenStreetMap small town geocoding, Google Fonts fallback)</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <h2>9. Developer &amp; Business Details</h2>

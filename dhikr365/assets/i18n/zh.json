@@ -336,5 +336,8 @@
   "onb_summary_location": "位置",
   "share_as_image": "以图片形式分享",
   "generating_card": "正在生成卡片…",
-  "card_ready": "卡片已生成，可分享！"
+  "card_ready": "卡片已生成，可分享！",
+  "health_disclaimer_title": "心灵祈祷免责声明",
+  "health_disclaimer": "这些圣训祈祷词仅用于心灵慰藉与纪念。它们绝不构成也不替代专业医疗建议、诊断或治疗。遇到健康问题请务必咨询合格医生。",
+  "health_disclaimer_short": "心灵纪念 • 不能替代医疗治疗"
 }

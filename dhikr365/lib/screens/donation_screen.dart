@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -788,23 +787,7 @@ class _DonationScreenState extends State<DonationScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: (selectedProduct == null || pp.isPurchasing)
-                                ? (kDebugMode
-                                    ? () async {
-                                        await pp.toggleProForTesting();
-                                        if (!context.mounted) return;
-                                        showSadaqahCertificateDialog(
-                                          context,
-                                          dedication: SadaqahDedication(
-                                            type: _selectedDedication,
-                                            recipientName: _recipientNameController.text.trim().isNotEmpty
-                                                ? _recipientNameController.text.trim()
-                                                : null,
-                                            timestamp: DateTime.now(),
-                                          ),
-                                          tierName: lp.getText(selectedTier.nameKey),
-                                        );
-                                      }
-                                    : null)
+                                ? null
                                 : () => pp.buy(selectedTier.productId),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primary,
@@ -839,10 +822,8 @@ class _DonationScreenState extends State<DonationScreen> {
                                       children: [
                                         Text(
                                           selectedProduct == null
-                                              ? (kDebugMode
-                                                  ? 'DEBUG: UNLOCK PRO'
-                                                  : lp.getText(
-                                                      'donation_not_available_short'))
+                                              ? lp.getText(
+                                                  'donation_not_available_short')
                                               : '${lp.getText('donation_cta')} - $priceLabel/MONTH',
                                           maxLines: 1,
                                           style: GoogleFonts.spaceMono(

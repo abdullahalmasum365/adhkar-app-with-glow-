@@ -915,6 +915,42 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ],
+
+                                    if (widget.dhikr.category == DhikrCategory.shifa ||
+                                        widget.dhikr.category == DhikrCategory.distress) ...[
+                                      SizedBox(height: R.px(14)),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: R.px(12), vertical: R.px(8)),
+                                        decoration: BoxDecoration(
+                                          color: Colors.amber.withValues(alpha: 0.08),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                              color: Colors.amber.withValues(alpha: 0.20)),
+                                        ),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(top: R.px(2)),
+                                              child: Icon(Icons.health_and_safety_outlined,
+                                                  size: 14, color: Colors.amber.shade400),
+                                            ),
+                                            SizedBox(width: R.px(8)),
+                                            Expanded(
+                                              child: Text(
+                                                lp.getText('health_disclaimer'),
+                                                style: TextStyle(
+                                                  fontSize: R.sp(10.5),
+                                                  height: 1.38,
+                                                  color: AppColors.textSlate400,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),

@@ -9,8 +9,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- wakelock_plus: keeps screen on during dhikr sessions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!-- Allows app to request battery optimization exemption so alarms fire reliably -->
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     
     <application
         android:label="Adhkar 365"

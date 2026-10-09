@@ -53,13 +53,13 @@ class SadaqahCertificateSheet extends StatelessWidget {
         : targetLabel;
 
     final shareText = isBn
-        ? '🌙 সদকা ও দোয়ার স্মারক\n'
+        ? '🌙 অ্যাপ স্পনসরশিপ ও দোয়ার স্মারক\n'
           'উৎসর্গকৃত: $nameLine\n'
           'দোয়া: ${dedication.getDuaArabic()}\n'
           '${dedication.getDuaTranslation("bn")}\n\n'
           'তারিখ: $dateStr\n'
           '— Adhkaar 365 অ্যাপের মাধ্যমে প্রেরিত'
-        : '🌙 Sadaqah & Du\'a Remembrance\n'
+        : '🌙 App Sponsorship & Du\'a Remembrance\n'
           'Dedicated to: $nameLine\n'
           'Du\'a: ${dedication.getDuaArabic()}\n'
           '${dedication.getDuaTranslation("en")}\n\n'
@@ -157,7 +157,7 @@ class SadaqahCertificateSheet extends StatelessWidget {
                   ),
 
                   Text(
-                    isBn ? 'সদকায়ে জারিয়াহ ও মাগফিরাতের সনদ' : 'Certificate of Continuous Charity',
+                    isBn ? 'সফটওয়্যার স্পনসরশিপ ও দোয়ার স্মারক' : 'App Sponsorship & Du\'a Keepsake',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -267,7 +267,7 @@ class SadaqahCertificateSheet extends StatelessWidget {
                 },
                 icon: const Icon(Icons.share_rounded, size: 18),
                 label: Text(
-                  isBn ? 'প্রিয়জন ও পরিবারের সাথে শেয়ার করুন' : 'Share Certificate with Family',
+                  isBn ? 'প্রিয়জন ও পরিবারের সাথে শেয়ার করুন' : 'Share Keepsake with Family',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,

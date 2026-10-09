@@ -50,3 +50,9 @@
 # Geolocator & Geocoding
 -keep class com.baseflow.geolocator.** { *; }
 -keep class com.baseflow.geocoding.** { *; }
+
+# Home Screen Widgets
+-keep class es.antonborri.home_widget.** { *; }
+-keepclassmembers class es.antonborri.home_widget.** { *; }
+-keep class com.adhkaar365.app.*WidgetProvider { *; }
+-keepclassmembers class com.adhkaar365.app.*WidgetProvider { *; }

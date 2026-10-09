@@ -336,5 +336,8 @@
   "onb_summary_location": "Emplacement",
   "share_as_image": "Partager comme image",
   "generating_card": "Génération de la carte…",
-  "card_ready": "Carte prête à partager !"
+  "card_ready": "Carte prête à partager !",
+  "health_disclaimer_title": "Avis sur les invocations spirituelles",
+  "health_disclaimer": "Ces invocations authentiques sont destinées au réconfort spirituel et à la dévotion. Elles ne constituent ni ne remplacent un avis médical professionnel, un diagnostic ou un traitement. Consultez toujours un médecin qualifié.",
+  "health_disclaimer_short": "Rappel spirituel • Ne remplace pas un traitement médical"
 }

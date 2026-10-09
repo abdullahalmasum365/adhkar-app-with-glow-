@@ -336,5 +336,8 @@
   "onb_summary_location": "Standort",
   "share_as_image": "Als Bild teilen",
   "generating_card": "Karte wird erstellt…",
-  "card_ready": "Karte bereit zum Teilen!"
+  "card_ready": "Karte bereit zum Teilen!",
+  "health_disclaimer_title": "Hinweis zu spirituellen Bittgebeten",
+  "health_disclaimer": "Diese authentischen Bittgebete dienen dem spirituellen Trost und der Andacht. Sie stellen keinen Ersatz für professionelle medizinische Beratung, Diagnose oder Behandlung dar. Wenden Sie sich bei gesundheitlichen Beschwerden stets an einen Arzt.",
+  "health_disclaimer_short": "Spirituelle Andacht • Kein Ersatz für medizinische Behandlung"
 }

@@ -131,16 +131,73 @@ Future<void> showAutostartTipDialog(BuildContext context) async {
   );
 }
 
-/// Runs both dialogs in sequence, in the order they matter (battery first,
-/// then the OEM-specific step). Used by Settings' "Notification Reliability
-/// Tips" entry — always re-runnable, unlike the splash's one-time auto-show.
+/// Shows the Exact Alarms explainer on Android 13/14+ if not already granted.
+Future<void> showExactAlarmExplainerDialog(BuildContext context) async {
+  final svc = NotificationService();
+  if (await svc.isExactAlarmGranted()) return;
+  if (!context.mounted) return;
+
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (ctx) => AlertDialog(
+      backgroundColor: AppColors.bgTeal,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Row(children: [
+        const Icon(Icons.alarm_on_rounded, color: Colors.amberAccent, size: 24),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text('On-Time Prayer Alarms', style: AppText.heading(16)),
+        ),
+      ]),
+      content: Text(
+        'Android requires explicit permission to sound prayer alerts and '
+        'morning/evening adhkar reminders at the exact prescribed minute.\n\n'
+        'Please allow "Alarms & Reminders" on the next screen.',
+        style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.5),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text('Later', style: AppText.body(color: AppColors.textSlate500)),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.onPrimary,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+          onPressed: () async {
+            Navigator.pop(ctx);
+            await svc.openExactAlarmSettings();
+          },
+          child: Text('Allow in Settings', style: AppText.manrope(fontWeight: FontWeight.w700)),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Runs dialogs in sequence, in the order they matter:
+/// 1. Exact Alarms permission (Android 13/14+)
+/// 2. Battery-optimization exemption
+/// 3. OEM-specific Autostart step (Xiaomi/Oppo/Vivo/Huawei/Honor)
 /// If nothing is left to fix, shows a short confirmation instead of nothing.
 Future<void> runNotificationReliabilityTips(BuildContext context) async {
   final svc = NotificationService();
+
+  // 1. Exact alarms check (Android 12/13/14+)
+  final canExact = await svc.isExactAlarmGranted();
+  if (!canExact && context.mounted) {
+    await showExactAlarmExplainerDialog(context);
+  }
+
+  // 2. Battery optimization exemption check
   final alreadyExempt = await svc.isIgnoringBatteryOptimizations();
   if (!context.mounted) return;
   if (!alreadyExempt) await showBatteryExplainerDialog(context);
 
+  // 3. OEM Autostart check
   if (!context.mounted) return;
   final brand = await svc.getAutostartBrand();
   if (brand != null) {
@@ -148,7 +205,7 @@ Future<void> runNotificationReliabilityTips(BuildContext context) async {
     await showAutostartTipDialog(context);
   }
 
-  if (alreadyExempt && brand == null && context.mounted) {
+  if (canExact && alreadyExempt && brand == null && context.mounted) {
     await showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -160,8 +217,8 @@ Future<void> runNotificationReliabilityTips(BuildContext context) async {
           Text('All Set', style: AppText.heading(16)),
         ]),
         content: Text(
-          'Reminders are already allowed to run reliably in the background '
-          'on this device — nothing more to do.',
+          'Reminders and exact alarms are already configured to run reliably '
+          'in the background on this device — nothing more to do.',
           style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.5),
         ),
         actions: [

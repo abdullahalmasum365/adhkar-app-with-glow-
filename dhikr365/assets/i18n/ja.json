@@ -336,5 +336,8 @@
   "onb_summary_location": "所在地",
   "share_as_image": "画像として共有",
   "generating_card": "カードを作成中…",
-  "card_ready": "共有の準備ができました！"
+  "card_ready": "共有の準備ができました！",
+  "health_disclaimer_title": "精神的な祈りに関する免責事項",
+  "health_disclaimer": "これらの真正な祈りは心の平安と信仰のためのものです。専門的な医療アドバイス、診断、治療の代わりになるものではありません。健康上の問題については、必ず専門医にご相談ください。",
+  "health_disclaimer_short": "信仰の祈り • 医療治療の代わりではありません"
 }

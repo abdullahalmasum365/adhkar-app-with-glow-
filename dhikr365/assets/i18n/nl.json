@@ -336,5 +336,8 @@
   "onb_summary_location": "Locatie",
   "share_as_image": "Delen als afbeelding",
   "generating_card": "Kaart genereren…",
-  "card_ready": "Kaart klaar om te delen!"
+  "card_ready": "Kaart klaar om te delen!",
+  "health_disclaimer_title": "Kennisgeving spirituele smeekbeden",
+  "health_disclaimer": "Deze authentieke smeekbeden zijn bedoeld voor spirituele troost en toewijding. Ze vormen GEEN vervanging voor professioneel medisch advies, diagnose of behandeling. Raadpleeg altijd een bevoegde arts.",
+  "health_disclaimer_short": "Spirituele herinnering • Geen vervanging voor medische behandeling"
 }

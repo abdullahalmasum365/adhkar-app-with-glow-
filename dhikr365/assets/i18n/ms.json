@@ -336,5 +336,8 @@
   "onb_summary_location": "Lokasi",
   "share_as_image": "Kongsi sebagai Imej",
   "generating_card": "Menjana kad…",
-  "card_ready": "Kad sedia dikongsi!"
+  "card_ready": "Kad sedia dikongsi!",
+  "health_disclaimer_title": "Pemberitahuan Doa Rohani",
+  "health_disclaimer": "Doa-doa sahih ini adalah untuk ketenangan rohani dan zikir. Ia BUKAN pengganti nasihat perubatan profesional, diagnosis atau rawatan. Sentiasa berunding dengan doktor bertauliah untuk masalah kesihatan.",
+  "health_disclaimer_short": "Zikir rohani • Bukan pengganti rawatan perubatan"
 }

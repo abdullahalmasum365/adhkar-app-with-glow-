@@ -336,5 +336,8 @@
   "onb_summary_location": "Konum",
   "share_as_image": "Görsel Olarak Paylaş",
   "generating_card": "Kart oluşturuluyor…",
-  "card_ready": "Kart paylaşıma hazır!"
+  "card_ready": "Kart paylaşıma hazır!",
+  "health_disclaimer_title": "Manevi Dualar Bildirimi",
+  "health_disclaimer": "Bu sahih dualar manevi huzur ve zikir içindir. Profesyonel tıbbi tavsiye, teşhis veya tedavinin yerini ALMAZ. Herhangi bir sağlık sorunu için daima uzman bir doktora danışın.",
+  "health_disclaimer_short": "Manevi zikir • Tıbbi tedavinin yerine geçmez"
 }

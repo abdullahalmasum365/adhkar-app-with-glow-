@@ -17,16 +17,21 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 /// Subscription product IDs — must be created as subscription base plans
 /// with these exact IDs in Play Console → Monetize → Products → Subscriptions.
 class DonationProductIds {
-  // Pro Feature products (Personal Unlock: Custom Plan, Themes, Sync)
+  // Pro Feature products (Personal Unlock: Custom Plan, Themes, Sync - Non-Consumable)
   static const proLifetime = 'adhkar365_pro_lifetime';
 
-  // Sadaqah Jariyah products (Monthly & Annual Subscriptions)
+  // Sadaqah Jariyah products (Monthly & Annual Auto-Renewing Subscriptions)
   static const seed = 'donation_seed_monthly';
   static const supporter = 'donation_supporter_monthly';
   static const patron = 'donation_patron_monthly';
   static const annual = 'donation_annual_sponsor';
 
+  static const proProducts = {proLifetime};
+  static const subscriptionTiers = {seed, supporter, patron, annual};
   static const all = {proLifetime, seed, supporter, patron, annual};
+
+  static bool isLifetimePro(String id) => id == proLifetime;
+  static bool isSubscription(String id) => subscriptionTiers.contains(id);
 }
 
 class PurchaseService {
@@ -54,9 +59,16 @@ class PurchaseService {
     return _iap.queryProductDetails(ids);
   }
 
-  Future<bool> buySubscription(ProductDetails product) {
+  Future<bool> buyProduct(ProductDetails product, {bool isConsumable = false}) {
     final purchaseParam = PurchaseParam(productDetails: product);
+    if (isConsumable) {
+      return _iap.buyConsumable(purchaseParam: purchaseParam);
+    }
     return _iap.buyNonConsumable(purchaseParam: purchaseParam);
+  }
+
+  Future<bool> buySubscription(ProductDetails product) {
+    return buyProduct(product, isConsumable: false);
   }
 
   Future<void> completePurchase(PurchaseDetails purchase) {

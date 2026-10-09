@@ -689,6 +689,31 @@ class _DhikrCardState extends State<DhikrCard> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      if (widget.dhikr.category == DhikrCategory.shifa ||
+                          widget.dhikr.category == DhikrCategory.distress) ...[
+                        SizedBox(height: R.px(10)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.health_and_safety_outlined,
+                                size: R.sp(12),
+                                color: Colors.amber.shade400.withValues(alpha: 0.9)),
+                            SizedBox(width: R.px(6)),
+                            Flexible(
+                              child: Text(
+                                lp.getText('health_disclaimer_short'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: R.sp(9.5),
+                                  height: 1.25,
+                                  color: AppColors.ink(0.55),
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),

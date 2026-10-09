@@ -336,5 +336,8 @@
   "onb_summary_location": "Lokasi",
   "share_as_image": "Bagikan sebagai Gambar",
   "generating_card": "Membuat kartu…",
-  "card_ready": "Kartu siap dibagikan!"
+  "card_ready": "Kartu siap dibagikan!",
+  "health_disclaimer_title": "Pemberitahuan Doa Spiritual",
+  "health_disclaimer": "Doa-doa sahih ini ditujukan untuk ketenangan spiritual dan zikir. Doa ini BUKAN pengganti nasihat medis profesional, diagnosis, atau pengobatan. Selalu konsultasikan dengan dokter yang berkualifikasi untuk masalah kesehatan.",
+  "health_disclaimer_short": "Zikir spiritual • Bukan pengganti perawatan medis"
 }

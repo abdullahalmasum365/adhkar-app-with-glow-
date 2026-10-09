@@ -104,6 +104,17 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
         }
       }
 
+      // If in a microscopic gap between segments during active playback,
+      // maintain the previous active segment to prevent flicker
+      if (match == -1 && _activeIdx != -1 && _audio.isPlaying) {
+        if (_activeIdx < _effectiveSegments.length - 1) {
+          final nextSeg = _effectiveSegments[_activeIdx + 1];
+          if (ms < nextSeg.startMs) {
+            match = _activeIdx;
+          }
+        }
+      }
+
       if (_currentMs != ms || match != _activeIdx) {
         setState(() {
           _currentMs = ms;
@@ -190,108 +201,46 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
     required double fontSize,
   }) {
     final arabicText = seg.arabic.trim();
-    if (!isActive || _currentMs < seg.startMs || _currentMs > seg.endMs) {
-      return Text(
-        arabicText,
-        textAlign: TextAlign.right,
-        textDirection: TextDirection.rtl,
-        style: AppText.amiri(
-          fontSize: fontSize,
-          color: isPast
-              ? ThemeProvider.cream.withValues(alpha: 0.90)
-              : AppColors.ink(0.40),
-        ).copyWith(
-          fontWeight: isPast ? FontWeight.w600 : FontWeight.normal,
-          height: 1.6,
-        ),
-      );
-    }
 
-    final words = arabicText.split(RegExp(r'\s+'));
-    if (words.length <= 1) {
-      return Text(
-        arabicText,
-        textAlign: TextAlign.right,
-        textDirection: TextDirection.rtl,
-        style: AppText.amiri(
-          fontSize: fontSize,
-          color: ThemeProvider.divineAmber,
-        ).copyWith(
-          fontWeight: FontWeight.bold,
-          height: 1.6,
-          shadows: [
+    final textColor = isActive
+        ? ThemeProvider.divineAmber
+        : (isPast
+            ? ThemeProvider.cream.withValues(alpha: 0.90)
+            : AppColors.ink(0.40));
+
+    final fontWeight = isActive
+        ? FontWeight.w800
+        : (isPast ? FontWeight.w600 : FontWeight.normal);
+
+    final shadows = isActive
+        ? [
             Shadow(
-              color: ThemeProvider.divineAmber.withValues(alpha: 0.55),
+              color: ThemeProvider.divineAmber.withValues(alpha: 0.70),
               blurRadius: 12,
             ),
-          ],
-        ),
-      );
-    }
+            Shadow(
+              color: ThemeProvider.divineAmber.withValues(alpha: 0.35),
+              blurRadius: 22,
+            ),
+          ]
+        : null;
 
-    final totalChars = words.fold<int>(0, (sum, w) => sum + w.length);
-    final segDuration = (seg.endMs - seg.startMs).clamp(400, 300000);
-
-    final List<InlineSpan> spans = [];
-    int accumulatedMs = seg.startMs;
-
-    for (int wIdx = 0; wIdx < words.length; wIdx++) {
-      final word = words[wIdx];
-      final isLast = wIdx == words.length - 1;
-      final wordFraction =
-          totalChars > 0 ? (word.length / totalChars) : (1.0 / words.length);
-      final wordDuration = (segDuration * wordFraction).round();
-      final wordEndMs = isLast ? seg.endMs : (accumulatedMs + wordDuration);
-
-      final isCurrentWord =
-          _currentMs >= accumulatedMs && _currentMs < wordEndMs;
-      final isSpokenWord = _currentMs >= wordEndMs;
-
-      Color wordColor;
-      FontWeight fontWeight;
-      Color? bgColor;
-      List<Shadow>? shadows;
-
-      if (isCurrentWord) {
-        wordColor = ThemeProvider.divineAmber;
-        fontWeight = FontWeight.w900;
-        bgColor = ThemeProvider.divineAmber.withValues(alpha: 0.24);
-        shadows = [
-          Shadow(
-            color: ThemeProvider.divineAmber.withValues(alpha: 0.70),
-            blurRadius: 10,
-          ),
-        ];
-      } else if (isSpokenWord) {
-        wordColor = ThemeProvider.cream;
-        fontWeight = FontWeight.w600;
-      } else {
-        wordColor = ThemeProvider.cream.withValues(alpha: 0.45);
-        fontWeight = FontWeight.normal;
-      }
-
-      spans.add(
-        TextSpan(
-          text: isLast ? word : '$word ',
-          style: AppText.amiri(
-            fontSize: fontSize,
-            color: wordColor,
-          ).copyWith(
-            fontWeight: fontWeight,
-            backgroundColor: bgColor,
-            shadows: shadows,
-            height: 1.6,
-          ),
-        ),
-      );
-
-      accumulatedMs = wordEndMs;
-    }
-
-    return Text.rich(
-      TextSpan(children: spans),
+    return AnimatedDefaultTextStyle(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
       textAlign: TextAlign.right,
-      textDirection: TextDirection.rtl,
+      style: AppText.amiri(
+        fontSize: fontSize,
+        color: textColor,
+      ).copyWith(
+        fontWeight: fontWeight,
+        height: 1.6,
+        shadows: shadows,
+      ),
+      child: Text(
+        arabicText,
+        textDirection: TextDirection.rtl,
+      ),
     );
   }
 
@@ -436,7 +385,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
 
                     SizedBox(height: R.px(6)),
 
-                    // Arabic Text (RTL) with real-time word-by-word highlighting
+                    // Arabic Text (RTL) with real-time sentence-by-sentence golden highlighting
                     _buildArabicText(
                       seg: seg,
                       index: i,

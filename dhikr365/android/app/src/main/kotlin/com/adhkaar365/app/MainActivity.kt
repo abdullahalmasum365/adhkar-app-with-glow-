@@ -73,15 +73,25 @@ class MainActivity : FlutterActivity() {
                         try {
                             val pm = getSystemService(POWER_SERVICE) as PowerManager
                             if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                                val intent = Intent(
-                                    Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Uri.parse("package:$packageName")
-                                )
+                                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
                                 startActivity(intent)
                             }
                             result.success(true)
                         } catch (e: Exception) {
-                            result.success(false)
+                            try {
+                                val intent = Intent(
+                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.parse("package:$packageName")
+                                ).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                                startActivity(intent)
+                                result.success(true)
+                            } catch (e2: Exception) {
+                                result.success(false)
+                            }
                         }
                     }
                     // Returns "xiaomi"/"oppo"/"vivo"/"huawei"/"honor" if this

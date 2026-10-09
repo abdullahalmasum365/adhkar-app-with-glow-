@@ -336,5 +336,8 @@
   "onb_summary_location": "Posizione",
   "share_as_image": "Condividi come immagine",
   "generating_card": "Generazione della scheda…",
-  "card_ready": "Scheda pronta per la condivisione!"
+  "card_ready": "Scheda pronta per la condivisione!",
+  "health_disclaimer_title": "Avviso sulle suppliche spirituali",
+  "health_disclaimer": "Queste autentiche suppliche sono per il conforto spirituale e la devozione. NON costituiscono né sostituiscono consulenza, diagnosi o trattamento medico professionale. Consultare sempre un medico qualificato.",
+  "health_disclaimer_short": "Ricordo spirituale • Non sostituisce le cure mediche"
 }

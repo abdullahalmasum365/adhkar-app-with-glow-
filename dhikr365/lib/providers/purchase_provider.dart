@@ -1,12 +1,16 @@
 // ============================================================================
 // lib/providers/purchase_provider.dart
 //
-// Loads the real Play Store subscription products (with each user's local
-// currency price, not a hardcoded "$3") and drives the purchase flow for
-// DonationScreen. Fully optional-safe: if Play Billing isn't available yet
-// (products not configured in Play Console, or running before the app is
-// on Play Console at all) `products` stays empty and the screen shows a
-// clear "not available yet" state instead of crashing or showing fake prices.
+// Manages Google Play In-App Purchases, Lifetime Pro entitlements, and
+// recurring Sadaqah Jariyah subscriptions with active synchronization,
+// receipt verification, and cancellation/expiration enforcement.
+//
+// Key Protections:
+//   1. Distinguishes Lifetime Pro (non-consumable) from recurring subscriptions.
+//   2. Startup synchronization via restorePurchases() with Google Play authority.
+//   3. Clears local cache when subscriptions expire or are refunded/canceled.
+//   4. Syncs verified purchase entitlement with Cloud Firestore when authenticated.
+//   5. Strictly guards debug test overrides with kDebugMode.
 // ============================================================================
 
 import 'dart:async';
@@ -16,46 +20,112 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../services/purchase_service.dart';
+import '../services/purchase_verification_service.dart';
 
 class PurchaseProvider extends ChangeNotifier {
   static const String _prefKeyActiveSub = 'active_subscription_id';
+  static const String _prefKeyHasLifetimePro = 'has_lifetime_pro';
+  static const String _prefKeySubExpiry = 'subscription_expiry_ms';
+  static const String _prefKeyLastVerified = 'last_verified_timestamp_ms';
+
   final PurchaseService _service = PurchaseService();
+  final PurchaseVerificationService _verificationService =
+      PurchaseVerificationService();
 
   bool _isAvailable = false;
   bool _isLoading = true;
   bool _isPurchasing = false;
+  bool _isSyncing = false;
   String? _lastError;
   Map<String, ProductDetails> _products = {};
+
+  bool _hasLifetimePro = false;
   String? _activeSubscriptionId;
+  DateTime? _subscriptionExpiry;
+  DateTime? _lastVerified;
 
   bool _isDebugOverride = false;
   final Set<String> _restoredProductIds = {};
+  Completer<void>? _syncCompleter;
+
+  // ── Public Getters ─────────────────────────────────────────────────────────
 
   bool get isAvailable => _isAvailable;
   bool get isLoading => _isLoading;
   bool get isPurchasing => _isPurchasing;
+  bool get isSyncing => _isSyncing;
   String? get lastError => _lastError;
   Map<String, ProductDetails> get products => _products;
-  String? get activeSubscriptionId => _activeSubscriptionId;
-  bool get hasActiveSubscription => _activeSubscriptionId != null;
-  bool get isPro => hasActiveSubscription;
+
+  /// Returns true if user holds verified Lifetime Pro.
+  bool get hasLifetimePro => _hasLifetimePro;
+
+  /// Returns active recurring subscription ID if not expired.
+  String? get activeSubscriptionId {
+    if (_activeSubscriptionId == null) return null;
+    if (_subscriptionExpiry != null &&
+        DateTime.now().isAfter(_subscriptionExpiry!)) {
+      return null;
+    }
+    return _activeSubscriptionId;
+  }
+
+  /// Returns true if user has an active, unexpired subscription.
+  bool get hasActiveSubscription {
+    if (_activeSubscriptionId == null) return false;
+    if (_subscriptionExpiry != null &&
+        DateTime.now().isAfter(_subscriptionExpiry!)) {
+      return false;
+    }
+    return true;
+  }
+
+  /// Pro status is granted if user owns Lifetime Pro OR holds an active subscription.
+  bool get isPro => _hasLifetimePro || hasActiveSubscription;
+
+  DateTime? get subscriptionExpiry => _subscriptionExpiry;
+  DateTime? get lastVerified => _lastVerified;
+
+  // ── Initialization ─────────────────────────────────────────────────────────
 
   PurchaseProvider() {
     _init();
   }
 
   Future<void> _init() async {
-    // Load cached subscription state so offline users retain Pro access
+    // 1. Load cached entitlement so offline users retain access while traveling
     try {
       final prefs = await SharedPreferences.getInstance();
+      _hasLifetimePro = prefs.getBool(_prefKeyHasLifetimePro) ?? false;
       _activeSubscriptionId = prefs.getString(_prefKeyActiveSub);
-      if (_activeSubscriptionId != null) {
+
+      final expiryMs = prefs.getInt(_prefKeySubExpiry);
+      if (expiryMs != null) {
+        _subscriptionExpiry = DateTime.fromMillisecondsSinceEpoch(expiryMs);
+      }
+
+      final verifiedMs = prefs.getInt(_prefKeyLastVerified);
+      if (verifiedMs != null) {
+        _lastVerified = DateTime.fromMillisecondsSinceEpoch(verifiedMs);
+      }
+
+      // Check if cached subscription has already passed its expiry timestamp
+      if (_subscriptionExpiry != null &&
+          DateTime.now().isAfter(_subscriptionExpiry!)) {
+        debugPrint('[PurchaseProvider] Cached subscription has expired.');
+        _activeSubscriptionId = null;
+        await prefs.remove(_prefKeyActiveSub);
+        await prefs.remove(_prefKeySubExpiry);
+      }
+
+      if (_hasLifetimePro || _activeSubscriptionId != null) {
         notifyListeners();
       }
     } catch (e) {
-      debugPrint('[PurchaseProvider] load cached subscription error: $e');
+      debugPrint('[PurchaseProvider] load cached state error: $e');
     }
 
+    // 2. Start listening to Play Billing purchase events
     _service.listen(_onPurchaseUpdate);
 
     _isAvailable = await _service.isAvailable;
@@ -65,6 +135,7 @@ class PurchaseProvider extends ChangeNotifier {
       return;
     }
 
+    // 3. Query Play Store product details
     try {
       final response =
           await _service.queryProducts(DonationProductIds.all);
@@ -74,57 +145,92 @@ class PurchaseProvider extends ChangeNotifier {
       debugPrint('[PurchaseProvider] queryProducts failed: $e');
     }
 
-    // Automatically synchronize & verify purchases with Google Play Store
+    // 4. Authoritative startup synchronization with Google Play Store
     await syncPurchases();
 
     _isLoading = false;
     notifyListeners();
   }
 
-  /// Syncs active purchases with Google Play Store at startup.
-  /// If online and Play Billing is active, restores purchases to ensure
-  /// canceled or expired subscriptions are not kept indefinitely in local cache.
+  // ── Purchase Synchronization & Verification ───────────────────────────────
+
+  /// Synchronizes active purchases with Google Play Store authority.
+  /// If Google Play returns no active subscription, local cache is purged.
   Future<void> syncPurchases() async {
     if (!_isAvailable) return;
     if (kDebugMode && _isDebugOverride) return;
 
+    _isSyncing = true;
+    _restoredProductIds.clear();
+    _syncCompleter = Completer<void>();
+
     try {
-      _restoredProductIds.clear();
       await _service.restorePurchases();
-      // Allow async stream events to be delivered and processed
-      await Future.delayed(const Duration(milliseconds: 600));
+
+      // Wait for stream callback or healthy timeout (up to 2.5 seconds)
+      await _syncCompleter!.future.timeout(
+        const Duration(milliseconds: 2500),
+        onTimeout: () {
+          debugPrint('[PurchaseProvider] syncPurchases stream wait completed/timed out.');
+        },
+      );
 
       if (kDebugMode && _isDebugOverride) return;
 
-      // If user had a cached active subscription or Pro status:
-      if (_activeSubscriptionId != null) {
-        if (!_restoredProductIds.contains(_activeSubscriptionId)) {
-          // If other valid products were restored, adopt the best valid one
-          final valid = _restoredProductIds.firstWhere(
-            (id) => DonationProductIds.all.contains(id),
-            orElse: () => '',
-          );
-          if (valid.isNotEmpty) {
-            _activeSubscriptionId = valid;
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString(_prefKeyActiveSub, valid);
-            notifyListeners();
-            return;
-          }
+      final prefs = await SharedPreferences.getInstance();
 
-          // Not found among active Play Store purchases -> expired/canceled
-          debugPrint(
-              '[PurchaseProvider] Play Store sync: $_activeSubscriptionId is not active. Clearing cache.');
-          _activeSubscriptionId = null;
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove(_prefKeyActiveSub);
-          notifyListeners();
-        }
+      // ── Lifetime Pro Verification ──────────────────────────────────────────
+      if (_restoredProductIds.contains(DonationProductIds.proLifetime)) {
+        _hasLifetimePro = true;
+        await prefs.setBool(_prefKeyHasLifetimePro, true);
+      } else if (_hasLifetimePro) {
+        // Was cached as Lifetime Pro, but Play Store does NOT return it
+        // -> Refunded or revoked by Google Play
+        debugPrint('[PurchaseProvider] Lifetime Pro revoked/refunded. Clearing.');
+        _hasLifetimePro = false;
+        await prefs.remove(_prefKeyHasLifetimePro);
       }
+
+      // ── Subscription Verification ──────────────────────────────────────────
+      final activeSub = _restoredProductIds.firstWhere(
+        (id) => DonationProductIds.subscriptionTiers.contains(id),
+        orElse: () => '',
+      );
+
+      if (activeSub.isNotEmpty) {
+        _activeSubscriptionId = activeSub;
+        await prefs.setString(_prefKeyActiveSub, activeSub);
+      } else if (_activeSubscriptionId != null) {
+        // Was cached as active subscription, but Play Store returns no active sub
+        // -> Expired, canceled, or billing failed
+        debugPrint('[PurchaseProvider] Subscription expired or canceled. Clearing.');
+        _activeSubscriptionId = null;
+        _subscriptionExpiry = null;
+        await prefs.remove(_prefKeyActiveSub);
+        await prefs.remove(_prefKeySubExpiry);
+      }
+
+      _lastVerified = DateTime.now();
+      await prefs.setInt(
+          _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
+
+      // Sync verified entitlement to Cloud Firestore profile
+      await _verificationService.syncWithCloudProfile(
+        isPro: isPro,
+        activeSubscriptionId: _activeSubscriptionId,
+        hasLifetimePro: _hasLifetimePro,
+      );
+
+      notifyListeners();
     } catch (e) {
       debugPrint('[PurchaseProvider] syncPurchases error: $e');
+    } finally {
+      _isSyncing = false;
+      _syncCompleter = null;
     }
   }
+
+  // ── Purchase Flow ──────────────────────────────────────────────────────────
 
   Future<void> buy(String productId) async {
     final product = _products[productId];
@@ -133,9 +239,12 @@ class PurchaseProvider extends ChangeNotifier {
     _lastError = null;
     notifyListeners();
     try {
-      await _service.buySubscription(product);
-      // Result arrives asynchronously via the purchase stream — see
-      // _onPurchaseUpdate, which clears _isPurchasing when it lands.
+      final isSub = DonationProductIds.isSubscription(productId);
+      if (isSub) {
+        await _service.buySubscription(product);
+      } else {
+        await _service.buyProduct(product, isConsumable: false);
+      }
     } catch (e) {
       _isPurchasing = false;
       _lastError = 'Purchase failed. Please try again.';
@@ -145,32 +254,62 @@ class PurchaseProvider extends ChangeNotifier {
   }
 
   void _onPurchaseUpdate(List<PurchaseDetails> purchases) async {
+    final prefs = await SharedPreferences.getInstance();
+
     for (final purchase in purchases) {
       switch (purchase.status) {
         case PurchaseStatus.pending:
           break;
+
         case PurchaseStatus.purchased:
         case PurchaseStatus.restored:
           if (DonationProductIds.all.contains(purchase.productID)) {
             _restoredProductIds.add(purchase.productID);
-            // Retain proLifetime if already held; otherwise update active product
-            if (_activeSubscriptionId != DonationProductIds.proLifetime ||
-                purchase.productID == DonationProductIds.proLifetime) {
-              _activeSubscriptionId = purchase.productID;
-            }
-            try {
-              final prefs = await SharedPreferences.getInstance();
-              await prefs.setString(_prefKeyActiveSub, _activeSubscriptionId!);
-            } catch (e) {
-              debugPrint('[PurchaseProvider] save subscription error: $e');
+
+            // Perform cryptographic & receipt integrity check
+            final record =
+                _verificationService.verifyLocalReceipt(purchase);
+
+            if (record.isValid) {
+              if (DonationProductIds.isLifetimePro(purchase.productID)) {
+                _hasLifetimePro = true;
+                await prefs.setBool(_prefKeyHasLifetimePro, true);
+              } else if (DonationProductIds.isSubscription(purchase.productID)) {
+                _activeSubscriptionId = purchase.productID;
+                await prefs.setString(_prefKeyActiveSub, _activeSubscriptionId!);
+
+                // Estimate billing period expiry based on product duration
+                final now = DateTime.now();
+                if (purchase.productID == DonationProductIds.annual) {
+                  _subscriptionExpiry = now.add(const Duration(days: 370));
+                } else {
+                  _subscriptionExpiry = now.add(const Duration(days: 33));
+                }
+                await prefs.setInt(_prefKeySubExpiry,
+                    _subscriptionExpiry!.millisecondsSinceEpoch);
+              }
+
+              _lastVerified = DateTime.now();
+              await prefs.setInt(
+                  _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
+
+              // Sync with Firestore profile
+              await _verificationService.syncWithCloudProfile(
+                isPro: isPro,
+                activeSubscriptionId: _activeSubscriptionId,
+                hasLifetimePro: _hasLifetimePro,
+                latestRecord: record,
+              );
             }
           }
+
           if (purchase.pendingCompletePurchase) {
             await _service.completePurchase(purchase);
           }
           _isPurchasing = false;
           notifyListeners();
           break;
+
         case PurchaseStatus.error:
           _isPurchasing = false;
           _lastError = purchase.error?.message ?? 'Purchase failed.';
@@ -179,11 +318,17 @@ class PurchaseProvider extends ChangeNotifier {
           }
           notifyListeners();
           break;
+
         case PurchaseStatus.canceled:
           _isPurchasing = false;
           notifyListeners();
           break;
       }
+    }
+
+    // Complete sync completer if waiting
+    if (_syncCompleter != null && !_syncCompleter!.isCompleted) {
+      _syncCompleter!.complete();
     }
   }
 
@@ -192,7 +337,7 @@ class PurchaseProvider extends ChangeNotifier {
     _lastError = null;
     notifyListeners();
     try {
-      await _service.restorePurchases();
+      await syncPurchases();
     } catch (e) {
       _lastError = 'Could not restore purchases.';
       debugPrint('[PurchaseProvider] restore failed: $e');
@@ -204,10 +349,21 @@ class PurchaseProvider extends ChangeNotifier {
 
   Future<void> clearSubscription() async {
     _activeSubscriptionId = null;
+    _hasLifetimePro = false;
+    _subscriptionExpiry = null;
     _restoredProductIds.clear();
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_prefKeyActiveSub);
+      await prefs.remove(_prefKeyHasLifetimePro);
+      await prefs.remove(_prefKeySubExpiry);
+      await prefs.remove(_prefKeyLastVerified);
+
+      await _verificationService.syncWithCloudProfile(
+        isPro: false,
+        activeSubscriptionId: null,
+        hasLifetimePro: false,
+      );
     } catch (e) {
       debugPrint('[PurchaseProvider] clearSubscription error: $e');
     }
@@ -216,15 +372,18 @@ class PurchaseProvider extends ChangeNotifier {
 
   /// Toggle Pro status for developer testing / QA without real payment (Debug only)
   Future<void> toggleProForTesting() async {
+    assert(kDebugMode, 'toggleProForTesting must never be called in release builds');
     if (!kDebugMode) return;
     _isDebugOverride = true;
     final prefs = await SharedPreferences.getInstance();
     if (isPro) {
+      _hasLifetimePro = false;
       _activeSubscriptionId = null;
+      await prefs.remove(_prefKeyHasLifetimePro);
       await prefs.remove(_prefKeyActiveSub);
     } else {
-      _activeSubscriptionId = DonationProductIds.proLifetime;
-      await prefs.setString(_prefKeyActiveSub, DonationProductIds.proLifetime);
+      _hasLifetimePro = true;
+      await prefs.setBool(_prefKeyHasLifetimePro, true);
     }
     notifyListeners();
   }
