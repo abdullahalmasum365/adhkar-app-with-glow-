@@ -3,47 +3,137 @@ service cloud.firestore {
   match /databases/{database}/documents {
     
     // =========================================================================
-    // Adhkaar 365 — Firestore Security Rules
-    // Security-First Architecture:
-    // 1. Strict Owner Authentication: Only request.auth.uid == userId can access.
-    // 2. All user subcollections (plan, progress, settings, preferences) are
-    //    strictly readable & writable by the account owner.
-    // 3. Default Deny: All unspecified collections or root paths are blocked.
+    // Adhkaar 365 — Hardened Production Firestore Security Rules
+    // Security Architecture:
+    // 1. Strict Owner Authentication: Only authenticated request.auth.uid == userId
+    // 2. Privilege Escalation Prevention: Block client writes to isPro, hasLifetimePro,
+    //    activeSubscriptionId, latestPurchase, roles, etc. Entitlements can never
+    //    be forged from client-side requests.
+    // 3. Schema & Field Whitelisting: Only explicitly declared keys allowed.
+    // 4. Strict Type & Range Limits: Payload sizes and character bounds enforced.
+    // 5. Explicit Paths: No open wildcards ({allSubcollections=**} removed).
+    // 6. Default Deny: All undefined paths, documents, and subcollections blocked.
     // =========================================================================
 
-    // Helper functions
+    // Authentication helper
     function isOwner(userId) {
       return request.auth != null && request.auth.uid == userId;
     }
 
-    // Root user document (users/{userId})
+    // ── Root User Document: users/{userId} ─────────────────────────────────
     match /users/{userId} {
-      // Owner can read, write, and delete their root document
-      allow read, write, delete: if isOwner(userId);
+      // Account owner can read their profile and delete on account deletion
+      allow read, delete: if isOwner(userId);
 
-      // ── Custom Dua Plan (users/{userId}/plan/{docId}) ─────────────────────
+      // Account owner can only update safe user metadata.
+      // Privilege escalation (isPro, hasLifetimePro, etc.) is STRICTLY FORBIDDEN.
+      allow create, update: if isOwner(userId)
+        // Block client privilege escalation attempts
+        && !('isPro' in request.resource.data)
+        && !('hasLifetimePro' in request.resource.data)
+        && !('activeSubscriptionId' in request.resource.data)
+        && !('latestPurchase' in request.resource.data)
+        && !('role' in request.resource.data)
+        && !('isAdmin' in request.resource.data)
+        // Whitelist allowed metadata fields only
+        && request.resource.data.keys().hasOnly(['displayName', 'email', 'photoUrl', 'lastActive', 'updatedAt', 'createdAt'])
+        && request.resource.data.keys().size() <= 6
+        // Validate individual fields and cap sizes
+        && (!('displayName' in request.resource.data) || (
+            request.resource.data.displayName is string &&
+            request.resource.data.displayName.size() <= 100
+           ))
+        && (!('email' in request.resource.data) || (
+            request.resource.data.email is string &&
+            request.resource.data.email.size() <= 100
+           ))
+        && (!('photoUrl' in request.resource.data) || (
+            request.resource.data.photoUrl is string &&
+            request.resource.data.photoUrl.size() <= 500
+           ))
+        && (!('lastActive' in request.resource.data) || request.resource.data.lastActive is timestamp)
+        && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp)
+        && (!('createdAt' in request.resource.data) || request.resource.data.createdAt is timestamp);
+
+      // ── Custom Dua Plan: users/{userId}/plan/{docId} ──────────────────────
       match /plan/{docId} {
-        allow read, write, delete: if isOwner(userId);
+        allow read, delete: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          // Restrict document ID strictly to 'data'
+          && docId == 'data'
+          // Whitelist allowed keys
+          && request.resource.data.keys().hasOnly(['enabledDhikrIds', 'useCustomPlan', 'updatedAt'])
+          // Maximum 200 dhikr items to prevent storage inflation attacks
+          && (!('enabledDhikrIds' in request.resource.data) || (
+              request.resource.data.enabledDhikrIds is list &&
+              request.resource.data.enabledDhikrIds.size() <= 200
+             ))
+          && (!('useCustomPlan' in request.resource.data) || request.resource.data.useCustomPlan is bool)
+          && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
       }
 
-      // ── Progress & Streaks (users/{userId}/progress/{docId}) ───────────────
+      // ── Progress & Streaks: users/{userId}/progress/{docId} ────────────────
       match /progress/{docId} {
-        allow read, write, delete: if isOwner(userId);
+        allow read, delete: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          // Restrict document ID strictly to 'data'
+          && docId == 'data'
+          // Whitelist allowed keys
+          && request.resource.data.keys().hasOnly(['streak_days', 'badge_early_bird', 'badge_night_prayer', 'last_active_date', 'updatedAt'])
+          // Streak days bounded within valid range
+          && (!('streak_days' in request.resource.data) || (
+              request.resource.data.streak_days is int &&
+              request.resource.data.streak_days >= 0 &&
+              request.resource.data.streak_days <= 100000
+             ))
+          && (!('badge_early_bird' in request.resource.data) || request.resource.data.badge_early_bird is bool)
+          && (!('badge_night_prayer' in request.resource.data) || request.resource.data.badge_night_prayer is bool)
+          && (!('last_active_date' in request.resource.data) || (
+              request.resource.data.last_active_date is string &&
+              request.resource.data.last_active_date.size() <= 50
+             ))
+          && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
       }
 
-      // ── User Settings & Preferences (users/{userId}/settings/{docId}) ──────
-      // Stores user's theme palette, language codes, font sizes, etc.
+      // ── User Settings: users/{userId}/settings/{docId} ─────────────────────
       match /settings/{docId} {
-        allow read, write, delete: if isOwner(userId);
-      }
+        allow read, delete: if isOwner(userId);
 
-      // Wildcard subcollection support for owner
-      match /{allSubcollections=**} {
-        allow read, write, delete: if isOwner(userId);
+        // Theme preference document (users/{userId}/settings/theme)
+        allow create, update: if isOwner(userId)
+          && docId == 'theme'
+          && request.resource.data.keys().hasOnly(['paletteId', 'showTransliteration', 'showHabitTracker', 'updatedAt'])
+          && (!('paletteId' in request.resource.data) || (
+              request.resource.data.paletteId is string &&
+              request.resource.data.paletteId.size() <= 50
+             ))
+          && (!('showTransliteration' in request.resource.data) || request.resource.data.showTransliteration is bool)
+          && (!('showHabitTracker' in request.resource.data) || request.resource.data.showHabitTracker is bool)
+          && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
+
+        // Language preference document (users/{userId}/settings/language)
+        allow create, update: if isOwner(userId)
+          && docId == 'language'
+          && request.resource.data.keys().hasOnly(['languageCode', 'translationCode', 'transliterationCode', 'updatedAt'])
+          && (!('languageCode' in request.resource.data) || (
+              request.resource.data.languageCode is string &&
+              request.resource.data.languageCode.size() <= 10
+             ))
+          && (!('translationCode' in request.resource.data) || (
+              request.resource.data.translationCode is string &&
+              request.resource.data.translationCode.size() <= 10
+             ))
+          && (!('transliterationCode' in request.resource.data) || (
+              request.resource.data.transliterationCode is string &&
+              request.resource.data.transliterationCode.size() <= 10
+             ))
+          && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
       }
     }
 
-    // Default deny: Block all other database collections and root paths
+    // Default deny: Block all other database collections, root paths, and undeclared subcollections
     match /{document=**} {
       allow read, write: if false;
     }

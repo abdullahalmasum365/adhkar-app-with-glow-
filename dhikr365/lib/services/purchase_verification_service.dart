@@ -91,8 +91,15 @@ class PurchaseVerificationService {
     );
   }
 
-  /// Synchronizes verified subscription and Pro state to the authenticated
-  /// user's Firestore profile if signed in.
+  /// Synchronizes user activity to the authenticated user's Firestore profile if signed in.
+  ///
+  /// Note on Zero-Trust Security:
+  /// Client-side writes of entitlement status (`isPro`, `hasLifetimePro`, etc.)
+  /// to Cloud Firestore are blocked by Firestore Security Rules to prevent client
+  /// privilege escalation. Entitlements are validated cryptographically on-device
+  /// via Google Play Billing API. In production, persistent cloud-level entitlement
+  /// updates must be performed exclusively via server-side Google Play RTDN
+  /// / Cloud Functions webhooks.
   Future<void> syncWithCloudProfile({
     required bool isPro,
     required String? activeSubscriptionId,
@@ -106,21 +113,16 @@ class PurchaseVerificationService {
       final userDoc =
           FirebaseFirestore.instance.collection('users').doc(user.uid);
 
+      // Only sync non-privileged activity timestamps to comply with strict Firestore security rules
       final updateData = <String, dynamic>{
-        'isPro': isPro,
-        'hasLifetimePro': hasLifetimePro,
-        'activeSubscriptionId': activeSubscriptionId,
-        'lastPurchaseSync': FieldValue.serverTimestamp(),
+        'lastActive': FieldValue.serverTimestamp(),
+        'updatedAt': FieldValue.serverTimestamp(),
       };
 
-      if (latestRecord != null && latestRecord.isValid) {
-        updateData['latestPurchase'] = latestRecord.toMap();
-      }
-
       await userDoc.set(updateData, SetOptions(merge: true));
-      debugPrint('[PurchaseVerification] Synced verified entitlement to Cloud Firestore');
+      debugPrint('[PurchaseVerification] Synced user activity to Cloud Firestore profile');
     } catch (e) {
-      // Offline or Firestore not configured yet — safe to ignore silently
+      // Offline or Firestore sync skipped
       debugPrint('[PurchaseVerification] Cloud sync skipped: $e');
     }
   }

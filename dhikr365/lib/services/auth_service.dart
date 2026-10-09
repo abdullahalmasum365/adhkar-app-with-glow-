@@ -214,11 +214,14 @@ class AuthService {
     // 2. Batch delete all Firestore user records:
     //    - Custom plan data (users/{uid}/plan/data)
     //    - Progress & streak data (users/{uid}/progress/data)
-    //    - Root profile document (users/{uid} including purchase & entitlement records)
+    //    - Settings data (users/{uid}/settings/theme, users/{uid}/settings/language)
+    //    - Root profile document (users/{uid})
     final db = FirebaseFirestore.instance.collection('users').doc(uid);
     final batch = FirebaseFirestore.instance.batch();
     batch.delete(db.collection('plan').doc('data'));
     batch.delete(db.collection('progress').doc('data'));
+    batch.delete(db.collection('settings').doc('theme'));
+    batch.delete(db.collection('settings').doc('language'));
     batch.delete(db);
     await batch.commit();
 
