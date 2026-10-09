@@ -18,6 +18,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_theme.dart';
 import '../providers/auth_provider.dart';
 import '../providers/custom_plan_provider.dart';
+import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../utils/responsive.dart';
 
@@ -259,6 +260,9 @@ class _SignedInCard extends StatelessWidget {
       if (success) {
         final cp = Provider.of<CustomPlanProvider>(context, listen: false);
         await cp.attachUser(null);
+        if (!context.mounted) return;
+        final dp = Provider.of<DhikrProvider>(context, listen: false);
+        await dp.attachUser(null);
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

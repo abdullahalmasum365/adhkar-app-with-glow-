@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +13,7 @@ class LanguageProvider extends ChangeNotifier {
   String _transliterationCode  = 'en';
   final Map<String, Map<String, String>> _cache = {};
   bool _loaded = false;
+  String? _uid;
 
   final _loadCompleter = Completer<void>();
   /// Resolves once the saved language/translation/transliteration codes have
@@ -92,6 +96,7 @@ class LanguageProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', code);
     notifyListeners();
+    if (_uid != null) unawaited(_pushToCloud());
   }
 
   Future<void> setTranslationLanguage(String code) async {
@@ -101,6 +106,7 @@ class LanguageProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('translation_code', code);
     notifyListeners();
+    if (_uid != null) unawaited(_pushToCloud());
   }
 
   Future<void> setTransliterationLanguage(String code) async {
@@ -110,5 +116,101 @@ class LanguageProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('transliteration_code', code);
     notifyListeners();
+    if (_uid != null) unawaited(_pushToCloud());
+  }
+
+  // ── Cloud Firestore Sync ──────────────────────────────────────────────────
+
+  DocumentReference<Map<String, dynamic>>? get _cloudDoc {
+    if (_uid == null || Firebase.apps.isEmpty) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('settings')
+        .doc('language');
+  }
+
+  /// Called whenever the signed-in user changes. Restores saved language,
+  /// translation, and transliteration codes from Cloud Firestore.
+  Future<void> attachUser(String? uid) async {
+    if (uid == _uid) return;
+    _uid = uid;
+    if (uid == null || Firebase.apps.isEmpty) return;
+
+    try {
+      final doc = _cloudDoc;
+      if (doc == null) return;
+      final snap = await doc.get();
+
+      if (snap.exists) {
+        final data = snap.data()!;
+        final cloudLang = data['languageCode'] as String?;
+        final cloudTrans = data['translationCode'] as String?;
+        final cloudTranslit = data['transliterationCode'] as String?;
+
+        bool languageChanged = false;
+
+        if (cloudLang != null &&
+            cloudLang.isNotEmpty &&
+            cloudLang != _locale.languageCode &&
+            _valid(cloudLang)) {
+          await setLanguage(cloudLang);
+          languageChanged = true;
+        }
+        if (cloudTrans != null &&
+            cloudTrans.isNotEmpty &&
+            cloudTrans != _translationCode &&
+            _valid(cloudTrans)) {
+          await setTranslationLanguage(cloudTrans);
+          languageChanged = true;
+        }
+        if (cloudTranslit != null &&
+            cloudTranslit.isNotEmpty &&
+            cloudTranslit != _transliterationCode &&
+            _valid(cloudTranslit)) {
+          await setTransliterationLanguage(cloudTranslit);
+          languageChanged = true;
+        }
+
+        if (languageChanged && _onCloudLanguageLoaded != null) {
+          await _onCloudLanguageLoaded!(
+            _locale.languageCode,
+            _translationCode,
+            _transliterationCode,
+          );
+        }
+      } else {
+        await _pushToCloud();
+      }
+    } catch (e) {
+      debugPrint('[LanguageProvider] cloud sync on sign-in failed: $e');
+    }
+  }
+
+  Future<void> Function(String ui, String trans, String translit)?
+      _onCloudLanguageLoaded;
+
+  void setOnCloudLanguageLoaded(
+    Future<void> Function(String ui, String trans, String translit)? callback,
+  ) {
+    _onCloudLanguageLoaded = callback;
+  }
+
+  Future<void> _pushToCloud() async {
+    final doc = _cloudDoc;
+    if (doc == null) return;
+    try {
+      final currentAuthUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentAuthUid == null || currentAuthUid != _uid) return;
+
+      await doc.set({
+        'languageCode': _locale.languageCode,
+        'translationCode': _translationCode,
+        'transliterationCode': _transliterationCode,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('[LanguageProvider] cloud push failed: $e');
+    }
   }
 }

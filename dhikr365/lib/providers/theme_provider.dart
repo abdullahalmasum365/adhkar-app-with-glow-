@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +15,7 @@ class ThemeProvider extends ChangeNotifier {
   bool _showTransliteration = true;
   bool _showHabitTracker = true;
   String _paletteId = AppPalettes.emeraldNight.id;
+  String? _uid;
 
   ThemeMode get themeMode => _themeMode;
 
@@ -85,6 +90,7 @@ class ThemeProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_paletteKey, id);
     await WidgetService().updateTheme(palette);
+    if (_uid != null) unawaited(_pushToCloud());
   }
 
   /// Marks every element in the app dirty so all screens — including routes
@@ -112,6 +118,7 @@ class ThemeProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('show_transliteration', value);
     notifyListeners();
+    if (_uid != null) unawaited(_pushToCloud());
   }
 
   Future<void> toggleHabitTracker(bool value) async {
@@ -119,6 +126,73 @@ class ThemeProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('show_habit_tracker', value);
     notifyListeners();
+    if (_uid != null) unawaited(_pushToCloud());
+  }
+
+  // ── Cloud Firestore Sync ──────────────────────────────────────────────────
+
+  DocumentReference<Map<String, dynamic>>? get _cloudDoc {
+    if (_uid == null || Firebase.apps.isEmpty) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('settings')
+        .doc('theme');
+  }
+
+  /// Called whenever the signed-in user changes. Restores saved theme and
+  /// aids from Cloud Firestore, or uploads current settings if none exist.
+  Future<void> attachUser(String? uid) async {
+    if (uid == _uid) return;
+    _uid = uid;
+    if (uid == null || Firebase.apps.isEmpty) return;
+
+    try {
+      final doc = _cloudDoc;
+      if (doc == null) return;
+      final snap = await doc.get();
+
+      if (snap.exists) {
+        final data = snap.data()!;
+        final cloudPalette = data['paletteId'] as String?;
+        final cloudTranslit = data['showTransliteration'] as bool?;
+        final cloudHabit = data['showHabitTracker'] as bool?;
+
+        if (cloudPalette != null &&
+            cloudPalette.isNotEmpty &&
+            cloudPalette != _paletteId) {
+          await setPalette(cloudPalette);
+        }
+        if (cloudTranslit != null && cloudTranslit != _showTransliteration) {
+          await toggleTransliteration(cloudTranslit);
+        }
+        if (cloudHabit != null && cloudHabit != _showHabitTracker) {
+          await toggleHabitTracker(cloudHabit);
+        }
+      } else {
+        await _pushToCloud();
+      }
+    } catch (e) {
+      debugPrint('[ThemeProvider] cloud sync on sign-in failed: $e');
+    }
+  }
+
+  Future<void> _pushToCloud() async {
+    final doc = _cloudDoc;
+    if (doc == null) return;
+    try {
+      final currentAuthUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentAuthUid == null || currentAuthUid != _uid) return;
+
+      await doc.set({
+        'paletteId': _paletteId,
+        'showTransliteration': _showTransliteration,
+        'showHabitTracker': _showHabitTracker,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      debugPrint('[ThemeProvider] cloud push failed: $e');
+    }
   }
 
   Gradient getBackgroundGradient() => LinearGradient(

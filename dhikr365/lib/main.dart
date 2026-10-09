@@ -263,8 +263,27 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return dp;
           },
         ),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, ThemeProvider>(
+          create: (_) => ThemeProvider(),
+          update: (_, auth, previous) {
+            final tp = previous ?? ThemeProvider();
+            tp.attachUser(auth.user?.uid);
+            return tp;
+          },
+        ),
+        ChangeNotifierProxyProvider2<AuthProvider, DhikrProvider, LanguageProvider>(
+          create: (_) => LanguageProvider(),
+          update: (_, auth, dhikr, previous) {
+            final lp = previous ?? LanguageProvider();
+            lp.setOnCloudLanguageLoaded((ui, trans, translit) => dhikr.reloadDhikrs(
+                  uiLanguageCode: ui,
+                  translationCode: trans,
+                  transliterationCode: translit,
+                ));
+            lp.attachUser(auth.user?.uid);
+            return lp;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         // Linked to AuthProvider: whenever the signed-in account changes,
         // the plan/favorites are merged with (and then kept in sync with)

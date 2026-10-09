@@ -435,7 +435,9 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                             Icon(Icons.save, color: AppColors.textPrimary),
                             const SizedBox(width: 8),
                             Text(
-                              "Save Morning Plan",
+                              widget.category == DhikrCategory.morning
+                                  ? "Save Morning Plan"
+                                  : "Save Evening Plan",
                               style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontSize: 16,

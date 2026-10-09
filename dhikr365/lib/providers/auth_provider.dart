@@ -150,7 +150,9 @@ class AuthProvider extends ChangeNotifier {
       _user = null;
       return true;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'requires-recent-login') {
+      if (e.code == 'canceled') {
+        _errorMessage = null;
+      } else if (e.code == 'requires-recent-login') {
         _errorMessage = 'For security, please sign out, sign in again, and retry account deletion.';
       } else {
         _errorMessage = e.message ?? 'Failed to delete account.';

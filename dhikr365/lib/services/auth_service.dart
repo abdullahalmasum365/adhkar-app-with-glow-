@@ -138,32 +138,94 @@ class AuthService {
     ]);
   }
 
+  /// Prompts the user to re-authenticate with their active provider (Google or Apple)
+  /// so that sensitive operations (like account deletion) possess fresh credentials
+  /// and don't fail midway with a `requires-recent-login` error.
+  Future<void> reauthenticate() async {
+    if (!isFirebaseReady) throw AuthNotConfiguredException();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) throw Exception('No user currently signed in.');
+
+    final providerIds = user.providerData.map((p) => p.providerId).toList();
+    if (providerIds.contains('google.com')) {
+      try {
+        await _googleSignIn.signOut();
+      } catch (_) {}
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw FirebaseAuthException(
+          code: 'canceled',
+          message: 'Re-authentication was canceled.',
+        );
+      }
+      final googleAuth = await googleUser.authentication;
+      if (googleAuth.idToken == null && googleAuth.accessToken == null) {
+        throw Exception('Could not retrieve tokens from Google Sign-In.');
+      }
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      await user.reauthenticateWithCredential(credential);
+    } else if (providerIds.contains('apple.com')) {
+      if (!Platform.isIOS && !Platform.isMacOS) {
+        throw AuthNotConfiguredException(
+          'Apple Sign-In is only supported on Apple platforms.',
+        );
+      }
+      try {
+        final rawNonce = _generateNonce();
+        final nonceSha256 = sha256.convert(utf8.encode(rawNonce)).toString();
+        final appleCredential = await SignInWithApple.getAppleIDCredential(
+          scopes: [
+            AppleIDAuthorizationScopes.email,
+            AppleIDAuthorizationScopes.fullName,
+          ],
+          nonce: nonceSha256,
+        );
+        final oauthCredential = OAuthProvider('apple.com').credential(
+          idToken: appleCredential.identityToken,
+          rawNonce: rawNonce,
+          accessToken: appleCredential.authorizationCode,
+        );
+        await user.reauthenticateWithCredential(oauthCredential);
+      } on SignInWithAppleAuthorizationException catch (e) {
+        if (e.code == AuthorizationErrorCode.canceled) {
+          throw FirebaseAuthException(
+            code: 'canceled',
+            message: 'Re-authentication was canceled.',
+          );
+        }
+        rethrow;
+      }
+    }
+  }
+
   Future<void> deleteAccount() async {
     if (!isFirebaseReady) throw AuthNotConfiguredException();
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
     final uid = user.uid;
 
-    // 1. Delete Firestore user records
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('plan')
-          .doc('data')
-          .delete();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .delete();
-    } catch (_) {
-      // Proceed even if Firestore fails or collection doesn't exist
-    }
+    // 1. Re-authenticate first to guarantee valid/fresh credentials
+    //    and prevent leaving orphaned or half-deleted states if re-auth fails or is canceled.
+    await reauthenticate();
 
-    // 2. Delete the Firebase Auth user
+    // 2. Batch delete all Firestore user records:
+    //    - Custom plan data (users/{uid}/plan/data)
+    //    - Progress & streak data (users/{uid}/progress/data)
+    //    - Root profile document (users/{uid} including purchase & entitlement records)
+    final db = FirebaseFirestore.instance.collection('users').doc(uid);
+    final batch = FirebaseFirestore.instance.batch();
+    batch.delete(db.collection('plan').doc('data'));
+    batch.delete(db.collection('progress').doc('data'));
+    batch.delete(db);
+    await batch.commit();
+
+    // 3. Delete the Firebase Auth user account
     await user.delete();
 
-    // 3. Clean up Google / Apple sign in session
+    // 4. Clean up Google / Apple sign in session
     try {
       await _googleSignIn.signOut();
     } catch (_) {}
