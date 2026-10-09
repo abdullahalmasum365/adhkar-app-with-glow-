@@ -10,16 +10,22 @@
 .svn/
 migrate_working_dir/
 
+# Claude / AI Assistant & IDE Local Settings
+.claude/
+.vscode/
+
+# Build & Report artifacts
+/android/build/
+analysis_output.txt
+analyze_output.txt
+*analysis_output*.txt
+*analyze_output*.txt
+
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
 .idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/

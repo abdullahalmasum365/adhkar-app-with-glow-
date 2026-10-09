@@ -4,21 +4,72 @@ service cloud.firestore {
     
     // =========================================================================
     // Adhkaar 365 — Firestore Security Rules
-    // Security-First: Ensures zero unauthorized access or cross-user leaks.
+    // Security-First Architecture:
+    // 1. Strict Owner Authentication: Only request.auth.uid == userId can access.
+    // 2. Schema & Payload Validation: Strict types, key whitelisting, size caps.
+    // 3. Default Deny: All unspecified collections or subcollections are blocked.
     // =========================================================================
 
-    // Users collection:
-    // Only the authenticated owner of the account can read or write their own documents.
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Helper functions
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
 
-      // Subcollections (e.g., users/{userId}/plan/data)
-      match /{subcollection}/{document=**} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Root user document (users/{userId})
+    match /users/{userId} {
+      // Owner can read and delete their root document (e.g., account deletion)
+      allow read, delete: if isOwner(userId);
+
+      // Owner can create or update with strict field size cap (< 20 keys)
+      allow create, update: if isOwner(userId) && request.resource.data.keys().size() <= 20;
+
+      // ── Custom Dua Plan (users/{userId}/plan/{docId}) ─────────────────────
+      // Stores user's selected dhikr IDs and custom plan mode.
+      match /plan/{docId} {
+        allow read, delete: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          // Allowed keys whitelisted strictly
+          && request.resource.data.keys().hasOnly(['enabledDhikrIds', 'useCustomPlan', 'updatedAt'])
+          // Dhikr IDs: must be a list with max 200 items (prevent oversized payload attacks)
+          && (!('enabledDhikrIds' in request.resource.data) || (
+              request.resource.data.enabledDhikrIds is list &&
+              request.resource.data.enabledDhikrIds.size() <= 200
+             ))
+          // Custom plan toggle: must be boolean if present
+          && (!('useCustomPlan' in request.resource.data) || request.resource.data.useCustomPlan is bool)
+          // Updated timestamp: must be timestamp if present
+          && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
+      }
+
+      // ── Progress & Streaks (users/{userId}/progress/{docId}) ───────────────
+      // Stores streak counts, badges unlocked, and last active date.
+      match /progress/{docId} {
+        allow read, delete: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          // Allowed keys whitelisted strictly
+          && request.resource.data.keys().hasOnly(['streak_days', 'badge_early_bird', 'badge_night_prayer', 'last_active_date', 'updatedAt'])
+          // Streak days: non-negative integer under reasonable max
+          && (!('streak_days' in request.resource.data) || (
+              request.resource.data.streak_days is int &&
+              request.resource.data.streak_days >= 0 &&
+              request.resource.data.streak_days <= 100000
+             ))
+          // Badges: must be booleans
+          && (!('badge_early_bird' in request.resource.data) || request.resource.data.badge_early_bird is bool)
+          && (!('badge_night_prayer' in request.resource.data) || request.resource.data.badge_night_prayer is bool)
+          // Last active date: string within 50 chars (ISO date / date string)
+          && (!('last_active_date' in request.resource.data) || (
+              request.resource.data.last_active_date is string &&
+              request.resource.data.last_active_date.size() <= 50
+             ))
+          // Updated timestamp: must be timestamp if present
+          && (!('updatedAt' in request.resource.data) || request.resource.data.updatedAt is timestamp);
       }
     }
 
-    // Default deny: Block all other database collections
+    // Default deny: Block all other database collections and root paths
     match /{document=**} {
       allow read, write: if false;
     }
