@@ -107,7 +107,11 @@ service cloud.firestore {
           && request.resource.data.keys().hasOnly(['paletteId', 'showTransliteration', 'showHabitTracker', 'updatedAt'])
           && (!('paletteId' in request.resource.data) || (
               request.resource.data.paletteId is string &&
-              request.resource.data.paletteId.size() <= 50
+              request.resource.data.paletteId in [
+                'emerald', 'royal', 'sapphire', 'rose', 'lilac',
+                'mushaf', 'sketch', 'kindle', 'amoled', 'lavviolet',
+                'carbonlime', 'cosmicvanilla', 'onyxblue', 'jetorchid', 'wineturquoise'
+              ]
              ))
           && (!('showTransliteration' in request.resource.data) || request.resource.data.showTransliteration is bool)
           && (!('showHabitTracker' in request.resource.data) || request.resource.data.showHabitTracker is bool)

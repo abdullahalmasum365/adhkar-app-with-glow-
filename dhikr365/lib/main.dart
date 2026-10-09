@@ -255,6 +255,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => PurchaseProvider()),
         ChangeNotifierProxyProvider<AuthProvider, DhikrProvider>(
           create: (_) => DhikrProvider(),
           update: (_, auth, previous) {
@@ -263,11 +264,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return dp;
           },
         ),
-        ChangeNotifierProxyProvider<AuthProvider, ThemeProvider>(
+        ChangeNotifierProxyProvider2<AuthProvider, PurchaseProvider, ThemeProvider>(
           create: (_) => ThemeProvider(),
-          update: (_, auth, previous) {
+          update: (_, auth, purchase, previous) {
             final tp = previous ?? ThemeProvider();
-            tp.attachUser(auth.user?.uid);
+            tp.updateAuthAndPro(auth.user?.uid, purchase.isPro);
             return tp;
           },
         ),
@@ -298,7 +299,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           },
         ),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
-        ChangeNotifierProvider(create: (_) => PurchaseProvider()),
       ],
       child: Consumer2<ThemeProvider, LanguageProvider>(
         builder: (context, themeProvider, langProvider, child) {

@@ -16,6 +16,7 @@ class ThemeProvider extends ChangeNotifier {
   bool _showHabitTracker = true;
   String _paletteId = AppPalettes.emeraldNight.id;
   String? _uid;
+  bool _isPro = false;
 
   ThemeMode get themeMode => _themeMode;
 
@@ -30,6 +31,9 @@ class ThemeProvider extends ChangeNotifier {
 
   /// When false, habit tracking charts, rings, and streak metrics are hidden in ProgressScreen.
   bool get showHabitTracker => _showHabitTracker;
+
+  /// Whether the user holds verified Pro status (Lifetime or active unexpired subscription).
+  bool get isPro => _isPro;
 
   // Legacy names kept for DhikrCard / widgets that still reference them —
   // now palette-backed so they follow the active theme.
@@ -47,6 +51,22 @@ class ThemeProvider extends ChangeNotifier {
     _load();
   }
 
+  /// Helper to check if user has active Pro entitlement cached in local preferences.
+  static bool checkIsProInPrefs(SharedPreferences prefs) {
+    final hasLifetime = prefs.getBool('has_lifetime_pro') ?? false;
+    final activeSub = prefs.getString('active_subscription_id');
+    final expiryMs = prefs.getInt('subscription_expiry_ms');
+    bool hasActiveSub = false;
+    if (activeSub != null && activeSub.isNotEmpty) {
+      if (expiryMs != null) {
+        hasActiveSub = DateTime.now().millisecondsSinceEpoch <= expiryMs;
+      } else {
+        hasActiveSub = true;
+      }
+    }
+    return hasLifetime || hasActiveSub;
+  }
+
   /// Reads the saved palette and applies it to [AppColors]. Called from
   /// main() before runApp so the very first frame already uses the saved
   /// theme (no dark→light flash for Royal White users).
@@ -54,7 +74,16 @@ class ThemeProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final id = prefs.getString(_paletteKey) ?? AppPalettes.emeraldNight.id;
-      AppColors.apply(AppPalettes.byId(id));
+      final candidate = AppPalettes.byId(id);
+      final isProUser = checkIsProInPrefs(prefs);
+
+      // Zero-Trust Security: If saved palette is Pro but user is not Pro, revert to free default
+      if (candidate.isPro && !isProUser) {
+        await prefs.setString(_paletteKey, AppPalettes.emeraldNight.id);
+        AppColors.apply(AppPalettes.emeraldNight);
+      } else {
+        AppColors.apply(candidate);
+      }
     } catch (_) {
       AppColors.apply(AppPalettes.emeraldNight);
     }
@@ -62,7 +91,18 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    _paletteId = prefs.getString(_paletteKey) ?? AppPalettes.emeraldNight.id;
+    _isPro = checkIsProInPrefs(prefs);
+    final savedId = prefs.getString(_paletteKey) ?? AppPalettes.emeraldNight.id;
+    final candidate = AppPalettes.byId(savedId);
+
+    // Guard against Pro palette if user does not hold verified Pro
+    if (candidate.isPro && !_isPro) {
+      _paletteId = AppPalettes.emeraldNight.id;
+      await prefs.setString(_paletteKey, _paletteId);
+    } else {
+      _paletteId = candidate.id;
+    }
+
     AppColors.apply(AppPalettes.byId(_paletteId));
     _themeMode = palette.isDark ? ThemeMode.dark : ThemeMode.light;
     _showTransliteration = prefs.getBool('show_transliteration') ?? true;
@@ -71,24 +111,43 @@ class ThemeProvider extends ChangeNotifier {
     WidgetService().updateTheme(palette);
   }
 
+  /// Called from main ChangeNotifierProxyProvider2 when Auth or Purchase state updates.
+  Future<void> updateAuthAndPro(String? uid, bool isPro) async {
+    final proStatusChanged = _isPro != isPro;
+    _isPro = isPro;
+
+    // Zero-Trust Security Enforcement:
+    // If Pro subscription expired, cancelled, or refunded, and active theme is Pro,
+    // immediately revert to default free palette:
+    if (proStatusChanged && !_isPro && palette.isPro) {
+      debugPrint('[ThemeProvider] Pro subscription ended/cancelled. Reverting Pro palette "$_paletteId" to default.');
+      await setPalette(AppPalettes.emeraldNight.id);
+    }
+
+    if (uid != _uid) {
+      await attachUser(uid);
+    }
+  }
+
   /// Switches the whole app to palette [id], persists the choice, and
   /// repaints EVERY screen instantly.
-  ///
-  /// notifyListeners alone is not enough: screens read AppColors statically
-  /// at build time, and routes retained in the Navigator stack are never
-  /// rebuilt by a provider they don't watch — they'd keep the old colors
-  /// until revisited (or the app restarted). [_rebuildWholeApp] marks the
-  /// entire element tree dirty so the very next frame renders the new
-  /// palette everywhere — same mechanism a hot-reload uses.
   Future<void> setPalette(String id) async {
+    final target = AppPalettes.byId(id);
+
+    // Security Guard: Pro themes strictly require verified Pro entitlement
+    if (target.isPro && !_isPro) {
+      debugPrint('[ThemeProvider] Access denied: Palette "${target.label}" requires Pro subscription.');
+      return;
+    }
+
     if (id == _paletteId) return;
-    _paletteId = id;
-    AppColors.apply(AppPalettes.byId(id));
+    _paletteId = target.id;
+    AppColors.apply(target);
     _themeMode = palette.isDark ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
     _rebuildWholeApp();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_paletteKey, id);
+    await prefs.setString(_paletteKey, target.id);
     await WidgetService().updateTheme(palette);
     if (_uid != null) unawaited(_pushToCloud());
   }
@@ -141,9 +200,9 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   /// Called whenever the signed-in user changes. Restores saved theme and
-  /// aids from Cloud Firestore, or uploads current settings if none exist.
+  /// aids from Cloud Firestore, with strict validation and Pro entitlement checks.
   Future<void> attachUser(String? uid) async {
-    if (uid == _uid) return;
+    if (uid == _uid && uid != null) return;
     _uid = uid;
     if (uid == null || Firebase.apps.isEmpty) return;
 
@@ -158,10 +217,30 @@ class ThemeProvider extends ChangeNotifier {
         final cloudTranslit = data['showTransliteration'] as bool?;
         final cloudHabit = data['showHabitTracker'] as bool?;
 
-        if (cloudPalette != null &&
-            cloudPalette.isNotEmpty &&
-            cloudPalette != _paletteId) {
-          await setPalette(cloudPalette);
+        if (cloudPalette != null && cloudPalette.isNotEmpty) {
+          final isValid = AppPalettes.all.any((p) => p.id == cloudPalette);
+          if (!isValid) {
+            // Invalid / unrecognized palette ID from cloud
+            debugPrint('[ThemeProvider] Cloud palette "$cloudPalette" is unrecognized. Reverting to default.');
+            if (_paletteId != AppPalettes.emeraldNight.id) {
+              await setPalette(AppPalettes.emeraldNight.id);
+            } else {
+              await _pushToCloud();
+            }
+          } else {
+            final targetPalette = AppPalettes.byId(cloudPalette);
+            if (targetPalette.isPro && !_isPro) {
+              // Pro Bypass Prevention: Free user cannot adopt Pro theme from Firestore
+              debugPrint('[ThemeProvider] Cloud theme "$cloudPalette" is Pro, but user is not Pro. Reverting to default.');
+              if (_paletteId != AppPalettes.emeraldNight.id) {
+                await setPalette(AppPalettes.emeraldNight.id);
+              } else {
+                await _pushToCloud();
+              }
+            } else if (cloudPalette != _paletteId) {
+              await setPalette(cloudPalette);
+            }
+          }
         }
         if (cloudTranslit != null && cloudTranslit != _showTransliteration) {
           await toggleTransliteration(cloudTranslit);
@@ -198,8 +277,9 @@ class ThemeProvider extends ChangeNotifier {
   Gradient getBackgroundGradient() => LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: AppColors.isDark
-            ? const [Color(0xFF0A1A1A), Color(0xFF050806)]
-            : const [Color(0xFFF3EFFB), Color(0xFFFFFFFF)],
+        colors: [
+          palette.bgDark,
+          palette.bgDeep,
+        ],
       );
 }
