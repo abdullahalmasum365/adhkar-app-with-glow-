@@ -102,7 +102,7 @@ class AuthProvider extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      _errorMessage = 'Sign-in error: $e';
+      _errorMessage = 'Sign-in failed. Please try again.';
       debugPrint('[AuthProvider] Google sign-in failed: $e');
       return false;
     } finally {

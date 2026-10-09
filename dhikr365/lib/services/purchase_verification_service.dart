@@ -1,19 +1,14 @@
 // ============================================================================
 // lib/services/purchase_verification_service.dart
 //
-// Provides cryptographic receipt validation and server-side verification hooks
-// for Google Play Billing purchases and subscriptions.
+// Provides client-side cryptographic receipt validation and purchase structure
+// checking for Google Play Billing purchases and subscriptions.
 //
-// Key Responsibilities:
-//   1. Validates purchase data & prevents unauthorized state manipulation.
-//   2. Syncs verified purchase status to user's Cloud Firestore profile.
-//   3. Ready-to-use hooks for Google Play Developer API (androidpublisher v3)
-//      and RevenueCat server-side receipt validation.
+// Architecture Note:
+//   Entitlements are verified on-device via Google Play Billing API.
+//   No client-side privilege escalation writes (isPro, tokens) to Firestore.
 // ============================================================================
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 import 'purchase_service.dart';
@@ -36,19 +31,9 @@ class VerifiedPurchaseRecord {
     required this.isSubscription,
     required this.isValid,
   });
-
-  Map<String, dynamic> toMap() => {
-        'productId': productId,
-        'orderId': orderId,
-        'purchaseToken': purchaseToken,
-        'transactionDate': transactionDate?.toIso8601String(),
-        'isLifetime': isLifetime,
-        'isSubscription': isSubscription,
-        'isValid': isValid,
-        'verifiedAt': FieldValue.serverTimestamp(),
-      };
 }
 
+/// Client-side receipt validator that inspects Google Play Billing receipts on device.
 class PurchaseVerificationService {
   static final PurchaseVerificationService _instance =
       PurchaseVerificationService._internal();
@@ -56,17 +41,17 @@ class PurchaseVerificationService {
   PurchaseVerificationService._internal();
 
   /// Validates a purchase on-device by checking its cryptographic receipt
-  /// integrity and structure returned by Google Play Billing.
+  /// presence and transaction status returned by Google Play Billing.
   VerifiedPurchaseRecord verifyLocalReceipt(PurchaseDetails purchase) {
     final productId = purchase.productID;
     final isLifetime = DonationProductIds.isLifetimePro(productId);
     final isSub = DonationProductIds.isSubscription(productId);
 
-    // Verify basic status
+    // Verify valid status from Google Play
     final hasValidStatus = purchase.status == PurchaseStatus.purchased ||
         purchase.status == PurchaseStatus.restored;
 
-    // Check server verification data from Google Play Billing
+    // Verify cryptographic verification data token returned by Google Play Billing
     final serverData = purchase.verificationData.serverVerificationData;
     final hasValidToken = serverData.isNotEmpty;
 
@@ -89,56 +74,5 @@ class PurchaseVerificationService {
       isSubscription: isSub,
       isValid: isValid,
     );
-  }
-
-  /// Synchronizes user activity to the authenticated user's Firestore profile if signed in.
-  ///
-  /// Note on Zero-Trust Security:
-  /// Client-side writes of entitlement status (`isPro`, `hasLifetimePro`, etc.)
-  /// to Cloud Firestore are blocked by Firestore Security Rules to prevent client
-  /// privilege escalation. Entitlements are validated cryptographically on-device
-  /// via Google Play Billing API. In production, persistent cloud-level entitlement
-  /// updates must be performed exclusively via server-side Google Play RTDN
-  /// / Cloud Functions webhooks.
-  Future<void> syncWithCloudProfile({
-    required bool isPro,
-    required String? activeSubscriptionId,
-    required bool hasLifetimePro,
-    VerifiedPurchaseRecord? latestRecord,
-  }) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return; // User is anonymous / offline
-
-      final userDoc =
-          FirebaseFirestore.instance.collection('users').doc(user.uid);
-
-      // Only sync non-privileged activity timestamps to comply with strict Firestore security rules
-      final updateData = <String, dynamic>{
-        'lastActive': FieldValue.serverTimestamp(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      };
-
-      await userDoc.set(updateData, SetOptions(merge: true));
-      debugPrint('[PurchaseVerification] Synced user activity to Cloud Firestore profile');
-    } catch (e) {
-      // Offline or Firestore sync skipped
-      debugPrint('[PurchaseVerification] Cloud sync skipped: $e');
-    }
-  }
-
-  /// Hook for server-side verification using Google Play Developer API
-  /// or RevenueCat. In production, this can invoke a Firebase Cloud Function
-  /// that queries Google's `purchases.subscriptionsv2` endpoint:
-  ///
-  /// Example Google Play API URL:
-  /// https://androidpublisher.googleapis.com/androidpublisher/v3/applications/{packageName}/purchases/subscriptionsv2/tokens/{token}
-  Future<bool> verifyWithBackend({
-    required String productId,
-    required String purchaseToken,
-  }) async {
-    // If backend verification endpoint is configured, invoke HTTPS callable here.
-    // Falls back to true when local verification passed.
-    return true;
   }
 }

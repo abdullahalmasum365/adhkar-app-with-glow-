@@ -83,6 +83,7 @@
   <li><strong>Purpose:</strong> Used exclusively to calculate local Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) and the Qibla compass direction using astronomical calculations (Adhan algorithm).</li>
   <li><strong>Local Processing:</strong> All mathematical prayer calculations occur <strong>locally on your device</strong>. Your GPS coordinates are never uploaded to our servers, never stored remotely, and never sold or shared with any commercial parties.</li>
   <li><strong>Offline World City Database:</strong> The app bundles a pre-compiled offline database of over 34,000 cities worldwide (GeoNames cities15000, licensed CC-BY 4.0). You can select your city manually without granting GPS permission or requiring an internet connection.</li>
+  <li><strong>Native Reverse Geocoding (Google Play Services / Apple CoreLocation):</strong> When you tap the auto-detect GPS location button, your device's native platform geocoder (Google Play Services on Android, CoreLocation on iOS) is invoked locally to convert your coordinates into a city/country name for display. This lookup is handled by your operating system and subject to Google's or Apple's privacy policy. Our app servers never receive or store these coordinates.</li>
   <li><strong>Online Small Town Search Fallback (OpenStreetMap Nominatim):</strong> If you search for an uncommon small town not found in the bundled offline database, the app makes an HTTPS geocoding request to <code>nominatim.openstreetmap.org</code> (operated by the OpenStreetMap Foundation) to resolve the town name into geographic coordinates. In accordance with Nominatim's strict Usage Policy, requests transmit our verified contact User-Agent: <code>Adhkaar365App/1.0 (https://github.com/abdullahalmasum365/adhkar-app-with-glow-; abdullahalmasum365@gmail.com)</code>. Only the user-typed search string is transmitted; your real-time GPS coordinates, user account, and device identifiers are NEVER transmitted to Nominatim. The OpenStreetMap Foundation Privacy Policy applies to these geocoding queries.</li>
 </ul>
 
@@ -94,12 +95,13 @@
 
 <h3>1.3 Optional Account Information (Only If You Choose to Sign In)</h3>
 <p>
-  Signing in with Google or Apple is 100% optional. If you choose to sign in to sync your custom dhikr routine across devices, we store:
+  Signing in with Google or Apple is 100% optional. If you choose to sign in to sync your data across devices, we store:
 </p>
 <ul>
   <li>Your display name and email address provided by your authentication provider (Google or Apple).</li>
   <li>A secure, pseudonymous user identifier (UID).</li>
-  <li>Your custom routine list and favorite dhikr IDs, to restore them upon signing in on another device.</li>
+  <li>Your custom routine list, favorite dhikr IDs, and daily streak progress.</li>
+  <li>Your interface preferences (selected color theme and language settings) to provide a consistent experience across all your logged-in devices.</li>
 </ul>
 
 <h3>1.4 Purchase History &amp; Supporter Sponsorships</h3>
@@ -109,10 +111,10 @@
   <li><strong>No Card Data:</strong> We NEVER receive, process, or store your credit card, debit card, or banking details.</li>
 </ul>
 
-<h3>1.5 Offline Pre-Bundled Typography &amp; Google Fonts Engine</h3>
+<h3>1.5 Offline Pre-Bundled Typography (Zero Runtime Network Requests)</h3>
 <ul>
-  <li><strong>Pre-Bundled Font Assets:</strong> All primary font families utilized across the app (including Amiri Arabic, Manrope, Noto Serif diacritic transliteration, Space Mono, and Public Sans) are pre-bundled directly within the application's local asset bundle. These open-source fonts render 100% offline without initiating network requests or transmitting device IP addresses to font CDNs during standard usage.</li>
-  <li><strong>Fallback Runtime Fetching:</strong> The application incorporates the open-source <code>google_fonts</code> Flutter library. In the rare event that an unbundled font style is requested, the library connects over HTTPS to Google Fonts CDN (<code>fonts.gstatic.com</code>). In such cases, Google LLC processes technical device IP and standard HTTP request headers solely to deliver the font binary. No personal data, user accounts, or analytics are collected or profiled.</li>
+  <li><strong>Pre-Bundled Font Assets:</strong> All font families utilized across the app (including Amiri Arabic, Manrope, Noto Serif diacritic transliteration, Space Mono, and Public Sans) are pre-bundled directly within the application's local asset bundle.</li>
+  <li><strong>Strict Offline Policy:</strong> Runtime remote font fetching is strictly disabled in application code (<code>allowRuntimeFetching = false</code>). The font engine does not make network requests to Google Fonts CDN (<code>fonts.gstatic.com</code>) and does not transmit IP addresses during font rendering.</li>
 </ul>
 
 <h3>1.6 Data We Do NOT Collect</h3>
@@ -145,8 +147,8 @@
     <tr>
       <td><strong>Cloud Firestore</strong></td>
       <td>Google LLC</td>
-      <td>Optional cloud backup of user custom dhikr plans</td>
-      <td>Encrypted user preferences, dhikr IDs</td>
+      <td>Optional cloud backup of user custom dhikr plans, streak progress, and settings (theme and language)</td>
+      <td>Encrypted user preferences, dhikr IDs, theme/language preferences</td>
     </tr>
     <tr>
       <td><strong>Google Play Billing</strong></td>
@@ -233,7 +235,7 @@
       <li><strong>Hisn al-Muslim Supplications:</strong> Recited by <strong>Qari Hamad Al-Duraihem (حمد الدريهم)</strong>, widely circulated across Islamic educational repositories for public community benefit.</li>
       <li><strong>Ayatul Kursi &amp; Qur'anic Verses:</strong> Recited by <strong>Sheikh Mishary Rashid Alafasy</strong>.</li>
     </ul>
-    All audio files are provided 100% free of charge strictly for educational guidance, pronunciation assistance, and personal spiritual devotion. Audio playback is unmonetized and universally accessible to all users without any restriction. No audio recordings, Qur'anic verses, or sacred texts are monetized, licensed, or sold under Pro subscriptions. Optional purchases exclusively unlock non-religious UI customizations and developer support.
+    All audio files are freely accessible to all users without charge or subscription paywalls for devotional, pronunciation, and educational guidance. Audio playback is completely open and not gated behind Pro tiers or purchases. Optional Pro subscriptions and sponsorships exclusively unlock custom routines, analytics, and cosmetic UI themes, and do not license or sell sacred texts or audio recordings.
   </li>
   <li><strong>Notice to Rights Holders &amp; DMCA Takedown Policy:</strong> We respect intellectual property and creative rights. If you are a reciter, content creator, or copyright holder (or an authorized representative) and believe that any audio recording included in this application has been incorporated without proper authorization, or if you request attribution or immediate removal, please contact us at <a href="mailto:abdullahalmasum365@gmail.com?subject=Audio%20Copyright%20Notice">abdullahalmasum365@gmail.com</a> with the relevant details. We are committed to responding promptly and will remove or replace the specified audio file within 48 to 72 hours.</li>
   <li><strong>Typography:</strong> All typography utilized in the application (including Amiri, Space Mono, Manrope, Public Sans, and Noto Serif) is licensed under the <strong>SIL Open Font License (OFL) 1.1</strong>.</li>

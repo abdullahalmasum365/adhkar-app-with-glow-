@@ -45,6 +45,7 @@ class WidgetService {
 
   bool _initialized = false;
   StreamSubscription<Uri?>? _widgetClickSub;
+  Uri? _pendingLaunchUri;
 
   // Widget Provider Class Names
   static const String prayerCountdownWidget = 'PrayerCountdownWidgetProvider';
@@ -63,6 +64,17 @@ class WidgetService {
     tasbihWidget,
   ];
 
+  /// Checks and launches any queued cold-start widget deep link once navigator is ready.
+  void checkPendingLaunch() {
+    if (_pendingLaunchUri != null) {
+      final uri = _pendingLaunchUri!;
+      _pendingLaunchUri = null;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        handleDeepLink(uri);
+      });
+    }
+  }
+
   /// Initialize deep link listening and background interaction
   Future<void> init() async {
     if (_initialized) return;
@@ -78,10 +90,11 @@ class WidgetService {
     try {
       final launchUri = await HomeWidget.initiallyLaunchedFromHomeWidget();
       if (launchUri != null) {
-        // Wait slightly for Navigator to mount
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          handleDeepLink(launchUri);
-        });
+        if (launchUri.host == 'tasbih_increment' || launchUri.path.contains('tasbih_increment')) {
+          // Handled by background callback, no UI navigation
+        } else {
+          _pendingLaunchUri = launchUri;
+        }
       }
     } catch (e) {
       debugPrint('[WidgetService] initiallyLaunchedFromHomeWidget error: $e');
@@ -333,9 +346,13 @@ class WidgetService {
   // DEEP LINKING ROUTER
   // ══════════════════════════════════════════════════════════════════════════
   void handleDeepLink(Uri uri) {
+    if (uri.host == 'tasbih_increment' || uri.path.contains('tasbih_increment')) {
+      return;
+    }
     final nav = appNavigatorKey.currentState;
     if (nav == null) {
-      debugPrint('[WidgetService] appNavigatorKey.currentState is null');
+      debugPrint('[WidgetService] appNavigatorKey.currentState is null, queuing pending launch: $uri');
+      _pendingLaunchUri = uri;
       return;
     }
 

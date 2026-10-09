@@ -212,14 +212,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               const SizedBox(height: 4),
               Text(
                 isBn
-                    ? 'হিসনুল মুসলিম দোয়ার অডিও তিলাওয়াত: ক্বারী হামাদ আদ-দুরাইহিম (حمد الدريهم)। আয়াতুল কুরসী ও নির্বাচিত আয়াত: শায়খ মিশারী রাশিদ আল-আফাসী। শিক্ষা ও আত্মিক উপকারের জন্য সকল অডিও সম্পূর্ণ বিনামূল্যে ও উন্মুক্ত।'
-                    : 'Hisn al-Muslim supplications recited by Qari Hamad Al-Duraihem (حمد الدريهم). Ayatul Kursi & Qur\'anic verses recited by Sheikh Mishary Rashid Alafasy. Provided 100% free and unmonetized for educational and devotional benefit.',
+                    ? 'হিসনুল মুসলিম দোয়ার অডিও তিলাওয়াত: ক্বারী হামাদ আদ-দুরাইহিম (حمد الدريهم)। আয়াতুল কুরসী ও নির্বাচিত আয়াত: শায়খ মিশারী রাশিদ আল-আফাসী। ইসলামিক অডিওসমূহ শিক্ষামূলক ও আত্মিক উদ্দেশ্যে ব্যবহারের জন্য সকল ব্যবহারকারীর জন্য উন্মুক্ত।'
+                    : 'Hisn al-Muslim supplications recited by Qari Hamad Al-Duraihem (حمد الدريهم). Ayatul Kursi & Qur\'anic verses recited by Sheikh Mishary Rashid Alafasy. Audio recitations are included for educational and spiritual purposes and freely accessible to all users.',
                 style: AppText.manrope(
                     fontSize: 12, color: AppColors.textSlate400),
               ),
               const SizedBox(height: 12),
               Text(
-                isBn ? '⚖️ ফন্ট ও লাইব্রেরি:' : '⚖️ Fonts & Libraries:',
+                isBn ? '🌍 অবস্থান ও ম্যাপিং ডেটা:' : '🌍 Location & Geodata:',
                 style: AppText.manrope(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -228,7 +228,24 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ),
               const SizedBox(height: 4),
               Text(
-                'Amiri, Space Mono, Manrope, Public Sans (SIL Open Font License). Prayer calculations by Adhan Library.',
+                isBn
+                    ? 'নামাজের ওয়াক্ত হিসাব: Adhan Library। রিভার্স জিওকোডিং: ডিভাইস নেটিভ সার্ভিস (Google Play Services / Apple CoreLocation)। শহর অনুসন্ধান ও ভৌগোলিক তথ্য: GeoNames (geonames.org) ও © OpenStreetMap contributors (ODbL)।'
+                    : 'Prayer calculations by Adhan Library. Reverse geocoding by native device geocoder. City search & geographic data by GeoNames (geonames.org) and © OpenStreetMap contributors (ODbL).',
+                style: AppText.manrope(
+                    fontSize: 12, color: AppColors.textSlate400),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                isBn ? '⚖️ ফন্ট ও লাইব্রেরি:' : '⚖️ Fonts & Open Source:',
+                style: AppText.manrope(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Amiri, Space Mono, Manrope, Public Sans (SIL Open Font License). Built with Flutter & open-source community libraries.',
                 style: AppText.manrope(
                     fontSize: 12, color: AppColors.textSlate400),
               ),
@@ -236,6 +253,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           ),
         ),
         actions: [
+          TextButton.icon(
+            icon: Icon(Icons.description_outlined, size: 16, color: AppColors.primary),
+            label: Text(
+              isBn ? 'লাইসেন্সসমূহ' : 'Licenses',
+              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              showLicensePage(
+                context: context,
+                applicationName: 'Adhkar 365',
+                applicationVersion: '1.0.0',
+                applicationLegalese: '© ${DateTime.now().year} Abdullah Al Masum. All rights reserved.',
+              );
+            },
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/app_theme.dart';
@@ -117,6 +118,9 @@ void main() async {
     ),
   );
 
+  // Enforce 100% offline bundled font usage (no runtime HTTP calls to fonts.gstatic.com)
+  GoogleFonts.config.allowRuntimeFetching = false;
+
   // Apply the user's saved color theme before the first frame so Royal
   // White users never see a dark flash on startup.
   await ThemeProvider.applySavedPalette();
@@ -213,6 +217,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetService().checkPendingLaunch();
+    });
   }
 
   @override
@@ -396,7 +403,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         MediaQuery.of(context)
                             .textScaler
                             .scale(1.0)
-                            .clamp(0.9, 1.1),
+                            .clamp(0.85, 1.1),
                       ),
                     ),
                     child: child!,

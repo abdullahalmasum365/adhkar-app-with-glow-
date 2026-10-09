@@ -9,7 +9,7 @@
 //   1. Distinguishes Lifetime Pro (non-consumable) from recurring subscriptions.
 //   2. Startup synchronization via restorePurchases() with Google Play authority.
 //   3. Clears local cache when subscriptions expire or are refunded/canceled.
-//   4. Syncs verified purchase entitlement with Cloud Firestore when authenticated.
+//   4. Zero-Trust Security: Entitlements verified directly via Google Play Billing.
 //   5. Strictly guards debug test overrides with kDebugMode.
 // ============================================================================
 
@@ -155,7 +155,8 @@ class PurchaseProvider extends ChangeNotifier {
   // ── Purchase Synchronization & Verification ───────────────────────────────
 
   /// Synchronizes active purchases with Google Play Store authority.
-  /// If Google Play returns no active subscription, local cache is purged.
+  /// If Google Play returns an authoritative response omitting subscriptions, local cache is purged.
+  /// Network timeouts or offline states PRESERVE existing cached entitlements.
   Future<void> syncPurchases() async {
     if (!_isAvailable) return;
     if (kDebugMode && _isDebugOverride) return;
@@ -163,20 +164,41 @@ class PurchaseProvider extends ChangeNotifier {
     _isSyncing = true;
     _restoredProductIds.clear();
     _syncCompleter = Completer<void>();
+    bool streamResponded = false;
 
     try {
       await _service.restorePurchases();
 
-      // Wait for stream callback or healthy timeout (up to 2.5 seconds)
+      // Wait for stream callback or healthy timeout (up to 3500ms)
       await _syncCompleter!.future.timeout(
-        const Duration(milliseconds: 2500),
+        const Duration(milliseconds: 3500),
         onTimeout: () {
           debugPrint('[PurchaseProvider] syncPurchases stream wait completed/timed out.');
         },
       );
+      streamResponded = _syncCompleter!.isCompleted;
+    } catch (e) {
+      debugPrint('[PurchaseProvider] syncPurchases restore exception: $e');
+    }
 
-      if (kDebugMode && _isDebugOverride) return;
+    if (kDebugMode && _isDebugOverride) {
+      _isSyncing = false;
+      _syncCompleter = null;
+      return;
+    }
 
+    // Zero-Trust & Offline-First Guard:
+    // If Play Store stream timed out or was unreachable (offline / airplane mode / slow network),
+    // NEVER revoke already-verified Lifetime Pro or active subscription entitlements!
+    if (!streamResponded) {
+      debugPrint('[PurchaseProvider] Preserving cached entitlement state due to network/stream timeout.');
+      _isSyncing = false;
+      _syncCompleter = null;
+      notifyListeners();
+      return;
+    }
+
+    try {
       final prefs = await SharedPreferences.getInstance();
 
       // ── Lifetime Pro Verification ──────────────────────────────────────────
@@ -184,9 +206,9 @@ class PurchaseProvider extends ChangeNotifier {
         _hasLifetimePro = true;
         await prefs.setBool(_prefKeyHasLifetimePro, true);
       } else if (_hasLifetimePro) {
-        // Was cached as Lifetime Pro, but Play Store does NOT return it
+        // Authoritative response from Google Play explicitly omitting lifetime product
         // -> Refunded or revoked by Google Play
-        debugPrint('[PurchaseProvider] Lifetime Pro revoked/refunded. Clearing.');
+        debugPrint('[PurchaseProvider] Authoritative Google Play response: Lifetime Pro revoked/refunded. Clearing.');
         _hasLifetimePro = false;
         await prefs.remove(_prefKeyHasLifetimePro);
       }
@@ -201,9 +223,8 @@ class PurchaseProvider extends ChangeNotifier {
         _activeSubscriptionId = activeSub;
         await prefs.setString(_prefKeyActiveSub, activeSub);
       } else if (_activeSubscriptionId != null) {
-        // Was cached as active subscription, but Play Store returns no active sub
-        // -> Expired, canceled, or billing failed
-        debugPrint('[PurchaseProvider] Subscription expired or canceled. Clearing.');
+        // Authoritative response from Google Play: no active subscription
+        debugPrint('[PurchaseProvider] Authoritative Google Play response: Subscription expired or canceled. Clearing.');
         _activeSubscriptionId = null;
         _subscriptionExpiry = null;
         await prefs.remove(_prefKeyActiveSub);
@@ -213,13 +234,6 @@ class PurchaseProvider extends ChangeNotifier {
       _lastVerified = DateTime.now();
       await prefs.setInt(
           _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
-
-      // Sync verified entitlement to Cloud Firestore profile
-      await _verificationService.syncWithCloudProfile(
-        isPro: isPro,
-        activeSubscriptionId: _activeSubscriptionId,
-        hasLifetimePro: _hasLifetimePro,
-      );
 
       notifyListeners();
     } catch (e) {
@@ -292,14 +306,6 @@ class PurchaseProvider extends ChangeNotifier {
               _lastVerified = DateTime.now();
               await prefs.setInt(
                   _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
-
-              // Sync with Firestore profile
-              await _verificationService.syncWithCloudProfile(
-                isPro: isPro,
-                activeSubscriptionId: _activeSubscriptionId,
-                hasLifetimePro: _hasLifetimePro,
-                latestRecord: record,
-              );
             }
           }
 
@@ -358,12 +364,6 @@ class PurchaseProvider extends ChangeNotifier {
       await prefs.remove(_prefKeyHasLifetimePro);
       await prefs.remove(_prefKeySubExpiry);
       await prefs.remove(_prefKeyLastVerified);
-
-      await _verificationService.syncWithCloudProfile(
-        isPro: false,
-        activeSubscriptionId: null,
-        hasLifetimePro: false,
-      );
     } catch (e) {
       debugPrint('[PurchaseProvider] clearSubscription error: $e');
     }
