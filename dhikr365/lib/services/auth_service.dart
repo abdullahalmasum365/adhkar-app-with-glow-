@@ -39,7 +39,11 @@ class AuthService {
   factory AuthService() => _instance;
   AuthService._internal();
 
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    serverClientId:
+        '622768800935-dg8l5jsa6jlek9btv94hqt7veg93bpo7.apps.googleusercontent.com',
+    scopes: ['email'],
+  );
 
   /// True once Firebase.initializeApp() has succeeded (checked lazily —
   /// main.dart calls it once at startup and swallows failures so a missing
@@ -56,9 +60,16 @@ class AuthService {
 
   Future<User?> signInWithGoogle() async {
     if (!isFirebaseReady) throw AuthNotConfiguredException();
+    // Clear any stale cached credentials
+    try {
+      await _googleSignIn.signOut();
+    } catch (_) {}
     final googleUser = await _googleSignIn.signIn();
     if (googleUser == null) return null; // user cancelled the picker
     final googleAuth = await googleUser.authentication;
+    if (googleAuth.idToken == null && googleAuth.accessToken == null) {
+      throw Exception('Could not retrieve tokens from Google Sign-In.');
+    }
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,

@@ -11,6 +11,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../services/auth_service.dart';
 
@@ -64,8 +65,44 @@ class AuthProvider extends ChangeNotifier {
     } on AuthNotConfiguredException catch (e) {
       _errorMessage = e.message;
       return false;
+    } on FirebaseAuthException catch (e) {
+      debugPrint('[AuthProvider] FirebaseAuthException: [${e.code}] ${e.message}');
+      switch (e.code) {
+        case 'operation-not-allowed':
+          _errorMessage =
+              'Google Sign-In is disabled in Firebase Console. Enable it in Authentication > Sign-in method.';
+          break;
+        case 'network-request-failed':
+          _errorMessage =
+              'Network connection failed. Please check your internet connection.';
+          break;
+        case 'invalid-credential':
+          _errorMessage =
+              'Google authentication credentials invalid or expired. Please try again.';
+          break;
+        case 'account-exists-with-different-credential':
+          _errorMessage =
+              'An account already exists with this email using a different sign-in method.';
+          break;
+        default:
+          _errorMessage = e.message ?? 'Sign-in failed (${e.code}).';
+      }
+      return false;
+    } on PlatformException catch (e) {
+      debugPrint('[AuthProvider] PlatformException: [${e.code}] ${e.message} details: ${e.details}');
+      if (e.message != null && e.message!.contains('10')) {
+        _errorMessage =
+            'Developer Error (ApiException 10): Ensure SHA-1 fingerprint & Support Email are set in Firebase Console.';
+      } else if (e.code == 'sign_in_canceled' || e.code == 'canceled') {
+        _errorMessage = null;
+      } else if (e.code == 'network_error') {
+        _errorMessage = 'Network error. Please check your internet connection.';
+      } else {
+        _errorMessage = e.message ?? 'Sign-in failed (${e.code}).';
+      }
+      return false;
     } catch (e) {
-      _errorMessage = 'Sign-in failed. Please try again.';
+      _errorMessage = 'Sign-in error: $e';
       debugPrint('[AuthProvider] Google sign-in failed: $e');
       return false;
     } finally {
