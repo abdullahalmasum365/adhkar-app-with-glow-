@@ -1,39 +1,37 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dhikr365/services/purchase_service.dart';
-import 'package:dhikr365/services/purchase_verification_service.dart';
+
+import 'package:dhikr365/constants/app_theme.dart';
 import 'package:dhikr365/providers/purchase_provider.dart';
 import 'package:dhikr365/providers/theme_provider.dart';
-import 'package:dhikr365/constants/app_theme.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:dhikr365/services/purchase_service.dart';
+import 'package:dhikr365/services/purchase_verification_service.dart';
 
-class FakePurchaseService implements PurchaseService {
+class FakePurchaseService extends Fake implements PurchaseService {
   @override
   Future<bool> get isAvailable async => true;
 
   @override
-  void listen(void Function(List<PurchaseDetails>) onUpdate) {}
-
-  @override
-  Future<ProductDetailsResponse> queryProducts(Set<String> ids) async {
-    return ProductDetailsResponse(productDetails: [], notFoundIDs: []);
-  }
-
-  @override
-  Future<bool> buyProduct(ProductDetails product, {bool isConsumable = false}) async => true;
-
-  @override
-  Future<bool> buySubscription(ProductDetails product) async => true;
-
-  @override
-  Future<void> completePurchase(PurchaseDetails purchase) async {}
+  void listen(void Function(List<PurchaseDetails>) onData) {}
 
   @override
   Future<void> restorePurchases() async {}
 
   @override
+  Future<void> completePurchase(PurchaseDetails purchase) async {}
+
+  @override
   void dispose() {}
+}
+
+class FakeInAppPurchase extends Fake implements InAppPurchase {
+  @override
+  Future<bool> isAvailable() async => true;
+
+  @override
+  Stream<List<PurchaseDetails>> get purchaseStream => const Stream.empty();
 }
 
 void main() {
@@ -41,13 +39,19 @@ void main() {
 
   setUpAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(const MethodChannel('home_widget'),
-            (MethodCall methodCall) async {
-      return true;
-    });
+        .setMockMethodCallHandler(
+      const MethodChannel('home_widget'),
+      (MethodCall methodCall) async => true,
+    );
+    PurchaseService.setMock(FakePurchaseService());
   });
 
   tearDownAll(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('home_widget'),
+      null,
+    );
     PurchaseService.setMock(null);
   });
 
@@ -57,27 +61,35 @@ void main() {
       PurchaseService.setMock(FakePurchaseService());
     });
 
-    test('1. Product ID Classification: Lifetime Pro vs Subscriptions', () {
+    test('1. Product ID Classification: Pro Plans vs Donations', () {
       expect(
           DonationProductIds.isLifetimePro(DonationProductIds.proLifetime), isTrue);
       expect(
-          DonationProductIds.isSubscription(DonationProductIds.proLifetime), isFalse);
+          DonationProductIds.isProSubscription(DonationProductIds.pro1Month), isTrue);
+      expect(
+          DonationProductIds.isProSubscription(DonationProductIds.pro6Months), isTrue);
+      expect(
+          DonationProductIds.isProSubscription(DonationProductIds.pro1Year), isTrue);
+      expect(
+          DonationProductIds.isProProduct(DonationProductIds.pro1Year), isTrue);
 
-      expect(DonationProductIds.isSubscription(DonationProductIds.seed), isTrue);
+      expect(DonationProductIds.isDonationProduct(DonationProductIds.seed), isTrue);
       expect(
-          DonationProductIds.isSubscription(DonationProductIds.supporter), isTrue);
+          DonationProductIds.isDonationProduct(DonationProductIds.supporter), isTrue);
       expect(
-          DonationProductIds.isSubscription(DonationProductIds.patron), isTrue);
+          DonationProductIds.isDonationProduct(DonationProductIds.patron), isTrue);
       expect(
-          DonationProductIds.isSubscription(DonationProductIds.annual), isTrue);
-      expect(DonationProductIds.isLifetimePro(DonationProductIds.seed), isFalse);
+          DonationProductIds.isDonationProduct(DonationProductIds.annual), isTrue);
+
+      expect(DonationProductIds.isProProduct(DonationProductIds.seed), isFalse);
+      expect(DonationProductIds.isDonationProduct(DonationProductIds.pro1Month), isFalse);
     });
 
     test('2. Receipt Token Inspection: Local token analysis', () {
       final service = PurchaseVerificationService();
 
       final validPurchase = PurchaseDetails(
-        productID: DonationProductIds.proLifetime,
+        productID: DonationProductIds.pro1Year,
         verificationData: PurchaseVerificationData(
           localVerificationData: 'local_token',
           serverVerificationData: 'server_signed_token_123',
@@ -89,50 +101,57 @@ void main() {
 
       final record = service.verifyLocalReceipt(validPurchase);
       expect(record.isValid, isTrue);
-      expect(record.isLifetime, isTrue);
-      expect(record.isSubscription, isFalse);
+      expect(record.isLifetime, isFalse);
+      expect(record.isSubscription, isTrue);
       expect(record.purchaseToken, equals('server_signed_token_123'));
     });
 
-    test('3. PurchaseProvider Initial Free State: Defaults to non-Pro', () async {
+    test('3. PurchaseProvider Initial Free State: Defaults to non-Pro and no donation', () async {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
       expect(provider.isPro, isFalse);
       expect(provider.hasLifetimePro, isFalse);
-      expect(provider.hasActiveSubscription, isFalse);
-      expect(provider.activeSubscriptionId, isNull);
+      expect(provider.hasActiveProSubscription, isFalse);
+      expect(provider.activeProTierId, isNull);
+      expect(provider.hasActiveDonation, isFalse);
+      expect(provider.activeDonationId, isNull);
     });
 
-    test('4. Lifetime Pro Entitlement: Granted and persisted to storage', () async {
+    test('4. Pro 1 Month, 6 Months, and 1 Year Subscriptions: Grant Pro with proper expiry', () async {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
-      final proPurchase = PurchaseDetails(
-        productID: DonationProductIds.proLifetime,
+      // Test 1 Year purchase
+      final pro1YPurchase = PurchaseDetails(
+        productID: DonationProductIds.pro1Year,
         verificationData: PurchaseVerificationData(
-          localVerificationData: 'local_token_pro',
-          serverVerificationData: 'server_token_pro',
+          localVerificationData: 'local_token_1y',
+          serverVerificationData: 'server_token_1y',
           source: 'google_play',
         ),
         transactionDate: DateTime.now().millisecondsSinceEpoch.toString(),
         status: PurchaseStatus.purchased,
       );
 
-      await provider.handlePurchaseUpdatesForTesting([proPurchase]);
+      await provider.handlePurchaseUpdatesForTesting([pro1YPurchase]);
 
-      expect(provider.hasLifetimePro, isTrue);
       expect(provider.isPro, isTrue);
+      expect(provider.hasActiveProSubscription, isTrue);
+      expect(provider.activeProTierId, equals(DonationProductIds.pro1Year));
+      expect(provider.proExpiry, isNotNull);
+      expect(provider.proExpiry!.isAfter(DateTime.now().add(const Duration(days: 350))), isTrue);
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('has_lifetime_pro'), isTrue);
+      expect(prefs.getString('active_pro_tier_id'), equals(DonationProductIds.pro1Year));
+      expect(prefs.getInt('pro_expiry_ms'), isNotNull);
     });
 
-    test('5. Subscription Entitlement & Duration Calculation', () async {
+    test('5. Sadaqah Jariyah Donation does NOT grant Pro (Independent)', () async {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
-      final subPurchase = PurchaseDetails(
+      final donationPurchase = PurchaseDetails(
         productID: DonationProductIds.supporter,
         verificationData: PurchaseVerificationData(
           localVerificationData: 'local_token_sub',
@@ -143,97 +162,112 @@ void main() {
         status: PurchaseStatus.purchased,
       );
 
-      await provider.handlePurchaseUpdatesForTesting([subPurchase]);
+      await provider.handlePurchaseUpdatesForTesting([donationPurchase]);
 
-      expect(provider.hasActiveSubscription, isTrue);
-      expect(provider.activeSubscriptionId, equals(DonationProductIds.supporter));
-      expect(provider.isPro, isTrue);
-      expect(provider.subscriptionExpiry, isNotNull);
-      expect(provider.subscriptionExpiry!.isAfter(DateTime.now()), isTrue);
+      // Crucial test: Donation must NOT grant Pro to a free user!
+      expect(provider.hasActiveDonation, isTrue);
+      expect(provider.activeDonationId, equals(DonationProductIds.supporter));
+      expect(provider.isPro, isFalse);
+      expect(provider.hasActiveProSubscription, isFalse);
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString('active_subscription_id'),
-          equals(DonationProductIds.supporter));
-      expect(prefs.getInt('subscription_expiry_ms'), isNotNull);
+      expect(prefs.getString('active_donation_id'), equals(DonationProductIds.supporter));
+      expect(prefs.getString('active_pro_tier_id'), isNull);
     });
 
-    test('6. Subscription Expiration: Expired sub is automatically revoked', () async {
-      // Setup expired subscription timestamp (1 day in the past)
-      final expiredMs = DateTime.now()
-          .subtract(const Duration(days: 1))
-          .millisecondsSinceEpoch;
-
-      SharedPreferences.setMockInitialValues({
-        'active_subscription_id': DonationProductIds.supporter,
-        'subscription_expiry_ms': expiredMs,
-      });
-
+    test('6. Pro User Can Also Donate: Maintains BOTH Pro status and active donation', () async {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
-      // Expired subscription should NOT grant active status or Pro
-      expect(provider.hasActiveSubscription, isFalse);
-      expect(provider.activeSubscriptionId, isNull);
-      expect(provider.isPro, isFalse);
-
-      // Verify that expired keys were purged from SharedPreferences
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getString('active_subscription_id'), isNull);
-      expect(prefs.getInt('subscription_expiry_ms'), isNull);
-    });
-
-    test('7. Explicit Revocation (clearSubscription): Purges all entitlements', () async {
-      SharedPreferences.setMockInitialValues({
-        'has_lifetime_pro': true,
-        'active_subscription_id': DonationProductIds.annual,
-        'subscription_expiry_ms': DateTime.now()
-            .add(const Duration(days: 365))
-            .millisecondsSinceEpoch,
-      });
-
-      final provider = PurchaseProvider(autoInit: false);
-      await provider.loadCachedEntitlements();
-
-      expect(provider.isPro, isTrue);
-
-      // Trigger revocation
-      await provider.clearSubscription();
-
-      expect(provider.hasLifetimePro, isFalse);
-      expect(provider.hasActiveSubscription, isFalse);
-      expect(provider.isPro, isFalse);
-
-      final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool('has_lifetime_pro'), isNull);
-      expect(prefs.getString('active_subscription_id'), isNull);
-      expect(prefs.getInt('subscription_expiry_ms'), isNull);
-    });
-
-    test('8. Authoritative Play Store Sync: Revokes on refund or cancellation', () async {
-      final provider = PurchaseProvider(autoInit: false);
-
-      // Simulate previously owned Lifetime Pro
+      // First, user subscribes to Pro (1 Month)
       final proPurchase = PurchaseDetails(
-        productID: DonationProductIds.proLifetime,
+        productID: DonationProductIds.pro1Month,
         verificationData: PurchaseVerificationData(
-          localVerificationData: 'token',
-          serverVerificationData: 'token',
+          localVerificationData: 'token_pro',
+          serverVerificationData: 'token_pro',
           source: 'google_play',
         ),
-        transactionDate: '123',
+        transactionDate: DateTime.now().millisecondsSinceEpoch.toString(),
         status: PurchaseStatus.purchased,
       );
       await provider.handlePurchaseUpdatesForTesting([proPurchase]);
       expect(provider.isPro, isTrue);
 
-      // Authoritative Google Play sync returns empty (product was refunded or cancelled)
-      await provider.executeSyncWithRestoredIdsForTesting({});
+      // Second, Pro user also donates (Patron tier)
+      final donationPurchase = PurchaseDetails(
+        productID: DonationProductIds.patron,
+        verificationData: PurchaseVerificationData(
+          localVerificationData: 'token_patron',
+          serverVerificationData: 'token_patron',
+          source: 'google_play',
+        ),
+        transactionDate: DateTime.now().millisecondsSinceEpoch.toString(),
+        status: PurchaseStatus.purchased,
+      );
+      await provider.handlePurchaseUpdatesForTesting([donationPurchase]);
+
+      // Both must remain active simultaneously!
+      expect(provider.isPro, isTrue);
+      expect(provider.hasActiveProSubscription, isTrue);
+      expect(provider.activeProTierId, equals(DonationProductIds.pro1Month));
+      expect(provider.hasActiveDonation, isTrue);
+      expect(provider.activeDonationId, equals(DonationProductIds.patron));
+    });
+
+    test('7. Expiration of Pro subscription revokes Pro while maintaining active donation', () async {
+      final expiredMs = DateTime.now()
+          .subtract(const Duration(days: 1))
+          .millisecondsSinceEpoch;
+      final futureExpiry = DateTime.now()
+          .add(const Duration(days: 20))
+          .millisecondsSinceEpoch;
+
+      SharedPreferences.setMockInitialValues({
+        'active_pro_tier_id': DonationProductIds.pro1Month,
+        'pro_expiry_ms': expiredMs,
+        'active_donation_id': DonationProductIds.seed,
+        'donation_expiry_ms': futureExpiry,
+      });
+
+      final provider = PurchaseProvider(autoInit: false);
+      await provider.loadCachedEntitlements();
+
+      // Pro expired -> isPro is false
+      expect(provider.isPro, isFalse);
+      expect(provider.hasActiveProSubscription, isFalse);
+      expect(provider.activeProTierId, isNull);
+
+      // Donation still active
+      expect(provider.hasActiveDonation, isTrue);
+      expect(provider.activeDonationId, equals(DonationProductIds.seed));
+    });
+
+    test('8. Explicit Revocation (clearSubscription): Purges all entitlements', () async {
+      SharedPreferences.setMockInitialValues({
+        'has_lifetime_pro': true,
+        'active_pro_tier_id': DonationProductIds.pro1Year,
+        'pro_expiry_ms': DateTime.now().add(const Duration(days: 365)).millisecondsSinceEpoch,
+        'active_donation_id': DonationProductIds.annual,
+        'donation_expiry_ms': DateTime.now().add(const Duration(days: 365)).millisecondsSinceEpoch,
+      });
+
+      final provider = PurchaseProvider(autoInit: false);
+      await provider.loadCachedEntitlements();
+
+      expect(provider.isPro, isTrue);
+      expect(provider.hasActiveDonation, isTrue);
+
+      // Trigger revocation
+      await provider.clearSubscription();
 
       expect(provider.hasLifetimePro, isFalse);
       expect(provider.isPro, isFalse);
+      expect(provider.hasActiveDonation, isFalse);
 
       final prefs = await SharedPreferences.getInstance();
       expect(prefs.getBool('has_lifetime_pro'), isNull);
+      expect(prefs.getString('active_pro_tier_id'), isNull);
+      expect(prefs.getString('active_donation_id'), isNull);
     });
 
     test('9. ThemeProvider Revocation Reaction: Pro theme auto-reverts to default', () async {
@@ -254,22 +288,30 @@ void main() {
       expect(themeProvider.palette.isPro, isFalse);
     });
 
-    test('10. Offline Entitlement Retention: Valid unexpired access is preserved', () async {
-      final validFutureExpiry = DateTime.now()
-          .add(const Duration(days: 20))
-          .millisecondsSinceEpoch;
-
-      SharedPreferences.setMockInitialValues({
-        'active_subscription_id': DonationProductIds.patron,
-        'subscription_expiry_ms': validFutureExpiry,
-      });
-
+    test('10. Authoritative Play Store Sync: Correctly revokes canceled products', () async {
       final provider = PurchaseProvider(autoInit: false);
-      await provider.loadCachedEntitlements();
 
-      expect(provider.hasActiveSubscription, isTrue);
-      expect(provider.activeSubscriptionId, equals(DonationProductIds.patron));
+      final proPurchase = PurchaseDetails(
+        productID: DonationProductIds.pro6Months,
+        verificationData: PurchaseVerificationData(
+          localVerificationData: 'token',
+          serverVerificationData: 'token',
+          source: 'google_play',
+        ),
+        transactionDate: '123',
+        status: PurchaseStatus.purchased,
+      );
+      await provider.handlePurchaseUpdatesForTesting([proPurchase]);
       expect(provider.isPro, isTrue);
+
+      // Authoritative Google Play sync returns empty (product was refunded or cancelled)
+      await provider.executeSyncWithRestoredIdsForTesting({});
+
+      expect(provider.isPro, isFalse);
+      expect(provider.hasActiveProSubscription, isFalse);
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('active_pro_tier_id'), isNull);
     });
   });
 }

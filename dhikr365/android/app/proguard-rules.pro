@@ -39,7 +39,10 @@
 -dontwarn com.google.android.gms.**
 -dontwarn com.google.firebase.**
 
-# Audio (just_audio / audio_session)
+# Audio (audioplayers & just_audio)
+-keep class xyz.luan.audioplayers.** { *; }
+-keepclassmembers class xyz.luan.audioplayers.** { *; }
+-dontwarn xyz.luan.audioplayers.**
 -keep class com.ryanheise.just_audio.** { *; }
 -keep class com.ryanheise.audio_session.** { *; }
 -dontwarn com.ryanheise.**
@@ -51,8 +54,9 @@
 -keep class com.baseflow.geolocator.** { *; }
 -keep class com.baseflow.geocoding.** { *; }
 
-# Home Screen Widgets
+# Home Screen Widgets & App Classes
 -keep class es.antonborri.home_widget.** { *; }
 -keepclassmembers class es.antonborri.home_widget.** { *; }
--keep class com.adhkaar365.app.*WidgetProvider { *; }
--keepclassmembers class com.adhkaar365.app.*WidgetProvider { *; }
+-keep class com.adhkaar365.app.** { *; }
+-keepclassmembers class com.adhkaar365.app.** { *; }
+

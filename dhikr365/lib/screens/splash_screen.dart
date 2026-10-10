@@ -8,6 +8,7 @@ import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
 import '../constants/app_theme.dart';
 import '../services/notification_service.dart';
+import '../services/widget_service.dart';
 import 'dashboard_screen.dart';
 import 'dhikr_list_screen.dart';
 import 'language_selection_screen.dart';
@@ -124,11 +125,13 @@ class _SplashScreenState extends State<SplashScreen> {
       MaterialPageRoute(builder: (_) => const DashboardScreen()),
     );
 
-    // Step 9 — If launched from a notification, push the target screen.
+    // Step 9 — If launched from a notification or home widget, push the target screen on top.
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (!mounted) return;
+
+    WidgetService().checkPendingLaunch();
+
     if (launchPayload != null && launchPayload.isNotEmpty) {
-      // Small delay so Dashboard finishes building before we push on top.
-      await Future.delayed(const Duration(milliseconds: 300));
-      if (!mounted) return;
       if (launchPayload == 'morning' || launchPayload == 'prayer:sunrise') {
         nav.push(MaterialPageRoute(
           builder: (_) =>

@@ -17,7 +17,11 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 /// Subscription product IDs — must be created as subscription base plans
 /// with these exact IDs in Play Console → Monetize → Products → Subscriptions.
 class DonationProductIds {
-  // Pro Feature products (Personal Unlock: Custom Plan, Themes, Sync - Non-Consumable)
+  // Pro Subscription Plans (1 Month, 6 Months, 1 Year)
+  static const pro1Month = 'adhkar365_pro_1m';
+  static const pro6Months = 'adhkar365_pro_6m';
+  static const pro1Year = 'adhkar365_pro_1y';
+  // Legacy Lifetime Pro (supported for past purchasers)
   static const proLifetime = 'adhkar365_pro_lifetime';
 
   // Sadaqah Jariyah products (Monthly & Annual Auto-Renewing Subscriptions)
@@ -26,11 +30,35 @@ class DonationProductIds {
   static const patron = 'donation_patron_monthly';
   static const annual = 'donation_annual_sponsor';
 
-  static const proProducts = {proLifetime};
-  static const subscriptionTiers = {seed, supporter, patron, annual};
-  static const all = {proLifetime, seed, supporter, patron, annual};
+  static const proSubscriptionTiers = {pro1Month, pro6Months, pro1Year};
+  static const proProducts = {pro1Month, pro6Months, pro1Year, proLifetime};
+  static const donationTiers = {seed, supporter, patron, annual};
+
+  static const subscriptionTiers = {
+    pro1Month,
+    pro6Months,
+    pro1Year,
+    seed,
+    supporter,
+    patron,
+    annual,
+  };
+
+  static const all = {
+    pro1Month,
+    pro6Months,
+    pro1Year,
+    proLifetime,
+    seed,
+    supporter,
+    patron,
+    annual,
+  };
 
   static bool isLifetimePro(String id) => id == proLifetime;
+  static bool isProSubscription(String id) => proSubscriptionTiers.contains(id);
+  static bool isProProduct(String id) => proProducts.contains(id);
+  static bool isDonationProduct(String id) => donationTiers.contains(id);
   static bool isSubscription(String id) => subscriptionTiers.contains(id);
 }
 

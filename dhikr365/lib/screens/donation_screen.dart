@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/purchase_provider.dart';
+import '../providers/theme_provider.dart';
 import '../services/purchase_service.dart';
 import '../models/sadaqah_dedication.dart';
 import '../widgets/sadaqah_certificate_dialog.dart';
@@ -80,7 +81,7 @@ class _DonationScreenState extends State<DonationScreen> {
                 content: Text(pp.lastError!),
                 backgroundColor: Colors.redAccent),
           );
-        } else if (pp.hasActiveSubscription) {
+        } else if (pp.hasActiveDonation) {
           final selectedTier = _tiers[_selected];
           showSadaqahCertificateDialog(
             context,
@@ -155,7 +156,54 @@ class _DonationScreenState extends State<DonationScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
                       children: [
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 16),
+                        // Open to Pro & Regular Users Banner
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 24),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: pp.isPro
+                                ? ThemeProvider.divineAmber.withValues(alpha: 0.12)
+                                : primary.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: pp.isPro
+                                  ? ThemeProvider.divineAmber.withValues(alpha: 0.4)
+                                  : primary.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                pp.isPro
+                                    ? Icons.stars_rounded
+                                    : Icons.volunteer_activism_rounded,
+                                color: pp.isPro
+                                    ? ThemeProvider.divineAmber
+                                    : primary,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  pp.isPro
+                                      ? (lp.locale.languageCode == 'bn'
+                                          ? 'আলহামদুলিল্লাহ, আপনি প্রো মেম্বার! পাশাপাশি এই সাদাকায়ে জারিয়ার মাধ্যমেও দ্বীনি খেদমতে অংশ নিতে পারেন।'
+                                          : 'You are a valued Pro member! You can also support ongoing community blessings through this Sadaqah Jariyah.')
+                                      : (lp.locale.languageCode == 'bn'
+                                          ? 'সাদাকায়ে জারিয়া • প্রো ও রেগুলার সবার জন্য উন্মুক্ত যে কোনো সময়।'
+                                          : 'Sadaqah Jariyah • Open to all Pro & Regular users anytime.'),
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    height: 1.4,
+                                    color: textWhite,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         // Hero Section
                         Text(
                           lp.getText('donation_badge'),
