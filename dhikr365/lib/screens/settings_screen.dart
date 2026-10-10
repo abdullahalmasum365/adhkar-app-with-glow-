@@ -1624,6 +1624,42 @@ class _DevPanelSheet extends StatelessWidget {
                           },
                         ),
                       ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          icon: const Icon(Icons.cleaning_services_rounded,
+                              size: 18),
+                          label: const Text(
+                              '🧹 Purge Legacy Root User Doc (isPro/latestPurchase)'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.amberAccent,
+                            side: const BorderSide(
+                                color: Colors.amberAccent),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
+                          ),
+                          onPressed: () async {
+                            final authProv =
+                                Provider.of<AuthProvider>(ctx, listen: false);
+                            final cleaned = await authProv.cleanLegacyUserDoc();
+                            if (ctx.mounted) {
+                              ScaffoldMessenger.of(ctx).showSnackBar(
+                                SnackBar(
+                                  content: Text(cleaned
+                                      ? '✅ Successfully purged legacy root user document from Firestore'
+                                      : 'ℹ️ Root user document is already clean (no legacy fields)'),
+                                  backgroundColor: cleaned
+                                      ? Colors.green
+                                      : Colors.blueGrey,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

@@ -46,12 +46,23 @@ class AuthProvider extends ChangeNotifier {
 
   void _init() {
     _user = _authService.currentUser;
+    if (_user != null) {
+      _authService.cleanLegacyUserDocIfPresent(_user!.uid);
+    }
     if (!_loadCompleter.isCompleted) _loadCompleter.complete();
     _authSub = _authService.authStateChanges.listen((u) {
       _user = u;
+      if (u != null) {
+        _authService.cleanLegacyUserDocIfPresent(u.uid);
+      }
       notifyListeners();
     });
     notifyListeners();
+  }
+
+  Future<bool> cleanLegacyUserDoc() async {
+    if (_user == null) return false;
+    return _authService.cleanLegacyUserDocIfPresent(_user!.uid);
   }
 
   Future<bool> signInWithGoogle() async {

@@ -254,6 +254,35 @@ class AuthService {
     } catch (_) {}
   }
 
+  /// Inspects the root Firestore user doc `users/{uid}`. If it contains
+  /// deprecated client-written entitlement fields (`isPro`, `latestPurchase`,
+  /// `hasLifetimePro`, `activeSubscriptionId`, `lastPurchaseSync`) from earlier builds,
+  /// deletes the root document so future writes comply with hardened Firestore rules.
+  Future<bool> cleanLegacyUserDocIfPresent(String uid) async {
+    if (!isFirebaseReady) return false;
+    try {
+      final docRef = FirebaseFirestore.instance.collection('users').doc(uid);
+      final snap = await docRef.get();
+      if (snap.exists) {
+        final data = snap.data();
+        if (data != null &&
+            (data.containsKey('isPro') ||
+             data.containsKey('latestPurchase') ||
+             data.containsKey('hasLifetimePro') ||
+             data.containsKey('activeSubscriptionId') ||
+             data.containsKey('lastPurchaseSync'))) {
+          debugPrint('[AuthService] Found legacy entitlement fields in root doc $uid. Deleting document...');
+          await docRef.delete();
+          debugPrint('[AuthService] Successfully deleted legacy root doc $uid.');
+          return true;
+        }
+      }
+    } catch (e) {
+      debugPrint('[AuthService] Legacy user doc check notice: $e');
+    }
+    return false;
+  }
+
   /// Cryptographically random nonce for the Apple Sign-In replay-attack
   /// mitigation Firebase requires (raw nonce sent to Apple, its SHA-256
   /// hash sent alongside the ID token for verification).
