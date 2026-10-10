@@ -15,6 +15,7 @@ import '../providers/theme_provider.dart';
 import '../utils/responsive.dart';
 import '../utils/prayer_calculation_helper.dart';
 import 'location_setup_screen.dart';
+import 'madhab_selection_screen.dart';
 
 class PrayerTimesScreen extends StatefulWidget {
   const PrayerTimesScreen({super.key});
@@ -37,6 +38,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   double? _lastLat;
   double? _lastLng;
   String? _lastCity;
+  String? _lastMadhab;
+  CalculationMethod? _lastCalcMethod;
 
   @override
   void initState() {
@@ -47,10 +50,16 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final up = Provider.of<UserProvider>(context);
-    if (_lastLat != up.lat || _lastLng != up.lng || _lastCity != up.city) {
+    if (_lastLat != up.lat ||
+        _lastLng != up.lng ||
+        _lastCity != up.city ||
+        _lastMadhab != up.madhab ||
+        _lastCalcMethod != up.calculationMethod) {
       _lastLat = up.lat;
       _lastLng = up.lng;
       _lastCity = up.city;
+      _lastMadhab = up.madhab;
+      _lastCalcMethod = up.calculationMethod;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _fetchPrayerTimes();
       });
@@ -617,21 +626,42 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
       // Method note
       Consumer<UserProvider>(builder: (context, up, _) {
         final methodName = getMethodName(up.calculationMethod);
-        final madhabName =
-            up.madhab.toLowerCase() == 'hanafi' ? 'Hanafi' : 'Shafi';
+        final isHanafi = up.madhab.toLowerCase() == 'hanafi';
+        final isBn = lp.locale.languageCode == 'bn';
+        final madhabName = isHanafi
+            ? (isBn ? 'হানাফী' : 'Hanafi')
+            : (isBn ? 'শাফেয়ী' : "Shafi'i");
         return Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          child: Row(children: [
-            Icon(Icons.info_outline, size: 12, color: AppColors.textSlate500),
-            const SizedBox(width: 6),
-            Flexible(
-              child: Text(
-                '${lp.getText('prayer_calculation')}: $methodName · $madhabName',
-                style: AppText.manrope(
-                    fontSize: 10, color: AppColors.textSlate500),
-              ),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(8),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      const MadhabSelectionScreen(isFromSettings: true),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+              child: Row(children: [
+                Icon(Icons.tune_rounded, size: 13, color: AppColors.primary),
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    '${lp.getText('prayer_calculation')}: $methodName · $madhabName (${isBn ? 'পরিবর্তন করুন' : 'Change'})',
+                    style: AppText.manrope(
+                        fontSize: 11, color: AppColors.textSlate400),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    size: 10, color: AppColors.primary),
+              ]),
             ),
-          ]),
+          ),
         );
       }),
 

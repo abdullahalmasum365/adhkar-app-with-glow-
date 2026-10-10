@@ -4,27 +4,42 @@ import 'package:provider/provider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
+import '../providers/notification_provider.dart';
 import 'onboarding_screen.dart';
 
 class MadhabSelectionScreen extends StatefulWidget {
-  const MadhabSelectionScreen({super.key});
+  final bool isFromSettings;
+  const MadhabSelectionScreen({super.key, this.isFromSettings = false});
 
   @override
   State<MadhabSelectionScreen> createState() => _MadhabSelectionScreenState();
 }
 
 class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
-  String _selectedMadhab = 'shafii';
+  late String _selectedMadhab;
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<UserProvider>(context, listen: false);
+    _selectedMadhab = provider.madhab.toLowerCase() == 'hanafi' ? 'hanafi' : 'shafii';
+  }
 
   void _onContinue() async {
     final nav = Navigator.of(context);
     final provider = Provider.of<UserProvider>(context, listen: false);
+    final notifProvider = Provider.of<NotificationProvider>(context, listen: false);
     await provider.setMadhab(_selectedMadhab);
+    await notifProvider.refreshAllSchedules(provider);
 
     if (mounted) {
-      nav.pushReplacement(
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-      );
+      if (widget.isFromSettings) {
+        nav.pop();
+      } else {
+        nav.pushReplacement(
+          MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        );
+      }
     }
   }
 
@@ -208,7 +223,11 @@ class _MadhabSelectionScreenState extends State<MadhabSelectionScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              lp.getText('continue'),
+                              widget.isFromSettings
+                                  ? (lp.locale.languageCode == 'bn'
+                                      ? 'সংরক্ষণ করুন'
+                                      : 'Save')
+                                  : lp.getText('continue'),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w800,

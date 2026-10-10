@@ -296,13 +296,13 @@ class _DhikrCardState extends State<DhikrCard> {
 
   void _onPlayTapped() => widget.onPlayTapped?.call(widget.dhikr);
 
-  Widget _buildRemainingText({
-    required int remaining,
+  Widget _buildCountText({
+    required int count,
     required bool isDone,
     required double counterNum,
   }) {
     Widget text = Text(
-      '$remaining',
+      '$count',
       style: TextStyle(
         fontSize: counterNum,
         fontWeight: FontWeight.w900,
@@ -341,8 +341,8 @@ class _DhikrCardState extends State<DhikrCard> {
     final dhikrProvider = Provider.of<DhikrProvider>(context, listen: false);
     final showTranslit =
         Provider.of<ThemeProvider>(context).showTransliteration;
-    final remaining =
-        (widget.dhikr.targetCount - widget.dhikr.currentCount).clamp(0, 9999);
+    final count = widget.dhikr.currentCount;
+    final target = widget.dhikr.targetCount;
     final isDone = widget.dhikr.isCompleted;
 
     final cardPad = R.px(18);
@@ -723,8 +723,10 @@ class _DhikrCardState extends State<DhikrCard> {
                 button: true,
                 enabled: !isDone,
                 label: isDone
-                    ? '${lp.getText('completed')} ${widget.dhikr.targetCount}'
-                    : '${lp.getText('tap_to_count')}, $remaining ${lp.getText('remaining')}',
+                    ? '${lp.getText('completed')} $target'
+                    : target > 0
+                        ? '${lp.getText('tap_to_count')}, $count / $target'
+                        : '${lp.getText('tap_to_count')}, $count',
                 child: GestureDetector(
                   onTap: isDone
                       ? null
@@ -828,23 +830,25 @@ class _DhikrCardState extends State<DhikrCard> {
                             Flexible(
                               child: FittedBox(
                                 fit: BoxFit.scaleDown,
-                                child: _buildRemainingText(
-                                  remaining: remaining,
+                                child: _buildCountText(
+                                  count: count,
                                   isDone: isDone,
                                   counterNum: counterNum,
                                 ),
                               ),
                             ),
-                            SizedBox(width: R.px(4)),
-                            Text(
-                              '/ ${widget.dhikr.targetCount}',
-                              style: TextStyle(
-                                fontSize: R.sp(13),
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary
-                                    .withValues(alpha: isDone ? 0.3 : 0.5),
+                            if (target > 0) ...[
+                              SizedBox(width: R.px(4)),
+                              Text(
+                                '/ $target',
+                                style: TextStyle(
+                                  fontSize: R.sp(13),
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary
+                                      .withValues(alpha: isDone ? 0.3 : 0.5),
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ],

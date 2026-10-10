@@ -19,6 +19,9 @@ import '../models/dhikr.dart';
 import '../widgets/battery_reliability_dialogs.dart';
 import 'donation_screen.dart';
 import 'widget_preview_screen.dart';
+import 'package:adhan/adhan.dart';
+import '../utils/prayer_calculation_helper.dart';
+import 'madhab_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -101,6 +104,332 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
           )),
           const SizedBox(height: 20),
         ]),
+      ),
+    );
+  }
+
+  void _madhabSheet(BuildContext context) {
+    final up = Provider.of<UserProvider>(context, listen: false);
+    final np = Provider.of<NotificationProvider>(context, listen: false);
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
+    final isBn = lp.locale.languageCode == 'bn';
+    final currentMadhab = up.madhab.toLowerCase();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        decoration: BoxDecoration(
+          color: AppColors.bgTeal,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.ink(0.08)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.ink(0.24),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                Icon(Icons.mosque_rounded, color: ThemeProvider.divineAmber, size: 22),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    isBn ? 'মাযহাব নির্বাচন করুন' : 'Select Madhab',
+                    style: AppText.heading(18),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Text(
+              isBn
+                  ? 'মাযহাবের পার্থক্যের কারণে আসরের নামাজের ওয়াক্তের সময় নির্ধারিত হয়।'
+                  : 'Asr prayer time is calculated based on your preferred juristic method.',
+              style: AppText.body(color: AppColors.textSlate400).copyWith(fontSize: 12.5),
+            ),
+            const SizedBox(height: 18),
+            _madhabOptionTile(
+              title: isBn ? 'হানাফী (Hanafi)' : 'Hanafi',
+              tag: isBn ? 'দেরিতে আসর (২ গুণ ছায়া)' : 'Later Asr (2x shadow)',
+              subtitle: isBn
+                  ? 'আসরের ওয়াক্ত শুরু হয় বস্তুর মূল ছায়া বাদে ছায়া দ্বিগুণের বেশি হলে (বাংলাদেশ, ভারত, পাকিস্তান, তুরস্ক ইত্যাদিতে বহুল প্রচলিত)।'
+                  : 'Asr starts when an object\'s shadow reaches twice its length (Common in South Asia, Turkey, etc.).',
+              isSelected: currentMadhab == 'hanafi',
+              onTap: () async {
+                await up.setMadhab('hanafi');
+                await np.refreshAllSchedules(up);
+                if (ctx.mounted) Navigator.pop(ctx);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(isBn
+                          ? 'মাযহাব হানাফী হিসেবে আপডেট করা হয়েছে।'
+                          : 'Madhab set to Hanafi successfully.'),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 12),
+            _madhabOptionTile(
+              title: isBn
+                  ? "শাফেয়ী, মালেকী, হাম্বলী (Shafi'i, Maliki, Hanbali)"
+                  : "Shafi'i, Maliki, Hanbali",
+              tag: isBn ? 'আগে আসর (১ গুণ ছায়া)' : 'Earlier Asr (1x shadow)',
+              subtitle: isBn
+                  ? 'আসরের ওয়াক্ত শুরু হয় বস্তুর মূল ছায়া বাদে ছায়া এক গুণের সমান হলে (আরব বিশ্ব, মিসর, দক্ষিণ-পূর্ব এশিয়া ইত্যাদিতে বহুল প্রচলিত)।'
+                  : 'Asr starts when an object\'s shadow equals its length (Common in Arab world, Malaysia, etc.).',
+              isSelected: currentMadhab != 'hanafi',
+              onTap: () async {
+                await up.setMadhab('shafii');
+                await np.refreshAllSchedules(up);
+                if (ctx.mounted) Navigator.pop(ctx);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(isBn
+                          ? 'মাযহাব শাফেয়ী/স্ট্যান্ডার্ড হিসেবে আপডেট করা হয়েছে।'
+                          : "Madhab set to Shafi'i/Standard successfully."),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(height: 14),
+            Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MadhabSelectionScreen(isFromSettings: true),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.fullscreen_rounded, size: 18),
+                label: Text(
+                  isBn ? 'সম্পূর্ণ স্ক্রিন ভিউতে দেখুন' : 'Open in Full Screen View',
+                  style: TextStyle(fontSize: 13, color: AppColors.primary),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _madhabOptionTile({
+    required String title,
+    required String tag,
+    required String subtitle,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.12)
+              : AppColors.ink(0.04),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary
+                : AppColors.ink(0.1),
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Icon(
+                isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+                color: isSelected ? AppColors.primary : AppColors.ink(0.35),
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: AppText.manrope(
+                            fontSize: 14.5,
+                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primary.withValues(alpha: 0.2)
+                              : AppColors.ink(0.08),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          tag,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: isSelected ? AppColors.primary : AppColors.textSlate400,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    subtitle,
+                    style: AppText.body(
+                      color: AppColors.textSlate400,
+                    ).copyWith(fontSize: 11.5, height: 1.35),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _calcMethodSheet(BuildContext context) {
+    final up = Provider.of<UserProvider>(context, listen: false);
+    final np = Provider.of<NotificationProvider>(context, listen: false);
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
+    final isBn = lp.locale.languageCode == 'bn';
+
+    const methods = [
+      CalculationMethod.karachi,
+      CalculationMethod.muslim_world_league,
+      CalculationMethod.umm_al_qura,
+      CalculationMethod.egyptian,
+      CalculationMethod.north_america,
+      CalculationMethod.singapore,
+      CalculationMethod.turkey,
+      CalculationMethod.dubai,
+      CalculationMethod.kuwait,
+      CalculationMethod.qatar,
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+        decoration: BoxDecoration(
+          color: AppColors.bgTeal,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.ink(0.08)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.ink(0.24),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.calculate_outlined, color: Colors.tealAccent, size: 22),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      isBn ? 'নামাজের হিসাব পদ্ধতি' : 'Calculation Method',
+                      style: AppText.heading(18),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                itemCount: methods.length,
+                itemBuilder: (_, i) {
+                  final method = methods[i];
+                  final isSel = up.calculationMethod == method;
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                    leading: Icon(
+                      isSel ? Icons.radio_button_checked : Icons.radio_button_off,
+                      color: isSel ? AppColors.primary : AppColors.ink(0.3),
+                      size: 20,
+                    ),
+                    title: Text(
+                      getMethodName(method),
+                      style: AppText.manrope(
+                        fontSize: 13.5,
+                        fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                        color: isSel ? AppColors.textPrimary : AppColors.ink(0.8),
+                      ),
+                    ),
+                    onTap: () async {
+                      await up.setCalculationMethod(method);
+                      await np.refreshAllSchedules(up);
+                      if (ctx.mounted) Navigator.pop(ctx);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isBn
+                                  ? 'হিসাব পদ্ধতি আপডেট করা হয়েছে।'
+                                  : 'Calculation method updated successfully.',
+                            ),
+                            backgroundColor: Colors.green,
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
@@ -752,6 +1081,38 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         value: np.ishaEnabled,
                         onChanged: (v) =>
                             np.toggleSpecificPrayer('Isha', v, up))),
+              ])),
+              const SizedBox(height: 22),
+
+              // ── Prayer Calculation & Madhab ──
+              _Lbl(lp.locale.languageCode == 'bn'
+                  ? 'নামাজের সময় ও মাযহাব'
+                  : 'Prayer Calculation & Madhab'),
+              _Card(
+                  child: Column(children: [
+                _Tile(
+                    icon: Icons.mosque_rounded,
+                    color: ThemeProvider.divineAmber,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'মাযহাব (আসরের গণনা)'
+                        : 'Madhab (Asr Calculation)',
+                    subtitle: up.madhab.toLowerCase() == 'hanafi'
+                        ? (lp.locale.languageCode == 'bn'
+                            ? 'হানাফী • দেরিতে আসর (২ গুণ ছায়া)'
+                            : 'Hanafi • Later Asr (2x shadow)')
+                        : (lp.locale.languageCode == 'bn'
+                            ? 'শাফেয়ী, মালেকী, হাম্বলী • আগে আসর (১ গুণ ছায়া)'
+                            : "Shafi'i, Maliki, Hanbali • Earlier Asr (1x shadow)"),
+                    onTap: () => _madhabSheet(context)),
+                _div(),
+                _Tile(
+                    icon: Icons.calculate_outlined,
+                    color: Colors.tealAccent,
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'নামাজের হিসাব পদ্ধতি'
+                        : 'Calculation Method',
+                    subtitle: getMethodName(up.calculationMethod),
+                    onTap: () => _calcMethodSheet(context)),
               ])),
               const SizedBox(height: 22),
 

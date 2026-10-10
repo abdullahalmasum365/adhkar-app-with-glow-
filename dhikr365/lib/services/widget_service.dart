@@ -26,7 +26,7 @@ Future<void> widgetBackgroundCallback(Uri? uri) async {
   if (uri == null) return;
   if (uri.host == 'tasbih_increment' || uri.path.contains('tasbih_increment')) {
     final prefs = await SharedPreferences.getInstance();
-    final current = prefs.getInt('tasbih_widget_count') ?? 33;
+    final current = prefs.getInt('tasbih_widget_count') ?? 0;
     final next = current + 1;
     await prefs.setInt('tasbih_widget_count', next);
 
@@ -126,7 +126,7 @@ class WidgetService {
         );
         await updateTasbihData(
           title: 'سُبْحَانَ اللَّهِ',
-          count: 33,
+          count: 0,
           target: 33,
         );
       }
