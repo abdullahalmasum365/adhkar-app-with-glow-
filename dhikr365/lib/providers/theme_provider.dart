@@ -112,7 +112,16 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   /// Called from main ChangeNotifierProxyProvider2 when Auth or Purchase state updates.
-  Future<void> updateAuthAndPro(String? uid, bool isPro) async {
+  Future<void> updateAuthAndPro(String? uid, bool isPro, {bool isPurchaseLoaded = true}) async {
+    // Race-condition guard: If PurchaseProvider has not yet loaded its cached
+    // entitlement from SharedPreferences on startup, do not prematurely revert Pro theme!
+    if (!isPurchaseLoaded) {
+      if (uid != _uid) {
+        await attachUser(uid);
+      }
+      return;
+    }
+
     final proStatusChanged = _isPro != isPro;
     _isPro = isPro;
 

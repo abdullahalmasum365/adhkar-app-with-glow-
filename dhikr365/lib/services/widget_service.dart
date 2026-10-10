@@ -346,7 +346,8 @@ class WidgetService {
   // DEEP LINKING ROUTER
   // ══════════════════════════════════════════════════════════════════════════
   void handleDeepLink(Uri uri) {
-    if (uri.host == 'tasbih_increment' || uri.path.contains('tasbih_increment')) {
+    final target = '${uri.host}${uri.path}'.toLowerCase();
+    if (target.contains('tasbih_increment')) {
       return;
     }
     final nav = appNavigatorKey.currentState;
@@ -356,28 +357,27 @@ class WidgetService {
       return;
     }
 
-    final path = uri.path.isNotEmpty ? uri.path : uri.host;
-    debugPrint('[WidgetService] Deep link triggered: $uri (path: $path)');
+    debugPrint('[WidgetService] Deep link triggered: $uri (target: $target)');
 
-    if (path.contains('prayer_times')) {
+    if (target.contains('prayer_times') || target.contains('prayer')) {
       nav.push(MaterialPageRoute(builder: (_) => const PrayerTimesScreen()));
-    } else if (path.contains('adhkar/morning')) {
+    } else if (target.contains('morning')) {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.morning),
       ));
-    } else if (path.contains('adhkar/evening')) {
+    } else if (target.contains('evening')) {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.evening),
       ));
-    } else if (path.contains('adhkar/before_sleep')) {
+    } else if (target.contains('before_sleep') || target.contains('sleep')) {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.beforeSleep),
       ));
-    } else if (path.contains('progress')) {
+    } else if (target.contains('progress') || target.contains('streak')) {
       nav.push(MaterialPageRoute(builder: (_) => const ProgressScreen()));
-    } else if (path.contains('dua_of_day')) {
+    } else if (target.contains('dua_of_day') || target.contains('dua')) {
       nav.push(MaterialPageRoute(builder: (_) => const DuaScreen()));
-    } else if (path.contains('tasbih')) {
+    } else if (target.contains('tasbih')) {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.focus),
       ));

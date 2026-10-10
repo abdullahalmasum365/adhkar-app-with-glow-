@@ -275,7 +275,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           create: (_) => ThemeProvider(),
           update: (_, auth, purchase, previous) {
             final tp = previous ?? ThemeProvider();
-            tp.updateAuthAndPro(auth.user?.uid, purchase.isPro);
+            tp.updateAuthAndPro(
+              auth.user?.uid,
+              purchase.isPro,
+              isPurchaseLoaded: purchase.isLoaded,
+            );
             return tp;
           },
         ),

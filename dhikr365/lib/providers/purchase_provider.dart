@@ -36,6 +36,7 @@ class PurchaseProvider extends ChangeNotifier {
   bool _isLoading = true;
   bool _isPurchasing = false;
   bool _isSyncing = false;
+  bool _isLoaded = false;
   String? _lastError;
   Map<String, ProductDetails> _products = {};
 
@@ -54,6 +55,7 @@ class PurchaseProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isPurchasing => _isPurchasing;
   bool get isSyncing => _isSyncing;
+  bool get isLoaded => _isLoaded;
   String? get lastError => _lastError;
   Map<String, ProductDetails> get products => _products;
 
@@ -118,11 +120,12 @@ class PurchaseProvider extends ChangeNotifier {
         await prefs.remove(_prefKeySubExpiry);
       }
 
-      if (_hasLifetimePro || _activeSubscriptionId != null) {
-        notifyListeners();
-      }
+      _isLoaded = true;
+      notifyListeners();
     } catch (e) {
       debugPrint('[PurchaseProvider] load cached state error: $e');
+      _isLoaded = true;
+      notifyListeners();
     }
 
     // 2. Start listening to Play Billing purchase events
