@@ -2,6 +2,7 @@
 // lib/main.dart — Adhkaar 365
 // ============================================================================
 
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -211,6 +212,19 @@ void main() async {
     } catch (e2) {
       debugPrint('[main] Firebase fallback init failed: $e2');
     }
+  }
+
+  // 4a. Initialize Firebase App Check with Play Integrity (Release) & Debug Provider (Debug)
+  try {
+    await FirebaseAppCheck.instance.activate(
+      providerAndroid: kReleaseMode
+          ? const AndroidPlayIntegrityProvider()
+          : const AndroidDebugProvider(),
+      providerApple: const AppleDeviceCheckProvider(),
+    );
+    debugPrint('[main] Firebase App Check activated successfully');
+  } catch (e) {
+    debugPrint('[main] Firebase App Check activation notice: $e');
   }
 
   runApp(const MyApp());

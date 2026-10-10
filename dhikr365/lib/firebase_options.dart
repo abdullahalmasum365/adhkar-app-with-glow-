@@ -25,8 +25,13 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const String _androidApiKey = String.fromEnvironment(
+    'FIREBASE_ANDROID_API_KEY',
+    defaultValue: 'AIzaSyBWLKSbVtQ-u5hEr9LXMTL7x0d4MBe5PGg',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBWLKSbVtQ-u5hEr9LXMTL7x0d4MBe5PGg',
+    apiKey: _androidApiKey,
     appId: '1:622768800935:android:609e1d06e5d0205f180782',
     messagingSenderId: '622768800935',
     projectId: 'adhkar365',
