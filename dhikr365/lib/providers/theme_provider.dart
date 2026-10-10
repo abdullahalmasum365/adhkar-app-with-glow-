@@ -47,8 +47,13 @@ class ThemeProvider extends ChangeNotifier {
   static Color get brandDark => AppColors.onAccent;
   static Color get deepTeal => AppColors.playerSurface;
 
+  Future<void>? _loadFuture;
+
+  /// Completes when the initial preferences and palette have loaded.
+  Future<void> get initialized => _loadFuture ?? Future.value();
+
   ThemeProvider() {
-    _load();
+    _loadFuture = _load();
   }
 
   /// Helper to check if user has active Pro entitlement cached in local preferences.

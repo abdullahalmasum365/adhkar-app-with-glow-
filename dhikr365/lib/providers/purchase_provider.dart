@@ -28,9 +28,8 @@ class PurchaseProvider extends ChangeNotifier {
   static const String _prefKeySubExpiry = 'subscription_expiry_ms';
   static const String _prefKeyLastVerified = 'last_verified_timestamp_ms';
 
-  final PurchaseService _service = PurchaseService();
-  final PurchaseVerificationService _verificationService =
-      PurchaseVerificationService();
+  final PurchaseService _service;
+  final PurchaseVerificationService _verificationService;
 
   bool _isAvailable = false;
   bool _isLoading = true;
@@ -90,12 +89,21 @@ class PurchaseProvider extends ChangeNotifier {
 
   // ── Initialization ─────────────────────────────────────────────────────────
 
-  PurchaseProvider() {
-    _init();
+  PurchaseProvider({
+    PurchaseService? service,
+    PurchaseVerificationService? verificationService,
+    bool autoInit = true,
+  })  : _service = service ?? PurchaseService(),
+        _verificationService =
+            verificationService ?? PurchaseVerificationService() {
+    if (autoInit) {
+      _init();
+    }
   }
 
-  Future<void> _init() async {
-    // 1. Load cached entitlement so offline users retain access while traveling
+  /// Loads cached entitlements from SharedPreferences. Offline users retain access.
+  /// Automatically checks and purges expired subscriptions.
+  Future<void> loadCachedEntitlements() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       _hasLifetimePro = prefs.getBool(_prefKeyHasLifetimePro) ?? false;
@@ -104,11 +112,15 @@ class PurchaseProvider extends ChangeNotifier {
       final expiryMs = prefs.getInt(_prefKeySubExpiry);
       if (expiryMs != null) {
         _subscriptionExpiry = DateTime.fromMillisecondsSinceEpoch(expiryMs);
+      } else {
+        _subscriptionExpiry = null;
       }
 
       final verifiedMs = prefs.getInt(_prefKeyLastVerified);
       if (verifiedMs != null) {
         _lastVerified = DateTime.fromMillisecondsSinceEpoch(verifiedMs);
+      } else {
+        _lastVerified = null;
       }
 
       // Check if cached subscription has already passed its expiry timestamp
@@ -127,6 +139,11 @@ class PurchaseProvider extends ChangeNotifier {
       _isLoaded = true;
       notifyListeners();
     }
+  }
+
+  Future<void> _init() async {
+    // 1. Load cached entitlement so offline users retain access while traveling
+    await loadCachedEntitlements();
 
     // 2. Start listening to Play Billing purchase events
     _service.listen(_onPurchaseUpdate);
@@ -270,7 +287,7 @@ class PurchaseProvider extends ChangeNotifier {
     }
   }
 
-  void _onPurchaseUpdate(List<PurchaseDetails> purchases) async {
+  Future<void> _onPurchaseUpdate(List<PurchaseDetails> purchases) async {
     final prefs = await SharedPreferences.getInstance();
 
     for (final purchase in purchases) {
@@ -388,6 +405,51 @@ class PurchaseProvider extends ChangeNotifier {
       _hasLifetimePro = true;
       await prefs.setBool(_prefKeyHasLifetimePro, true);
     }
+    notifyListeners();
+  }
+
+  /// Test helper to feed simulated purchase events to PurchaseProvider.
+  @visibleForTesting
+  Future<void> handlePurchaseUpdatesForTesting(List<PurchaseDetails> purchases) =>
+      _onPurchaseUpdate(purchases);
+
+  /// Test helper to execute authoritative sync with a given set of restored product IDs.
+  @visibleForTesting
+  Future<void> executeSyncWithRestoredIdsForTesting(Set<String> restoredIds) async {
+    _restoredProductIds.clear();
+    _restoredProductIds.addAll(restoredIds);
+
+    final prefs = await SharedPreferences.getInstance();
+
+    if (_restoredProductIds.contains(DonationProductIds.proLifetime)) {
+      _hasLifetimePro = true;
+      await prefs.setBool(_prefKeyHasLifetimePro, true);
+    } else if (_hasLifetimePro) {
+      debugPrint('[PurchaseProvider] Authoritative Google Play response: Lifetime Pro revoked/refunded. Clearing.');
+      _hasLifetimePro = false;
+      await prefs.remove(_prefKeyHasLifetimePro);
+    }
+
+    final activeSub = _restoredProductIds.firstWhere(
+      (id) => DonationProductIds.subscriptionTiers.contains(id),
+      orElse: () => '',
+    );
+
+    if (activeSub.isNotEmpty) {
+      _activeSubscriptionId = activeSub;
+      await prefs.setString(_prefKeyActiveSub, activeSub);
+    } else if (_activeSubscriptionId != null) {
+      debugPrint('[PurchaseProvider] Authoritative Google Play response: Subscription expired or canceled. Clearing.');
+      _activeSubscriptionId = null;
+      _subscriptionExpiry = null;
+      await prefs.remove(_prefKeyActiveSub);
+      await prefs.remove(_prefKeySubExpiry);
+    }
+
+    _lastVerified = DateTime.now();
+    await prefs.setInt(
+        _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
+
     notifyListeners();
   }
 

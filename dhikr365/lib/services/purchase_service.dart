@@ -35,11 +35,24 @@ class DonationProductIds {
 }
 
 class PurchaseService {
-  static final PurchaseService _instance = PurchaseService._internal();
-  factory PurchaseService() => _instance;
-  PurchaseService._internal();
+  static PurchaseService? _mockInstance;
+  static PurchaseService? _instance;
 
-  final InAppPurchase _iap = InAppPurchase.instance;
+  static void setMock(PurchaseService? mock) => _mockInstance = mock;
+
+  factory PurchaseService({InAppPurchase? iap}) {
+    if (_mockInstance != null) {
+      return _mockInstance!;
+    }
+    if (iap != null) {
+      return PurchaseService._internal(iap: iap);
+    }
+    return _instance ??= PurchaseService._internal();
+  }
+  PurchaseService._internal({InAppPurchase? iap})
+      : _iap = iap ?? InAppPurchase.instance;
+
+  final InAppPurchase _iap;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
   Future<bool> get isAvailable => _iap.isAvailable();
