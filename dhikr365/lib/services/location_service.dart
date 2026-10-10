@@ -3,6 +3,7 @@
 // Handles the full location setup flow without requiring GPS.
 // ============================================================================
 
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -134,7 +135,10 @@ class LocationService {
         'Enable them in Settings, or enter your city manually.',
       );
     } catch (e) {
-      return GpsResult.gpsFailed('GPS unavailable: ${e.toString()}');
+      debugPrint('[LocationService] GPS error: $e');
+      return GpsResult.gpsFailed(
+        'Unable to detect GPS location. Please check your device location settings or enter your city manually.',
+      );
     }
   }
 

@@ -10,7 +10,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../services/auth_service.dart';
@@ -69,8 +69,10 @@ class AuthProvider extends ChangeNotifier {
       debugPrint('[AuthProvider] FirebaseAuthException: [${e.code}] ${e.message}');
       switch (e.code) {
         case 'operation-not-allowed':
-          _errorMessage =
-              'Google Sign-In is disabled in Firebase Console. Enable it in Authentication > Sign-in method.';
+          debugPrint('[AuthProvider] Google Sign-In is disabled in Firebase Console.');
+          _errorMessage = kDebugMode
+              ? 'Developer Error: Google Sign-In is disabled in Firebase Console.'
+              : 'Google Sign-In is temporarily unavailable. Please try again later.';
           break;
         case 'network-request-failed':
           _errorMessage =
@@ -85,20 +87,21 @@ class AuthProvider extends ChangeNotifier {
               'An account already exists with this email using a different sign-in method.';
           break;
         default:
-          _errorMessage = e.message ?? 'Sign-in failed (${e.code}).';
+          _errorMessage = 'Sign-in failed. Please try again.';
       }
       return false;
     } on PlatformException catch (e) {
       debugPrint('[AuthProvider] PlatformException: [${e.code}] ${e.message} details: ${e.details}');
       if (e.message != null && e.message!.contains('10')) {
-        _errorMessage =
-            'Developer Error (ApiException 10): Ensure SHA-1 fingerprint & Support Email are set in Firebase Console.';
+        _errorMessage = kDebugMode
+            ? 'Developer Error (ApiException 10): Ensure SHA-1 fingerprint & Support Email are set in Firebase Console.'
+            : 'Unable to connect to Google Sign-In. Please try again later.';
       } else if (e.code == 'sign_in_canceled' || e.code == 'canceled') {
         _errorMessage = null;
       } else if (e.code == 'network_error') {
         _errorMessage = 'Network error. Please check your internet connection.';
       } else {
-        _errorMessage = e.message ?? 'Sign-in failed (${e.code}).';
+        _errorMessage = 'Sign-in failed. Please try again.';
       }
       return false;
     } catch (e) {
@@ -155,7 +158,7 @@ class AuthProvider extends ChangeNotifier {
       } else if (e.code == 'requires-recent-login') {
         _errorMessage = 'For security, please sign out, sign in again, and retry account deletion.';
       } else {
-        _errorMessage = e.message ?? 'Failed to delete account.';
+        _errorMessage = 'Failed to delete account. Please try again.';
       }
       return false;
     } catch (e) {
