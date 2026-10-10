@@ -200,9 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ),
               const SizedBox(height: 12),
               Text(
-                isBn
-                    ? '🎙️ অডিও তিলাওয়াত ও ক্বারীগণ:'
-                    : '🎙️ Audio Recitations & Reciters:',
+                isBn ? '🎙️ অডিও তিলাওয়াত:' : '🎙️ Audio Recitations:',
                 style: AppText.manrope(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -212,8 +210,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               const SizedBox(height: 4),
               Text(
                 isBn
-                    ? 'হিসনুল মুসলিম দোয়ার অডিও তিলাওয়াত: ক্বারী হামাদ আদ-দুরাইহিম (حمد الدريهم)। আয়াতুল কুরসী ও নির্বাচিত আয়াত: শায়খ মিশারী রাশিদ আল-আফাসী। ইসলামিক অডিওসমূহ শিক্ষামূলক ও আত্মিক উদ্দেশ্যে ব্যবহারের জন্য সকল ব্যবহারকারীর জন্য উন্মুক্ত।'
-                    : 'Hisn al-Muslim supplications recited by Qari Hamad Al-Duraihem (حمد الدريهم). Ayatul Kursi & Qur\'anic verses recited by Sheikh Mishary Rashid Alafasy. Audio recitations are included for educational and spiritual purposes and freely accessible to all users.',
+                    ? 'হিসনুল মুসলিম দোয়ার অডিও ও নির্বাচিত কুরআনিক আয়াতসমূহ আত্মিক ও শিক্ষামূলক উদ্দেশ্যে সকল ব্যবহারকারীর জন্য উন্মুক্ত।'
+                    : 'Hisn al-Muslim supplications and selected Qur\'anic audio recitations are freely accessible to all users for educational and spiritual guidance.',
                 style: AppText.manrope(
                     fontSize: 12, color: AppColors.textSlate400),
               ),

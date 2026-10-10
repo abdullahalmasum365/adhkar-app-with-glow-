@@ -167,7 +167,7 @@ Supplications and verses categorized under "Healing (*Shifa*)" and "Anxiety & Di
 ## 🤲 Sources & Attributions
 
 - **Hisn al-Muslim (حصن المسلم):** Supplications curated from the authentic compilations by Sheikh Sa'id bin Ali bin Wahf Al-Qahtani (رحمه الله).
-- **Audio Recitations:** Hisn al-Muslim supplications recited by Qari Hamad Al-Duraihem (حمد الدريهم). Ayatul Kursi recited by Sheikh Mishary Rashid Alafasy. Freely accessible to all users for educational and devotional purposes.
+- **Audio Recitations:** Hisn al-Muslim supplications and Qur'anic verses are freely accessible to all users for educational and devotional purposes.
 - **Geocoding & Location:** Reverse geocoding for city names is handled via native platform location services (Google Play Services / iOS CoreLocation). City search and geographic data supported by GeoNames (geonames.org) and © OpenStreetMap contributors.
 
 ---

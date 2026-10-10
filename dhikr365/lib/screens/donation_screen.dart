@@ -203,6 +203,8 @@ class _DonationScreenState extends State<DonationScreen> {
                                 fontSize: 17,
                                 height: 1.8,
                                 fontWeight: FontWeight.w300,
+                              ).copyWith(
+                                fontFamilyFallback: const ['sans-serif'],
                               ),
                               children: [
                                 TextSpan(
@@ -305,6 +307,8 @@ class _DonationScreenState extends State<DonationScreen> {
                                 fontSize: 14,
                                 height: 1.6,
                                 fontStyle: FontStyle.italic,
+                              ).copyWith(
+                                fontFamilyFallback: const ['sans-serif'],
                               ),
                             ),
                             const SizedBox(height: 10),

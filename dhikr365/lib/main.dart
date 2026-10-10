@@ -3,6 +3,7 @@
 // ============================================================================
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -120,6 +121,19 @@ void main() async {
 
   // Enforce 100% offline bundled font usage (no runtime HTTP calls to fonts.gstatic.com)
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  // Register bundled open-source font licenses (SIL OFL 1.1) in Flutter LicenseRegistry
+  LicenseRegistry.addLicense(() async* {
+    try {
+      final license = await rootBundle.loadString('google_fonts/OFL.txt');
+      yield LicenseEntryWithLineBreaks(
+        ['google_fonts', 'Amiri', 'Manrope', 'Noto Serif', 'Public Sans', 'Space Mono'],
+        license,
+      );
+    } catch (e) {
+      debugPrint('[main] Font license registration notice: $e');
+    }
+  });
 
   // Apply the user's saved color theme before the first frame so Royal
   // White users never see a dark flash on startup.
