@@ -393,8 +393,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   ),
                 ),
               ),
-              // MediaQuery builder — caps system text scaling at 1.1×
-              // so accessibility "Large Text" doesn't break the UI.
+              // MediaQuery builder — allows accessible text scaling up to 1.5×
+              // for elderly users and vision accessibility while guarding extreme overflow.
               builder: (context, child) {
                 R.init(context); // initialise R.* responsive system
                 return Directionality(
@@ -407,7 +407,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                         MediaQuery.of(context)
                             .textScaler
                             .scale(1.0)
-                            .clamp(0.85, 1.1),
+                            .clamp(0.9, 1.5),
                       ),
                     ),
                     child: child!,
