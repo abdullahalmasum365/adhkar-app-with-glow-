@@ -9,7 +9,7 @@
 //   1. Distinguishes Lifetime Pro (non-consumable) from recurring subscriptions.
 //   2. Startup synchronization via restorePurchases() with Google Play authority.
 //   3. Clears local cache when subscriptions expire or are refunded/canceled.
-//   4. Zero-Trust Security: Entitlements verified directly via Google Play Billing.
+//   4. Authoritative Source: Entitlements verified via Google Play restore & purchase stream.
 //   5. Strictly guards debug test overrides with kDebugMode.
 // ============================================================================
 
@@ -190,7 +190,7 @@ class PurchaseProvider extends ChangeNotifier {
       return;
     }
 
-    // Zero-Trust & Offline-First Guard:
+    // Offline-First & Network Latency Guard:
     // If Play Store stream timed out or was unreachable (offline / airplane mode / slow network),
     // NEVER revoke already-verified Lifetime Pro or active subscription entitlements!
     if (!streamResponded) {
@@ -283,7 +283,7 @@ class PurchaseProvider extends ChangeNotifier {
           if (DonationProductIds.all.contains(purchase.productID)) {
             _restoredProductIds.add(purchase.productID);
 
-            // Perform cryptographic & receipt integrity check
+            // Inspect purchase status and verification token from Google Play
             final record =
                 _verificationService.verifyLocalReceipt(purchase);
 

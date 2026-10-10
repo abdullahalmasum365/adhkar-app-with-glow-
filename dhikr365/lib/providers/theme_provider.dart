@@ -77,7 +77,7 @@ class ThemeProvider extends ChangeNotifier {
       final candidate = AppPalettes.byId(id);
       final isProUser = checkIsProInPrefs(prefs);
 
-      // Zero-Trust Security: If saved palette is Pro but user is not Pro, revert to free default
+      // Entitlement check: If saved palette is Pro but user lacks Pro entitlement, revert to free default
       if (candidate.isPro && !isProUser) {
         await prefs.setString(_paletteKey, AppPalettes.emeraldNight.id);
         AppColors.apply(AppPalettes.emeraldNight);
@@ -125,7 +125,7 @@ class ThemeProvider extends ChangeNotifier {
     final proStatusChanged = _isPro != isPro;
     _isPro = isPro;
 
-    // Zero-Trust Security Enforcement:
+    // Entitlement Enforcement:
     // If Pro subscription expired, cancelled, or refunded, and active theme is Pro,
     // immediately revert to default free palette:
     if (proStatusChanged && !_isPro && palette.isPro) {

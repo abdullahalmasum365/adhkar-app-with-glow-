@@ -1,12 +1,12 @@
 // ============================================================================
 // lib/services/purchase_verification_service.dart
 //
-// Provides client-side cryptographic receipt validation and purchase structure
-// checking for Google Play Billing purchases and subscriptions.
+// Checks purchase status and token presence from Google Play Billing.
 //
-// Architecture Note:
-//   Entitlements are verified on-device via Google Play Billing API.
-//   No client-side privilege escalation writes (isPro, tokens) to Firestore.
+// Note:
+//   The authoritative source of truth is Google Play Billing (via
+//   restorePurchases and the live purchase update stream). On device,
+//   we inspect that Google Play returned a valid status and non-empty token.
 // ============================================================================
 
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -33,15 +33,15 @@ class VerifiedPurchaseRecord {
   });
 }
 
-/// Client-side receipt validator that inspects Google Play Billing receipts on device.
+/// Inspects purchase status and token presence from Google Play receipts on device.
 class PurchaseVerificationService {
   static final PurchaseVerificationService _instance =
       PurchaseVerificationService._internal();
   factory PurchaseVerificationService() => _instance;
   PurchaseVerificationService._internal();
 
-  /// Validates a purchase on-device by checking its cryptographic receipt
-  /// presence and transaction status returned by Google Play Billing.
+  /// Inspects a purchase returned by Google Play Billing to ensure it has
+  /// a valid status (purchased/restored) and a non-empty purchase token.
   VerifiedPurchaseRecord verifyLocalReceipt(PurchaseDetails purchase) {
     final productId = purchase.productID;
     final isLifetime = DonationProductIds.isLifetimePro(productId);
@@ -51,7 +51,7 @@ class PurchaseVerificationService {
     final hasValidStatus = purchase.status == PurchaseStatus.purchased ||
         purchase.status == PurchaseStatus.restored;
 
-    // Verify cryptographic verification data token returned by Google Play Billing
+    // Verify that Google Play returned a non-empty verification token
     final serverData = purchase.verificationData.serverVerificationData;
     final hasValidToken = serverData.isNotEmpty;
 
