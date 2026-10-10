@@ -2,7 +2,7 @@
 // lib/models/sadaqah_dedication.dart
 //
 // Model representing the spiritual intention and dedication of Sadaqah Jariyah.
-// Allows users to dedicate their ongoing charity for themselves, their parents,
+// Allows users to dedicate their ongoing support for themselves, their parents,
 // deceased loved ones, or family.
 // ============================================================================
 

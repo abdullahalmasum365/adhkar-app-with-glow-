@@ -285,7 +285,7 @@ class _ProPaywallSheetState extends State<ProPaywallSheet> {
 
               SizedBox(height: R.px(16)),
 
-              // Sadaqah Jariyah Card (Dedicated charity section - Open to everyone)
+              // Voluntary Support Card (Open to everyone)
               InkWell(
                 onTap: () {
                   Navigator.pop(context);
@@ -325,8 +325,8 @@ class _ProPaywallSheetState extends State<ProPaywallSheet> {
                           children: [
                             Text(
                               isBn
-                                  ? 'সাদাকায়ে জারিয়া ডোনেশন'
-                                  : 'Sadaqah Jariyah Donation',
+                                  ? 'ডেভেলপারকে সমর্থন করুন'
+                                  : 'Support the Developer',
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
@@ -336,8 +336,8 @@ class _ProPaywallSheetState extends State<ProPaywallSheet> {
                             const SizedBox(height: 2),
                             Text(
                               isBn
-                                  ? 'প্রো ও রেগুলার সবার জন্য উন্মুক্ত • চলমান দ্বীনি সওয়াব →'
-                                  : 'Open to Pro & regular users • Ongoing rewards →',
+                                  ? 'সবার জন্য উন্মুক্ত • অনেকে সদকায়ে জারিয়ার নিয়তে সমর্থন করেন →'
+                                  : 'Open to everyone • Many support with the intention of sadaqah jariyah →',
                               style: TextStyle(
                                 fontSize: 11.5,
                                 color: AppColors.textSlate400,

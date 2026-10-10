@@ -105,7 +105,8 @@ class PurchaseProvider extends ChangeNotifier {
   /// Expiration / next renewal estimation date of donation subscription.
   DateTime? get donationExpiry => _donationExpiry;
 
-  /// Adhkar 365 is 100% free and unlocked for all users (Waqf / Sadaqah Jariyah model).
+  /// Adhkar 365 is free and ad-free for everyone.
+  /// Your voluntary support helps the independent developer keep it running and improving.
   /// Every feature is unconditionally unlocked.
   bool get isPro => true;
 

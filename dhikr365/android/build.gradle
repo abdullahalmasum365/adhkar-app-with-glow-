@@ -13,6 +13,16 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+subprojects {
+    project.tasks.configureEach { task ->
+        if (task.class.name.contains("KotlinCompile")) {
+            try {
+                task.kotlinOptions.freeCompilerArgs += ["-Xskip-metadata-version-check"]
+            } catch (Exception e) {}
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

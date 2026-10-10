@@ -89,6 +89,19 @@ Adhkar 365 is fully internationalized across 19 languages:
 
 ---
 
+## 💖 100% Free & Ad-Free (Optional Voluntary Support)
+
+Adhkar 365 is dedicated to the Muslim Ummah:
+- **100% Free & Ad-Free:** The app is completely free with zero advertisements. All features—including all 120+ supplications, authentic audio recitations, prayer times, Qibla compass, all color themes/palettes, custom routines, habit tracking, and social sharing cards—are fully accessible to everyone without paywalls or subscriptions.
+- **Optional Voluntary Support:** Users who wish to support ongoing maintenance and development may do so via voluntary Google Play subscriptions (monthly or annual) and, if available, optional one-time support.
+- **Support Does Not Unlock Anything:** Voluntary support does not unlock any hidden features, exclusive content, or premium perks. All users have full, unrestricted access to the entire application.
+- **Non-Refundable:** Voluntary contributions are non-refundable except as Google Play rules or applicable statutory laws require.
+- **Cancel Anytime:** Subscriptions can be canceled at any time directly in Google Play (**Google Play Store > Profile > Payments & subscriptions > Subscriptions**).
+- **No Tax Receipt:** Voluntary contributions support the independent developer directly and do not constitute a tax-deductible charitable donation (no tax receipt is issued).
+- **Supports Independent Developer:** All contributions directly assist the independent developer with development, hosting, and continuous maintenance.
+
+---
+
 ## 🛠️ Architecture & Tech Stack
 
 ```
@@ -108,7 +121,7 @@ lib/
 - **Prayer Calculations:** [`adhan`](https://pub.dev/packages/adhan)
 - **Audio Engine:** [`audioplayers`](https://pub.dev/packages/audioplayers) & [`just_audio`](https://pub.dev/packages/just_audio)
 - **Notifications:** [`flutter_local_notifications`](https://pub.dev/packages/flutter_local_notifications)
-- **In-App Billing:** [`in_app_purchase`](https://pub.dev/packages/in_app_purchase)
+- **In-App Billing (Voluntary Support):** [`in_app_purchase`](https://pub.dev/packages/in_app_purchase)
 - **Storage:** [`shared_preferences`](https://pub.dev/packages/shared_preferences) & [`cloud_firestore`](https://pub.dev/packages/cloud_firestore)
 
 ---
@@ -174,5 +187,6 @@ Supplications and verses categorized under "Healing (*Shifa*)" and "Anxiety & Di
 
 ## 📄 License
 
-Copyright © 2024–2026 Abdullah Al Masum. All rights reserved.
+*Last updated: October 10, 2026*  
+Copyright © 2024–2026 Abdullah Al Masum. All rights reserved.  
 Code and assets are proprietary. Built for the Muslim Ummah with sincerity and dedication.

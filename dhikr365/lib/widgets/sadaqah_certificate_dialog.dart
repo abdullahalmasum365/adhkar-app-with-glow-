@@ -182,7 +182,7 @@ class SadaqahCertificateSheet extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          isBn ? 'এই সদকা যার উদ্দেশ্যে উৎসর্গকৃত:' : 'Dedicated In Honor Of:',
+                          isBn ? 'যার উদ্দেশ্যে উৎসর্গকৃত:' : 'Dedicated In Honor Of:',
                           style: TextStyle(
                             fontSize: 11,
                             color: AppColors.textSlate400,

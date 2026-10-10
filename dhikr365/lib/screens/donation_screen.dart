@@ -157,7 +157,7 @@ class _DonationScreenState extends State<DonationScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        // 100% Free Waqf & Voluntary Maintenance Support Banner
+                        // 100% Free & Voluntary Developer Support Banner
                         Container(
                           margin: const EdgeInsets.only(bottom: 24),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -182,11 +182,11 @@ class _DonationScreenState extends State<DonationScreen> {
                                 child: Text(
                                   pp.hasActiveDonation
                                       ? (lp.locale.languageCode == 'bn'
-                                          ? 'আলহামদুলিল্লাহ! আপনার সক্রিয় সাদাকায়ে জারিয়া এই অ্যাপের খেদমত সচল রাখতে সাহায্য করছে। জাযাকাল্লাহু খাইরান।'
-                                          : 'Alhamdulillah! Your active Sadaqah Jariyah supports this noble effort. JazakAllahu Khairan.')
+                                          ? 'আলহামদুলিল্লাহ! আপনার ঐচ্ছিক সমর্থন ডেভেলপারকে অ্যাপটি সচল ও উন্নত রাখতে সাহায্য করছে। জাযাকাল্লাহু খাইরান।'
+                                          : 'Alhamdulillah! Your voluntary support helps the independent developer keep this app running and improving. JazakAllahu Khairan.')
                                       : (lp.locale.languageCode == 'bn'
-                                          ? 'আযকার ৩৬৫ একটি ১০০% উন্মুক্ত ও ফ্রি অ্যাপ (ওয়াকফ)। আপনার স্বেচ্ছাসেবী হাদিয়া/সাদাকায়ে জারিয়া অ্যাপটির সার্ভার ও নিয়মিত মেইনটেন্যান্স খরচ নির্বাহ করতে সহায়তা করে।'
-                                          : 'Adhkar 365 is 100% free & open for everyone (Waqf). Your voluntary Sadaqah Jariyah directly supports server & continuous maintenance costs.'),
+                                          ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার ঐচ্ছিক সমর্থন একজন স্বাধীন ডেভেলপারকে অ্যাপটি সচল ও উন্নত রাখতে সাহায্য করে।'
+                                          : 'Adhkar 365 is free and ad-free for everyone. Your voluntary support helps the independent developer keep it running and improving.'),
                                   style: TextStyle(
                                     fontSize: 12.5,
                                     height: 1.4,
@@ -287,7 +287,7 @@ class _DonationScreenState extends State<DonationScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(children: [
-                                Icon(Icons.dns_rounded,
+                                Icon(Icons.favorite_outline_rounded,
                                     color: primary, size: 18),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -812,8 +812,8 @@ class _DonationScreenState extends State<DonationScreen> {
                               Expanded(
                                 child: Text(
                                   lp.locale.languageCode == 'bn'
-                                      ? 'সহায়তা সরাসরি স্বাধীন ডেভেলপারকে সার্ভার পরিচালনা ও অ্যাপটি ১০০% বিজ্ঞাপনমুক্ত রাখতে সহায়তা করে। এটি চলমান সওয়াবের (সাদাকাহ জারিয়া) নিয়তে সফটওয়্যার স্পনসরশিপ, কোনো নিবন্ধিত দাতব্য প্রতিষ্ঠানে কর-ছাড়যোগ্য অনুদান নয়।'
-                                      : 'Sponsorship directly supports the independent developer with server costs & keeping the app 100% ad-free. This is voluntary software patronage dedicated for continuous spiritual reward, not a tax-deductible donation to a registered charity.',
+                                      ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার ঐচ্ছিক সমর্থন একজন স্বাধীন ডেভেলপারকে অ্যাপটি সচল ও উন্নত রাখতে সাহায্য করে। অনেকে এটিকে সদকায়ে জারিয়ার নিয়তে সমর্থন করেন।'
+                                      : 'Adhkar 365 is free and ad-free for everyone. Your voluntary support helps the independent developer keep it running and improving. Many people support this with the intention of sadaqah jariyah.',
                                   style: GoogleFonts.publicSans(
                                     color:
                                         onSurfaceVariant.withValues(alpha: 0.8),

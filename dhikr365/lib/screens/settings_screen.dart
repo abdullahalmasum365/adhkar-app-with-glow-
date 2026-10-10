@@ -1003,15 +1003,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     icon: Icons.volunteer_activism_rounded,
                     color: ThemeProvider.divineAmber,
                     title: lp.locale.languageCode == 'bn'
-                        ? 'সাদাকায়ে জারিয়া ও অ্যাপ সাপোর্ট'
-                        : 'Sadaqah Jariyah & App Support',
+                        ? 'ডেভেলপার সাপোর্ট (ঐচ্ছিক)'
+                        : 'Developer Support (Voluntary)',
                     subtitle: pp.hasActiveDonation
                         ? (lp.locale.languageCode == 'bn'
-                            ? 'আপনার সক্রিয় সাদাকায়ে জারিয়া চলমান • জাযাকাল্লাহু খাইরান'
-                            : 'Active Sadaqah Jariyah Supporter • JazakAllahu Khairan')
+                            ? 'আপনার ঐচ্ছিক সমর্থন সক্রিয় • জাযাকাল্লাহু খাইরান'
+                            : 'Active Voluntary Supporter • JazakAllahu Khairan')
                         : (lp.locale.languageCode == 'bn'
-                            ? 'সব ফিচার সবার জন্য ১০০% ফ্রি • সার্ভার ও পরিচালনা খরচে সাপোর্ট করুন'
-                            : '100% Free for all • Support server & maintenance costs'),
+                            ? 'Adhkar 365 সবার জন্য ফ্রি ও বিজ্ঞাপনমুক্ত • ডেভেলপারকে সচল রাখতে সাপোর্ট করুন'
+                            : 'Adhkar 365 is free and ad-free for everyone • Support the developer'),
                     trailing: pp.hasActiveDonation
                         ? const Icon(Icons.stars_rounded,
                             color: Colors.amber, size: 22)
