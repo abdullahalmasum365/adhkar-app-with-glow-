@@ -80,15 +80,7 @@ class ThemeProvider extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final id = prefs.getString(_paletteKey) ?? AppPalettes.emeraldNight.id;
       final candidate = AppPalettes.byId(id);
-      final isProUser = checkIsProInPrefs(prefs);
-
-      // Entitlement check: If saved palette is Pro but user lacks Pro entitlement, revert to free default
-      if (candidate.isPro && !isProUser) {
-        await prefs.setString(_paletteKey, AppPalettes.emeraldNight.id);
-        AppColors.apply(AppPalettes.emeraldNight);
-      } else {
-        AppColors.apply(candidate);
-      }
+      AppColors.apply(candidate);
     } catch (_) {
       AppColors.apply(AppPalettes.emeraldNight);
     }
@@ -100,13 +92,7 @@ class ThemeProvider extends ChangeNotifier {
     final savedId = prefs.getString(_paletteKey) ?? AppPalettes.emeraldNight.id;
     final candidate = AppPalettes.byId(savedId);
 
-    // Guard against Pro palette if user does not hold verified Pro
-    if (candidate.isPro && !_isPro) {
-      _paletteId = AppPalettes.emeraldNight.id;
-      await prefs.setString(_paletteKey, _paletteId);
-    } else {
-      _paletteId = candidate.id;
-    }
+    _paletteId = candidate.id;
 
     AppColors.apply(AppPalettes.byId(_paletteId));
     _themeMode = palette.isDark ? ThemeMode.dark : ThemeMode.light;
@@ -118,8 +104,6 @@ class ThemeProvider extends ChangeNotifier {
 
   /// Called from main ChangeNotifierProxyProvider2 when Auth or Purchase state updates.
   Future<void> updateAuthAndPro(String? uid, bool isPro, {bool isPurchaseLoaded = true}) async {
-    // Race-condition guard: If PurchaseProvider has not yet loaded its cached
-    // entitlement from SharedPreferences on startup, do not prematurely revert Pro theme!
     if (!isPurchaseLoaded) {
       if (uid != _uid) {
         await attachUser(uid);
@@ -127,16 +111,7 @@ class ThemeProvider extends ChangeNotifier {
       return;
     }
 
-    final proStatusChanged = _isPro != isPro;
     _isPro = isPro;
-
-    // Entitlement Enforcement:
-    // If Pro subscription expired, cancelled, or refunded, and active theme is Pro,
-    // immediately revert to default free palette:
-    if (proStatusChanged && !_isPro && palette.isPro) {
-      debugPrint('[ThemeProvider] Pro subscription ended/cancelled. Reverting Pro palette "$_paletteId" to default.');
-      await setPalette(AppPalettes.emeraldNight.id);
-    }
 
     if (uid != _uid) {
       await attachUser(uid);
@@ -147,12 +122,6 @@ class ThemeProvider extends ChangeNotifier {
   /// repaints EVERY screen instantly.
   Future<void> setPalette(String id) async {
     final target = AppPalettes.byId(id);
-
-    // Security Guard: Pro themes strictly require verified Pro entitlement
-    if (target.isPro && !_isPro) {
-      debugPrint('[ThemeProvider] Access denied: Palette "${target.label}" requires Pro subscription.');
-      return;
-    }
 
     if (id == _paletteId) return;
     _paletteId = target.id;
@@ -241,19 +210,8 @@ class ThemeProvider extends ChangeNotifier {
             } else {
               await _pushToCloud();
             }
-          } else {
-            final targetPalette = AppPalettes.byId(cloudPalette);
-            if (targetPalette.isPro && !_isPro) {
-              // Pro Bypass Prevention: Free user cannot adopt Pro theme from Firestore
-              debugPrint('[ThemeProvider] Cloud theme "$cloudPalette" is Pro, but user is not Pro. Reverting to default.');
-              if (_paletteId != AppPalettes.emeraldNight.id) {
-                await setPalette(AppPalettes.emeraldNight.id);
-              } else {
-                await _pushToCloud();
-              }
-            } else if (cloudPalette != _paletteId) {
-              await setPalette(cloudPalette);
-            }
+          } else if (cloudPalette != _paletteId) {
+            await setPalette(cloudPalette);
           }
         }
         if (cloudTranslit != null && cloudTranslit != _showTransliteration) {

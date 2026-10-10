@@ -100,19 +100,10 @@ void main() {
   });
 
   group('Multi-Theme Palettes & Pro Access Verification', () {
-    test('8. Luxury palettes are marked isPro: true while base palettes are free', () {
-      expect(AppPalettes.emeraldNight.isPro, isFalse);
-      expect(AppPalettes.sapphireGold.isPro, isFalse);
-      expect(AppPalettes.royalWhite.isPro, isFalse);
-      expect(AppPalettes.kindleReader.isPro, isFalse);
-      expect(AppPalettes.desertMushaf.isPro, isFalse);
-
-      expect(AppPalettes.midnightAmoled.isPro, isTrue);
-      expect(AppPalettes.carbonLime.isPro, isTrue);
-      expect(AppPalettes.cosmicVanilla.isPro, isTrue);
-      expect(AppPalettes.onyxCandyBlue.isPro, isTrue);
-      expect(AppPalettes.jetOrchid.isPro, isTrue);
-      expect(AppPalettes.wineTurquoise.isPro, isTrue);
+    test('8. All 11 luxury and base palettes are 100% free (Waqf model)', () {
+      for (final p in AppPalettes.all) {
+        expect(p.isPro, isFalse, reason: 'Palette ${p.id} should be free');
+      }
     });
 
     test('9. All palettes have distinct non-null colors and valid IDs', () {

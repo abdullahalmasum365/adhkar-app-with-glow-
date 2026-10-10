@@ -106,11 +106,11 @@ void main() {
       expect(record.purchaseToken, equals('server_signed_token_123'));
     });
 
-    test('3. PurchaseProvider Initial Free State: Defaults to non-Pro and no donation', () async {
+    test('3. PurchaseProvider Initial Free State: Defaults to no active donation and isPro is true', () async {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
-      expect(provider.isPro, isFalse);
+      expect(provider.isPro, isTrue);
       expect(provider.hasLifetimePro, isFalse);
       expect(provider.hasActiveProSubscription, isFalse);
       expect(provider.activeProTierId, isNull);
@@ -147,7 +147,7 @@ void main() {
       expect(prefs.getInt('pro_expiry_ms'), isNotNull);
     });
 
-    test('5. Sadaqah Jariyah Donation does NOT grant Pro (Independent)', () async {
+    test('5. Sadaqah Jariyah Donation activates donation state independently', () async {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
@@ -164,10 +164,9 @@ void main() {
 
       await provider.handlePurchaseUpdatesForTesting([donationPurchase]);
 
-      // Crucial test: Donation must NOT grant Pro to a free user!
       expect(provider.hasActiveDonation, isTrue);
       expect(provider.activeDonationId, equals(DonationProductIds.supporter));
-      expect(provider.isPro, isFalse);
+      expect(provider.isPro, isTrue);
       expect(provider.hasActiveProSubscription, isFalse);
 
       final prefs = await SharedPreferences.getInstance();
@@ -214,7 +213,7 @@ void main() {
       expect(provider.activeDonationId, equals(DonationProductIds.patron));
     });
 
-    test('7. Expiration of Pro subscription revokes Pro while maintaining active donation', () async {
+    test('7. Expiration of Pro subscription revokes tier while maintaining active donation', () async {
       final expiredMs = DateTime.now()
           .subtract(const Duration(days: 1))
           .millisecondsSinceEpoch;
@@ -232,8 +231,7 @@ void main() {
       final provider = PurchaseProvider(autoInit: false);
       await provider.loadCachedEntitlements();
 
-      // Pro expired -> isPro is false
-      expect(provider.isPro, isFalse);
+      expect(provider.isPro, isTrue);
       expect(provider.hasActiveProSubscription, isFalse);
       expect(provider.activeProTierId, isNull);
 
@@ -242,7 +240,7 @@ void main() {
       expect(provider.activeDonationId, equals(DonationProductIds.seed));
     });
 
-    test('8. Explicit Revocation (clearSubscription): Purges all entitlements', () async {
+    test('8. Explicit Revocation (clearSubscription): Purges all stored entitlements', () async {
       SharedPreferences.setMockInitialValues({
         'has_lifetime_pro': true,
         'active_pro_tier_id': DonationProductIds.pro1Year,
@@ -261,7 +259,7 @@ void main() {
       await provider.clearSubscription();
 
       expect(provider.hasLifetimePro, isFalse);
-      expect(provider.isPro, isFalse);
+      expect(provider.isPro, isTrue);
       expect(provider.hasActiveDonation, isFalse);
 
       final prefs = await SharedPreferences.getInstance();
@@ -270,21 +268,15 @@ void main() {
       expect(prefs.getString('active_donation_id'), isNull);
     });
 
-    test('9. ThemeProvider Revocation Reaction: Pro theme auto-reverts to default', () async {
+    test('9. ThemeProvider: All palettes selectable and retained for everyone', () async {
       SharedPreferences.setMockInitialValues({});
       final themeProvider = ThemeProvider();
       await themeProvider.initialized;
 
-      // Pro user chooses a Pro palette
-      await themeProvider.updateAuthAndPro('test_user', true, isPurchaseLoaded: true);
+      // User chooses midnightAmoled palette
+      await themeProvider.updateAuthAndPro('test_user', false, isPurchaseLoaded: true);
       await themeProvider.setPalette(AppPalettes.midnightAmoled.id);
       expect(themeProvider.palette.id, equals(AppPalettes.midnightAmoled.id));
-
-      // Entitlement is revoked: isPro becomes false
-      await themeProvider.updateAuthAndPro('test_user', false, isPurchaseLoaded: true);
-
-      // ThemeProvider must immediately auto-revert to the free default emeraldNight palette
-      expect(themeProvider.palette.id, equals(AppPalettes.emeraldNight.id));
       expect(themeProvider.palette.isPro, isFalse);
     });
 
@@ -302,12 +294,12 @@ void main() {
         status: PurchaseStatus.purchased,
       );
       await provider.handlePurchaseUpdatesForTesting([proPurchase]);
-      expect(provider.isPro, isTrue);
+      expect(provider.hasActiveProSubscription, isTrue);
 
       // Authoritative Google Play sync returns empty (product was refunded or cancelled)
       await provider.executeSyncWithRestoredIdsForTesting({});
 
-      expect(provider.isPro, isFalse);
+      expect(provider.isPro, isTrue);
       expect(provider.hasActiveProSubscription, isFalse);
 
       final prefs = await SharedPreferences.getInstance();

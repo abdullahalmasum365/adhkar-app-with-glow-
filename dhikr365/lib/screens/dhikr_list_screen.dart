@@ -17,8 +17,6 @@ import '../widgets/repeat_picker.dart';
 import '../utils/responsive.dart';
 import '../services/audio_service.dart';
 import '../services/tts_service.dart';
-import '../providers/purchase_provider.dart';
-import '../widgets/pro_paywall_sheet.dart';
 import '../widgets/social_share_card.dart';
 import 'edit_plan_screen.dart';
 
@@ -1471,13 +1469,6 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                     .useCustomPlan)
                                   IconButton(
                                     onPressed: () {
-                                      final pp = Provider.of<PurchaseProvider>(
-                                          context,
-                                          listen: false);
-                                      if (!pp.isPro) {
-                                        showProPaywallModal(context);
-                                        return;
-                                      }
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -1699,13 +1690,6 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                               const SizedBox(height: 16),
                               ElevatedButton.icon(
                                 onPressed: () {
-                                  final pp = Provider.of<PurchaseProvider>(
-                                      context,
-                                      listen: false);
-                                  if (!pp.isPro) {
-                                    showProPaywallModal(context);
-                                    return;
-                                  }
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

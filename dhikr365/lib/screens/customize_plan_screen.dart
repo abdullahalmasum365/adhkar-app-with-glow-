@@ -3,24 +3,14 @@ import 'package:provider/provider.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/custom_plan_provider.dart';
 import '../providers/language_provider.dart';
-import '../providers/purchase_provider.dart';
 import '../models/dhikr.dart';
 import '../constants/app_theme.dart';
-import '../widgets/pro_paywall_sheet.dart';
 
 class CustomizePlanScreen extends StatelessWidget {
   const CustomizePlanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final purchaseProvider = Provider.of<PurchaseProvider>(context);
-    if (!purchaseProvider.isPro) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pop(context);
-        showProPaywallModal(context);
-      });
-    }
-
     final dp = Provider.of<DhikrProvider>(context);
     final cp = Provider.of<CustomPlanProvider>(context);
     final lp = Provider.of<LanguageProvider>(context);

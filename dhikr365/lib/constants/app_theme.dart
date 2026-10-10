@@ -325,7 +325,7 @@ abstract class AppPalettes {
     glassBorder: Color(0x14FFFFFF),
     homeGradient: [Color(0xFF06231C), Color(0xFF021410), Color(0xFF000000)],
     shadowScale: 1.0,
-    isPro: true,
+    isPro: false,
   );
 
   /// Light theme — soft lavender surfaces with a deep, rich violet accent.
@@ -382,7 +382,7 @@ abstract class AppPalettes {
     glassBorder: Color(0x15FFFFFF),
     homeGradient: [Color(0xFF2B2B08), Color(0xFF171717), Color(0xFF000000)],
     shadowScale: 1.0,
-    isPro: true,
+    isPro: false,
   );
 
   /// Elegant dark theme — near-black cosmic gray with a pale vanilla-cream
@@ -410,7 +410,7 @@ abstract class AppPalettes {
     glassBorder: Color(0x15FFFFFF),
     homeGradient: [Color(0xFF2F2C3D), Color(0xFF1B1922), Color(0xFF000000)],
     shadowScale: 1.0,
-    isPro: true,
+    isPro: false,
   );
 
   /// True-black dark theme — onyx background with a soft powder "candy
@@ -438,7 +438,7 @@ abstract class AppPalettes {
     glassBorder: Color(0x15FFFFFF),
     homeGradient: [Color(0xFF0E1E26), Color(0xFF040A0C), Color(0xFF000000)],
     shadowScale: 1.0,
-    isPro: true,
+    isPro: false,
   );
 
   /// Jet-black dark theme with a soft pink-purple orchid accent — an
@@ -466,7 +466,7 @@ abstract class AppPalettes {
     glassBorder: Color(0x15FFFFFF),
     homeGradient: [Color(0xFF2E1F2C), Color(0xFF1D1517), Color(0xFF000000)],
     shadowScale: 1.0,
-    isPro: true,
+    isPro: false,
   );
 
   /// Moody dark theme — dusty wine-ash surfaces with a fresh turquoise
@@ -494,7 +494,7 @@ abstract class AppPalettes {
     glassBorder: Color(0x15FFFFFF),
     homeGradient: [Color(0xFF1E3733), Color(0xFF241C20), Color(0xFF000000)],
     shadowScale: 1.0,
-    isPro: true,
+    isPro: false,
   );
 
   static const List<AppPalette> all = [

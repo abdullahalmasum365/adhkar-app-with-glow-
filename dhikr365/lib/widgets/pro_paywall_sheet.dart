@@ -20,11 +20,9 @@ import '../services/purchase_service.dart';
 import '../utils/responsive.dart';
 
 Future<void> showProPaywallModal(BuildContext context) {
-  return showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (_) => const ProPaywallSheet(),
+  return Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const DonationScreen()),
   );
 }
 

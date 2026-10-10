@@ -157,42 +157,36 @@ class _DonationScreenState extends State<DonationScreen> {
                     child: Column(
                       children: [
                         const SizedBox(height: 16),
-                        // Open to Pro & Regular Users Banner
+                        // 100% Free Waqf & Voluntary Maintenance Support Banner
                         Container(
                           margin: const EdgeInsets.only(bottom: 24),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           decoration: BoxDecoration(
-                            color: pp.isPro
-                                ? ThemeProvider.divineAmber.withValues(alpha: 0.12)
-                                : primary.withValues(alpha: 0.1),
+                            color: ThemeProvider.divineAmber.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: pp.isPro
-                                  ? ThemeProvider.divineAmber.withValues(alpha: 0.4)
-                                  : primary.withValues(alpha: 0.3),
+                              color: ThemeProvider.divineAmber.withValues(alpha: 0.4),
                             ),
                           ),
                           child: Row(
                             children: [
                               Icon(
-                                pp.isPro
+                                pp.hasActiveDonation
                                     ? Icons.stars_rounded
                                     : Icons.volunteer_activism_rounded,
-                                color: pp.isPro
-                                    ? ThemeProvider.divineAmber
-                                    : primary,
+                                color: ThemeProvider.divineAmber,
                                 size: 24,
                               ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  pp.isPro
+                                  pp.hasActiveDonation
                                       ? (lp.locale.languageCode == 'bn'
-                                          ? 'আলহামদুলিল্লাহ, আপনি প্রো মেম্বার! পাশাপাশি এই সাদাকায়ে জারিয়ার মাধ্যমেও দ্বীনি খেদমতে অংশ নিতে পারেন।'
-                                          : 'You are a valued Pro member! You can also support ongoing community blessings through this Sadaqah Jariyah.')
+                                          ? 'আলহামদুলিল্লাহ! আপনার সক্রিয় সাদাকায়ে জারিয়া এই অ্যাপের খেদমত সচল রাখতে সাহায্য করছে। জাযাকাল্লাহু খাইরান।'
+                                          : 'Alhamdulillah! Your active Sadaqah Jariyah supports this noble effort. JazakAllahu Khairan.')
                                       : (lp.locale.languageCode == 'bn'
-                                          ? 'সাদাকায়ে জারিয়া • প্রো ও রেগুলার সবার জন্য উন্মুক্ত যে কোনো সময়।'
-                                          : 'Sadaqah Jariyah • Open to all Pro & Regular users anytime.'),
+                                          ? 'আযকার ৩৬৫ একটি ১০০% উন্মুক্ত ও ফ্রি অ্যাপ (ওয়াকফ)। আপনার স্বেচ্ছাসেবী হাদিয়া/সাদাকায়ে জারিয়া অ্যাপটির সার্ভার ও নিয়মিত মেইনটেন্যান্স খরচ নির্বাহ করতে সহায়তা করে।'
+                                          : 'Adhkar 365 is 100% free & open for everyone (Waqf). Your voluntary Sadaqah Jariyah directly supports server & continuous maintenance costs.'),
                                   style: TextStyle(
                                     fontSize: 12.5,
                                     height: 1.4,

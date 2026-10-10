@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import '../models/dhikr.dart';
 import '../providers/custom_plan_provider.dart';
 import '../providers/dhikr_provider.dart';
-import '../providers/purchase_provider.dart';
-import '../widgets/pro_paywall_sheet.dart';
 
 class EditPlanScreen extends StatefulWidget {
   final DhikrCategory category;
@@ -24,14 +22,6 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
   void initState() {
     super.initState();
     _loadDhikrs();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final pp = Provider.of<PurchaseProvider>(context, listen: false);
-      if (!pp.isPro) {
-        Navigator.pop(context);
-        showProPaywallModal(context);
-      }
-    });
   }
 
   void _loadDhikrs() {

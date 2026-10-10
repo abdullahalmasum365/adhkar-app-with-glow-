@@ -10,12 +10,9 @@ import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/custom_plan_provider.dart';
-import '../providers/purchase_provider.dart';
-import '../providers/theme_provider.dart';
 import '../models/dhikr.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
-import '../widgets/pro_paywall_sheet.dart';
 import 'dhikr_list_screen.dart';
 import 'donation_screen.dart';
 import 'location_setup_screen.dart';
@@ -94,17 +91,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final lp = Provider.of<LanguageProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     final customPlanProvider = Provider.of<CustomPlanProvider>(context);
-    final purchaseProvider = Provider.of<PurchaseProvider>(context);
-
-    // Safeguard: if user is not Pro, revert custom plan mode to standard
-    if (customPlanProvider.useCustomPlan && !purchaseProvider.isPro) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (customPlanProvider.useCustomPlan && !purchaseProvider.isPro) {
-          customPlanProvider.setUseCustomPlan(false);
-        }
-      });
-    }
-
     final now = DateTime.now();
     final isMorning = _isMorningTime(userProvider, now);
     final langCode = lp.locale.languageCode;
@@ -368,37 +354,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           onTap: () =>
                               customPlanProvider.setUseCustomPlan(false),
                         ),
-                        Consumer<PurchaseProvider>(
-                          builder: (context, pp, _) => _Tab(
-                            label: lp.getText('plan_my'),
-                            isActive: customPlanProvider.useCustomPlan,
-                            trailing: !pp.isPro
-                                ? Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 1),
-                                    decoration: BoxDecoration(
-                                      color: ThemeProvider.divineAmber
-                                          .withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      'PRO',
-                                      style: TextStyle(
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.w800,
-                                        color: ThemeProvider.divineAmber,
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                            onTap: () {
-                              if (!pp.isPro) {
-                                showProPaywallModal(context);
-                                return;
-                              }
-                              customPlanProvider.setUseCustomPlan(true);
-                            },
-                          ),
+                        _Tab(
+                          label: lp.getText('plan_my'),
+                          isActive: customPlanProvider.useCustomPlan,
+                          onTap: () => customPlanProvider.setUseCustomPlan(true),
                         ),
                       ]),
                     ),
@@ -1168,13 +1127,11 @@ class _Tab extends StatelessWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
-  final Widget? trailing;
 
   const _Tab({
     required this.label,
     required this.isActive,
     required this.onTap,
-    this.trailing,
   });
 
   @override
@@ -1188,22 +1145,13 @@ class _Tab extends StatelessWidget {
           color: isActive ? AppColors.ink(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(R.px(20)),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(label,
-                style: AppText.manrope(
-                  fontSize: R.adaptive(12, 13, 15),
-                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                  color:
-                      isActive ? AppColors.textPrimary : AppColors.textSlate400,
-                )),
-            if (trailing != null) ...[
-              const SizedBox(width: 4),
-              trailing!,
-            ],
-          ],
-        ),
+        child: Text(label,
+            style: AppText.manrope(
+              fontSize: R.adaptive(12, 13, 15),
+              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+              color:
+                  isActive ? AppColors.textPrimary : AppColors.textSlate400,
+            )),
       ),
     );
   }

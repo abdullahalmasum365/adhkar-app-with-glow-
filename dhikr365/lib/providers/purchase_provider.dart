@@ -105,9 +105,9 @@ class PurchaseProvider extends ChangeNotifier {
   /// Expiration / next renewal estimation date of donation subscription.
   DateTime? get donationExpiry => _donationExpiry;
 
-  /// Pro status is granted ONLY if user owns Lifetime Pro OR holds an active Pro plan (1m, 6m, 1y).
-  /// Pure donation does NOT grant or interfere with Pro status.
-  bool get isPro => _hasLifetimePro || hasActiveProSubscription;
+  /// Adhkar 365 is 100% free and unlocked for all users (Waqf / Sadaqah Jariyah model).
+  /// Every feature is unconditionally unlocked.
+  bool get isPro => true;
 
   /// Backward-compatibility getters
   bool get hasActiveSubscription => hasActiveProSubscription || hasActiveDonation;

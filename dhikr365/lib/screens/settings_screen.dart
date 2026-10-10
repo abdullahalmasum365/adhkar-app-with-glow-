@@ -16,10 +16,8 @@ import '../providers/purchase_provider.dart';
 import '../providers/notification_provider.dart';
 import '../services/notification_service.dart';
 import '../models/dhikr.dart';
-import '../widgets/pro_paywall_sheet.dart';
 import '../widgets/battery_reliability_dialogs.dart';
 import 'donation_screen.dart';
-import '../services/purchase_service.dart';
 import 'widget_preview_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -673,54 +671,23 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     onTap: () => runNotificationReliabilityTips(context)),
                 _div(),
                 _Tile(
-                    icon: Icons.workspace_premium_rounded,
+                    icon: Icons.volunteer_activism_rounded,
                     color: ThemeProvider.divineAmber,
                     title: lp.locale.languageCode == 'bn'
-                        ? 'আযকার ৩৬৫ প্রো'
-                        : 'Adhkar 365 PRO',
-                    subtitle: pp.isPro
-                        ? (pp.hasLifetimePro
-                            ? (lp.locale.languageCode == 'bn'
-                                ? 'সক্রিয় (লাইফটাইম প্রো)'
-                                : 'Active (Lifetime Pro)')
-                            : (pp.activeProTierId == DonationProductIds.pro1Year
-                                ? (lp.locale.languageCode == 'bn'
-                                    ? 'সক্রিয় (১ বছরের প্ল্যান)'
-                                    : 'Active (1 Year Plan)')
-                                : (pp.activeProTierId == DonationProductIds.pro6Months
-                                    ? (lp.locale.languageCode == 'bn'
-                                        ? 'সক্রিয় (৬ মাসের প্ল্যান)'
-                                        : 'Active (6 Months Plan)')
-                                    : (lp.locale.languageCode == 'bn'
-                                        ? 'সক্রিয় (১ মাসের প্ল্যান)'
-                                        : 'Active (1 Month Plan)'))))
+                        ? 'সাদাকায়ে জারিয়া ও অ্যাপ সাপোর্ট'
+                        : 'Sadaqah Jariyah & App Support',
+                    subtitle: pp.hasActiveDonation
+                        ? (lp.locale.languageCode == 'bn'
+                            ? 'আপনার সক্রিয় সাদাকায়ে জারিয়া চলমান • জাযাকাল্লাহু খাইরান'
+                            : 'Active Sadaqah Jariyah Supporter • JazakAllahu Khairan')
                         : (lp.locale.languageCode == 'bn'
-                            ? '১ মাস, ৬ মাস বা ১ বছরের প্ল্যান'
-                            : '1 Month, 6 Months or 1 Year plan'),
-                    trailing: pp.isPro
-                        ? const Icon(Icons.check_circle_rounded,
-                            color: Colors.green, size: 20)
+                            ? 'সব ফিচার সবার জন্য ১০০% ফ্রি • সার্ভার ও পরিচালনা খরচে সাপোর্ট করুন'
+                            : '100% Free for all • Support server & maintenance costs'),
+                    trailing: pp.hasActiveDonation
+                        ? const Icon(Icons.stars_rounded,
+                            color: Colors.amber, size: 22)
                         : const Icon(Icons.arrow_forward_ios_rounded,
                             size: 14, color: Colors.grey),
-                    onTap: pp.isPro
-                        ? null
-                        : () => showProPaywallModal(context)),
-                _div(),
-                _Tile(
-                    icon: Icons.volunteer_activism_rounded,
-                    color: Colors.pinkAccent,
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'সাদাকায়ে জারিয়া ও ডোনেশন'
-                        : 'Sadaqah Jariyah & Donate',
-                    subtitle: lp.locale.languageCode == 'bn'
-                        ? (pp.hasActiveDonation
-                            ? 'আপনার সক্রিয় সাদাকায়ে জারিয়া চলমান'
-                            : 'প্রো ও রেগুলার সবার জন্য উন্মুক্ত • যেকোনো সময়')
-                        : (pp.hasActiveDonation
-                            ? 'Your ongoing Sadaqah Jariyah is active'
-                            : 'Open to Pro & regular users • Anytime'),
-                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                        size: 14, color: Colors.grey),
                     onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -1064,20 +1031,15 @@ class _ThemeChoice extends StatelessWidget {
     required BuildContext context,
     Future<void> Function()? onSelected,
   }) {
-    final locked = p.isPro && !isUserPro;
     return _ThemeChoice(
       title: p.label,
       subtitle: p.tagline,
       selected: tp.paletteId == p.id,
       swatches: [p.homeGradient[0], p.homeGradient[1], p.primary],
       previewText: p.textPrimary,
-      isPro: p.isPro,
-      isLocked: locked,
+      isPro: false,
+      isLocked: false,
       onTap: () async {
-        if (locked) {
-          showProPaywallModal(context);
-          return;
-        }
         if (tp.paletteId == p.id) return;
         await tp.setPalette(p.id);
         await onSelected?.call();
