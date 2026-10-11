@@ -24,24 +24,46 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
-// Release signing — reads from android/key.properties, which is gitignored
-// and never committed. Falls back to the debug key when key.properties
-// doesn't exist yet (e.g. a fresh checkout before the keystore is created),
-// so `flutter build apk --debug` / local dev never breaks.
+// Release signing — reads from android/key.properties (gitignored).
+// Fails release builds immediately with an actionable error if key.properties or keystore is missing,
+// rather than silently falling back to the debug key.
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file("key.properties")
-def hasKeyProperties = keystorePropertiesFile.exists()
-def hasReleaseSigning = false
 
-if (hasKeyProperties) {
+if (keystorePropertiesFile.exists()) {
     keystorePropertiesFile.withReader("UTF-8") { reader ->
         keystoreProperties.load(reader)
     }
-    def rawStoreFile = keystoreProperties["storeFile"]
-    if (rawStoreFile) {
-        def directFile = file(rawStoreFile)
-        def rootFile = rootProject.file(rawStoreFile)
-        hasReleaseSigning = directFile.exists() || rootFile.exists()
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    def isReleaseBuild = taskGraph.allTasks.any { task ->
+        task.name.toLowerCase().contains("release")
+    }
+    if (isReleaseBuild) {
+        if (!keystorePropertiesFile.exists()) {
+            throw new GradleException(
+                "\n========================================================================\n" +
+                "RELEASE BUILD FAILED: 'android/key.properties' is missing!\n" +
+                "Release builds require valid signing credentials and will not fall back\n" +
+                "to the debug key.\n" +
+                "Please copy 'android/key.properties.example' to 'android/key.properties'\n" +
+                "and configure your release keystore parameters.\n" +
+                "========================================================================"
+            )
+        }
+        def rawStoreFile = keystoreProperties["storeFile"]
+        if (!rawStoreFile) {
+            throw new GradleException(
+                "RELEASE BUILD FAILED: 'storeFile' is not specified in android/key.properties."
+            )
+        }
+        def resolvedStore = file(rawStoreFile).exists() ? file(rawStoreFile) : rootProject.file(rawStoreFile)
+        if (!resolvedStore.exists()) {
+            throw new GradleException(
+                "RELEASE BUILD FAILED: Keystore file '${rawStoreFile}' specified in android/key.properties was not found."
+            )
+        }
     }
 }
 
@@ -71,12 +93,14 @@ android {
     }
 
     signingConfigs {
-        if (hasReleaseSigning) {
-            release {
+        release {
+            if (keystorePropertiesFile.exists()) {
                 keyAlias = keystoreProperties["keyAlias"]
                 keyPassword = keystoreProperties["keyPassword"]
                 def rawStoreFile = keystoreProperties["storeFile"]
-                storeFile = file(rawStoreFile).exists() ? file(rawStoreFile) : rootProject.file(rawStoreFile)
+                if (rawStoreFile) {
+                    storeFile = file(rawStoreFile).exists() ? file(rawStoreFile) : rootProject.file(rawStoreFile)
+                }
                 storePassword = keystoreProperties["storePassword"]
             }
         }
@@ -84,13 +108,16 @@ android {
 
     buildTypes {
         release {
-            // Uses the real release keystore once android/key.properties
-            // and the keystore file exist; falls back to debug signing for dev builds.
-            signingConfig = hasReleaseSigning ? signingConfigs.release : signingConfigs.debug
+            signingConfig = signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
@@ -99,5 +126,5 @@ flutter {
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }

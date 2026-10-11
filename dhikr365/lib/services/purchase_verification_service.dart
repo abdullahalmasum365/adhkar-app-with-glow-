@@ -18,7 +18,6 @@ class VerifiedPurchaseRecord {
   final String? orderId;
   final String? purchaseToken;
   final DateTime? transactionDate;
-  final bool isLifetime;
   final bool isSubscription;
   final bool isValid;
 
@@ -27,7 +26,6 @@ class VerifiedPurchaseRecord {
     this.orderId,
     this.purchaseToken,
     this.transactionDate,
-    required this.isLifetime,
     required this.isSubscription,
     required this.isValid,
   });
@@ -44,7 +42,6 @@ class PurchaseVerificationService {
   /// a valid status (purchased/restored) and a non-empty purchase token.
   VerifiedPurchaseRecord verifyLocalReceipt(PurchaseDetails purchase) {
     final productId = purchase.productID;
-    final isLifetime = DonationProductIds.isLifetimePro(productId);
     final isSub = DonationProductIds.isSubscription(productId);
 
     // Verify valid status from Google Play
@@ -70,7 +67,6 @@ class PurchaseVerificationService {
       orderId: purchase.purchaseID,
       purchaseToken: serverData,
       transactionDate: txDate,
-      isLifetime: isLifetime,
       isSubscription: isSub,
       isValid: isValid,
     );

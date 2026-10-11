@@ -272,9 +272,9 @@ class _DonationScreenState extends State<DonationScreen> {
 
                         const SizedBox(height: 28),
 
-                        // ── Why we ask: real, concrete running costs ──────────
-                        // Cost transparency answers "why donate" directly and
-                        // builds trust before the emotional appeals that follow.
+                        // ── Why support helps ─────────────────────────────────
+                        // Transparent explanation of how voluntary support helps
+                        // the independent developer keep the app free and maintained.
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(22),

@@ -9,7 +9,6 @@ import 'package:share_plus/share_plus.dart';
 import '../constants/app_theme.dart';
 import '../models/dhikr.dart';
 import '../providers/language_provider.dart';
-import '../providers/purchase_provider.dart';
 
 /// 1080x1920 (9:16 story/status ratio) branded social card widget
 /// for sharing beautiful duas across Instagram, WhatsApp, Telegram, etc.
@@ -36,7 +35,6 @@ class SocialShareCard extends StatelessWidget {
     bool showTransliteration = true,
   }) async {
     final lp = Provider.of<LanguageProvider>(context, listen: false);
-    final pp = Provider.of<PurchaseProvider>(context, listen: false);
     final palette = AppColors.palette;
 
     // Show quick feedback / loading snackbar
@@ -73,7 +71,7 @@ class SocialShareCard extends StatelessWidget {
         dhikr: dhikr,
         palette: palette,
         showTransliteration: showTransliteration,
-        showWatermark: !pp.isPro, // Pro users don't have mandatory watermark
+        showWatermark: true,
         categoryLabel: lp.getText(dhikr.category.titleKey),
       );
 

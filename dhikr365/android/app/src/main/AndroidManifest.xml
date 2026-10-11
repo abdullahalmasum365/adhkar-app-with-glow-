@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Approximate location is sufficient for prayer calculation and city identification -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -63,10 +63,10 @@
         <!-- HomeWidget Background and Scheduled Receivers -->
         <receiver
             android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"
-            android:exported="true" />
+            android:exported="false" />
         <receiver
             android:name="es.antonborri.home_widget.HomeWidgetScheduledUpdateReceiver"
-            android:exported="true" />
+            android:exported="false" />
 
         <!-- Widget 1: Prayer Countdown Medium (4x2) -->
         <receiver
@@ -140,12 +140,9 @@
                 android:resource="@xml/widget_tasbih_info" />
         </receiver>
 
-        <!-- Default small icon for notifications (FCM + local).
+        <!-- Default small icon for local notifications.
              MUST be monochrome white — Android 5+ only renders white pixels
              in the status bar. Colour icons appear as a solid grey blob. -->
-        <meta-data
-            android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_stat_notification" />
         <meta-data
             android:name="flutter_local_notifications.default_icon"
             android:resource="@drawable/ic_stat_notification" />

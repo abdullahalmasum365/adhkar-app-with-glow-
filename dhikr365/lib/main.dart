@@ -299,15 +299,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             return dp;
           },
         ),
-        ChangeNotifierProxyProvider2<AuthProvider, PurchaseProvider, ThemeProvider>(
+        ChangeNotifierProxyProvider<AuthProvider, ThemeProvider>(
           create: (_) => ThemeProvider(),
-          update: (_, auth, purchase, previous) {
+          update: (_, auth, previous) {
             final tp = previous ?? ThemeProvider();
-            tp.updateAuthAndPro(
-              auth.user?.uid,
-              purchase.isPro,
-              isPurchaseLoaded: purchase.isLoaded,
-            );
+            tp.attachUser(auth.user?.uid);
             return tp;
           },
         ),

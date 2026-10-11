@@ -1,16 +1,11 @@
 // ============================================================================
 // lib/providers/purchase_provider.dart
 //
-// Manages Google Play In-App Purchases, Lifetime Pro entitlements, and
-// recurring Sadaqah Jariyah subscriptions with active synchronization,
-// receipt verification, and cancellation/expiration enforcement.
+// Manages Google Play In-App Purchases for voluntary Sadaqah Jariyah
+// subscriptions with active synchronization, receipt verification, and
+// cancellation/expiration enforcement.
 //
-// Key Protections:
-//   1. Distinguishes Lifetime Pro (non-consumable) from recurring subscriptions.
-//   2. Startup synchronization via restorePurchases() with Google Play authority.
-//   3. Clears local cache when subscriptions expire or are refunded/canceled.
-//   4. Authoritative Source: Entitlements verified via Google Play restore & purchase stream.
-//   5. Strictly guards debug test overrides with kDebugMode.
+// All app features are 100% free and unlocked for everyone.
 // ============================================================================
 
 import 'dart:async';
@@ -23,14 +18,14 @@ import '../services/purchase_service.dart';
 import '../services/purchase_verification_service.dart';
 
 class PurchaseProvider extends ChangeNotifier {
-  static const String _prefKeyHasLifetimePro = 'has_lifetime_pro';
-  static const String _prefKeyActiveProTier = 'active_pro_tier_id';
-  static const String _prefKeyProExpiry = 'pro_expiry_ms';
   static const String _prefKeyActiveDonation = 'active_donation_id';
   static const String _prefKeyDonationExpiry = 'donation_expiry_ms';
   static const String _prefKeyLastVerified = 'last_verified_timestamp_ms';
 
-  // Legacy keys for migration
+  // Legacy keys for migration / cleanup
+  static const String _legacyPrefKeyHasLifetimePro = 'has_lifetime_pro';
+  static const String _legacyPrefKeyActiveProTier = 'active_pro_tier_id';
+  static const String _legacyPrefKeyProExpiry = 'pro_expiry_ms';
   static const String _legacyPrefKeyActiveSub = 'active_subscription_id';
   static const String _legacyPrefKeySubExpiry = 'subscription_expiry_ms';
 
@@ -45,14 +40,10 @@ class PurchaseProvider extends ChangeNotifier {
   String? _lastError;
   Map<String, ProductDetails> _products = {};
 
-  bool _hasLifetimePro = false;
-  String? _activeProTierId;
-  DateTime? _proExpiry;
   String? _activeDonationId;
   DateTime? _donationExpiry;
   DateTime? _lastVerified;
 
-  bool _isDebugOverride = false;
   final Set<String> _restoredProductIds = {};
   Completer<void>? _syncCompleter;
 
@@ -65,27 +56,6 @@ class PurchaseProvider extends ChangeNotifier {
   bool get isLoaded => _isLoaded;
   String? get lastError => _lastError;
   Map<String, ProductDetails> get products => _products;
-
-  /// Returns true if user holds verified Lifetime Pro.
-  bool get hasLifetimePro => _hasLifetimePro;
-
-  /// Returns true if user has an active, unexpired Pro subscription (1m, 6m, 1y).
-  bool get hasActiveProSubscription {
-    if (_activeProTierId == null) return false;
-    if (_proExpiry != null && DateTime.now().isAfter(_proExpiry!)) {
-      return false;
-    }
-    return true;
-  }
-
-  /// Returns active Pro subscription tier ID if not expired (e.g. adhkar365_pro_1m, 6m, 1y).
-  String? get activeProTierId {
-    if (!hasActiveProSubscription) return null;
-    return _activeProTierId;
-  }
-
-  /// Expiration date of the Pro subscription.
-  DateTime? get proExpiry => _proExpiry;
 
   /// Returns true if user has an active, unexpired Sadaqah Jariyah donation.
   bool get hasActiveDonation {
@@ -105,26 +75,24 @@ class PurchaseProvider extends ChangeNotifier {
   /// Expiration / next renewal estimation date of donation subscription.
   DateTime? get donationExpiry => _donationExpiry;
 
-  /// Adhkar 365 is free and ad-free for everyone.
-  /// Your voluntary support helps the independent developer keep it running and improving.
-  /// Every feature is unconditionally unlocked.
-  bool get isPro => true;
-
   /// Backward-compatibility getters
-  bool get hasActiveSubscription => hasActiveProSubscription || hasActiveDonation;
-  String? get activeSubscriptionId => activeProTierId ?? activeDonationId;
-  DateTime? get subscriptionExpiry => _proExpiry ?? _donationExpiry;
+  bool get hasActiveSubscription => hasActiveDonation;
+  String? get activeSubscriptionId => activeDonationId;
+  DateTime? get subscriptionExpiry => _donationExpiry;
   DateTime? get lastVerified => _lastVerified;
 
-  // ── Initialization ─────────────────────────────────────────────────────────
+  final Duration _syncTimeout;
 
   PurchaseProvider({
     PurchaseService? service,
     PurchaseVerificationService? verificationService,
+    Duration syncTimeout = const Duration(milliseconds: 3500),
     bool autoInit = true,
   })  : _service = service ?? PurchaseService(),
         _verificationService =
-            verificationService ?? PurchaseVerificationService() {
+            verificationService ?? PurchaseVerificationService(),
+        _syncTimeout = syncTimeout {
+    _service.listen(_onPurchaseUpdate);
     if (autoInit) {
       _init();
     }
@@ -135,14 +103,11 @@ class PurchaseProvider extends ChangeNotifier {
   Future<void> loadCachedEntitlements() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      _hasLifetimePro = prefs.getBool(_prefKeyHasLifetimePro) ?? false;
-      _activeProTierId = prefs.getString(_prefKeyActiveProTier);
-      final proExpiryMs = prefs.getInt(_prefKeyProExpiry);
-      if (proExpiryMs != null) {
-        _proExpiry = DateTime.fromMillisecondsSinceEpoch(proExpiryMs);
-      } else {
-        _proExpiry = null;
-      }
+
+      // Clean up legacy Pro keys from earlier versions
+      await prefs.remove(_legacyPrefKeyHasLifetimePro);
+      await prefs.remove(_legacyPrefKeyActiveProTier);
+      await prefs.remove(_legacyPrefKeyProExpiry);
 
       _activeDonationId = prefs.getString(_prefKeyActiveDonation);
       final donationExpiryMs = prefs.getInt(_prefKeyDonationExpiry);
@@ -156,12 +121,7 @@ class PurchaseProvider extends ChangeNotifier {
       final legacySubId = prefs.getString(_legacyPrefKeyActiveSub);
       final legacyExpiryMs = prefs.getInt(_legacyPrefKeySubExpiry);
       if (legacySubId != null) {
-        if (DonationProductIds.isProSubscription(legacySubId)) {
-          _activeProTierId ??= legacySubId;
-          if (legacyExpiryMs != null) {
-            _proExpiry ??= DateTime.fromMillisecondsSinceEpoch(legacyExpiryMs);
-          }
-        } else if (DonationProductIds.isDonationProduct(legacySubId)) {
+        if (DonationProductIds.isDonationProduct(legacySubId)) {
           _activeDonationId ??= legacySubId;
           if (legacyExpiryMs != null) {
             _donationExpiry ??= DateTime.fromMillisecondsSinceEpoch(legacyExpiryMs);
@@ -169,14 +129,6 @@ class PurchaseProvider extends ChangeNotifier {
         }
         await prefs.remove(_legacyPrefKeyActiveSub);
         await prefs.remove(_legacyPrefKeySubExpiry);
-      }
-
-      // Check if cached Pro subscription has already passed its expiry timestamp
-      if (_proExpiry != null && DateTime.now().isAfter(_proExpiry!)) {
-        debugPrint('[PurchaseProvider] Cached Pro subscription has expired.');
-        _activeProTierId = null;
-        await prefs.remove(_prefKeyActiveProTier);
-        await prefs.remove(_prefKeyProExpiry);
       }
 
       // Check if cached Donation has already passed its expiry timestamp
@@ -207,9 +159,7 @@ class PurchaseProvider extends ChangeNotifier {
     // 1. Load cached entitlement so offline users retain access while traveling
     await loadCachedEntitlements();
 
-    // 2. Start listening to Play Billing purchase events
-    _service.listen(_onPurchaseUpdate);
-
+    // 2. Check Play Billing availability
     _isAvailable = await _service.isAvailable;
     if (!_isAvailable) {
       _isLoading = false;
@@ -240,8 +190,11 @@ class PurchaseProvider extends ChangeNotifier {
   /// If Google Play returns an authoritative response omitting subscriptions, local cache is purged.
   /// Network timeouts or offline states PRESERVE existing cached entitlements.
   Future<void> syncPurchases() async {
-    if (!_isAvailable) return;
-    if (kDebugMode && _isDebugOverride) return;
+    _isAvailable = await _service.isAvailable;
+    if (!_isAvailable) {
+      debugPrint('[PurchaseProvider] Cannot sync: Play Billing unavailable or offline.');
+      return;
+    }
 
     _isSyncing = true;
     _restoredProductIds.clear();
@@ -251,9 +204,9 @@ class PurchaseProvider extends ChangeNotifier {
     try {
       await _service.restorePurchases();
 
-      // Wait for stream callback or healthy timeout (up to 3500ms)
+      // Wait for stream callback or healthy timeout
       await _syncCompleter!.future.timeout(
-        const Duration(milliseconds: 3500),
+        _syncTimeout,
         onTimeout: () {
           debugPrint('[PurchaseProvider] syncPurchases stream wait completed/timed out.');
         },
@@ -263,15 +216,7 @@ class PurchaseProvider extends ChangeNotifier {
       debugPrint('[PurchaseProvider] syncPurchases restore exception: $e');
     }
 
-    if (kDebugMode && _isDebugOverride) {
-      _isSyncing = false;
-      _syncCompleter = null;
-      return;
-    }
-
     // Offline-First & Network Latency Guard:
-    // If Play Store stream timed out or was unreachable (offline / airplane mode / slow network),
-    // NEVER revoke already-verified Lifetime Pro or active subscription entitlements!
     if (!streamResponded) {
       debugPrint('[PurchaseProvider] Preserving cached entitlement state due to network/stream timeout.');
       _isSyncing = false;
@@ -282,35 +227,6 @@ class PurchaseProvider extends ChangeNotifier {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-
-      // ── Lifetime Pro Verification ──────────────────────────────────────────
-      if (_restoredProductIds.contains(DonationProductIds.proLifetime)) {
-        _hasLifetimePro = true;
-        await prefs.setBool(_prefKeyHasLifetimePro, true);
-      } else if (_hasLifetimePro) {
-        // Authoritative response from Google Play explicitly omitting lifetime product
-        // -> Refunded or revoked by Google Play
-        debugPrint('[PurchaseProvider] Authoritative Google Play response: Lifetime Pro revoked/refunded. Clearing.');
-        _hasLifetimePro = false;
-        await prefs.remove(_prefKeyHasLifetimePro);
-      }
-
-      // ── Pro Subscription Verification ──────────────────────────────────────
-      final activeProSub = _restoredProductIds.firstWhere(
-        (id) => DonationProductIds.isProSubscription(id),
-        orElse: () => '',
-      );
-
-      if (activeProSub.isNotEmpty) {
-        _activeProTierId = activeProSub;
-        await prefs.setString(_prefKeyActiveProTier, activeProSub);
-      } else if (_activeProTierId != null) {
-        debugPrint('[PurchaseProvider] Authoritative Google Play response: Pro subscription expired or canceled. Clearing.');
-        _activeProTierId = null;
-        _proExpiry = null;
-        await prefs.remove(_prefKeyActiveProTier);
-        await prefs.remove(_prefKeyProExpiry);
-      }
 
       // ── Donation Subscription Verification ──────────────────────────────────
       final activeDonationSub = _restoredProductIds.firstWhere(
@@ -384,24 +300,7 @@ class PurchaseProvider extends ChangeNotifier {
 
             if (record.isValid) {
               final now = DateTime.now();
-              if (DonationProductIds.isLifetimePro(purchase.productID)) {
-                _hasLifetimePro = true;
-                await prefs.setBool(_prefKeyHasLifetimePro, true);
-              } else if (DonationProductIds.isProSubscription(purchase.productID)) {
-                _activeProTierId = purchase.productID;
-                if (purchase.productID == DonationProductIds.pro1Year) {
-                  _proExpiry = now.add(const Duration(days: 370));
-                } else if (purchase.productID == DonationProductIds.pro6Months) {
-                  _proExpiry = now.add(const Duration(days: 185));
-                } else {
-                  // pro1Month
-                  _proExpiry = now.add(const Duration(days: 33));
-                }
-                await prefs.setString(_prefKeyActiveProTier, _activeProTierId!);
-                await prefs.setInt(_prefKeyProExpiry,
-                    _proExpiry!.millisecondsSinceEpoch);
-              } else if (DonationProductIds.isDonationProduct(purchase.productID)) {
-                // Independent Sadaqah Jariyah donation — does NOT grant Pro
+              if (DonationProductIds.isDonationProduct(purchase.productID)) {
                 _activeDonationId = purchase.productID;
                 if (purchase.productID == DonationProductIds.annual) {
                   _donationExpiry = now.add(const Duration(days: 370));
@@ -464,18 +363,15 @@ class PurchaseProvider extends ChangeNotifier {
   }
 
   Future<void> clearSubscription() async {
-    _hasLifetimePro = false;
-    _activeProTierId = null;
-    _proExpiry = null;
     _activeDonationId = null;
     _donationExpiry = null;
     _lastVerified = null;
     _restoredProductIds.clear();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_prefKeyHasLifetimePro);
-      await prefs.remove(_prefKeyActiveProTier);
-      await prefs.remove(_prefKeyProExpiry);
+      await prefs.remove(_legacyPrefKeyHasLifetimePro);
+      await prefs.remove(_legacyPrefKeyActiveProTier);
+      await prefs.remove(_legacyPrefKeyProExpiry);
       await prefs.remove(_prefKeyActiveDonation);
       await prefs.remove(_prefKeyDonationExpiry);
       await prefs.remove(_prefKeyLastVerified);
@@ -488,86 +384,6 @@ class PurchaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Toggle Pro status for developer testing / QA without real payment (Debug only)
-  Future<void> toggleProForTesting() async {
-    assert(kDebugMode, 'toggleProForTesting must never be called in release builds');
-    if (!kDebugMode) return;
-    _isDebugOverride = true;
-    final prefs = await SharedPreferences.getInstance();
-    if (isPro) {
-      _hasLifetimePro = false;
-      _activeProTierId = null;
-      _proExpiry = null;
-      await prefs.remove(_prefKeyHasLifetimePro);
-      await prefs.remove(_prefKeyActiveProTier);
-      await prefs.remove(_prefKeyProExpiry);
-    } else {
-      _hasLifetimePro = true;
-      await prefs.setBool(_prefKeyHasLifetimePro, true);
-    }
-    notifyListeners();
-  }
-
-  /// Test helper to feed simulated purchase events to PurchaseProvider.
-  @visibleForTesting
-  Future<void> handlePurchaseUpdatesForTesting(List<PurchaseDetails> purchases) =>
-      _onPurchaseUpdate(purchases);
-
-  /// Test helper to execute authoritative sync with a given set of restored product IDs.
-  @visibleForTesting
-  Future<void> executeSyncWithRestoredIdsForTesting(Set<String> restoredIds) async {
-    _restoredProductIds.clear();
-    _restoredProductIds.addAll(restoredIds);
-
-    final prefs = await SharedPreferences.getInstance();
-
-    if (_restoredProductIds.contains(DonationProductIds.proLifetime)) {
-      _hasLifetimePro = true;
-      await prefs.setBool(_prefKeyHasLifetimePro, true);
-    } else if (_hasLifetimePro) {
-      debugPrint('[PurchaseProvider] Authoritative Google Play response: Lifetime Pro revoked/refunded. Clearing.');
-      _hasLifetimePro = false;
-      await prefs.remove(_prefKeyHasLifetimePro);
-    }
-
-    final activeProSub = _restoredProductIds.firstWhere(
-      (id) => DonationProductIds.isProSubscription(id),
-      orElse: () => '',
-    );
-
-    if (activeProSub.isNotEmpty) {
-      _activeProTierId = activeProSub;
-      await prefs.setString(_prefKeyActiveProTier, activeProSub);
-    } else if (_activeProTierId != null) {
-      debugPrint('[PurchaseProvider] Authoritative Google Play response: Pro subscription expired or canceled. Clearing.');
-      _activeProTierId = null;
-      _proExpiry = null;
-      await prefs.remove(_prefKeyActiveProTier);
-      await prefs.remove(_prefKeyProExpiry);
-    }
-
-    final activeDonationSub = _restoredProductIds.firstWhere(
-      (id) => DonationProductIds.isDonationProduct(id),
-      orElse: () => '',
-    );
-
-    if (activeDonationSub.isNotEmpty) {
-      _activeDonationId = activeDonationSub;
-      await prefs.setString(_prefKeyActiveDonation, activeDonationSub);
-    } else if (_activeDonationId != null) {
-      debugPrint('[PurchaseProvider] Authoritative Google Play response: Donation expired or canceled. Clearing.');
-      _activeDonationId = null;
-      _donationExpiry = null;
-      await prefs.remove(_prefKeyActiveDonation);
-      await prefs.remove(_prefKeyDonationExpiry);
-    }
-
-    _lastVerified = DateTime.now();
-    await prefs.setInt(
-        _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
-
-    notifyListeners();
-  }
 
   @override
   void dispose() {

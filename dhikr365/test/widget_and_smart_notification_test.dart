@@ -99,10 +99,11 @@ void main() {
     });
   });
 
-  group('Multi-Theme Palettes & Pro Access Verification', () {
-    test('8. All 11 luxury and base palettes are 100% free (Waqf model)', () {
+  group('Multi-Theme Palettes & Free Access Verification', () {
+    test('8. All 15 luxury and base palettes are available for everyone', () {
       for (final p in AppPalettes.all) {
-        expect(p.isPro, isFalse, reason: 'Palette ${p.id} should be free');
+        expect(p.id.isNotEmpty, isTrue);
+        expect(p.label.isNotEmpty, isTrue);
       }
     });
 

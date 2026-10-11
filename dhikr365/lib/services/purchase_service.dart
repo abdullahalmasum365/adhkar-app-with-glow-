@@ -14,98 +14,54 @@ import 'dart:async';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-/// Subscription product IDs — must be created as subscription base plans
-/// with these exact IDs in Play Console → Monetize → Products → Subscriptions.
+/// Subscription product IDs for voluntary Sadaqah Jariyah support.
+/// Must exist as subscription base plans in Play Console.
 class DonationProductIds {
-  // Pro Subscription Plans (1 Month, 6 Months, 1 Year)
-  static const pro1Month = 'adhkar365_pro_1m';
-  static const pro6Months = 'adhkar365_pro_6m';
-  static const pro1Year = 'adhkar365_pro_1y';
-  // Legacy Lifetime Pro (supported for past purchasers)
-  static const proLifetime = 'adhkar365_pro_lifetime';
-
   // Sadaqah Jariyah products (Monthly & Annual Auto-Renewing Subscriptions)
   static const seed = 'donation_seed_monthly';
   static const supporter = 'donation_supporter_monthly';
   static const patron = 'donation_patron_monthly';
   static const annual = 'donation_annual_sponsor';
 
-  static const proSubscriptionTiers = {pro1Month, pro6Months, pro1Year};
-  static const proProducts = {pro1Month, pro6Months, pro1Year, proLifetime};
   static const donationTiers = {seed, supporter, patron, annual};
+  static const subscriptionTiers = donationTiers;
+  static const all = donationTiers;
 
-  static const subscriptionTiers = {
-    pro1Month,
-    pro6Months,
-    pro1Year,
-    seed,
-    supporter,
-    patron,
-    annual,
-  };
-
-  static const all = {
-    pro1Month,
-    pro6Months,
-    pro1Year,
-    proLifetime,
-    seed,
-    supporter,
-    patron,
-    annual,
-  };
-
-  static bool isLifetimePro(String id) => id == proLifetime;
-  static bool isProSubscription(String id) => proSubscriptionTiers.contains(id);
-  static bool isProProduct(String id) => proProducts.contains(id);
   static bool isDonationProduct(String id) => donationTiers.contains(id);
   static bool isSubscription(String id) => subscriptionTiers.contains(id);
 }
 
 class PurchaseService {
-  static PurchaseService? _mockInstance;
-  static PurchaseService? _instance;
-
-  static void setMock(PurchaseService? mock) => _mockInstance = mock;
-
-  factory PurchaseService({InAppPurchase? iap}) {
-    if (_mockInstance != null) {
-      return _mockInstance!;
-    }
-    if (iap != null) {
-      return PurchaseService._internal(iap: iap);
-    }
-    return _instance ??= PurchaseService._internal();
-  }
-  PurchaseService._internal({InAppPurchase? iap})
-      : _iap = iap ?? InAppPurchase.instance;
-
-  final InAppPurchase _iap;
+  final InAppPurchase? _iap;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
 
-  Future<bool> get isAvailable => _iap.isAvailable();
+  PurchaseService({InAppPurchase? iap}) : _iap = iap;
+
+  InAppPurchase get _instance => _iap ?? InAppPurchase.instance;
+
+  Future<bool> get isAvailable => _instance.isAvailable();
 
   /// Starts listening for purchase updates. Call once at app startup.
   /// [onUpdate] is invoked with each purchase update batch — the caller
   /// (PurchaseProvider) is responsible for completing pending purchases.
   void listen(void Function(List<PurchaseDetails>) onUpdate) {
     _subscription?.cancel();
-    _subscription = _iap.purchaseStream.listen(
+    _subscription = _instance.purchaseStream.listen(
       onUpdate,
       onError: (_) {},
     );
   }
 
   Future<ProductDetailsResponse> queryProducts(Set<String> ids) {
-    return _iap.queryProductDetails(ids);
+    return _instance.queryProductDetails(ids);
   }
 
   Future<bool> buyProduct(ProductDetails product, {bool isConsumable = false}) {
     final purchaseParam = PurchaseParam(productDetails: product);
     if (isConsumable) {
-      return _iap.buyConsumable(purchaseParam: purchaseParam);
+      return _instance.buyConsumable(purchaseParam: purchaseParam);
     }
-    return _iap.buyNonConsumable(purchaseParam: purchaseParam);
+    return _instance.buyNonConsumable(purchaseParam: purchaseParam);
   }
 
   Future<bool> buySubscription(ProductDetails product) {
@@ -113,11 +69,11 @@ class PurchaseService {
   }
 
   Future<void> completePurchase(PurchaseDetails purchase) {
-    return _iap.completePurchase(purchase);
+    return _instance.completePurchase(purchase);
   }
 
   Future<void> restorePurchases() {
-    return _iap.restorePurchases();
+    return _instance.restorePurchases();
   }
 
   void dispose() {

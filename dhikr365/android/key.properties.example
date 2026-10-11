@@ -1,0 +1,19 @@
+# Example Android release signing configuration for Adhkar 365
+# -----------------------------------------------------------------------------
+# Instructions:
+# 1. Copy this file to 'android/key.properties':
+#      cp android/key.properties.example android/key.properties
+# 2. Fill in the values below with your release keystore credentials.
+# 3. Ensure 'storeFile' points to your valid .jks or .keystore file.
+#    Relative paths are resolved relative to the 'android/app' directory
+#    (e.g., '../upload-keystore.jks' points to 'android/upload-keystore.jks').
+#
+# IMPORTANT:
+# - 'key.properties' is gitignored and must NEVER be committed to version control.
+# - Keep your keystore file and passwords safe and backed up.
+# -----------------------------------------------------------------------------
+
+keyAlias=upload
+keyPassword=your_key_password_here
+storeFile=../upload-keystore.jks
+storePassword=your_keystore_password_here

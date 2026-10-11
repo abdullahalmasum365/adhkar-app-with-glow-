@@ -24,16 +24,16 @@ void main() {
       expect(provider.isDhikrEnabled('e_sayyidul_istighfar'), isTrue);
     });
 
-    test('2. Subscription Unlocks Pro: Simulated active subscription in SharedPreferences', () async {
-      // Simulate successful in-app purchase of subscription
+    test('2. Voluntary Subscription: Persists active donation subscription in SharedPreferences', () async {
+      // Simulate successful in-app purchase of voluntary donation subscription
       SharedPreferences.setMockInitialValues({
-        'active_subscription_id': 'tier_monthly',
+        'active_donation_id': 'donation_supporter_monthly',
       });
       final prefs = await SharedPreferences.getInstance();
 
-      final savedSub = prefs.getString('active_subscription_id');
-      expect(savedSub, equals('tier_monthly'));
-      expect(savedSub != null, isTrue); // Pro is unlocked!
+      final savedSub = prefs.getString('active_donation_id');
+      expect(savedSub, equals('donation_supporter_monthly'));
+      expect(savedSub != null, isTrue);
     });
 
     test('3. Custom Plan: Enabling custom routine & selecting specific duas', () async {

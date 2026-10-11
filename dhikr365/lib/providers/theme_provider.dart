@@ -16,7 +16,6 @@ class ThemeProvider extends ChangeNotifier {
   bool _showHabitTracker = true;
   String _paletteId = AppPalettes.emeraldNight.id;
   String? _uid;
-  bool _isPro = false;
 
   ThemeMode get themeMode => _themeMode;
 
@@ -31,9 +30,6 @@ class ThemeProvider extends ChangeNotifier {
 
   /// When false, habit tracking charts, rings, and streak metrics are hidden in ProgressScreen.
   bool get showHabitTracker => _showHabitTracker;
-
-  /// Whether the user holds verified Pro status (Lifetime or active unexpired subscription).
-  bool get isPro => _isPro;
 
   // Legacy names kept for DhikrCard / widgets that still reference them —
   // now palette-backed so they follow the active theme.
@@ -56,22 +52,6 @@ class ThemeProvider extends ChangeNotifier {
     _loadFuture = _load();
   }
 
-  /// Helper to check if user has active Pro entitlement cached in local preferences.
-  static bool checkIsProInPrefs(SharedPreferences prefs) {
-    final hasLifetime = prefs.getBool('has_lifetime_pro') ?? false;
-    final activeSub = prefs.getString('active_subscription_id');
-    final expiryMs = prefs.getInt('subscription_expiry_ms');
-    bool hasActiveSub = false;
-    if (activeSub != null && activeSub.isNotEmpty) {
-      if (expiryMs != null) {
-        hasActiveSub = DateTime.now().millisecondsSinceEpoch <= expiryMs;
-      } else {
-        hasActiveSub = true;
-      }
-    }
-    return hasLifetime || hasActiveSub;
-  }
-
   /// Reads the saved palette and applies it to [AppColors]. Called from
   /// main() before runApp so the very first frame already uses the saved
   /// theme (no dark→light flash for Royal White users).
@@ -88,7 +68,6 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    _isPro = checkIsProInPrefs(prefs);
     final savedId = prefs.getString(_paletteKey) ?? AppPalettes.emeraldNight.id;
     final candidate = AppPalettes.byId(savedId);
 
@@ -100,22 +79,6 @@ class ThemeProvider extends ChangeNotifier {
     _showHabitTracker = prefs.getBool('show_habit_tracker') ?? true;
     notifyListeners();
     WidgetService().updateTheme(palette);
-  }
-
-  /// Called from main ChangeNotifierProxyProvider2 when Auth or Purchase state updates.
-  Future<void> updateAuthAndPro(String? uid, bool isPro, {bool isPurchaseLoaded = true}) async {
-    if (!isPurchaseLoaded) {
-      if (uid != _uid) {
-        await attachUser(uid);
-      }
-      return;
-    }
-
-    _isPro = isPro;
-
-    if (uid != _uid) {
-      await attachUser(uid);
-    }
   }
 
   /// Switches the whole app to palette [id], persists the choice, and

@@ -1218,7 +1218,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               Expanded(
                                   child: _ThemeChoice.fromPalette(
                                       AppPalettes.all[i], tp,
-                                      isUserPro: pp.isPro,
                                       context: context,
                                       onSelected: () =>
                                           np.refreshAllSchedules(up))),
@@ -1227,7 +1226,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 child: i + 1 < AppPalettes.all.length
                                     ? _ThemeChoice.fromPalette(
                                         AppPalettes.all[i + 1], tp,
-                                        isUserPro: pp.isPro,
                                         context: context,
                                         onSelected: () =>
                                             np.refreshAllSchedules(up))
@@ -1367,8 +1365,6 @@ class _ThemeChoice extends StatelessWidget {
   final bool selected;
   final List<Color> swatches; // [background, surface, accent]
   final Color previewText;
-  final bool isPro;
-  final bool isLocked;
   final VoidCallback onTap;
 
   const _ThemeChoice({
@@ -1377,8 +1373,6 @@ class _ThemeChoice extends StatelessWidget {
     required this.selected,
     required this.swatches,
     required this.previewText,
-    this.isPro = false,
-    this.isLocked = false,
     required this.onTap,
   });
 
@@ -1388,7 +1382,6 @@ class _ThemeChoice extends StatelessWidget {
   factory _ThemeChoice.fromPalette(
     AppPalette p,
     ThemeProvider tp, {
-    required bool isUserPro,
     required BuildContext context,
     Future<void> Function()? onSelected,
   }) {
@@ -1398,8 +1391,6 @@ class _ThemeChoice extends StatelessWidget {
       selected: tp.paletteId == p.id,
       swatches: [p.homeGradient[0], p.homeGradient[1], p.primary],
       previewText: p.textPrimary,
-      isPro: false,
-      isLocked: false,
       onTap: () async {
         if (tp.paletteId == p.id) return;
         await tp.setPalette(p.id);
@@ -1421,11 +1412,7 @@ class _ThemeChoice extends StatelessWidget {
               : AppColors.ink(0.03),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected
-                ? AppColors.primary
-                : (isLocked
-                    ? ThemeProvider.divineAmber.withValues(alpha: 0.3)
-                    : AppColors.ink(0.10)),
+            color: selected ? AppColors.primary : AppColors.ink(0.10),
             width: selected ? 1.6 : 1,
           ),
         ),
@@ -1460,27 +1447,6 @@ class _ThemeChoice extends StatelessWidget {
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
-                      if (isPro)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 1.5),
-                          decoration: BoxDecoration(
-                            color: ThemeProvider.divineAmber
-                                .withValues(alpha: 0.25),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                                color: ThemeProvider.divineAmber, width: 0.8),
-                          ),
-                          child: Text(
-                            'PRO',
-                            style: TextStyle(
-                              fontSize: 8.5,
-                              fontWeight: FontWeight.w900,
-                              color: ThemeProvider.divineAmber,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   Row(children: [
@@ -1517,15 +1483,11 @@ class _ThemeChoice extends StatelessWidget {
               Icon(
                 selected
                     ? Icons.check_circle_rounded
-                    : (isLocked
-                        ? Icons.lock_rounded
-                        : Icons.circle_outlined),
+                    : Icons.circle_outlined,
                 size: 16,
                 color: selected
                     ? AppColors.primary
-                    : (isLocked
-                        ? ThemeProvider.divineAmber
-                        : AppColors.ink(0.25)),
+                    : AppColors.ink(0.25),
               ),
             ]),
             const SizedBox(height: 2),
@@ -1693,7 +1655,7 @@ class _DevPanelSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<PurchaseProvider, DhikrProvider>(
       builder: (ctx, pp, dp, _) {
-        final isPro = pp.isPro;
+        final hasDonation = pp.hasActiveDonation;
         final streak = dp.streakDays;
         final totalTaps = dp.totalDhikrCount;
         final completed = dp.completedSets;
@@ -1754,57 +1716,28 @@ class _DevPanelSheet extends StatelessWidget {
                         .copyWith(fontSize: 11)),
                 const SizedBox(height: 20),
 
-                // ── PRO TOGGLE ────────────────────────────────────────────
+                // ── DONATION STATUS ───────────────────────────────────────
                 _devSection(
-                  icon: Icons.workspace_premium_rounded,
-                  label: 'SUBSCRIPTION STATUS',
+                  icon: Icons.volunteer_activism_rounded,
+                  label: 'SADAQAH / DONATION STATUS',
                   color: ThemeProvider.divineAmber,
                   child: Column(
                     children: [
                       _devRow(
                         'Current Status',
-                        isPro
-                            ? '✅ PRO ACTIVE'
-                            : '🔒 FREE (Non-Pro)',
-                        valueColor: isPro ? Colors.green : Colors.grey,
+                        hasDonation
+                            ? '✅ DONATION ACTIVE'
+                            : '🤍 FREE SUPPORTER',
+                        valueColor: hasDonation ? Colors.green : Colors.grey,
                       ),
-                      if (pp.activeSubscriptionId != null)
-                        _devRow('Product ID', pp.activeSubscriptionId!),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          icon: Icon(
-                              isPro
-                                  ? Icons.lock_open_rounded
-                                  : Icons.workspace_premium_rounded,
-                              size: 18),
-                          label: Text(isPro
-                              ? 'SWITCH TO FREE (Non-Pro)'
-                              : 'UNLOCK PRO (Simulate Purchase)'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isPro
-                                ? Colors.redAccent.withValues(alpha: 0.15)
-                                : ThemeProvider.divineAmber
-                                    .withValues(alpha: 0.2),
-                            foregroundColor:
-                                isPro ? Colors.redAccent : ThemeProvider.divineAmber,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: BorderSide(
-                                    color: isPro
-                                        ? Colors.redAccent
-                                        : ThemeProvider.divineAmber,
-                                    width: 1)),
-                            elevation: 0,
-                          ),
-                          onPressed: kDebugMode ? () => pp.toggleProForTesting() : null,
-                        ),
-                      ),
+                      if (pp.activeDonationId != null)
+                        _devRow('Product ID', pp.activeDonationId!),
+                      if (pp.donationExpiry != null)
+                        _devRow('Expiry / Renews',
+                            pp.donationExpiry.toString().split('.').first),
                       const SizedBox(height: 8),
                       Text(
-                          '📌 Pro unlocks: Custom Plan (Customize routine), priority cloud sync',
+                          '📌 App features are 100% free. Voluntary donations support development and servers.',
                           style: AppText.body(color: AppColors.textSlate400)
                               .copyWith(fontSize: 11)),
                     ],
@@ -2008,8 +1941,8 @@ class _DevPanelSheet extends StatelessWidget {
                           'Streak + badges saved to Firestore (users/{uid}/progress/data) when logged in. Merge rule: keep highest streak, never revoke badges.'),
                       _rule('🔄 Daily Reset',
                           'All counts reset to 0 on midnight when app opens. Detected via last_reset_date key in SharedPreferences.'),
-                      _rule('💎 Pro Access',
-                          'isPro = true when active_subscription_id key exists in SharedPreferences. Pro unlocks: Custom Plan screen, cloud plan sync.'),
+                      _rule('💖 100% Free Experience',
+                          'All features, custom plans, audio recitations, prayer times, and cloud sync are 100% free with no paywalls or locked items.'),
                     ],
                   ),
                 ),

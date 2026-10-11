@@ -55,7 +55,7 @@ void main() {
       expect(find.text('adhkar365.app'), findsOneWidget);
     });
 
-    testWidgets('2. Pro users can omit watermark and disable transliteration',
+    testWidgets('2. Card options: omit watermark and disable transliteration',
         (tester) async {
       await tester.pumpWidget(
         MaterialApp(
