@@ -685,13 +685,17 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         color: ThemeProvider.divineAmber,
                                       ),
                                       SizedBox(width: R.px(3)),
-                                      Text(
-                                        'SYNCED RECITATION',
-                                        style: TextStyle(
-                                          fontSize: R.sp(8.0),
-                                          fontWeight: FontWeight.w800,
-                                          letterSpacing: 0.8,
-                                          color: ThemeProvider.divineAmber,
+                                      Flexible(
+                                        child: Text(
+                                          'SYNCED RECITATION',
+                                          style: TextStyle(
+                                            fontSize: R.sp(8.0),
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 0.8,
+                                            color: ThemeProvider.divineAmber,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                     ],
@@ -1099,9 +1103,13 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                               color: AppColors.ink(0.35),
                             ),
                             SizedBox(width: R.px(6)),
-                            Text(
-                              lp.getText('tap_anywhere_to_count'),
-                              style: AppText.label(color: AppColors.ink(0.35)),
+                            Flexible(
+                              child: Text(
+                                lp.getText('tap_anywhere_to_count'),
+                                style: AppText.label(color: AppColors.ink(0.35)),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),

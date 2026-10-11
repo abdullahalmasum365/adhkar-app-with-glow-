@@ -146,7 +146,7 @@ class ThemeProvider extends ChangeNotifier {
   }
 
   /// Called whenever the signed-in user changes. Restores saved theme and
-  /// aids from Cloud Firestore, with strict validation and Pro entitlement checks.
+  /// reading aid preferences from Cloud Firestore with strict validation.
   Future<void> attachUser(String? uid) async {
     if (uid == _uid && uid != null) return;
     _uid = uid;

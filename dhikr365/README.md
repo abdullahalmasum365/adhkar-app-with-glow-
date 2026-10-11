@@ -3,10 +3,13 @@
 [![Flutter](https://img.shields.io/badge/Flutter-3.24%2B-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.4%2B-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![Target Android](https://img.shields.io/badge/TargetSdk-36%20(Android%2016)-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
-[![iOS](https://img.shields.io/badge/iOS-14.0%2B-black?logo=apple&logoColor=white)](https://www.apple.com/ios/)
+[![Platform](https://img.shields.io/badge/Platform-Android%20only%20for%20v1-3DDC84?logo=android&logoColor=white)](https://developer.android.com)
 [![License](https://img.shields.io/badge/License-Proprietary-blue.svg)](#license)
 
 **Adhkar 365** is a modern, privacy-first, and distraction-free daily Islamic companion designed to help Muslims cultivate consistent spiritual remembrance (*dhikr*) and stay connected with their daily prayers.
+
+> [!NOTE]
+> **Android only for v1:** iOS is out of scope for the v1 release. See [Platform Support & iOS Roadmap](#-platform-support--future-ios-roadmap) for details.
 
 Built with Flutter, Adhkar 365 combines authentic prophetic supplications from *Hisn al-Muslim* (Fortress of the Muslim) with precise prayer timings, haptic Qibla compass navigation, high-quality audio recitations, and reflective habit tracking.
 
@@ -149,7 +152,6 @@ lib/
 
 3. **Configure Firebase (Optional for Cloud Sync):**
    - Place your `google-services.json` inside `android/app/`.
-   - Place your `GoogleService-Info.plist` inside `ios/Runner/`.
 
 4. **Run tests:**
    ```bash
@@ -168,6 +170,23 @@ To generate an optimized, obfuscated release Android App Bundle (AAB):
 ```bash
 flutter build appbundle --release
 ```
+
+---
+
+## 📱 Platform Support & Future iOS Roadmap
+
+> **Android only for v1**
+
+iOS is out of scope for v1.
+
+If asked to support iOS later, the TODO list is:
+1. **Deployment Target:** Raise `IPHONEOS_DEPLOYMENT_TARGET` to 15.
+2. **Podfile:** Commit a `Podfile`.
+3. **Firebase Setup:** Add `GoogleService-Info.plist` instructions.
+4. **Google Sign-In Scheme:** Add the `REVERSED_CLIENT_ID` URL scheme in `Info.plist`.
+5. **Firebase Options:** Add iOS `FirebaseOptions` in `lib/firebase_options.dart` (do not fall back to Android options).
+6. **Sign in with Apple Token Revocation:** Implement Sign in with Apple token revocation on account deletion.
+7. **Local Notifications Limit:** Handle the 64 pending local notifications limit.
 
 ---
 

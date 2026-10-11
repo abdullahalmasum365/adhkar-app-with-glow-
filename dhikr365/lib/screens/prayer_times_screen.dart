@@ -683,14 +683,16 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                   Icon(Icons.warning_amber_rounded,
                       size: 16, color: ThemeProvider.divineAmber),
                   const SizedBox(width: 8),
-                  Text(
-                    lp.locale.languageCode == 'bn'
-                        ? 'নামাজের নিষিদ্ধ ওয়াক্ত (আওকাতুন নাহয়)'
-                        : 'Forbidden Prayer Times (Awqat an-Nahy)',
-                    style: AppText.manrope(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: ThemeProvider.divineAmber,
+                  Expanded(
+                    child: Text(
+                      lp.locale.languageCode == 'bn'
+                          ? 'নামাজের নিষিদ্ধ ওয়াক্ত (আওকাতুন নাহয়)'
+                          : 'Forbidden Prayer Times (Awqat an-Nahy)',
+                      style: AppText.manrope(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: ThemeProvider.divineAmber,
+                      ),
                     ),
                   ),
                 ],
@@ -921,9 +923,11 @@ class _HeroCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(prayer.label, // translated display label
-                  style: AppText.manrope(
-                      fontSize: 44, fontWeight: FontWeight.w900)),
+              Flexible(
+                child: Text(prayer.label, // translated display label
+                    style: AppText.manrope(
+                        fontSize: 44, fontWeight: FontWeight.w900)),
+              ),
               const SizedBox(width: 10),
               Text(prayer.timeStr,
                   style: AppText.manrope(
@@ -936,12 +940,14 @@ class _HeroCard extends StatelessWidget {
           Row(children: [
             Icon(Icons.schedule, color: AppColors.primary, size: 15),
             const SizedBox(width: 6),
-            Text(
-              '${next.label} $inLabel $countdown', // "Dhuhr in 2h 30m"
-              style: AppText.manrope(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary),
+            Expanded(
+              child: Text(
+                '${next.label} $inLabel $countdown', // "Dhuhr in 2h 30m"
+                style: AppText.manrope(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary),
+              ),
             ),
           ]),
         ]),
@@ -1006,13 +1012,16 @@ class _PrayerRowState extends State<_PrayerRow> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                   Row(children: [
-                    Text(p.label, // translated display label
-                        style: AppText.manrope(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: widget.isNow
-                                ? AppColors.primary
-                                : AppColors.textSlate300)),
+                    Flexible(
+                      child: Text(p.label, // translated display label
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.manrope(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: widget.isNow
+                                  ? AppColors.primary
+                                  : AppColors.textSlate300)),
+                    ),
                     if (widget.isNext) ...[
                       const SizedBox(width: 8),
                       Container(

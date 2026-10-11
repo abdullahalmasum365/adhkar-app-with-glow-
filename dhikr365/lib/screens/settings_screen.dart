@@ -1555,25 +1555,28 @@ class _Tile extends StatelessWidget {
       this.onTap});
 
   @override
-  Widget build(_) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-        leading: _IBox(icon, color),
-        title: Text(title,
-            style: AppText.manrope(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: titleColor ?? AppColors.textPrimary)),
-        subtitle: subtitle != null
-            ? Text(subtitle!,
-                style: AppText.body(color: AppColors.textSlate400)
-                    .copyWith(fontSize: 12))
-            : null,
-        trailing: trailing ??
-            (onTap != null
-                ? Icon(Icons.chevron_right,
-                    color: AppColors.textSlate500, size: 20)
-                : null),
-        onTap: onTap,
+  Widget build(_) => Material(
+        color: Colors.transparent,
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+          leading: _IBox(icon, color),
+          title: Text(title,
+              style: AppText.manrope(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: titleColor ?? AppColors.textPrimary)),
+          subtitle: subtitle != null
+              ? Text(subtitle!,
+                  style: AppText.body(color: AppColors.textSlate400)
+                      .copyWith(fontSize: 12))
+              : null,
+          trailing: trailing ??
+              (onTap != null
+                  ? Icon(Icons.chevron_right,
+                      color: AppColors.textSlate500, size: 20)
+                  : null),
+          onTap: onTap,
+        ),
       );
 }
 

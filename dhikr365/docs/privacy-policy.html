@@ -165,10 +165,10 @@
       <td>Searched city query string, User-Agent, device IP address</td>
     </tr>
     <tr>
-      <td><strong>Google Fonts CDN</strong></td>
-      <td>Google LLC</td>
-      <td>Runtime delivery of open-source Arabic &amp; Latin fonts</td>
-      <td>Device IP address &amp; technical HTTP headers during font fetch</td>
+      <td><strong>Google Fonts (Bundled Offline)</strong></td>
+      <td>Google LLC / Open Font Authors</td>
+      <td>Pre-bundled open-source typography (Amiri, Manrope, Noto Serif, Space Mono, Public Sans) under SIL OFL 1.1</td>
+      <td>None (runtime network fetching disabled via <code>allowRuntimeFetching = false</code>; no network requests to fonts.gstatic.com)</td>
     </tr>
     <tr>
       <td><strong>Adhan Library</strong></td>
@@ -308,7 +308,7 @@
         <td>No</td>
         <td>Yes (ephemeral transit IP during HTTPS queries)</td>
         <td>Automatic for network features</td>
-        <td>App functionality (Firebase sync, OpenStreetMap small town geocoding, Google Fonts fallback)</td>
+        <td>App functionality (Firebase cloud sync and OpenStreetMap small town geocoding)</td>
       </tr>
     </tbody>
   </table>
