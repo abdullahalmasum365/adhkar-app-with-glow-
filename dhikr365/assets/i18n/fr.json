@@ -339,5 +339,16 @@
   "card_ready": "Carte prête à partager !",
   "health_disclaimer_title": "Avis sur les invocations spirituelles",
   "health_disclaimer": "Ces invocations authentiques sont destinées au réconfort spirituel et à la dévotion. Elles ne constituent ni ne remplacent un avis médical professionnel, un diagnostic ou un traitement. Consultez toujours un médecin qualifié.",
-  "health_disclaimer_short": "Rappel spirituel • Ne remplace pas un traitement médical"
+  "health_disclaimer_short": "Rappel spirituel • Ne remplace pas un traitement médical",
+  "tap_anywhere_to_count": "Appuyez n'importe où pour compter",
+  "remaining": "restant",
+  "facing_qibla": "Face à la Qibla",
+  "location_not_set": "Emplacement non défini",
+  "qibla_location_hint": "Définissez votre position dans les Paramètres pour utiliser la boussole de la Qibla.",
+  "prayer_calc_madhab": "Calcul de prière et Madhab",
+  "madhab_asr_calc": "Madhab (Calcul du Asr)",
+  "madhab_hanafi_desc": "Hanafi • Asr plus tard (ombre 2x)",
+  "madhab_standard_desc": "Chaféite, Malikite, Hanbalite • Asr plus tôt (ombre 1x)",
+  "calc_method": "Méthode de calcul",
+  "select_madhab": "Sélectionner le Madhab"
 }

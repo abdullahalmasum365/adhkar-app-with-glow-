@@ -341,5 +341,14 @@
   "card_ready": "Card ready to share!",
   "health_disclaimer_title": "Spiritual Supplication Notice",
   "health_disclaimer": "These authentic supplications are for spiritual comfort and devotional remembrance. They do NOT constitute or replace professional medical advice, diagnosis, or treatment. Always consult a qualified physician for any health condition.",
-  "health_disclaimer_short": "Spiritual remembrance • Not a substitute for medical treatment"
+  "health_disclaimer_short": "Spiritual remembrance • Not a substitute for medical treatment",
+  "facing_qibla": "Facing Qibla",
+  "location_not_set": "Location Not Set",
+  "qibla_location_hint": "Set your location in Settings to use the Qibla compass.",
+  "prayer_calc_madhab": "Prayer Calculation & Madhab",
+  "madhab_asr_calc": "Madhab (Asr Calculation)",
+  "madhab_hanafi_desc": "Hanafi • Later Asr (2x shadow)",
+  "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Earlier Asr (1x shadow)",
+  "calc_method": "Calculation Method",
+  "select_madhab": "Select Madhab"
 }

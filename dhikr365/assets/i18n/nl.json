@@ -339,5 +339,16 @@
   "card_ready": "Kaart klaar om te delen!",
   "health_disclaimer_title": "Kennisgeving spirituele smeekbeden",
   "health_disclaimer": "Deze authentieke smeekbeden zijn bedoeld voor spirituele troost en toewijding. Ze vormen GEEN vervanging voor professioneel medisch advies, diagnose of behandeling. Raadpleeg altijd een bevoegde arts.",
-  "health_disclaimer_short": "Spirituele herinnering • Geen vervanging voor medische behandeling"
+  "health_disclaimer_short": "Spirituele herinnering • Geen vervanging voor medische behandeling",
+  "tap_anywhere_to_count": "Tik ergens om te tellen",
+  "remaining": "resterend",
+  "facing_qibla": "Richting Qibla",
+  "location_not_set": "Locatie niet ingesteld",
+  "qibla_location_hint": "Stel uw locatie in bij Instellingen om het Qibla-kompas te gebruiken.",
+  "prayer_calc_madhab": "Gebedsberekening & Madhab",
+  "madhab_asr_calc": "Madhab (Asr-berekening)",
+  "madhab_hanafi_desc": "Hanafi • Later Asr (2x schaduw)",
+  "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Eerder Asr (1x schaduw)",
+  "calc_method": "Berekeningsmethode",
+  "select_madhab": "Selecteer Madhab"
 }

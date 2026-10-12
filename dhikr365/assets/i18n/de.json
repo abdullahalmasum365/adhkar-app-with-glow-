@@ -339,5 +339,16 @@
   "card_ready": "Karte bereit zum Teilen!",
   "health_disclaimer_title": "Hinweis zu spirituellen Bittgebeten",
   "health_disclaimer": "Diese authentischen Bittgebete dienen dem spirituellen Trost und der Andacht. Sie stellen keinen Ersatz für professionelle medizinische Beratung, Diagnose oder Behandlung dar. Wenden Sie sich bei gesundheitlichen Beschwerden stets an einen Arzt.",
-  "health_disclaimer_short": "Spirituelle Andacht • Kein Ersatz für medizinische Behandlung"
+  "health_disclaimer_short": "Spirituelle Andacht • Kein Ersatz für medizinische Behandlung",
+  "tap_anywhere_to_count": "Irgendwo tippen zum Zählen",
+  "remaining": "verbleibend",
+  "facing_qibla": "In Richtung Qibla",
+  "location_not_set": "Standort nicht festgelegt",
+  "qibla_location_hint": "Legen Sie Ihren Standort in den Einstellungen fest, um den Qibla-Kompass zu nutzen.",
+  "prayer_calc_madhab": "Gebetsberechnung & Madhab",
+  "madhab_asr_calc": "Madhab (Asr-Berechnung)",
+  "madhab_hanafi_desc": "Hanafi • Späteres Asr (2x Schatten)",
+  "madhab_standard_desc": "Schafi'i, Maliki, Hanbali • Früheres Asr (1x Schatten)",
+  "calc_method": "Berechnungsmethode",
+  "select_madhab": "Madhab auswählen"
 }

@@ -328,7 +328,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                         color: Color(0xFF10B981), size: 18),
                     const SizedBox(width: 8),
                     Text(
-                      'Facing Qibla',
+                      lp.getText('facing_qibla'),
                       style: AppText.manrope(
                         fontSize: 15,
                         fontWeight: FontWeight.w800,
@@ -354,7 +354,7 @@ class _QiblaScreenState extends State<QiblaScreen>
                       style: AppText.manrope(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.ink(0.54),
+                        color: AppColors.textSlate400,
                       ),
                     ),
                   ],
@@ -389,20 +389,20 @@ class _QiblaScreenState extends State<QiblaScreen>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.location_off_rounded, color: AppColors.ink(0.24), size: 64),
+        Icon(Icons.location_off_rounded, color: AppColors.textSlate400, size: 64),
         const SizedBox(height: 16),
         Text(
-          'Location Not Set',
+          lp.getText('location_not_set'),
           style: AppText.manrope(
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.ink(0.70)),
+              color: AppColors.textPrimary),
         ),
         const SizedBox(height: 8),
         Text(
-          'Set your location in Settings\nto use the Qibla compass.',
+          lp.getText('qibla_location_hint'),
           textAlign: TextAlign.center,
-          style: AppText.manrope(fontSize: 14, color: AppColors.ink(0.38)),
+          style: AppText.manrope(fontSize: 14, color: AppColors.textSlate400),
         ),
       ],
     );

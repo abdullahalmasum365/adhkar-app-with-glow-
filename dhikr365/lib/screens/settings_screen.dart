@@ -143,11 +143,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             const SizedBox(height: 18),
             Row(
               children: [
-                Icon(Icons.mosque_rounded, color: ThemeProvider.divineAmber, size: 22),
+                Icon(Icons.mosque_rounded, color: AppColors.primary, size: 22),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    isBn ? 'মাযহাব নির্বাচন করুন' : 'Select Madhab',
+                    lp.getText('select_madhab'),
                     style: AppText.heading(18),
                   ),
                 ),
@@ -375,7 +375,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      isBn ? 'নামাজের হিসাব পদ্ধতি' : 'Calculation Method',
+                      lp.getText('calc_method'),
                       style: AppText.heading(18),
                     ),
                   ),
@@ -1085,32 +1085,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               const SizedBox(height: 22),
 
               // ── Prayer Calculation & Madhab ──
-              _Lbl(lp.locale.languageCode == 'bn'
-                  ? 'নামাজের সময় ও মাযহাব'
-                  : 'Prayer Calculation & Madhab'),
+              _Lbl(lp.getText('prayer_calc_madhab')),
               _Card(
                   child: Column(children: [
                 _Tile(
                     icon: Icons.mosque_rounded,
                     color: AppColors.primary,
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'মাযহাব (আসরের গণনা)'
-                        : 'Madhab (Asr Calculation)',
+                    title: lp.getText('madhab_asr_calc'),
                     subtitle: up.madhab.toLowerCase() == 'hanafi'
-                        ? (lp.locale.languageCode == 'bn'
-                            ? 'হানাফী • দেরিতে আসর (২ গুণ ছায়া)'
-                            : 'Hanafi • Later Asr (2x shadow)')
-                        : (lp.locale.languageCode == 'bn'
-                            ? 'শাফেয়ী, মালেকী, হাম্বলী • আগে আসর (১ গুণ ছায়া)'
-                            : "Shafi'i, Maliki, Hanbali • Earlier Asr (1x shadow)"),
+                        ? lp.getText('madhab_hanafi_desc')
+                        : lp.getText('madhab_standard_desc'),
                     onTap: () => _madhabSheet(context)),
                 _div(),
                 _Tile(
                     icon: Icons.calculate_outlined,
                     color: Colors.tealAccent,
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'নামাজের হিসাব পদ্ধতি'
-                        : 'Calculation Method',
+                    title: lp.getText('calc_method'),
                     subtitle: getMethodName(up.calculationMethod),
                     onTap: () => _calcMethodSheet(context)),
               ])),

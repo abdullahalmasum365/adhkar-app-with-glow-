@@ -339,5 +339,16 @@
   "card_ready": "Kart paylaşıma hazır!",
   "health_disclaimer_title": "Manevi Dualar Bildirimi",
   "health_disclaimer": "Bu sahih dualar manevi huzur ve zikir içindir. Profesyonel tıbbi tavsiye, teşhis veya tedavinin yerini ALMAZ. Herhangi bir sağlık sorunu için daima uzman bir doktora danışın.",
-  "health_disclaimer_short": "Manevi zikir • Tıbbi tedavinin yerine geçmez"
+  "health_disclaimer_short": "Manevi zikir • Tıbbi tedavinin yerine geçmez",
+  "tap_anywhere_to_count": "Saymak için herhangi bir yere dokunun",
+  "remaining": "kalan",
+  "facing_qibla": "Kıbleye Doğru",
+  "location_not_set": "Konum Ayarlanmadı",
+  "qibla_location_hint": "Kıble pusulasını kullanmak için Ayarlar'dan konumunuzu belirleyin.",
+  "prayer_calc_madhab": "Namaz Hesaplama ve Mezhep",
+  "madhab_asr_calc": "Mezhep (İkindi Hesabı)",
+  "madhab_hanafi_desc": "Hanefi • Geç İkindi (2 kat gölge)",
+  "madhab_standard_desc": "Şafii, Maliki, Hanbeli • Erken İkindi (1 kat gölge)",
+  "calc_method": "Hesaplama Yöntemi",
+  "select_madhab": "Mezhep Seçin"
 }

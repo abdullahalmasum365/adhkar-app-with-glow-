@@ -339,5 +339,16 @@
   "card_ready": "共有の準備ができました！",
   "health_disclaimer_title": "精神的な祈りに関する免責事項",
   "health_disclaimer": "これらの真正な祈りは心の平安と信仰のためのものです。専門的な医療アドバイス、診断、治療の代わりになるものではありません。健康上の問題については、必ず専門医にご相談ください。",
-  "health_disclaimer_short": "信仰の祈り • 医療治療の代わりではありません"
+  "health_disclaimer_short": "信仰の祈り • 医療治療の代わりではありません",
+  "tap_anywhere_to_count": "どこでもタップしてカウント",
+  "remaining": "残り",
+  "facing_qibla": "キブラに向いています",
+  "location_not_set": "位置情報が設定されていません",
+  "qibla_location_hint": "キブラコンパスを使用するには設定で位置情報を設定してください。",
+  "prayer_calc_madhab": "礼拝計算とマズハブ",
+  "madhab_asr_calc": "マズハブ（アスル計算）",
+  "madhab_hanafi_desc": "ハナフィー派 • 遅いアスル（影2倍）",
+  "madhab_standard_desc": "シャーフィイー、マーリク、ハンバル派 • 早いアスル（影1倍）",
+  "calc_method": "計算方法",
+  "select_madhab": "マズハブを選択"
 }

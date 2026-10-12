@@ -339,5 +339,16 @@
   "card_ready": "Kad sedia dikongsi!",
   "health_disclaimer_title": "Pemberitahuan Doa Rohani",
   "health_disclaimer": "Doa-doa sahih ini adalah untuk ketenangan rohani dan zikir. Ia BUKAN pengganti nasihat perubatan profesional, diagnosis atau rawatan. Sentiasa berunding dengan doktor bertauliah untuk masalah kesihatan.",
-  "health_disclaimer_short": "Zikir rohani • Bukan pengganti rawatan perubatan"
+  "health_disclaimer_short": "Zikir rohani • Bukan pengganti rawatan perubatan",
+  "tap_anywhere_to_count": "Ketik di mana-mana untuk mengira",
+  "remaining": "berbaki",
+  "facing_qibla": "Menghadap Kiblat",
+  "location_not_set": "Lokasi Belum Ditetapkan",
+  "qibla_location_hint": "Tetapkan lokasi anda dalam Tetapan untuk menggunakan kompas Kiblat.",
+  "prayer_calc_madhab": "Kiraan Solat & Mazhab",
+  "madhab_asr_calc": "Mazhab (Kiraan Asar)",
+  "madhab_hanafi_desc": "Hanafi • Asar lewat (bayang 2x)",
+  "madhab_standard_desc": "Syafi'i, Maliki, Hanbali • Asar awal (bayang 1x)",
+  "calc_method": "Kaedah Pengiraan",
+  "select_madhab": "Pilih Mazhab"
 }

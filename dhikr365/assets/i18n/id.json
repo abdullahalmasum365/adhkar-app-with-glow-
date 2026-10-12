@@ -339,5 +339,16 @@
   "card_ready": "Kartu siap dibagikan!",
   "health_disclaimer_title": "Pemberitahuan Doa Spiritual",
   "health_disclaimer": "Doa-doa sahih ini ditujukan untuk ketenangan spiritual dan zikir. Doa ini BUKAN pengganti nasihat medis profesional, diagnosis, atau pengobatan. Selalu konsultasikan dengan dokter yang berkualifikasi untuk masalah kesehatan.",
-  "health_disclaimer_short": "Zikir spiritual • Bukan pengganti perawatan medis"
+  "health_disclaimer_short": "Zikir spiritual • Bukan pengganti perawatan medis",
+  "tap_anywhere_to_count": "Ketuk di mana saja untuk menghitung",
+  "remaining": "tersisa",
+  "facing_qibla": "Menghadap Kiblat",
+  "location_not_set": "Lokasi Belum Diatur",
+  "qibla_location_hint": "Atur lokasi Anda di Pengaturan untuk menggunakan kompas Kiblat.",
+  "prayer_calc_madhab": "Perhitungan Shalat & Mazhab",
+  "madhab_asr_calc": "Mazhab (Perhitungan Asar)",
+  "madhab_hanafi_desc": "Hanafi • Asar lebih lambat (bayangan 2x)",
+  "madhab_standard_desc": "Syafi'i, Maliki, Hanbali • Asar lebih awal (bayangan 1x)",
+  "calc_method": "Metode Perhitungan",
+  "select_madhab": "Pilih Mazhab"
 }

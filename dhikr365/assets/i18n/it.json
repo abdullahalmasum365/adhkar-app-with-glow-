@@ -339,5 +339,16 @@
   "card_ready": "Scheda pronta per la condivisione!",
   "health_disclaimer_title": "Avviso sulle suppliche spirituali",
   "health_disclaimer": "Queste autentiche suppliche sono per il conforto spirituale e la devozione. NON costituiscono né sostituiscono consulenza, diagnosi o trattamento medico professionale. Consultare sempre un medico qualificato.",
-  "health_disclaimer_short": "Ricordo spirituale • Non sostituisce le cure mediche"
+  "health_disclaimer_short": "Ricordo spirituale • Non sostituisce le cure mediche",
+  "tap_anywhere_to_count": "Tocca ovunque per contare",
+  "remaining": "rimanenti",
+  "facing_qibla": "Verso la Qibla",
+  "location_not_set": "Posizione non impostata",
+  "qibla_location_hint": "Imposta la tua posizione in Impostazioni per usare la bussola della Qibla.",
+  "prayer_calc_madhab": "Calcolo della preghiera e Madhab",
+  "madhab_asr_calc": "Madhab (Calcolo Asr)",
+  "madhab_hanafi_desc": "Hanafi • Asr più tardi (ombra 2x)",
+  "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Asr anticipato (ombra 1x)",
+  "calc_method": "Metodo di calcolo",
+  "select_madhab": "Seleziona Madhab"
 }
