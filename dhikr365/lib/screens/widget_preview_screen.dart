@@ -449,8 +449,8 @@ class _WidgetPreviewScreenState extends State<WidgetPreviewScreen> {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.touch_app_rounded,
-                                  color: Colors.amberAccent, size: 20),
+                              Icon(Icons.touch_app_rounded,
+                                  color: AppColors.primary, size: 20),
                               const SizedBox(width: 8),
                               Text(
                                 isBn

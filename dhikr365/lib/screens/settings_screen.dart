@@ -704,7 +704,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   icon: ap.isSignedIn
                       ? Icons.cloud_done_rounded
                       : Icons.cloud_outlined,
-                  color: ap.isSignedIn ? Colors.greenAccent : Colors.blueAccent,
+                  color: ap.isSignedIn ? const Color(0xFF10B981) : Colors.blueAccent,
                   title: ap.isSignedIn
                       ? (ap.displayName.isNotEmpty
                           ? ap.displayName
@@ -742,7 +742,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.warning_amber_rounded, color: Colors.amberAccent, size: 28),
+                          Icon(Icons.warning_amber_rounded, color: AppColors.searchHighlight, size: 28),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -750,14 +750,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               children: [
                                 Text(
                                   lp.getText('notif_status_disabled'),
-                                  style: AppText.body(color: Colors.amberAccent)
+                                  style: AppText.body(color: AppColors.searchHighlight)
                                       .copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   lp.getText('notif_status_disabled_sub'),
                                   style: AppText.manrope(
-                                      fontSize: 12, color: Colors.white70),
+                                      fontSize: 12, color: AppColors.textSlate300),
                                 ),
                               ],
                             ),
@@ -893,7 +893,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 backgroundColor: AppColors.bgTeal,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                                 title: Text(lp.getText('notif_status_disabled'), style: AppText.heading(18)),
-                                content: Text(lp.getText('notif_permission_body'), style: AppText.body(color: Colors.white70)),
+                                content: Text(lp.getText('notif_permission_body'), style: AppText.body(color: AppColors.textSlate300)),
                                 actions: [
                                   TextButton(
                                     onPressed: () => Navigator.pop(ctx),
@@ -905,7 +905,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       Navigator.pop(ctx);
                                       svc.openNotificationSettings();
                                     },
-                                    child: Text(lp.getText('notif_fix_btn'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                    child: Text(lp.getText('notif_fix_btn'), style: TextStyle(color: AppColors.onPrimary, fontWeight: FontWeight.bold)),
                                   ),
                                 ],
                               ),
@@ -924,7 +924,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                             title: Row(
                               children: [
-                                const Icon(Icons.alarm_on_rounded, color: Colors.amberAccent, size: 24),
+                                Icon(Icons.alarm_on_rounded, color: AppColors.primary, size: 24),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
@@ -958,7 +958,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 },
                                 child: Text(
                                   lp.locale.languageCode == 'bn' ? 'অনুমতি দিন (Allow)' : 'Allow in Settings',
-                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(color: AppColors.onPrimary, fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
@@ -994,14 +994,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 _div(),
                 _Tile(
                     icon: Icons.battery_saver_rounded,
-                    color: Colors.amberAccent,
+                    color: const Color(0xFFD97706),
                     title: lp.getText('notif_battery_fix'),
                     subtitle: lp.getText('notif_battery_fix_sub'),
                     onTap: () => runNotificationReliabilityTips(context)),
                 _div(),
                 _Tile(
                     icon: Icons.volunteer_activism_rounded,
-                    color: ThemeProvider.divineAmber,
+                    color: AppColors.primary,
                     title: lp.locale.languageCode == 'bn'
                         ? 'ডেভেলপার সাপোর্ট (ঐচ্ছিক)'
                         : 'Developer Support (Voluntary)',
@@ -1048,7 +1048,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 _div(),
                 _Tile(
                     icon: Icons.wb_sunny,
-                    color: Colors.yellowAccent,
+                    color: const Color(0xFFD97706),
                     title: lp.getText('dhuhr'),
                     trailing: Switch(
                         value: np.dhuhrEnabled,
@@ -1057,7 +1057,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 _div(),
                 _Tile(
                     icon: Icons.wb_cloudy_outlined,
-                    color: Colors.amberAccent,
+                    color: const Color(0xFFD97706),
                     title: lp.getText('asr'),
                     trailing: Switch(
                         value: np.asrEnabled,
@@ -1092,7 +1092,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   child: Column(children: [
                 _Tile(
                     icon: Icons.mosque_rounded,
-                    color: ThemeProvider.divineAmber,
+                    color: AppColors.primary,
                     title: lp.locale.languageCode == 'bn'
                         ? 'মাযহাব (আসরের গণনা)'
                         : 'Madhab (Asr Calculation)',
@@ -1162,7 +1162,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 _div(),
                 _Tile(
                     icon: Icons.spellcheck,
-                    color: Colors.amberAccent,
+                    color: const Color(0xFFD97706),
                     title: lp.getText('transliteration_lang'),
                     subtitle: _native(lp.transliterationCode),
                     onTap: () => _langSheet(
@@ -1239,7 +1239,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   _div(),
                   _Tile(
                     icon: Icons.widgets_rounded,
-                    color: Colors.amberAccent,
+                    color: const Color(0xFFD97706),
                     title: lp.locale.languageCode == 'bn'
                         ? 'হোম স্ক্রিন উইজেট'
                         : 'Home Screen Widgets',
@@ -1892,9 +1892,9 @@ class _DevPanelSheet extends StatelessWidget {
                           label: const Text(
                               '🧹 Purge Legacy Root User Doc (isPro/latestPurchase)'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.amberAccent,
+                            foregroundColor: const Color(0xFFD97706),
                             side: const BorderSide(
-                                color: Colors.amberAccent),
+                                color: Color(0xFFD97706)),
                             padding:
                                 const EdgeInsets.symmetric(vertical: 10),
                             shape: RoundedRectangleBorder(

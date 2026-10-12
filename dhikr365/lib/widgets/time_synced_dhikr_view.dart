@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../constants/app_theme.dart';
 import '../models/dua_timestamp.dart';
-import '../providers/theme_provider.dart';
 import '../services/audio_service.dart';
 import '../utils/responsive.dart';
 
@@ -203,10 +202,10 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
     final arabicText = seg.arabic.trim();
 
     final textColor = isActive
-        ? ThemeProvider.divineAmber
+        ? AppColors.primary
         : (isPast
-            ? ThemeProvider.cream.withValues(alpha: 0.90)
-            : AppColors.ink(0.40));
+            ? AppColors.textPrimary
+            : AppColors.textSlate400);
 
     final fontWeight = isActive
         ? FontWeight.w800
@@ -215,12 +214,8 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
     final shadows = isActive
         ? [
             Shadow(
-              color: ThemeProvider.divineAmber.withValues(alpha: 0.70),
+              color: AppColors.primary.withValues(alpha: 0.40),
               blurRadius: 12,
-            ),
-            Shadow(
-              color: ThemeProvider.divineAmber.withValues(alpha: 0.35),
-              blurRadius: 22,
             ),
           ]
         : null;
@@ -291,14 +286,14 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                 ),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? ThemeProvider.divineAmber.withValues(alpha: 0.14)
+                      ? AppColors.primary.withValues(alpha: 0.14)
                       : (isPast
                           ? AppColors.ink(0.02)
                           : Colors.transparent),
                   borderRadius: BorderRadius.circular(R.px(16)),
                   border: Border.all(
                     color: isActive
-                        ? ThemeProvider.divineAmber.withValues(alpha: 0.45)
+                        ? AppColors.primary.withValues(alpha: 0.45)
                         : (isPast
                             ? AppColors.ink(0.05)
                             : Colors.transparent),
@@ -307,7 +302,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                   boxShadow: isActive
                       ? [
                           BoxShadow(
-                            color: ThemeProvider.divineAmber
+                            color: AppColors.primary
                                 .withValues(alpha: 0.20),
                             blurRadius: 16,
                             offset: const Offset(0, 4),
@@ -325,7 +320,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                         // Left: Active Speaker or Sequence Tag
                         AnimatedOpacity(
                           duration: const Duration(milliseconds: 200),
-                          opacity: isActive ? 1.0 : (isPast ? 0.35 : 0.25),
+                          opacity: isActive ? 1.0 : (isPast ? 0.75 : 0.55),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -335,8 +330,8 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                                     : Icons.play_arrow_rounded,
                                 size: R.sp(13),
                                 color: isActive
-                                    ? ThemeProvider.divineAmber
-                                    : AppColors.ink(0.6),
+                                    ? AppColors.primary
+                                    : AppColors.textSlate400,
                               ),
                               SizedBox(width: R.px(4)),
                               Text(
@@ -345,8 +340,8 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                                   fontSize: R.sp(10),
                                   fontWeight: FontWeight.w800,
                                   color: isActive
-                                      ? ThemeProvider.divineAmber
-                                      : AppColors.ink(0.5),
+                                      ? AppColors.primary
+                                      : AppColors.textSlate400,
                                 ),
                               ),
                             ],
@@ -361,7 +356,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                               vertical: R.px(2),
                             ),
                             decoration: BoxDecoration(
-                              color: ThemeProvider.divineAmber
+                              color: AppColors.primary
                                   .withValues(alpha: 0.18),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -374,7 +369,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                                     fontSize: R.sp(8.5),
                                     fontWeight: FontWeight.w900,
                                     letterSpacing: 1.2,
-                                    color: ThemeProvider.divineAmber,
+                                    color: AppColors.primary,
                                   ),
                                 ),
                               ],
@@ -407,7 +402,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                               ? AppColors.textPrimary
                               : (isPast
                                   ? AppColors.textSlate400
-                                  : AppColors.ink(0.35)),
+                                  : AppColors.textSlate500),
                         ),
                       ),
                     ],
@@ -422,10 +417,10 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                           fontSize: transSize,
                           height: 1.5,
                           color: isActive
-                              ? ThemeProvider.cream
+                              ? AppColors.textPrimary
                               : (isPast
-                                  ? ThemeProvider.cream.withValues(alpha: 0.70)
-                                  : AppColors.ink(0.30)),
+                                  ? AppColors.textSlate300
+                                  : AppColors.textSlate400),
                         ).copyWith(
                           fontStyle: FontStyle.italic,
                         ),

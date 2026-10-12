@@ -596,7 +596,7 @@ class _DhikrCardState extends State<DhikrCard> {
                     textAlign: TextAlign.center,
                     style: AppText.transliteration(
                       fontSize: R.sp(12),
-                      color: AppColors.ink(0.60),
+                      color: AppColors.textSlate400,
                     ),
                   ),
                 ),
@@ -613,7 +613,7 @@ class _DhikrCardState extends State<DhikrCard> {
                       // supported languages; no fontFamily constraint needed.
                       fontSize: transSize,
                       fontStyle: FontStyle.italic,
-                      color: ThemeProvider.cream,
+                      color: AppColors.textSlate300,
                       height: 1.6,
                     ),
                   ),
@@ -627,7 +627,7 @@ class _DhikrCardState extends State<DhikrCard> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.auto_stories,
-                          size: R.sp(13), color: AppColors.ink(0.54)),
+                          size: R.sp(13), color: AppColors.textSlate400),
                       SizedBox(width: R.px(6)),
                       Flexible(
                         child: Text(
@@ -637,7 +637,7 @@ class _DhikrCardState extends State<DhikrCard> {
                           maxLines: 2,
                           style: TextStyle(
                             fontSize: R.sp(9),
-                            color: AppColors.ink(0.54),
+                            color: AppColors.textSlate400,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1.2,
                           ),
@@ -672,7 +672,7 @@ class _DhikrCardState extends State<DhikrCard> {
                               fontSize: R.sp(9),
                               fontWeight: FontWeight.w900,
                               letterSpacing: 1.8,
-                              color: AppColors.ink(0.54),
+                              color: AppColors.textSlate400,
                             ),
                           ),
                         ],

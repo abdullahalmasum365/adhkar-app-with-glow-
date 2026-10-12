@@ -336,14 +336,15 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.location_on,
-                                    color: AppColors.textPrimary, size: 18),
+                                const Icon(Icons.location_on,
+                                    color: Colors.white, size: 18),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Set Location',
                                   style: AppText.manrope(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.w700),
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white),
                                 ),
                               ],
                             ),
@@ -916,7 +917,7 @@ class _HeroCard extends StatelessWidget {
                 color: AppColors.primary,
                 borderRadius: BorderRadius.circular(8)),
             child: Text(currentPrayerLabel,
-                style: AppText.label(color: AppColors.bgDark)),
+                style: AppText.label(color: AppColors.onPrimary)),
           ),
           const SizedBox(height: 14),
           Row(
@@ -1096,7 +1097,7 @@ class _PrayerRowState extends State<_PrayerRow> {
                   color: AppColors.primary,
                   borderRadius: BorderRadius.circular(6)),
               child: Text(widget.nowLabel, // translated "NOW"
-                  style: AppText.label(color: AppColors.bgDark)
+                  style: AppText.label(color: AppColors.onPrimary)
                       .copyWith(fontSize: 9)),
             ),
           ),

@@ -665,7 +665,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                               children: [
                                 Text(
                                   lp.getText('focus_mode').toUpperCase(),
-                                  style: AppText.label(color: AppColors.ink(0.38)),
+                                  style: AppText.label(color: AppColors.textSlate400),
                                 ),
                                 SizedBox(height: R.px(2)),
                                 Text(
@@ -682,7 +682,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                       Icon(
                                         Icons.lyrics_rounded,
                                         size: R.sp(10),
-                                        color: ThemeProvider.divineAmber,
+                                        color: AppColors.primary,
                                       ),
                                       SizedBox(width: R.px(3)),
                                       Flexible(
@@ -692,7 +692,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                             fontSize: R.sp(8.0),
                                             fontWeight: FontWeight.w800,
                                             letterSpacing: 0.8,
-                                            color: ThemeProvider.divineAmber,
+                                            color: AppColors.primary,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -817,7 +817,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                       style: AppText.manrope(
                                         fontSize: R.adaptive(12.5, 14.0, 15.5),
                                         fontWeight: FontWeight.w700,
-                                        color: AppColors.ink(0.50),
+                                        color: AppColors.textSlate400,
                                       ),
                                     ),
                                     SizedBox(width: R.px(8)),
@@ -879,7 +879,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                       textDirection: TextDirection.rtl,
                                       style: AppText.amiri(
                                         fontSize: arabicSize,
-                                        color: ThemeProvider.cream,
+                                        color: AppColors.textPrimary,
                                       ),
                                     ),
 
@@ -904,7 +904,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         style: AppText.manrope(
                                           fontSize: R.adaptive(13, 15, 17),
                                           height: 1.6,
-                                          color: ThemeProvider.cream.withValues(alpha: 0.85),
+                                          color: AppColors.textSlate300,
                                         ),
                                       ),
                                     ],
@@ -914,7 +914,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                       Text(
                                         widget.dhikr.benefit!.toUpperCase(),
                                         textAlign: TextAlign.center,
-                                        style: AppText.label(color: AppColors.ink(0.35)),
+                                        style: AppText.label(color: AppColors.textSlate400),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -1100,13 +1100,13 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                             Icon(
                               Icons.touch_app_outlined,
                               size: R.sp(14),
-                              color: AppColors.ink(0.35),
+                              color: AppColors.textSlate400,
                             ),
                             SizedBox(width: R.px(6)),
                             Flexible(
                               child: Text(
                                 lp.getText('tap_anywhere_to_count'),
-                                style: AppText.label(color: AppColors.ink(0.35)),
+                                style: AppText.label(color: AppColors.textSlate400),
                                 textAlign: TextAlign.center,
                                 overflow: TextOverflow.ellipsis,
                               ),

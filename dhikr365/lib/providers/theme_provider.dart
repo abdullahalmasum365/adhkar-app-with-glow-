@@ -39,7 +39,7 @@ class ThemeProvider extends ChangeNotifier {
   static Color get deepOlive => AppColors.bgDark;
   static Color get pearlWhite => AppColors.textPrimary;
   static Color get cream =>
-      AppColors.isDark ? const Color(0xFFFDFCF0) : const Color(0xFF2E1065);
+      AppColors.isDark ? const Color(0xFFFDFCF0) : AppColors.textPrimary;
   static Color get brandDark => AppColors.onAccent;
   static Color get deepTeal => AppColors.playerSurface;
 

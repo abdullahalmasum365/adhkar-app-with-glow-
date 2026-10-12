@@ -144,7 +144,7 @@ Future<void> showExactAlarmExplainerDialog(BuildContext context) async {
       backgroundColor: AppColors.bgTeal,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Row(children: [
-        const Icon(Icons.alarm_on_rounded, color: Colors.amberAccent, size: 24),
+        Icon(Icons.alarm_on_rounded, color: AppColors.primary, size: 24),
         const SizedBox(width: 10),
         Expanded(
           child: Text('On-Time Prayer Alarms', style: AppText.heading(16)),

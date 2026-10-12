@@ -544,7 +544,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                 const SizedBox(height: 16),
                                 TextField(
                                   controller: _recipientNameController,
-                                  style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                                  style: TextStyle(color: textWhite, fontSize: 13.5),
                                   decoration: InputDecoration(
                                     hintText: lp.locale.languageCode == 'bn'
                                         ? 'যার নামে উৎসর্গ করছেন (যেমন: মরহুম পিতা আব্দুল্লাহ)'
@@ -775,13 +775,13 @@ class _DonationScreenState extends State<DonationScreen> {
                             ),
                             child: Row(children: [
                               const Icon(Icons.info_outline_rounded,
-                                  size: 18, color: Colors.amberAccent),
+                                  size: 18, color: Color(0xFFD97706)),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(
                                   lp.getText('donation_not_available'),
                                   style: GoogleFonts.publicSans(
-                                    color: Colors.amberAccent,
+                                    color: AppColors.searchHighlight,
                                     fontSize: 12,
                                     height: 1.4,
                                   ),
@@ -971,7 +971,7 @@ class _DedicationChip extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? Colors.white : AppColors.textSlate400,
+                color: isSelected ? AppColors.textPrimary : AppColors.textSlate400,
               ),
             ),
           ],

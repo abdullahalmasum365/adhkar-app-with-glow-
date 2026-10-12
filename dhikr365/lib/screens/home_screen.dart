@@ -923,14 +923,16 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           )
                         else
                           Icon(Icons.my_location,
-                              color: AppColors.textPrimary, size: R.sp(17)),
+                              color: Colors.white, size: R.sp(17)),
                         SizedBox(width: R.px(8)),
                         Text(
                           _loading
                               ? lp.getText('detecting_location')
                               : lp.getText('use_gps_location'),
                           style: AppText.manrope(
-                              fontSize: R.sp(13), fontWeight: FontWeight.w700),
+                              fontSize: R.sp(13),
+                              fontWeight: FontWeight.w700,
+                              color: _loading ? AppColors.textSlate400 : Colors.white),
                         ),
                       ],
                     ),
@@ -1202,7 +1204,8 @@ class _LocationBanner extends StatelessWidget {
                 'Set Now',
                 style: AppText.manrope(
                     fontSize: R.adaptive(10, 11, 13),
-                    fontWeight: FontWeight.w700),
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.onPrimary),
               ),
             ),
           ),

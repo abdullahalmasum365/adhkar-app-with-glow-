@@ -340,13 +340,13 @@ class _SignedInCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(mainAxisSize: MainAxisSize.min, children: [
                   const Icon(Icons.cloud_done_rounded,
-                      size: 14, color: Colors.greenAccent),
+                      size: 14, color: Color(0xFF10B981)),
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(lp.getText('account_sync_active'),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: AppText.body(color: Colors.greenAccent)
+                        style: AppText.body(color: const Color(0xFF10B981))
                             .copyWith(fontSize: 11.5)),
                   ),
                 ]),
@@ -441,12 +441,12 @@ class _NotConfiguredNotice extends StatelessWidget {
         border: Border.all(color: Colors.amber.withValues(alpha: 0.25)),
       ),
       child: Row(children: [
-        const Icon(Icons.info_outline_rounded,
-            size: 18, color: Colors.amberAccent),
+        Icon(Icons.info_outline_rounded,
+            size: 18, color: AppColors.primary),
         const SizedBox(width: 10),
         Expanded(
           child: Text(lp.getText('account_not_configured'),
-              style: AppText.body(color: Colors.amberAccent)
+              style: AppText.body(color: AppColors.textSlate300)
                   .copyWith(fontSize: 12, height: 1.4)),
         ),
       ]),

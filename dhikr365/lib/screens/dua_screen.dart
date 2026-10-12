@@ -989,7 +989,7 @@ class _SearchResultCard extends StatelessWidget {
                   highlightStyle: AppText.manrope(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: const Color(0xFFFBBF24),
+                    color: AppColors.searchHighlight,
                   ),
                   maxLines: 2,
                 ),
@@ -1020,7 +1020,7 @@ class _SearchResultCard extends StatelessWidget {
                     query: query,
                     baseStyle: AppText.body(color: AppColors.textSlate400)
                         .copyWith(fontSize: 12.5, height: 1.45),
-                    highlightStyle: AppText.body(color: const Color(0xFFFDE68A))
+                    highlightStyle: AppText.body(color: AppColors.searchHighlight)
                         .copyWith(
                             fontSize: 12.5,
                             fontWeight: FontWeight.bold,
