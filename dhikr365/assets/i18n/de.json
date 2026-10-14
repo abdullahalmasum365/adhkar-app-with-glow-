@@ -357,5 +357,7 @@
   "restore_success": "Unterstützungsstatus erfolgreich wiederhergestellt! JazakAllahu Khairan.",
   "restore_not_found": "Keine aktive Unterstützung gefunden.",
   "disclaimer_ummah": "Beiträge unterstützen direkt die Weiterentwicklung der App, Serverkosten und das Ziel, Adhkaar 365 weltweit zu 100% kostenlos und werbefrei zu halten. Dies ist ein freiwilliges Software-Sponsoring, keine Spende.",
-  "subscription_terms": "Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ablauf des aktuellen Zeitraums in den Kontoeinstellungen gekündigt werden."
+  "subscription_terms": "Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ablauf des aktuellen Zeitraums in den Kontoeinstellungen gekündigt werden.",
+  "reduce_glow_blur": "Leuchten & Unschärfe reduzieren (Energiesparmodus)",
+  "reduce_glow_blur_desc": "Unschärfeeffekte und Animationen für flüssigeres Scrollen und längere Akkulaufzeit deaktivieren"
 }

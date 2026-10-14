@@ -408,6 +408,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
             ))
         .toList();
 
+    final reduceGlow = Provider.of<ThemeProvider>(context).reduceGlowAndBlur;
+
     return Scaffold(
       backgroundColor: AppColors.bgDark,
       body: Container(
@@ -417,15 +419,19 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
           slivers: [
             // ── AppBar ──
             SliverAppBar(
-              backgroundColor: AppColors.bgDark.withValues(alpha: 0.85),
+              backgroundColor: reduceGlow
+                  ? AppColors.bgDark
+                  : AppColors.bgDark.withValues(alpha: 0.85),
               pinned: true,
               elevation: 0,
-              flexibleSpace: ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(color: Colors.transparent),
-                ),
-              ),
+              flexibleSpace: reduceGlow
+                  ? null
+                  : ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Container(color: Colors.transparent),
+                      ),
+                    ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

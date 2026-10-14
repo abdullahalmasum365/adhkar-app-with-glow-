@@ -83,16 +83,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
                 physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverAppBar(
-                    backgroundColor: AppColors.bgDark.withValues(alpha: 0.85),
+                    backgroundColor: tp.reduceGlowAndBlur
+                        ? AppColors.bgDark
+                        : AppColors.bgDark.withValues(alpha: 0.85),
                     pinned: true,
                     elevation: 0,
-                    flexibleSpace: ClipRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                            color: AppColors.bgDark.withValues(alpha: 0.5)),
-                      ),
-                    ),
+                    flexibleSpace: tp.reduceGlowAndBlur
+                        ? null
+                        : ClipRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                  color: AppColors.bgDark.withValues(alpha: 0.5)),
+                            ),
+                          ),
                     title: Text(lp.getText('profile'),
                         style: AppText.heading(R.adaptive(18, 20, 24))),
                   ),

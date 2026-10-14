@@ -1281,6 +1281,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       onChanged: tp.toggleHabitTracker,
                     ),
                   ),
+                  _div(),
+                  _Tile(
+                    icon: Icons.bolt_rounded,
+                    color: Colors.amber,
+                    title: lp.getText('reduce_glow_blur'),
+                    subtitle: lp.getText('reduce_glow_blur_desc'),
+                    trailing: Switch(
+                      value: tp.reduceGlowAndBlur,
+                      onChanged: tp.toggleReduceGlowAndBlur,
+                    ),
+                  ),
                 ]),
               ),
               const SizedBox(height: 22),

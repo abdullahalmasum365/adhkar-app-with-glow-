@@ -357,5 +357,7 @@
   "restore_success": "Status sokongan berjaya dipulihkan! JazakAllahu Khairan.",
   "restore_not_found": "Tiada sokongan aktif ditemui.",
   "disclaimer_ummah": "Sumbangan secara langsung menyokong pembangunan aplikasi bebas, penyelenggaraan pelayan dan mengekalkan Adhkaar 365 100% percuma serta tanpa iklan untuk Ummah di seluruh dunia. Ini adalah penajaan perisian sukarela, bukan derma kebajikan.",
-  "subscription_terms": "Langganan diperbaharui secara automatik melainkan dibatalkan dalam tetapan akaun sekurang-kurangnya 24 jam sebelum akhir tempoh semasa."
+  "subscription_terms": "Langganan diperbaharui secara automatik melainkan dibatalkan dalam tetapan akaun sekurang-kurangnya 24 jam sebelum akhir tempoh semasa.",
+  "reduce_glow_blur": "Kurangkan Kilauan & Kabur (Penjimat Kuasa)",
+  "reduce_glow_blur_desc": "Nyahaktifkan kesan kabur dan animasi untuk penatalan lebih lancar dan hayat bateri lebih lama"
 }

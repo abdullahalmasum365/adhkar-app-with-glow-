@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
 import '../providers/language_provider.dart';
+import '../providers/theme_provider.dart';
 import '../utils/responsive.dart';
 import 'home_screen.dart';
 import 'settings_screen.dart';
@@ -58,22 +59,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final navTop = R.px(10);
     final iconSize = R.sp(R.adaptive(20.0, 22.0, 26.0));
     final labelSize = R.sp(R.adaptive(8.0, 9.0, 11.0));
+    final reduceGlow = Provider.of<ThemeProvider>(context).reduceGlowAndBlur;
 
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: AppColors.bgDark,
-      body: IndexedStack(index: _currentIndex, children: _screens),
-      bottomNavigationBar: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            padding: EdgeInsets.only(
-                top: navTop, bottom: navBottom, left: R.px(6), right: R.px(6)),
-            decoration: BoxDecoration(
-              color: AppColors.bgDark.withValues(alpha: 0.92),
-              border: Border(top: BorderSide(color: AppColors.ink(0.05))),
-            ),
-            child: Row(
+    final navContainer = Container(
+      padding: EdgeInsets.only(
+          top: navTop, bottom: navBottom, left: R.px(6), right: R.px(6)),
+      decoration: BoxDecoration(
+        color: reduceGlow ? AppColors.bgDark : AppColors.bgDark.withValues(alpha: 0.92),
+        border: Border(top: BorderSide(color: AppColors.ink(0.05))),
+      ),
+      child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(_navIcons.length, (i) {
                 final selected = i == _currentIndex;
@@ -113,9 +108,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               }),
             ),
-          ),
-        ),
-      ),
+          );
+
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: AppColors.bgDark,
+      body: IndexedStack(index: _currentIndex, children: _screens),
+      bottomNavigationBar: reduceGlow
+          ? navContainer
+          : ClipRRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                child: navContainer,
+              ),
+            ),
     );
   }
 }

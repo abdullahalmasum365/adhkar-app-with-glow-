@@ -357,5 +357,7 @@
   "restore_success": "Sponsorship status restored successfully! JazakAllahu Khairan.",
   "restore_not_found": "No active sponsorship found.",
   "disclaimer_ummah": "Contributions directly support independent app development, continuous server operations, and keeping Adhkaar 365 100% free and ad-free for the Ummah worldwide. This is a voluntary software sponsorship, not a charitable donation.",
-  "subscription_terms": "Subscriptions automatically renew unless canceled in store account settings at least 24 hours before the end of the current period."
+  "subscription_terms": "Subscriptions automatically renew unless canceled in store account settings at least 24 hours before the end of the current period.",
+  "reduce_glow_blur": "Reduce Glow & Blur (Power Saver)",
+  "reduce_glow_blur_desc": "Disable blur effects & animations for smoother scrolling and longer battery life"
 }

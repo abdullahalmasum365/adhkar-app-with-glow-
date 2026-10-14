@@ -14,6 +14,7 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.dark;
   bool _showTransliteration = true;
   bool _showHabitTracker = true;
+  bool _reduceGlowAndBlur = false;
   String _paletteId = AppPalettes.emeraldNight.id;
   String? _uid;
 
@@ -30,6 +31,10 @@ class ThemeProvider extends ChangeNotifier {
 
   /// When false, habit tracking charts, rings, and streak metrics are hidden in ProgressScreen.
   bool get showHabitTracker => _showHabitTracker;
+
+  /// When true, heavy blur effects (BackdropFilter) and glow shadows are disabled
+  /// for smoother scrolling and extended battery life.
+  bool get reduceGlowAndBlur => _reduceGlowAndBlur;
 
   // Legacy names kept for DhikrCard / widgets that still reference them —
   // now palette-backed so they follow the active theme.
@@ -77,6 +82,7 @@ class ThemeProvider extends ChangeNotifier {
     _themeMode = palette.isDark ? ThemeMode.dark : ThemeMode.light;
     _showTransliteration = prefs.getBool('show_transliteration') ?? true;
     _showHabitTracker = prefs.getBool('show_habit_tracker') ?? true;
+    _reduceGlowAndBlur = prefs.getBool('reduce_glow_and_blur') ?? false;
     notifyListeners();
     WidgetService().updateTheme(palette);
   }
@@ -134,6 +140,14 @@ class ThemeProvider extends ChangeNotifier {
     if (_uid != null) unawaited(_pushToCloud());
   }
 
+  Future<void> toggleReduceGlowAndBlur(bool value) async {
+    _reduceGlowAndBlur = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('reduce_glow_and_blur', value);
+    notifyListeners();
+    if (_uid != null) unawaited(_pushToCloud());
+  }
+
   // ── Cloud Firestore Sync ──────────────────────────────────────────────────
 
   DocumentReference<Map<String, dynamic>>? get _cloudDoc {
@@ -162,6 +176,7 @@ class ThemeProvider extends ChangeNotifier {
         final cloudPalette = data['paletteId'] as String?;
         final cloudTranslit = data['showTransliteration'] as bool?;
         final cloudHabit = data['showHabitTracker'] as bool?;
+        final cloudReduceGlow = data['reduceGlowAndBlur'] as bool?;
 
         if (cloudPalette != null && cloudPalette.isNotEmpty) {
           final isValid = AppPalettes.all.any((p) => p.id == cloudPalette);
@@ -183,6 +198,9 @@ class ThemeProvider extends ChangeNotifier {
         if (cloudHabit != null && cloudHabit != _showHabitTracker) {
           await toggleHabitTracker(cloudHabit);
         }
+        if (cloudReduceGlow != null && cloudReduceGlow != _reduceGlowAndBlur) {
+          await toggleReduceGlowAndBlur(cloudReduceGlow);
+        }
       } else {
         await _pushToCloud();
       }
@@ -202,6 +220,7 @@ class ThemeProvider extends ChangeNotifier {
         'paletteId': _paletteId,
         'showTransliteration': _showTransliteration,
         'showHabitTracker': _showHabitTracker,
+        'reduceGlowAndBlur': _reduceGlowAndBlur,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {

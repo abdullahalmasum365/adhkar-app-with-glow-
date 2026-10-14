@@ -357,5 +357,7 @@
   "restore_success": "Destek durumu başarıyla geri yüklendi! Cezakallahu Hayran.",
   "restore_not_found": "Aktif bir destek bulunamadı.",
   "disclaimer_ummah": "Katkılar doğrudan bağımsız uygulama geliştirmeyi, sunucu bakımını ve Adhkaar 365'in dünya çapındaki Ümmet için %100 ücretsiz ve reklamsız kalmasını destekler. Bu gönüllü bir yazılım sponsorluğudur, hayır kurumu bağışı değildir.",
-  "subscription_terms": "Abonelikler, geçerli dönemin bitiminden en az 24 saat önce hesap ayarlarından iptal edilmediği sürece otomatik olarak yenilenir."
+  "subscription_terms": "Abonelikler, geçerli dönemin bitiminden en az 24 saat önce hesap ayarlarından iptal edilmediği sürece otomatik olarak yenilenir.",
+  "reduce_glow_blur": "Parlama ve Bulanıklığı Azalt (Güç Tasarrufu)",
+  "reduce_glow_blur_desc": "Daha akıcı kaydırma ve daha uzun pil ömrü için bulanıklık ve animasyonları devre dışı bırakın"
 }

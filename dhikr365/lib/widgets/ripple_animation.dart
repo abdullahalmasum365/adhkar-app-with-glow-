@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
 
 class RippleAnimation extends StatefulWidget {
@@ -14,18 +15,16 @@ class RippleAnimation extends StatefulWidget {
 class _RippleAnimationState extends State<RippleAnimation> {
   final List<Widget> _ripples = [];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void _addRipple(TapDownDetails details) {
     widget.onTap();
+
+    bool reduce = false;
+    try {
+      reduce = Provider.of<ThemeProvider>(context, listen: false)
+          .reduceGlowAndBlur;
+    } catch (_) {}
+    if (reduce) return;
+
     final renderBox = context.findRenderObject() as RenderBox;
     final position = renderBox.globalToLocal(details.globalPosition);
     setState(() {
@@ -79,7 +78,7 @@ class _RippleState extends State<_Ripple> with SingleTickerProviderStateMixin {
     _scale = Tween<double>(begin: 0.0, end: 2.0).animate(_controller);
     _opacity = Tween<double>(begin: 0.5, end: 0.0).animate(_controller);
     _controller.forward().then((_) {
-      if (widget.key != null) widget.onComplete(widget.key!);
+      if (mounted) widget.onComplete(widget.key!);
     });
   }
 
@@ -94,18 +93,20 @@ class _RippleState extends State<_Ripple> with SingleTickerProviderStateMixin {
     return Positioned(
       left: widget.position.dx - 100,
       top: widget.position.dy - 100,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (_, __) => Opacity(
-          opacity: _opacity.value,
-          child: Transform.scale(
-            scale: _scale.value,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ThemeProvider.etherealSage.withValues(alpha: 0.3),
+      child: RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (_, __) => Opacity(
+            opacity: _opacity.value,
+            child: Transform.scale(
+              scale: _scale.value,
+              child: Container(
+                width: 200,
+                height: 200,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ThemeProvider.etherealSage.withValues(alpha: 0.3),
+                ),
               ),
             ),
           ),

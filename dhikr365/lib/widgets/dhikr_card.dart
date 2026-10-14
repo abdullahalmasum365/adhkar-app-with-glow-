@@ -339,8 +339,9 @@ class _DhikrCardState extends State<DhikrCard> {
 
     final lp = Provider.of<LanguageProvider>(context);
     final dhikrProvider = Provider.of<DhikrProvider>(context, listen: false);
-    final showTranslit =
-        Provider.of<ThemeProvider>(context).showTransliteration;
+    final tp = Provider.of<ThemeProvider>(context);
+    final showTranslit = tp.showTransliteration;
+    final reduceGlow = tp.reduceGlowAndBlur;
     final count = widget.dhikr.currentCount;
     final target = widget.dhikr.targetCount;
     final isDone = widget.dhikr.isCompleted;
@@ -356,25 +357,29 @@ class _DhikrCardState extends State<DhikrCard> {
       (dp) => dp.isBookmarked(widget.dhikr.id),
     );
 
-    return GestureDetector(
-      onLongPress: () {
-        HapticFeedback.mediumImpact();
-        _showShareSheet(context);
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: R.px(10), horizontal: R.px(14)),
-        decoration: BoxDecoration(
-          color: AppColors.ink(0.03),
-          borderRadius: BorderRadius.circular(R.px(20)),
-          border: Border.all(color: AppColors.ink(0.08)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadow(0.2),
-              blurRadius: 20,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
+    return RepaintBoundary(
+      child: GestureDetector(
+        onLongPress: () {
+          HapticFeedback.mediumImpact();
+          _showShareSheet(context);
+        },
+        child: Container(
+          margin:
+              EdgeInsets.symmetric(vertical: R.px(10), horizontal: R.px(14)),
+          decoration: BoxDecoration(
+            color: AppColors.ink(0.03),
+            borderRadius: BorderRadius.circular(R.px(20)),
+            border: Border.all(color: AppColors.ink(0.08)),
+            boxShadow: reduceGlow
+                ? null
+                : [
+                    BoxShadow(
+                      color: AppColors.shadow(0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+          ),
         child: Padding(
           padding: EdgeInsets.all(cardPad),
           child: Column(
@@ -781,26 +786,28 @@ class _DhikrCardState extends State<DhikrCard> {
                                   : AppColors.ink(0.1),
                             )
                           : null,
-                      boxShadow: _isGlowActive
-                          ? [
-                              BoxShadow(
-                                color: ThemeProvider.divineAmber
-                                    .withValues(alpha: 0.65),
-                                blurRadius: 36,
-                                spreadRadius: 4,
-                                offset: const Offset(0, 4),
-                              ),
-                            ]
-                          : (isDone
-                              ? []
-                              : [
+                      boxShadow: reduceGlow
+                          ? null
+                          : (_isGlowActive
+                              ? [
                                   BoxShadow(
-                                    color: AppColors.accent
-                                        .withValues(alpha: 0.3),
-                                    blurRadius: 30,
-                                    offset: const Offset(0, 8),
+                                    color: ThemeProvider.divineAmber
+                                        .withValues(alpha: 0.65),
+                                    blurRadius: 36,
+                                    spreadRadius: 4,
+                                    offset: const Offset(0, 4),
                                   ),
-                                ]),
+                                ]
+                              : (isDone
+                                  ? []
+                                  : [
+                                      BoxShadow(
+                                        color: AppColors.accent
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 30,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ])),
                     ),
                     child: Column(
                       children: [
@@ -896,6 +903,7 @@ class _DhikrCardState extends State<DhikrCard> {
           ),
         ),
       ), // closes child: Container
-    ); // closes GestureDetector
-  }
+    ), // closes GestureDetector
+  ); // closes RepaintBoundary
+}
 }

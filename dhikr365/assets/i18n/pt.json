@@ -357,5 +357,7 @@
   "restore_success": "Status de apoio restaurado com sucesso! JazakAllahu Khairan.",
   "restore_not_found": "Nenhum apoio ativo encontrado.",
   "disclaimer_ummah": "As contribuições apoiam diretamente o desenvolvimento independente do aplicativo, manutenção dos servidores e mantêm o Adhkaar 365 100% gratuito e sem anúncios para a Ummah em todo o mundo. Este é um patrocínio voluntário de software, não uma doação de caridade.",
-  "subscription_terms": "As assinaturas são renovadas automaticamente, a menos que sejam canceladas nas configurações da conta pelo menos 24 horas antes do final do período atual."
+  "subscription_terms": "As assinaturas são renovadas automaticamente, a menos que sejam canceladas nas configurações da conta pelo menos 24 horas antes do final do período atual.",
+  "reduce_glow_blur": "Reduzir brilho e desfoque (Economia de energia)",
+  "reduce_glow_blur_desc": "Desative efeitos de desfoque e animações para rolagem mais suave e maior duração da bateria"
 }

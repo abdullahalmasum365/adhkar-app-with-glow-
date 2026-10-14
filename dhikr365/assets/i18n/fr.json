@@ -357,5 +357,7 @@
   "restore_success": "Statut de parrainage restauré avec succès ! JazakAllahu Khairan.",
   "restore_not_found": "Aucun parrainage actif trouvé.",
   "disclaimer_ummah": "Les contributions soutiennent directement le développement indépendant de l'application, les serveurs et le maintien d'Adhkaar 365 100% gratuite et sans publicité pour la Oummah. Ceci est un parrainage logiciel volontaire et non un don de bienfaisance.",
-  "subscription_terms": "Les abonnements se renouvellent automatiquement sauf annulation dans les paramètres du compte au moins 24 heures avant la fin de la période en cours."
+  "subscription_terms": "Les abonnements se renouvellent automatiquement sauf annulation dans les paramètres du compte au moins 24 heures avant la fin de la période en cours.",
+  "reduce_glow_blur": "Réduire les lueurs et le flou (Économie d'énergie)",
+  "reduce_glow_blur_desc": "Désactiver le flou et les animations pour un défilement plus fluide et une meilleure autonomie"
 }

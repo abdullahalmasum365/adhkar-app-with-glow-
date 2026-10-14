@@ -8,9 +8,9 @@
 //     screen that uses this widget shares the same program.
 //   • The ticker drives a ValueNotifier that the painter listens to, so
 //     each frame only repaints the paint layer — no widget rebuilds.
-//   • Until the program loads (or if shaders are unsupported on the device),
-//     a static gradient in the same palette is shown, so there is never a
-//     black flash or a crash.
+//   • Wrapped in RepaintBoundary to isolate GPU canvas rasterization.
+//   • Automatically pauses ticker on AppLifecycleState.paused / inactive / hidden
+//     and switches to a lightweight static gradient in Low Power Mode (reduceGlowAndBlur).
 // ============================================================================
 
 import 'dart:ui' as ui;
@@ -18,8 +18,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 import '../constants/app_theme.dart';
+import '../providers/theme_provider.dart';
 
 class ShaderBackground extends StatefulWidget {
   const ShaderBackground({super.key});
@@ -29,34 +31,59 @@ class ShaderBackground extends StatefulWidget {
 }
 
 class _ShaderBackgroundState extends State<ShaderBackground>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   static Future<ui.FragmentProgram>? _programFuture;
 
   ui.FragmentShader? _shader;
   Ticker? _ticker;
   final ValueNotifier<double> _time = ValueNotifier(0);
+  bool _isAppActive = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _programFuture ??=
         ui.FragmentProgram.fromAsset('shaders/home_background.frag');
     _programFuture!.then((program) {
       if (!mounted) return;
       setState(() => _shader = program.fragmentShader());
-      // TickerProviderStateMixin respects TickerMode: the animation pauses
-      // automatically when this route is covered or the app is backgrounded.
       _ticker = createTicker((elapsed) {
         _time.value = elapsed.inMicroseconds / 1e6;
-      })..start();
+      });
+      _updateTickerState();
     }).catchError((e) {
       debugPrint('[ShaderBackground] shader unavailable: $e');
       // Fallback gradient stays — nothing else to do.
     });
   }
 
+  void _updateTickerState([bool? reduceGlow]) {
+    if (_ticker == null) return;
+    final reduce = reduceGlow ??
+        (mounted
+            ? Provider.of<ThemeProvider>(context, listen: false)
+                .reduceGlowAndBlur
+            : false);
+    if (!_isAppActive || reduce) {
+      _ticker!.muted = true;
+    } else {
+      if (!_ticker!.isActive) {
+        _ticker!.start();
+      }
+      _ticker!.muted = false;
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _isAppActive = (state == AppLifecycleState.resumed);
+    _updateTickerState();
+  }
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _ticker?.dispose();
     _shader?.dispose();
     _time.dispose();
@@ -65,22 +92,34 @@ class _ShaderBackgroundState extends State<ShaderBackground>
 
   @override
   Widget build(BuildContext context) {
+    bool reduceGlow = false;
+    try {
+      reduceGlow = Provider.of<ThemeProvider>(context).reduceGlowAndBlur;
+    } catch (_) {}
+
+    _updateTickerState(reduceGlow);
+
     final shader = _shader;
-    if (shader == null) {
-      // Static fallback in the same palette (also the pre-load frame).
-      return DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            center: Alignment.topCenter,
-            radius: 1.4,
-            colors: [AppColors.bgTeal, AppColors.bgDark],
+    if (shader == null || reduceGlow) {
+      // Static fallback in the same palette (used pre-load & in Low Power / Performance Mode).
+      return RepaintBoundary(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              center: Alignment.topCenter,
+              radius: 1.4,
+              colors: [AppColors.bgTeal, AppColors.bgDark],
+            ),
           ),
+          child: const SizedBox.expand(),
         ),
       );
     }
-    return CustomPaint(
-      painter: _ShaderPainter(shader, _time),
-      size: Size.infinite,
+    return RepaintBoundary(
+      child: CustomPaint(
+        painter: _ShaderPainter(shader, _time),
+        size: Size.infinite,
+      ),
     );
   }
 }

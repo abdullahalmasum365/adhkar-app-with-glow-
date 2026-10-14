@@ -505,35 +505,30 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
           builder: (context, setModalState) {
             final themeProvider =
                 Provider.of<ThemeProvider>(context, listen: false);
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 16,
-                right: 16,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 40,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 25.0, sigmaY: 25.0),
-                  child: Container(
-                    padding: const EdgeInsets.all(32),
-                    decoration: BoxDecoration(
-                      color: AppColors.playerSurface.withValues(alpha: 0.85),
-                      borderRadius: BorderRadius.circular(40),
-                      border: Border.all(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.shadow(0.5),
-                          blurRadius: 40,
-                        ),
-                        BoxShadow(
-                          color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
-                          blurRadius: 15,
-                        ),
-                      ],
-                    ),
+            final modalContainer = Container(
+                padding: const EdgeInsets.all(32),
+                decoration: BoxDecoration(
+                  color: themeProvider.reduceGlowAndBlur
+                      ? AppColors.playerSurface
+                      : AppColors.playerSurface.withValues(alpha: 0.85),
+                  borderRadius: BorderRadius.circular(40),
+                  border: Border.all(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                  ),
+                  boxShadow: themeProvider.reduceGlowAndBlur
+                      ? null
+                      : [
+                          BoxShadow(
+                            color: AppColors.shadow(0.5),
+                            blurRadius: 40,
+                          ),
+                          BoxShadow(
+                            color:
+                                const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                            blurRadius: 15,
+                          ),
+                        ],
+                ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -727,8 +722,22 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                         ),
                       ],
                     ),
-                  ),
-                ),
+                  );
+
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 40,
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: themeProvider.reduceGlowAndBlur
+                    ? modalContainer
+                    : BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 25.0, sigmaY: 25.0),
+                        child: modalContainer,
+                      ),
               ),
             );
           },
@@ -947,33 +956,29 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
     }
 
     final amber = AppColors.accent;
+    final reduceGlow =
+        Provider.of<ThemeProvider>(context, listen: false).reduceGlowAndBlur;
 
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: SafeArea(
-        top: false,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
-              decoration: BoxDecoration(
-                color: AppColors.playerSurface.withValues(alpha: 0.93),
-                borderRadius: BorderRadius.circular(28),
-                border: Border.all(color: amber.withValues(alpha: 0.22)),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.shadow(0.55),
-                    blurRadius: 32,
-                    offset: const Offset(0, -6),
-                  ),
-                ],
-              ),
-              child: Column(
+    final playerContainer = Container(
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+      padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
+      decoration: BoxDecoration(
+        color: reduceGlow
+            ? AppColors.playerSurface
+            : AppColors.playerSurface.withValues(alpha: 0.93),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: amber.withValues(alpha: 0.22)),
+        boxShadow: reduceGlow
+            ? null
+            : [
+                BoxShadow(
+                  color: AppColors.shadow(0.55),
+                  blurRadius: 32,
+                  offset: const Offset(0, -6),
+                ),
+              ],
+      ),
+      child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // ── Handle ────────────────────────────────────────────
@@ -1307,14 +1312,35 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                   ),
                 ],
               ),
-            ),
-          ),
-        )
-            .animate()
-            .slideY(
-                begin: 1, end: 0, duration: 340.ms, curve: Curves.easeOutCubic)
-            .fadeIn(duration: 200.ms),
+            );
+
+    final miniPlayerWidget = SafeArea(
+      top: false,
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        child: reduceGlow
+            ? playerContainer
+            : BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                child: playerContainer,
+              ),
       ),
+    );
+
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: reduceGlow
+          ? miniPlayerWidget
+          : miniPlayerWidget
+              .animate()
+              .slideY(
+                  begin: 1,
+                  end: 0,
+                  duration: 340.ms,
+                  curve: Curves.easeOutCubic)
+              .fadeIn(duration: 200.ms),
     );
   }
 
