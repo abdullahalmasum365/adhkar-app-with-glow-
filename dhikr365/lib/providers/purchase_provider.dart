@@ -98,6 +98,35 @@ class PurchaseProvider extends ChangeNotifier {
     }
   }
 
+  String? _userId;
+
+  /// Attaches the authenticated user UID to seamlessly sync cloud sponsorship status.
+  void attachUser(String? uid) {
+    if (_userId == uid) return;
+    _userId = uid;
+    if (uid != null) {
+      _syncUserCloudEntitlements();
+    }
+  }
+
+  Future<void> _syncUserCloudEntitlements() async {
+    try {
+      final cloudState = await _verificationService.fetchCloudPurchaseState();
+      if (cloudState != null && cloudState['hasActiveDonation'] == true) {
+        final cloudProdId = cloudState['activeDonationId'] as String?;
+        if (cloudProdId != null && DonationProductIds.isDonationProduct(cloudProdId)) {
+          _activeDonationId = cloudProdId;
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString(_prefKeyActiveDonation, cloudProdId);
+          debugPrint('[PurchaseProvider] Restored sponsorship status from authenticated Firestore record: $cloudProdId');
+          notifyListeners();
+        }
+      }
+    } catch (e) {
+      debugPrint('[PurchaseProvider] _syncUserCloudEntitlements error: $e');
+    }
+  }
+
   /// Loads cached entitlements from SharedPreferences. Offline users retain access.
   /// Automatically checks and purges expired subscriptions.
   Future<void> loadCachedEntitlements() async {

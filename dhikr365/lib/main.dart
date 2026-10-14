@@ -290,7 +290,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => PurchaseProvider()),
+        ChangeNotifierProxyProvider<AuthProvider, PurchaseProvider>(
+          create: (_) => PurchaseProvider(),
+          update: (_, auth, previous) {
+            final pp = previous ?? PurchaseProvider();
+            pp.attachUser(auth.user?.uid);
+            return pp;
+          },
+        ),
         ChangeNotifierProxyProvider<AuthProvider, DhikrProvider>(
           create: (_) => DhikrProvider(),
           update: (_, auth, previous) {
