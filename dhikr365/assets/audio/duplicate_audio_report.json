@@ -1,0 +1,676 @@
+{
+  "total_files": 125,
+  "unique_hashes": 79,
+  "erroneous_duplicate_groups": [
+    {
+      "md5": "83949c7328e619ef824d6b05bfd9764c",
+      "sha256": "383443ce904d800e7c7e3ff7b97f45a5cc36df897c6cdc4809baa9d25db2df9f",
+      "size_bytes": 389541,
+      "files": [
+        "distress.mp3",
+        "distress_anxiety_grief.mp3"
+      ]
+    },
+    {
+      "md5": "2d6710fb756e3d4138a25ddb435465e6",
+      "sha256": "0df75be5d8a6b7b629923efbb43dc67749542f8f4ed14407fdf3a09ede7caf55",
+      "size_bytes": 613065,
+      "files": [
+        "evening_e_allahumma_afini.mp3",
+        "morning_m_allahumma_afini.mp3"
+      ]
+    },
+    {
+      "md5": "dfef54c2b1bc1889fdc37e976c881d3e",
+      "sha256": "8c1e59ea823e6b683d4779257cf9ddf83dd26f3efd5fa72841e9a5ff7a073f82",
+      "size_bytes": 425764,
+      "files": [
+        "evening_e_allahumma_inni_amsaytu.mp3",
+        "morning_m_allahumma_ashhaduka.mp3"
+      ]
+    },
+    {
+      "md5": "ba0f2731daeeca27987733324aa444d7",
+      "sha256": "36833e94a06a40671b5d74a4e17a366a5d90982a72a8ddf5e59593fb4f05684c",
+      "size_bytes": 326847,
+      "files": [
+        "evening_e_allahumma_ma_amsa.mp3",
+        "morning_m_allahumma_ma_asbaha.mp3"
+      ]
+    },
+    {
+      "md5": "3b95c8c60991d41aa9ce1a74283b3f8b",
+      "sha256": "1b743aafba753a144f72761044876f8036c485bcf6ccd4a9abf942c28318b444",
+      "size_bytes": 231135,
+      "files": [
+        "focus_2.mp3",
+        "focus_4.mp3"
+      ]
+    },
+    {
+      "md5": "3f4ccd55b46155726556a0a6220b4831",
+      "sha256": "f2134fecda969a64bab46c36111678be0f2a92d5c1fe841751505b58c22d0fce",
+      "size_bytes": 221677,
+      "files": [
+        "grave_salaam_aisha.mp3",
+        "grave_salaam_buraidah.mp3"
+      ]
+    },
+    {
+      "md5": "e99d639b1336383b7e3bee4889abebc9",
+      "sha256": "1b90c32d504cf756705193b3e4d33505098a117e8a8b24638755d3cc3ceab5ce",
+      "size_bytes": 54888,
+      "files": [
+        "shifa.mp3",
+        "shifa_visiting_sick_1.mp3"
+      ]
+    },
+    {
+      "md5": "edcc12c05781c181210ecbbb1ba3ec2f",
+      "sha256": "7bcf68c3beabc4444ec3163c75dd3ec2f7a332cee8bf8ec9e43d5f5582002618",
+      "size_bytes": 400885,
+      "files": [
+        "travel.mp3",
+        "travel_riding_vehicle.mp3"
+      ]
+    }
+  ],
+  "legitimate_duplicate_groups": [
+    {
+      "description": "Ayatul Kursi (Shared across Morning, Evening, Protection, Salah, Sleep)",
+      "md5": "91e75163557bf5bae861628334b04b37",
+      "sha256": "00e62c8d72dcdb5f62dd87bb85e14abf3fc93d01c8171374baccbc913bb55833",
+      "files": [
+        "evening_e_ayatulkursi.mp3",
+        "morning_m_ayatulkursi.mp3",
+        "protection_5.mp3",
+        "salah_ayatul_kursi.mp3",
+        "sleep_ayatul_kursi.mp3"
+      ]
+    },
+    {
+      "description": "Surah Al-Falaq (Shared across Morning, Evening, Protection, Salah, Sleep)",
+      "md5": "b10d56f493f814a4100b1cd8c23fb0a8",
+      "sha256": "ca3209844e70bab35c7994ed0a7fcffbb6155d14f6fe6a3ddb11087e9e2ccd98",
+      "files": [
+        "evening_e_falaq.mp3",
+        "morning_m_falaq.mp3",
+        "protection_2.mp3",
+        "salah_falaq.mp3",
+        "sleep_falaq.mp3"
+      ]
+    },
+    {
+      "description": "Surah An-Nas (Shared across Morning, Evening, Protection, Salah, Sleep)",
+      "md5": "a421ab49f436fb324b5de725a75a2cb8",
+      "sha256": "8e344b3eaaf32dbafee92afb7cc6470dbb5df0d89bff0d7287042fca48cb33a8",
+      "files": [
+        "evening_e_nas.mp3",
+        "morning_m_nas.mp3",
+        "protection_3.mp3",
+        "salah_nas.mp3",
+        "sleep_nas.mp3"
+      ]
+    },
+    {
+      "description": "Surah Al-Ikhlas (Shared across Morning, Evening, Salah, Sleep)",
+      "md5": "a4bc855e9291b9f572e20d4a258cddfa",
+      "sha256": "768c5d053a51f0796f8f5f6af7c1226fa1edc6a08574d0ef2a8ff287a1e6736a",
+      "files": [
+        "evening_e_ikhlas.mp3",
+        "morning_m_ikhlas.mp3",
+        "salah_ikhlas.mp3",
+        "sleep_ikhlas.mp3"
+      ]
+    },
+    {
+      "description": "Alhamdulillah (Shared across Morning, Evening, Focus)",
+      "md5": "22bed34ee7314a8f6fea3481973de230",
+      "sha256": "9a85ecaeb240d7f7d73b4e812c32f06bfb9fc0c8f305a9d02d40e0a5d1c56cf5",
+      "files": [
+        "evening_e_alhamdulillah.mp3",
+        "focus_5.mp3",
+        "morning_m_alhamdulillah.mp3"
+      ]
+    },
+    {
+      "description": "Allahumma Fatiras-Samawati (Morning, Evening, Sleep)",
+      "md5": "4c7ebfda41165d384536b55c78b1d1f5",
+      "sha256": "864f0e5d804ceb874de0e1c9716aa9ce1c81ba26a88297b6bc8d0f0e274501d2",
+      "files": [
+        "evening_e_allahumma_fatir.mp3",
+        "morning_m_allahumma_fatir.mp3",
+        "sleep_allahumma_alimal_ghaybi.mp3"
+      ]
+    },
+    {
+      "description": "Bismillahilladhi la yadurru (Morning, Evening, Protection)",
+      "md5": "845f77f76dc4604db3623475d1fc2f53",
+      "sha256": "138c49261a9785e53d6f67372f212e8ab2719799bd21353e554184c59cb41fe4",
+      "files": [
+        "evening_e_bismillah_la_yadurr.mp3",
+        "morning_m_bismillah_la_yadurr.mp3",
+        "protection_1.mp3"
+      ]
+    },
+    {
+      "description": "La ilaha illallahu wahdahu la sharika lah (Morning, Evening, Focus)",
+      "md5": "ce4c0132cc2b3d19f56b10233b2f4623",
+      "sha256": "366b7556c5768dea58ca2e1007f7b2bda5973f0c9b43d7ed733beb9d9b45353a",
+      "files": [
+        "evening_e_la_ilaha_illa_allah_10.mp3",
+        "focus_7.mp3",
+        "morning_m_la_ilaha_illa_allah_10.mp3"
+      ]
+    },
+    {
+      "description": "Salawat alan-Nabi (Morning, Evening, Focus)",
+      "md5": "1cc525b27d6c8e281100ecbfa4d3f6cc",
+      "sha256": "9d9427f0e94c774fdabda38ac6a2db3f741352b11ad0941f943dc64420b4329c",
+      "files": [
+        "evening_e_salawat_alan_nabi.mp3",
+        "focus_8.mp3",
+        "morning_m_salawat_alan_nabi.mp3"
+      ]
+    },
+    {
+      "description": "Allahumma inni as'alukal-afwa wal-afiyah (Morning & Evening)",
+      "md5": "41469c50810e24f7016ea7961c64ec1e",
+      "sha256": "7349914e738eabfff35ffc2d7c5ebe1df3de5243e3600f9c8d7be192031054c3",
+      "files": [
+        "evening_e_afwa_wal_afiyah.mp3",
+        "morning_m_afwa_wal_afiyah.mp3"
+      ]
+    },
+    {
+      "description": "Allahu Akbar (Morning & Evening)",
+      "md5": "2f74ba7f2e16460a82909c60f29c5ece",
+      "sha256": "7028ce95bbc76291848d384c8326f749dc3354205a5c0a14d226cebbbd345310",
+      "files": [
+        "evening_e_allahu_akbar.mp3",
+        "morning_m_allahu_akbar.mp3"
+      ]
+    },
+    {
+      "description": "Allahumma ajirni minan-nar (Morning & Evening)",
+      "md5": "5974175eeed4fc311b3952af86f68971",
+      "sha256": "cc02e74350305e9b9cdd3880cf1a83fbca4d5dc043be8ba0494bb8d05711dabe",
+      "files": [
+        "evening_e_allahumma_ajirni_min_nar.mp3",
+        "morning_m_allahumma_ajirni_min_nar.mp3"
+      ]
+    },
+    {
+      "description": "Astaghfirullah (Morning & Evening)",
+      "md5": "fd7622fd3140a72de0f7f0b97847a2f1",
+      "sha256": "19c90667a8b1ab6aa308ec33c52af4efe7a50e5b289b7ccea71fcd5ee9fee18d",
+      "files": [
+        "evening_e_astaghfirullah.mp3",
+        "morning_m_astaghfirullah.mp3"
+      ]
+    },
+    {
+      "description": "Audhu bikalimatillahit-tammati (Evening & Protection)",
+      "md5": "8be9abbd2508d300e3229dcdda9e3dba",
+      "sha256": "73ad9882959eec1fb8925247d9999b4c5aafa396ae4560d76faae0327cbe7e84",
+      "files": [
+        "evening_e_audhu_bikalimatillah.mp3",
+        "protection_4.mp3"
+      ]
+    },
+    {
+      "description": "Hasbiyallah (Morning & Evening)",
+      "md5": "70c29b8191289eec720b63006f4ab7b5",
+      "sha256": "e47bf463b54eea2ecbda28f324fa1d395a01607d53dd610a2de7d3cae1cb640f",
+      "files": [
+        "evening_e_hasbiyallah.mp3",
+        "morning_m_hasbiyallah.mp3"
+      ]
+    },
+    {
+      "description": "Radhitu Billahi Rabba (Morning & Evening)",
+      "md5": "5a9f3ffe07d1100a217308c24fb21400",
+      "sha256": "b0e35395d126e70aec9568b491cc7f2dba4f9232c306ee795159909b9f3390ca",
+      "files": [
+        "evening_e_radhitu_billah.mp3",
+        "morning_m_radhitu_billah.mp3"
+      ]
+    },
+    {
+      "description": "Sayyidul Istighfar (Morning & Evening)",
+      "md5": "7a942c5160b7cfed3736d7c2ac3f0ed1",
+      "sha256": "a97f8c9b98712bddd5c50c8d33f1128028d92033ee3485728d1c37b9ac995766",
+      "files": [
+        "evening_e_sayyidul_istighfar.mp3",
+        "morning_m_sayyidul_istighfar.mp3"
+      ]
+    },
+    {
+      "description": "SubhanAllah (Shared across Morning, Evening)",
+      "md5": "8280e3eba91050784ed2249622f2b83b",
+      "sha256": "1e7bc587c19ea36f86c2a7969f78294b6c4fa3dbecb5c06195af262d159d2c0d",
+      "files": [
+        "evening_e_subhanallah.mp3",
+        "morning_m_subhanallah.mp3"
+      ]
+    },
+    {
+      "description": "SubhanAllahi wa biHamdihi 100x (Morning & Evening)",
+      "md5": "09eb52f8bf58f9a5d159b0a5ded3185d",
+      "sha256": "8f3ea9de5832aa79a3e46047d0c7970fd32b962d9ea331580b712e42850029c9",
+      "files": [
+        "evening_e_subhanallah_bihamdihi_100.mp3",
+        "morning_m_subhanallah_bihamdihi_100.mp3"
+      ]
+    },
+    {
+      "description": "Ya Hayyu Ya Qayyum (Morning & Evening)",
+      "md5": "f27b2b5382bbb88b49cf55e78358006b",
+      "sha256": "0ab04832456d070e7e3154cbb3a064a4f60371181b1be332824944387f697e7e",
+      "files": [
+        "evening_e_ya_hayyu_ya_qayyum.mp3",
+        "morning_m_ya_hayyu_ya_qayyum.mp3"
+      ]
+    },
+    {
+      "description": "Tasbih Fatimi (Focus & Sleep)",
+      "md5": "d87c921a1f2f4495337e11480cef5ea7",
+      "sha256": "83019346e8c65ffcfa2a7464a77f66042f1955420171a0ee817efa0075015ddc",
+      "files": [
+        "focus_6.mp3",
+        "sleep_tasbih_fatimi.mp3"
+      ]
+    },
+    {
+      "description": "Allahumma inni as'aluka ilman nafian (Morning & Salah)",
+      "md5": "1159e61f9b54bb582e8bc8693ece9680",
+      "sha256": "a03d324f4099b67b92e9548ebb53f25800aebbd06c7d3299e20373fc0d470b27",
+      "files": [
+        "morning_m_allahumma_ilman_nafian.mp3",
+        "salah_ilman_nafian.mp3"
+      ]
+    }
+  ],
+  "embedded_art_files": [
+    {
+      "file": "distress.mp3",
+      "file_size": 389541,
+      "art_bytes": 6635
+    },
+    {
+      "file": "distress_anguish_yunus.mp3",
+      "file_size": 262900,
+      "art_bytes": 6635
+    },
+    {
+      "file": "distress_anxiety_grief.mp3",
+      "file_size": 389541,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_afwa_wal_afiyah.mp3",
+      "file_size": 725580,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_allahu_akbar.mp3",
+      "file_size": 181816,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_allahumma_afini.mp3",
+      "file_size": 613065,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_allahumma_fatir.mp3",
+      "file_size": 598103,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_allahumma_inni_amsaytu.mp3",
+      "file_size": 425764,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_allahumma_ma_amsa.mp3",
+      "file_size": 326847,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_amsayna_wal_mulku.mp3",
+      "file_size": 1139373,
+      "art_bytes": 3054
+    },
+    {
+      "file": "evening_e_astaghfirullah.mp3",
+      "file_size": 229511,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_audhu_bikalimatillah.mp3",
+      "file_size": 310965,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_bismillah_la_yadurr.mp3",
+      "file_size": 325091,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_ikhlas.mp3",
+      "file_size": 211019,
+      "art_bytes": 13687
+    },
+    {
+      "file": "evening_e_la_ilaha_illa_allah_10.mp3",
+      "file_size": 320922,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_nas.mp3",
+      "file_size": 649876,
+      "art_bytes": 10397
+    },
+    {
+      "file": "evening_e_radhitu_billah.mp3",
+      "file_size": 293044,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_salawat_alan_nabi.mp3",
+      "file_size": 228697,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_sayyidul_istighfar.mp3",
+      "file_size": 582220,
+      "art_bytes": 6635
+    },
+    {
+      "file": "evening_e_subhanallah_bihamdihi_100.mp3",
+      "file_size": 228961,
+      "art_bytes": 179815
+    },
+    {
+      "file": "evening_e_ya_hayyu_ya_qayyum.mp3",
+      "file_size": 390795,
+      "art_bytes": 6635
+    },
+    {
+      "file": "focus_2.mp3",
+      "file_size": 231135,
+      "art_bytes": 6635
+    },
+    {
+      "file": "focus_3.mp3",
+      "file_size": 279200,
+      "art_bytes": 6635
+    },
+    {
+      "file": "focus_4.mp3",
+      "file_size": 231135,
+      "art_bytes": 6635
+    },
+    {
+      "file": "focus_6.mp3",
+      "file_size": 406678,
+      "art_bytes": 6635
+    },
+    {
+      "file": "focus_7.mp3",
+      "file_size": 320922,
+      "art_bytes": 179815
+    },
+    {
+      "file": "focus_8.mp3",
+      "file_size": 228697,
+      "art_bytes": 179815
+    },
+    {
+      "file": "food_aftara_indakum.mp3",
+      "file_size": 287803,
+      "art_bytes": 179815
+    },
+    {
+      "file": "food_alhamdulillah_kathiran.mp3",
+      "file_size": 347327,
+      "art_bytes": 6635
+    },
+    {
+      "file": "food_barik_lana_fihi.mp3",
+      "file_size": 475641,
+      "art_bytes": 6635
+    },
+    {
+      "file": "food_breaking_fast_forgiveness.mp3",
+      "file_size": 272931,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_afwa_wal_afiyah.mp3",
+      "file_size": 725580,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_allahu_akbar.mp3",
+      "file_size": 181816,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_allahumma_afini.mp3",
+      "file_size": 613065,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_allahumma_ashhaduka.mp3",
+      "file_size": 425764,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_allahumma_bika_asbahna.mp3",
+      "file_size": 340949,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_allahumma_fatir.mp3",
+      "file_size": 598103,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_allahumma_ilman_nafian.mp3",
+      "file_size": 325091,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_allahumma_ma_asbaha.mp3",
+      "file_size": 326847,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_asbahna_ala_fitrah.mp3",
+      "file_size": 518273,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_asbahna_wal_mulku.mp3",
+      "file_size": 804883,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_astaghfirullah.mp3",
+      "file_size": 229511,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_bismillah_la_yadurr.mp3",
+      "file_size": 325091,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_ikhlas.mp3",
+      "file_size": 211019,
+      "art_bytes": 13687
+    },
+    {
+      "file": "morning_m_la_ilaha_illa_allah_10.mp3",
+      "file_size": 320922,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_morning_blessings.mp3",
+      "file_size": 486508,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_nas.mp3",
+      "file_size": 649876,
+      "art_bytes": 10397
+    },
+    {
+      "file": "morning_m_radhitu_billah.mp3",
+      "file_size": 293044,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_salawat_alan_nabi.mp3",
+      "file_size": 228697,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_sayyidul_istighfar.mp3",
+      "file_size": 582220,
+      "art_bytes": 6635
+    },
+    {
+      "file": "morning_m_subhanallah_bihamdihi_100.mp3",
+      "file_size": 228961,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_subhanallah_bihamdihi_3.mp3",
+      "file_size": 357274,
+      "art_bytes": 179815
+    },
+    {
+      "file": "morning_m_ya_hayyu_ya_qayyum.mp3",
+      "file_size": 390795,
+      "art_bytes": 6635
+    },
+    {
+      "file": "protection_1.mp3",
+      "file_size": 325091,
+      "art_bytes": 179815
+    },
+    {
+      "file": "protection_3.mp3",
+      "file_size": 649876,
+      "art_bytes": 10397
+    },
+    {
+      "file": "protection_4.mp3",
+      "file_size": 310965,
+      "art_bytes": 6635
+    },
+    {
+      "file": "salah_ikhlas.mp3",
+      "file_size": 211019,
+      "art_bytes": 13687
+    },
+    {
+      "file": "salah_ilman_nafian.mp3",
+      "file_size": 325091,
+      "art_bytes": 179815
+    },
+    {
+      "file": "salah_la_hawla.mp3",
+      "file_size": 725162,
+      "art_bytes": 6635
+    },
+    {
+      "file": "salah_la_ilaha_wahdahu.mp3",
+      "file_size": 518273,
+      "art_bytes": 6635
+    },
+    {
+      "file": "salah_la_ilaha_yuhyi.mp3",
+      "file_size": 519860,
+      "art_bytes": 179815
+    },
+    {
+      "file": "salah_nas.mp3",
+      "file_size": 649876,
+      "art_bytes": 10397
+    },
+    {
+      "file": "shifa_visiting_sick_2.mp3",
+      "file_size": 282962,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_alhamdulillah_atamana.mp3",
+      "file_size": 374495,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_allahumma_alimal_ghaybi.mp3",
+      "file_size": 598103,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_allahumma_aslamtu_nafsi.mp3",
+      "file_size": 647840,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_allahumma_khalaqta_nafsi.mp3",
+      "file_size": 486508,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_allahumma_qini_adhabaka.mp3",
+      "file_size": 299178,
+      "art_bytes": 179815
+    },
+    {
+      "file": "sleep_allahumma_rabbas_samawati.mp3",
+      "file_size": 933306,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_bismika_amutu_wa_ahya.mp3",
+      "file_size": 215252,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_bismika_wadatu_janbi.mp3",
+      "file_size": 422560,
+      "art_bytes": 6635
+    },
+    {
+      "file": "sleep_ikhlas.mp3",
+      "file_size": 211019,
+      "art_bytes": 13687
+    },
+    {
+      "file": "sleep_last_two_ayat_baqarah.mp3",
+      "file_size": 1373363,
+      "art_bytes": 14146
+    },
+    {
+      "file": "sleep_nas.mp3",
+      "file_size": 649876,
+      "art_bytes": 10397
+    },
+    {
+      "file": "sleep_tasbih_fatimi.mp3",
+      "file_size": 406678,
+      "art_bytes": 6635
+    },
+    {
+      "file": "travel_supplication.mp3",
+      "file_size": 542077,
+      "art_bytes": 5984
+    }
+  ]
+}
