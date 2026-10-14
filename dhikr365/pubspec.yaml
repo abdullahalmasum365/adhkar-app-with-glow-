@@ -64,6 +64,7 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   crypto: ^3.0.7
   in_app_purchase: ^3.2.0
+  in_app_purchase_android: ^0.3.6+7
   url_launcher: ^6.3.1
   workmanager: ^0.10.10
   home_widget: ^0.10.0

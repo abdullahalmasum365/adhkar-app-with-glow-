@@ -47,15 +47,15 @@ class TasbihWidgetProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.tasbih_target, target)
                 setTextColor(R.id.tasbih_target, textSecondary)
 
-                // Background interactive tap on the button
-                val tapPendingIntent = HomeWidgetBackgroundIntent.getBroadcast(
+                // Background interactive tap on the button (uses FLAG_IMMUTABLE)
+                val tapPendingIntent = WidgetIntentHelper.getBroadcastPendingIntent(
                     context,
                     Uri.parse("adhkaar365://tasbih_increment")
                 )
                 setOnClickPendingIntent(R.id.btn_tasbih_tap, tapPendingIntent)
 
-                // Main root click opens the tasbih focus screen
-                val rootPendingIntent = HomeWidgetLaunchIntent.getActivity(
+                // Main root click opens the tasbih focus screen (uses FLAG_IMMUTABLE & Android 14/15 background launch options)
+                val rootPendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://tasbih")

@@ -240,7 +240,7 @@ class AuthService {
 
       // Dynamically query and delete any remaining documents across known subcollections
       // to guarantee 100% compliance with permanent data purge policy
-      final subcollections = ['settings', 'plan', 'progress', 'dedications', 'sadaqah'];
+      final subcollections = ['settings', 'plan', 'progress', 'dedications', 'sadaqah', 'purchases'];
       for (final sub in subcollections) {
         try {
           final querySnap = await db.collection(sub).get();

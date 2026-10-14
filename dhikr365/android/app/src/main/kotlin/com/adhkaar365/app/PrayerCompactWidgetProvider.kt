@@ -46,7 +46,8 @@ class PrayerCompactWidgetProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.compact_countdown, countdown)
                 setTextColor(R.id.compact_countdown, Color.WHITE)
 
-                val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+                // Deep link on click (uses FLAG_IMMUTABLE & Android 14/15 background launch options)
+                val pendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://prayer_times")

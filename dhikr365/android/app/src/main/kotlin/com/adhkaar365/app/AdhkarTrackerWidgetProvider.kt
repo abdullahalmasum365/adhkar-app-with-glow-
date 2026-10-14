@@ -70,22 +70,22 @@ class AdhkarTrackerWidgetProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.adhkar_footer, footerText)
                 setTextColor(R.id.adhkar_footer, textSecondary)
 
-                // Deep links
-                val morningPendingIntent = HomeWidgetLaunchIntent.getActivity(
+                // Deep links (uses FLAG_IMMUTABLE & Android 14/15 background launch options)
+                val morningPendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://adhkar/morning")
                 )
                 setOnClickPendingIntent(R.id.btn_morning_card, morningPendingIntent)
 
-                val eveningPendingIntent = HomeWidgetLaunchIntent.getActivity(
+                val eveningPendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://adhkar/evening")
                 )
                 setOnClickPendingIntent(R.id.btn_evening_card, eveningPendingIntent)
 
-                val rootPendingIntent = HomeWidgetLaunchIntent.getActivity(
+                val rootPendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://progress")

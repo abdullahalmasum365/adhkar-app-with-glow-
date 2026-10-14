@@ -243,6 +243,7 @@ class PurchaseProvider extends ChangeNotifier {
         _donationExpiry = null;
         await prefs.remove(_prefKeyActiveDonation);
         await prefs.remove(_prefKeyDonationExpiry);
+        unawaited(_verificationService.syncCancellationWithFirestore());
       }
 
       _lastVerified = DateTime.now();
@@ -315,6 +316,9 @@ class PurchaseProvider extends ChangeNotifier {
               _lastVerified = DateTime.now();
               await prefs.setInt(
                   _prefKeyLastVerified, _lastVerified!.millisecondsSinceEpoch);
+
+              // Securely sync verified purchase with Firestore for authenticated users
+              unawaited(_verificationService.syncPurchaseWithFirestore(record));
             }
           }
 
@@ -378,6 +382,9 @@ class PurchaseProvider extends ChangeNotifier {
       // Clean legacy keys
       await prefs.remove(_legacyPrefKeyActiveSub);
       await prefs.remove(_legacyPrefKeySubExpiry);
+
+      // Securely sync cancellation to Firestore for authenticated users
+      await _verificationService.syncCancellationWithFirestore();
     } catch (e) {
       debugPrint('[PurchaseProvider] clearSubscription error: $e');
     }

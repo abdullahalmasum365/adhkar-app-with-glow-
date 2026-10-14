@@ -43,7 +43,8 @@ class AdhkarTrackerSmallWidgetProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.small_evening_check, eveningCheck)
                 setTextColor(R.id.small_evening_check, textSecondary)
 
-                val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+                // Deep link on click (uses FLAG_IMMUTABLE & Android 14/15 background launch options)
+                val pendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://progress")

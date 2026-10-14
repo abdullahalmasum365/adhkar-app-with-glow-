@@ -56,7 +56,8 @@ class DuaOfTheDayWidgetProvider : HomeWidgetProvider() {
                 setTextViewText(R.id.dua_reference_text, referenceText)
                 setTextColor(R.id.dua_reference_text, textSecondary)
 
-                val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+                // Deep link on click (uses FLAG_IMMUTABLE & Android 14/15 background launch options)
+                val pendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://dua_of_day")

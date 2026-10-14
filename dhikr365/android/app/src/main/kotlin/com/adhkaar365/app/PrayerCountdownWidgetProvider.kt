@@ -76,8 +76,8 @@ class PrayerCountdownWidgetProvider : HomeWidgetProvider() {
                 setTextColor(R.id.tv_maghrib_time, textPrimary)
                 setTextColor(R.id.tv_isha_time, textPrimary)
 
-                // Deep link on click
-                val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+                // Deep link on click (uses FLAG_IMMUTABLE & Android 14/15 background launch options)
+                val pendingIntent = WidgetIntentHelper.getActivityPendingIntent(
                     context,
                     MainActivity::class.java,
                     Uri.parse("adhkaar365://prayer_times")
