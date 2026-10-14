@@ -173,7 +173,7 @@ class PurchaseProvider extends ChangeNotifier {
           await _service.queryProducts(DonationProductIds.all);
       _products = {for (final p in response.productDetails) p.id: p};
     } catch (e) {
-      _lastError = 'Could not load donation options right now.';
+      _lastError = 'Could not load sponsorship options right now.';
       debugPrint('[PurchaseProvider] queryProducts failed: $e');
     }
 

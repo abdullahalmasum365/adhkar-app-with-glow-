@@ -130,7 +130,7 @@
   "badge_1k_adhkar": "1k Adhkar",
   "badge_early_bird": "Early Bird",
   "badge_night_prayer": "Night Prayer",
-  "badge_generous_donor": "Generous Donor",
+  "badge_generous_donor": "Generous Patron",
   "milestone_patron_title": "Patron of Faith",
   "milestone_patron_desc": "Supported the dhikr mission",
   "milestone_bronze_title": "Bronze Dhikr Master",
@@ -247,7 +247,7 @@
   "welcome_signin_title": "Save your progress",
   "welcome_signin_body": "Sign in with Google or Apple so your favorite duas and custom plan are saved to your account and restored on any device. Totally optional — you can always do this later from Settings.",
   "continue_without_account": "Continue without an account",
-  "donation_not_available": "Donations aren't set up on this build yet — check back soon.",
+  "donation_not_available": "Sponsorship options aren't set up on this build yet — check back soon.",
   "donation_not_available_short": "Not available yet",
   "donation_tier_annual_name": "Annual Sponsor",
   "donation_tier_annual_desc": "Continuous blessing throughout the year",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Later Asr (2x shadow)",
   "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Earlier Asr (1x shadow)",
   "calc_method": "Calculation Method",
-  "select_madhab": "Select Madhab"
+  "select_madhab": "Select Madhab",
+  "support_app_dev": "Support App Development",
+  "sadaqah_jariyah_tag": "Sadaqah Jariyah Intention",
+  "restore_purchases": "Restore Purchases",
+  "restore_success": "Sponsorship status restored successfully! JazakAllahu Khairan.",
+  "restore_not_found": "No active sponsorship found.",
+  "disclaimer_ummah": "Contributions directly support independent app development, continuous server operations, and keeping Adhkaar 365 100% free and ad-free for the Ummah worldwide. This is a voluntary software sponsorship, not a charitable donation.",
+  "subscription_terms": "Subscriptions automatically renew unless canceled in store account settings at least 24 hours before the end of the current period."
 }

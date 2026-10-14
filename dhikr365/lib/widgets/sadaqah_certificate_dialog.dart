@@ -2,7 +2,7 @@
 // lib/widgets/sadaqah_certificate_dialog.dart
 //
 // Displays an elegant, Islamic digital certificate & dua keepsake when
-// a user donates for themselves, parents, or deceased loved ones.
+// a user sponsors the app for themselves, parents, or deceased loved ones.
 // Features authentic Qur'anic prayers and a one-tap family share option.
 // ============================================================================
 

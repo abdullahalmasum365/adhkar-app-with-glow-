@@ -236,7 +236,7 @@
   "welcome_signin_title": "進捗を保存しよう",
   "welcome_signin_body": "GoogleまたはAppleでサインインすると、お気に入りのドゥアとカスタムプランがアカウントに保存され、どの端末でも復元できます。完全に任意です — 後で設定画面からでも行えます。",
   "continue_without_account": "アカウントなしで続ける",
-  "donation_not_available": "このバージョンではまだ寄付機能が有効になっていません。近日中に再度ご確認ください。",
+  "donation_not_available": "このバージョンではまだ支援機能が有効になっていません。近日中に再度ご確認ください。",
   "donation_not_available_short": "まだ利用できません",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "ハナフィー派 • 遅いアスル（影2倍）",
   "madhab_standard_desc": "シャーフィイー、マーリク、ハンバル派 • 早いアスル（影1倍）",
   "calc_method": "計算方法",
-  "select_madhab": "マズハブを選択"
+  "select_madhab": "マズハブを選択",
+  "support_app_dev": "アプリ開発を支援する",
+  "sadaqah_jariyah_tag": "サダカ・ジャーリヤの意図",
+  "restore_purchases": "購入を復元",
+  "restore_success": "支援ステータスが正常に復元されました！ジャザークアッラーフ・ハイラン。",
+  "restore_not_found": "有効な支援は見つかりませんでした。",
+  "disclaimer_ummah": "ご支援はアプリの独立した開発、サーバーの維持、および世界中のウンマのためにAdhkaar 365を100%無料・広告なしで維持するために直接使用されます。これは自発的なソフトウェアスポンサーシップであり、慈善寄付ではありません。",
+  "subscription_terms": "現在の期間が終了する少なくとも24時間前までにアカウント設定でキャンセルされない限り、定期購入は自動的に更新されます。"
 }

@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Adhkar",
   "badge_early_bird": "Frühaufsteher",
   "badge_night_prayer": "Nachtgebet",
-  "badge_generous_donor": "Großzügiger Spender",
+  "badge_generous_donor": "Großzügiger Förderer",
   "milestone_patron_title": "Patron des Glaubens",
   "milestone_patron_desc": "Die Dhikr-Mission unterstützt",
   "milestone_bronze_title": "Bronze Dhikr-Meister",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Speichere deinen Fortschritt",
   "welcome_signin_body": "Melde dich mit Google oder Apple an, damit deine Lieblings-Duas und dein individueller Plan in deinem Konto gespeichert und auf jedem Gerät wiederhergestellt werden. Völlig optional — du kannst das auch später in den Einstellungen tun.",
   "continue_without_account": "Ohne Konto fortfahren",
-  "donation_not_available": "Spenden sind in dieser Version noch nicht eingerichtet — schau bald wieder vorbei.",
+  "donation_not_available": "Unterstützungsoptionen sind in dieser Version noch nicht eingerichtet — schau bald wieder vorbei.",
   "donation_not_available_short": "Noch nicht verfügbar",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Späteres Asr (2x Schatten)",
   "madhab_standard_desc": "Schafi'i, Maliki, Hanbali • Früheres Asr (1x Schatten)",
   "calc_method": "Berechnungsmethode",
-  "select_madhab": "Madhab auswählen"
+  "select_madhab": "Madhab auswählen",
+  "support_app_dev": "App-Entwicklung unterstützen",
+  "sadaqah_jariyah_tag": "Absicht der Sadaqah Jariyah",
+  "restore_purchases": "Käufe wiederherstellen",
+  "restore_success": "Unterstützungsstatus erfolgreich wiederhergestellt! JazakAllahu Khairan.",
+  "restore_not_found": "Keine aktive Unterstützung gefunden.",
+  "disclaimer_ummah": "Beiträge unterstützen direkt die Weiterentwicklung der App, Serverkosten und das Ziel, Adhkaar 365 weltweit zu 100% kostenlos und werbefrei zu halten. Dies ist ein freiwilliges Software-Sponsoring, keine Spende.",
+  "subscription_terms": "Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ablauf des aktuellen Zeitraums in den Kontoeinstellungen gekündigt werden."
 }

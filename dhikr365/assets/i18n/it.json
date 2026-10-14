@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Adhkar",
   "badge_early_bird": "Mattiniero",
   "badge_night_prayer": "Preghiera notturna",
-  "badge_generous_donor": "Donatore generoso",
+  "badge_generous_donor": "Sostenitore generoso",
   "milestone_patron_title": "Patrono della fede",
   "milestone_patron_desc": "Ha supportato la missione del dhikr",
   "milestone_bronze_title": "Maestro del Dhikr Bronzo",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Salva i tuoi progressi",
   "welcome_signin_body": "Accedi con Google o Apple in modo che le tue dua preferite e il tuo piano personalizzato vengano salvati nel tuo account e ripristinati su qualsiasi dispositivo. Del tutto facoltativo — puoi farlo anche più tardi dalle Impostazioni.",
   "continue_without_account": "Continua senza account",
-  "donation_not_available": "Le donazioni non sono ancora attive in questa versione — ricontrolla presto.",
+  "donation_not_available": "Le opzioni di supporto non sono ancora attive in questa versione — ricontrolla presto.",
   "donation_not_available_short": "Non ancora disponibile",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Asr più tardi (ombra 2x)",
   "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Asr anticipato (ombra 1x)",
   "calc_method": "Metodo di calcolo",
-  "select_madhab": "Seleziona Madhab"
+  "select_madhab": "Seleziona Madhab",
+  "support_app_dev": "Supporta lo sviluppo dell'app",
+  "sadaqah_jariyah_tag": "Intenzione di Sadaqah Jariyah",
+  "restore_purchases": "Ripristina acquisti",
+  "restore_success": "Stato di supporto ripristinato con successo! JazakAllahu Khairan.",
+  "restore_not_found": "Nessun supporto attivo trovato.",
+  "disclaimer_ummah": "I contributi supportano direttamente lo sviluppo indipendente dell'app, i server e mantengono Adhkaar 365 al 100% gratuita e senza pubblicità per la Ummah. Questa è una sponsorizzazione software volontaria, non una donazione di beneficenza.",
+  "subscription_terms": "Gli abbonamenti si rinnovano automaticamente a meno che non vengano annullati nelle impostazioni dell'account almeno 24 ore prima della fine del periodo corrente."
 }

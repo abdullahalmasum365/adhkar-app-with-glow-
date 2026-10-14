@@ -9,6 +9,7 @@ import '../providers/theme_provider.dart';
 import '../services/purchase_service.dart';
 import '../models/sadaqah_dedication.dart';
 import '../widgets/sadaqah_certificate_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// A single donation package the user can pick — see [DonationScreen].
 /// Price comes from Play Store at runtime (PurchaseProvider.products), in
@@ -69,6 +70,23 @@ class _DonationScreenState extends State<DonationScreen> {
   }
 
   void _selectFixedTier(int i) => setState(() => _selected = i);
+
+  Future<void> _restorePurchases(
+      BuildContext context, PurchaseProvider pp, LanguageProvider lp) async {
+    await pp.restorePurchases();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          pp.hasActiveDonation
+              ? lp.getText('restore_success')
+              : lp.getText('restore_not_found'),
+        ),
+        backgroundColor: pp.hasActiveDonation ? Colors.green : Colors.blueGrey,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
 
   void _handlePurchaseSideEffects(PurchaseProvider pp, LanguageProvider lp) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -134,20 +152,44 @@ class _DonationScreenState extends State<DonationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Back Button
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16.0, top: 8.0),
-                    child: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: Icon(Icons.arrow_back,
-                          color: AppColors.textPrimary, size: 28),
-                      style: IconButton.styleFrom(
-                        backgroundColor: surfaceContainerHigh,
-                        padding: const EdgeInsets.all(12),
+                // Top Bar with Back & Restore Purchases Buttons
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(Icons.arrow_back,
+                            color: AppColors.textPrimary, size: 28),
+                        style: IconButton.styleFrom(
+                          backgroundColor: surfaceContainerHigh,
+                          padding: const EdgeInsets.all(12),
+                        ),
                       ),
-                    ),
+                      const Spacer(),
+                      TextButton.icon(
+                        onPressed: (pp.isLoading || pp.isSyncing)
+                            ? null
+                            : () => _restorePurchases(context, pp, lp),
+                        icon: const Icon(Icons.restore_rounded, size: 18),
+                        label: Text(
+                          lp.getText('restore_purchases'),
+                          style: GoogleFonts.spaceMono(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                          foregroundColor: primary,
+                          backgroundColor: surfaceContainerHigh,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(color: AppColors.ink(0.1)),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -203,23 +245,52 @@ class _DonationScreenState extends State<DonationScreen> {
                           lp.getText('donation_badge'),
                           style: GoogleFonts.spaceMono(
                             color: primary,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            letterSpacing: 4.0,
+                            letterSpacing: 3.5,
                           ),
                         ).animate().fadeIn().slideY(begin: -0.2),
+                        const SizedBox(height: 12),
+                        Text(
+                          lp.getText('support_app_dev'),
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.spaceMono(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            height: 1.25,
+                            color: textWhite,
+                          ),
+                        ).animate().fadeIn(delay: 50.ms),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: primary.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: primary.withValues(alpha: 0.4)),
+                          ),
+                          child: Text(
+                            lp.getText('sadaqah_jariyah_tag'),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: primary,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ).animate().fadeIn(delay: 80.ms),
                         const SizedBox(height: 24),
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             style: GoogleFonts.spaceMono(
-                              fontSize: 44,
-                              height: 1.1,
+                              fontSize: 34,
+                              height: 1.15,
                               color: textWhite,
                             ),
                             children: [
                               TextSpan(
-                                  text: '${lp.getText('donation_become')}\n'),
+                                  text: '${lp.getText('donation_become')} '),
                               TextSpan(
                                 text: lp.getText('donation_patron'),
                                 style: TextStyle(color: primary),
@@ -227,7 +298,7 @@ class _DonationScreenState extends State<DonationScreen> {
                             ],
                           ),
                         ).animate().fadeIn(delay: 100.ms).slideY(begin: 0.2),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 36),
 
                         // The Pitch
                         Container(
@@ -792,7 +863,7 @@ class _DonationScreenState extends State<DonationScreen> {
 
                         const SizedBox(height: 12),
 
-                        // Transparency / Legal Disclosure Card (Play Store Policy Compliance)
+                        // Transparency / Voluntary Sponsorship Notice
                         Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
@@ -806,17 +877,17 @@ class _DonationScreenState extends State<DonationScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.volunteer_activism_outlined,
+                              Icon(Icons.info_outline_rounded,
                                   size: 16, color: primary),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   lp.locale.languageCode == 'bn'
-                                      ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার ঐচ্ছিক সমর্থন একজন স্বাধীন ডেভেলপারকে অ্যাপটি সচল ও উন্নত রাখতে সাহায্য করে। অনেকে এটিকে সদকায়ে জারিয়ার নিয়তে সমর্থন করেন।'
-                                      : 'Adhkar 365 is free and ad-free for everyone. Your voluntary support helps the independent developer keep it running and improving. Many people support this with the intention of sadaqah jariyah.',
+                                      ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার ঐচ্ছিক স্পনসরশিপ একজন স্বাধীন ডেভেলপারকে অ্যাপটি সচল, সার্ভার রক্ষণাবেক্ষণ ও উন্নত রাখতে সাহায্য করে। অনেকে এটিকে সদকায়ে জারিয়ার নিয়তে সমর্থন করেন।'
+                                      : 'Adhkar 365 is free and ad-free for everyone. Your voluntary sponsorship helps the independent developer keep it running, maintain servers, and continuously improve. Many choose to support with the spiritual intention of Sadaqah Jariyah.',
                                   style: GoogleFonts.publicSans(
                                     color:
-                                        onSurfaceVariant.withValues(alpha: 0.8),
+                                        onSurfaceVariant.withValues(alpha: 0.85),
                                     fontSize: 11,
                                     height: 1.45,
                                   ),
@@ -895,7 +966,36 @@ class _DonationScreenState extends State<DonationScreen> {
                                 duration: 2500.ms,
                                 color: AppColors.ink(0.4),
                                 delay: 1000.ms),
-                        const SizedBox(height: 24),
+
+                        // Restore Purchases Button (Mandatory for App Store & Play Store approval)
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: (pp.isLoading || pp.isSyncing)
+                                ? null
+                                : () => _restorePurchases(context, pp, lp),
+                            icon: const Icon(Icons.restore_rounded, size: 18),
+                            label: Text(
+                              lp.getText('restore_purchases'),
+                              style: GoogleFonts.spaceMono(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: textWhite,
+                              side: BorderSide(color: AppColors.ink(0.2)),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ).animate().fadeIn(delay: 650.ms),
+
+                        const SizedBox(height: 12),
                         TextButton(
                           onPressed: () => Navigator.pop(context),
                           style: TextButton.styleFrom(
@@ -912,7 +1012,82 @@ class _DonationScreenState extends State<DonationScreen> {
                           ),
                         ).animate().fadeIn(delay: 700.ms),
 
-                        const SizedBox(height: 64),
+                        // Legal & Store Policy Compliance Disclaimer Card
+                        const SizedBox(height: 24),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: surfaceContainerHigh.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: AppColors.ink(0.08)),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                lp.getText('disclaimer_ummah'),
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.publicSans(
+                                  fontSize: 11,
+                                  height: 1.5,
+                                  color: onSurfaceVariant.withValues(alpha: 0.85),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                lp.getText('subscription_terms'),
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.publicSans(
+                                  fontSize: 10,
+                                  height: 1.45,
+                                  color: onSurfaceVariant.withValues(alpha: 0.65),
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () => launchUrl(
+                                      Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/privacy-policy.html'),
+                                      mode: LaunchMode.externalApplication,
+                                    ),
+                                    child: Text(
+                                      lp.getText('privacy_policy'),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: primary,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    child: Text('•', style: TextStyle(color: onSurfaceVariant, fontSize: 12)),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => launchUrl(
+                                      Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/terms-of-service.html'),
+                                      mode: LaunchMode.externalApplication,
+                                    ),
+                                    child: Text(
+                                      lp.getText('terms_of_service'),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: primary,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn(delay: 750.ms),
+
+                        const SizedBox(height: 48),
                       ],
                     ),
                   ),

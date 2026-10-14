@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Adhkar",
   "badge_early_bird": "Lève-tôt",
   "badge_night_prayer": "Prière de nuit",
-  "badge_generous_donor": "Donateur généreux",
+  "badge_generous_donor": "Parrain généreux",
   "milestone_patron_title": "Protecteur de la foi",
   "milestone_patron_desc": "A soutenu la mission du dhikr",
   "milestone_bronze_title": "Maître du Dhikr Bronze",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Enregistrez votre progression",
   "welcome_signin_body": "Connectez-vous avec Google ou Apple pour que vos douas favorites et votre plan personnalisé soient enregistrés sur votre compte et restaurés sur tout appareil. Totalement facultatif — vous pourrez le faire plus tard depuis les paramètres.",
   "continue_without_account": "Continuer sans compte",
-  "donation_not_available": "Les dons ne sont pas encore configurés dans cette version — revenez bientôt.",
+  "donation_not_available": "Les options de parrainage ne sont pas encore configurées dans cette version — revenez bientôt.",
   "donation_not_available_short": "Pas encore disponible",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Asr plus tard (ombre 2x)",
   "madhab_standard_desc": "Chaféite, Malikite, Hanbalite • Asr plus tôt (ombre 1x)",
   "calc_method": "Méthode de calcul",
-  "select_madhab": "Sélectionner le Madhab"
+  "select_madhab": "Sélectionner le Madhab",
+  "support_app_dev": "Soutenir le développement de l'application",
+  "sadaqah_jariyah_tag": "Intention de Sadaqah Jariyah",
+  "restore_purchases": "Restaurer les achats",
+  "restore_success": "Statut de parrainage restauré avec succès ! JazakAllahu Khairan.",
+  "restore_not_found": "Aucun parrainage actif trouvé.",
+  "disclaimer_ummah": "Les contributions soutiennent directement le développement indépendant de l'application, les serveurs et le maintien d'Adhkaar 365 100% gratuite et sans publicité pour la Oummah. Ceci est un parrainage logiciel volontaire et non un don de bienfaisance.",
+  "subscription_terms": "Les abonnements se renouvellent automatiquement sauf annulation dans les paramètres du compte au moins 24 heures avant la fin de la période en cours."
 }

@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k अज़कार",
   "badge_early_bird": "सुबह उठने वाला",
   "badge_night_prayer": "तहज्जुद",
-  "badge_generous_donor": "उदार दाता",
+  "badge_generous_donor": "उदार संरक्षक",
   "milestone_patron_title": "ईमान का संरक्षक",
   "milestone_patron_desc": "ज़िक्र के मिशन का समर्थन किया",
   "milestone_bronze_title": "ब्रॉन्ज़ ज़िक्र मास्टर",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "अपनी प्रगति सेव करें",
   "welcome_signin_body": "अपनी पसंदीदा दुआएं और कस्टम प्लान खाते में सेव करके किसी भी डिवाइस पर वापस पाने के लिए Google या Apple से साइन इन करें। यह पूरी तरह वैकल्पिक है — बाद में Settings से भी कर सकते हैं।",
   "continue_without_account": "बिना खाते के जारी रखें",
-  "donation_not_available": "इस बिल्ड में अभी डोनेशन सेट अप नहीं है — जल्द ही दोबारा देखें।",
+  "donation_not_available": "इस बिल्ड में अभी प्रायोजन विकल्प सेट अप नहीं हैं — जल्द ही दोबारा देखें।",
   "donation_not_available_short": "अभी उपलब्ध नहीं",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "हनफ़ी • देर से अस्र (2 गुना छाया)",
   "madhab_standard_desc": "शाफ़ई, मालिकी, हनबली • पहले अस्र (1 गुना छाया)",
   "calc_method": "गणना विधि",
-  "select_madhab": "मज़हब चुनें"
+  "select_madhab": "मज़हब चुनें",
+  "support_app_dev": "ऐप विकास का समर्थन करें",
+  "sadaqah_jariyah_tag": "सदका-ए-जारिया की नीयत",
+  "restore_purchases": "खरीदारी पुनर्स्थापित करें",
+  "restore_success": "प्रायोजन स्थिति सफलतापूर्वक पुनर्स्थापित की गई! जज़ाकअल्लाहु खैरन।",
+  "restore_not_found": "कोई सक्रिय प्रायोजन नहीं मिला।",
+  "disclaimer_ummah": "योगदान सीधे ऐप विकास, सर्वर रखरखाव और Adhkaar 365 को दुनिया भर के उम्माह के लिए 100% मुफ्त और विज्ञापन-मुक्त रखने में मदद करते हैं। यह एक स्वैच्छिक सॉफ्टवेयर प्रायोजन है, कोई दान नहीं।",
+  "subscription_terms": "सदस्यता स्वतः नवीनीकृत हो जाती है जब तक कि वर्तमान अवधि समाप्त होने से कम से कम 24 घंटे पहले खाता सेटिंग्स में रद्द न कर दी जाए।"
 }

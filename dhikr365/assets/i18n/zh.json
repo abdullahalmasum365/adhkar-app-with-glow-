@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k祈念",
   "badge_early_bird": "早起者",
   "badge_night_prayer": "夜礼拜",
-  "badge_generous_donor": "慷慨捐赠者",
+  "badge_generous_donor": "慷慨的资助者",
   "milestone_patron_title": "信仰守护者",
   "milestone_patron_desc": "支持了祈念使命",
   "milestone_bronze_title": "铜级祈念大师",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "保存您的进度",
   "welcome_signin_body": "使用 Google 或 Apple 登录，将您收藏的祈祷词和自定义计划保存到账户，并在任意设备上恢复。完全可选 —— 您也可以稍后在设置中完成。",
   "continue_without_account": "不使用账户继续",
-  "donation_not_available": "此版本尚未启用捐赠功能 —— 请稍后再来查看。",
+  "donation_not_available": "此版本尚未启用支持功能 —— 请稍后再来查看。",
   "donation_not_available_short": "暂不可用",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "哈乃斐 • 较晚晡礼（2倍影子）",
   "madhab_standard_desc": "沙斐仪、马立克、罕百里 • 较早晡礼（1倍影子）",
   "calc_method": "计算方法",
-  "select_madhab": "选择教法学派"
+  "select_madhab": "选择教法学派",
+  "support_app_dev": "支持应用开发",
+  "sadaqah_jariyah_tag": "持续回赐（Sadaqah Jariyah）的心愿",
+  "restore_purchases": "恢复购买",
+  "restore_success": "赞助状态已成功恢复！愿真主赐福予您。",
+  "restore_not_found": "未找到有效的赞助记录。",
+  "disclaimer_ummah": "您的赞助直接用于支持独立应用开发、服务器维护，并确保Adhkaar 365为全球穆斯林同胞保持100%免费且无广告。这是自愿的软件赞助，而非慈善捐款。",
+  "subscription_terms": "除非在当前周期结束前至少24小时在账户设置中取消，否则订阅将自动续订。"
 }

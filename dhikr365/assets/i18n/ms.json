@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Zikir",
   "badge_early_bird": "Awal pagi",
   "badge_night_prayer": "Solat malam",
-  "badge_generous_donor": "Penderma pemurah",
+  "badge_generous_donor": "Penaung dermawan",
   "milestone_patron_title": "Pelindung iman",
   "milestone_patron_desc": "Menyokong misi zikir",
   "milestone_bronze_title": "Pakar Zikir Gangsa",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Simpan kemajuan anda",
   "welcome_signin_body": "Log masuk dengan Google atau Apple supaya doa kegemaran dan pelan tersuai anda disimpan ke akaun dan dipulihkan pada mana-mana peranti. Sepenuhnya pilihan — boleh buat kemudian dari Settings.",
   "continue_without_account": "Teruskan tanpa akaun",
-  "donation_not_available": "Derma belum disediakan pada binaan ini — semak semula tidak lama lagi.",
+  "donation_not_available": "Pilihan sokongan belum disediakan pada versi ini — semak semula tidak lama lagi.",
   "donation_not_available_short": "Belum tersedia",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Asar lewat (bayang 2x)",
   "madhab_standard_desc": "Syafi'i, Maliki, Hanbali • Asar awal (bayang 1x)",
   "calc_method": "Kaedah Pengiraan",
-  "select_madhab": "Pilih Mazhab"
+  "select_madhab": "Pilih Mazhab",
+  "support_app_dev": "Sokong Pembangunan Aplikasi",
+  "sadaqah_jariyah_tag": "Niat Sedekah Jariah",
+  "restore_purchases": "Pulihkan Pembelian",
+  "restore_success": "Status sokongan berjaya dipulihkan! JazakAllahu Khairan.",
+  "restore_not_found": "Tiada sokongan aktif ditemui.",
+  "disclaimer_ummah": "Sumbangan secara langsung menyokong pembangunan aplikasi bebas, penyelenggaraan pelayan dan mengekalkan Adhkaar 365 100% percuma serta tanpa iklan untuk Ummah di seluruh dunia. Ini adalah penajaan perisian sukarela, bukan derma kebajikan.",
+  "subscription_terms": "Langganan diperbaharui secara automatik melainkan dibatalkan dalam tetapan akaun sekurang-kurangnya 24 jam sebelum akhir tempoh semasa."
 }

@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Adhkar",
   "badge_early_bird": "Madrugador",
   "badge_night_prayer": "Oración nocturna",
-  "badge_generous_donor": "Donante generoso",
+  "badge_generous_donor": "Patrocinador generoso",
   "milestone_patron_title": "Patrón de la fe",
   "milestone_patron_desc": "Apoyó la misión del dhikr",
   "milestone_bronze_title": "Maestro de Dhikr Bronce",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Guarda tu progreso",
   "welcome_signin_body": "Inicia sesión con Google o Apple para que tus duas favoritas y tu plan personalizado se guarden en tu cuenta y se restauren en cualquier dispositivo. Totalmente opcional — puedes hacerlo más tarde desde Configuración.",
   "continue_without_account": "Continuar sin cuenta",
-  "donation_not_available": "Las donaciones aún no están habilitadas en esta versión — vuelve pronto.",
+  "donation_not_available": "Las opciones de patrocinio aún no están habilitadas en esta versión — vuelve pronto.",
   "donation_not_available_short": "Aún no disponible",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Asr más tarde (sombra 2x)",
   "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Asr más temprano (sombra 1x)",
   "calc_method": "Método de cálculo",
-  "select_madhab": "Seleccionar Madhab"
+  "select_madhab": "Seleccionar Madhab",
+  "support_app_dev": "Apoyar el desarrollo de la app",
+  "sadaqah_jariyah_tag": "Intención de Sadaqah Jariyah",
+  "restore_purchases": "Restaurar compras",
+  "restore_success": "¡Estado de patrocinio restaurado con éxito! JazakAllahu Khairan.",
+  "restore_not_found": "No se encontró ningún patrocinio activo.",
+  "disclaimer_ummah": "Las contribuciones apoyan directamente el desarrollo de la aplicación, el mantenimiento del servidor y mantener Adhkaar 365 100% gratuita y sin anuncios para la Ummah. Esto es un patrocinio voluntario de software, no una donación caritativa.",
+  "subscription_terms": "Las suscripciones se renuevan automáticamente a menos que se cancelen en la configuración de la cuenta al menos 24 horas antes del final del período actual."
 }

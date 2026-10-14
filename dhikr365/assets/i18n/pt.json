@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Adhkar",
   "badge_early_bird": "Madrugador",
   "badge_night_prayer": "Oração noturna",
-  "badge_generous_donor": "Doador generoso",
+  "badge_generous_donor": "Patrono generoso",
   "milestone_patron_title": "Patrono da fé",
   "milestone_patron_desc": "Apoiou a missão do dhikr",
   "milestone_bronze_title": "Mestre do Dhikr Bronze",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Salve seu progresso",
   "welcome_signin_body": "Entre com Google ou Apple para que suas duas favoritas e seu plano personalizado sejam salvos na conta e restaurados em qualquer dispositivo. Totalmente opcional — você pode fazer isso depois nas Configurações.",
   "continue_without_account": "Continuar sem conta",
-  "donation_not_available": "As doações ainda não estão ativas nesta versão — volte em breve.",
+  "donation_not_available": "As opções de apoio ainda não estão ativas nesta versão — volte em breve.",
   "donation_not_available_short": "Ainda não disponível",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Asr mais tarde (sombra 2x)",
   "madhab_standard_desc": "Shafi'i, Maliki, Hanbali • Asr mais cedo (sombra 1x)",
   "calc_method": "Método de cálculo",
-  "select_madhab": "Selecionar Madhab"
+  "select_madhab": "Selecionar Madhab",
+  "support_app_dev": "Apoiar o desenvolvimento do app",
+  "sadaqah_jariyah_tag": "Intenção de Sadaqah Jariyah",
+  "restore_purchases": "Restaurar compras",
+  "restore_success": "Status de apoio restaurado com sucesso! JazakAllahu Khairan.",
+  "restore_not_found": "Nenhum apoio ativo encontrado.",
+  "disclaimer_ummah": "As contribuições apoiam diretamente o desenvolvimento independente do aplicativo, manutenção dos servidores e mantêm o Adhkaar 365 100% gratuito e sem anúncios para a Ummah em todo o mundo. Este é um patrocínio voluntário de software, não uma doação de caridade.",
+  "subscription_terms": "As assinaturas são renovadas automaticamente, a menos que sejam canceladas nas configurações da conta pelo menos 24 horas antes do final do período atual."
 }

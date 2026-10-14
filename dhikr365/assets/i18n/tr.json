@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Zikirler",
   "badge_early_bird": "Erken kalkan",
   "badge_night_prayer": "Gece namazı",
-  "badge_generous_donor": "Cömert bağışçı",
+  "badge_generous_donor": "Cömert destekçi",
   "milestone_patron_title": "İmanın hamisi",
   "milestone_patron_desc": "Zikir misyonunu destekledi",
   "milestone_bronze_title": "Bronz Zikir Ustası",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "İlerlemenizi kaydedin",
   "welcome_signin_body": "Favori dualarınız ve özel planınız hesabınıza kaydedilsin, her cihazda geri gelsin diye Google veya Apple ile giriş yapın. Tamamen isteğe bağlı — daha sonra Settings'ten de yapabilirsiniz.",
   "continue_without_account": "Hesap olmadan devam et",
-  "donation_not_available": "Bu sürümde bağışlar henüz etkin değil — yakında tekrar kontrol edin.",
+  "donation_not_available": "Bu sürümde destek seçenekleri henüz etkin değil — yakında tekrar kontrol edin.",
   "donation_not_available_short": "Henüz kullanılamıyor",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanefi • Geç İkindi (2 kat gölge)",
   "madhab_standard_desc": "Şafii, Maliki, Hanbeli • Erken İkindi (1 kat gölge)",
   "calc_method": "Hesaplama Yöntemi",
-  "select_madhab": "Mezhep Seçin"
+  "select_madhab": "Mezhep Seçin",
+  "support_app_dev": "Uygulama Geliştirmeyi Destekle",
+  "sadaqah_jariyah_tag": "Sadaka-i Cariye Niyeti",
+  "restore_purchases": "Satın Almaları Geri Yükle",
+  "restore_success": "Destek durumu başarıyla geri yüklendi! Cezakallahu Hayran.",
+  "restore_not_found": "Aktif bir destek bulunamadı.",
+  "disclaimer_ummah": "Katkılar doğrudan bağımsız uygulama geliştirmeyi, sunucu bakımını ve Adhkaar 365'in dünya çapındaki Ümmet için %100 ücretsiz ve reklamsız kalmasını destekler. Bu gönüllü bir yazılım sponsorluğudur, hayır kurumu bağışı değildir.",
+  "subscription_terms": "Abonelikler, geçerli dönemin bitiminden en az 24 saat önce hesap ayarlarından iptal edilmediği sürece otomatik olarak yenilenir."
 }

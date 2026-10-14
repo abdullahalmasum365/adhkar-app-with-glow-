@@ -157,7 +157,7 @@
   "badge_1k_adhkar": "1k Dzikir",
   "badge_early_bird": "Bangun pagi",
   "badge_night_prayer": "Sholat malam",
-  "badge_generous_donor": "Donatur dermawan",
+  "badge_generous_donor": "Pendukung dermawan",
   "milestone_patron_title": "Pelindung iman",
   "milestone_patron_desc": "Mendukung misi dzikir",
   "milestone_bronze_title": "Master Dzikir Perunggu",
@@ -236,7 +236,7 @@
   "welcome_signin_title": "Simpan kemajuan Anda",
   "welcome_signin_body": "Masuk dengan Google atau Apple agar doa favorit dan rencana khusus Anda tersimpan ke akun dan bisa dipulihkan di perangkat mana pun. Sepenuhnya opsional — bisa dilakukan nanti dari Settings.",
   "continue_without_account": "Lanjutkan tanpa akun",
-  "donation_not_available": "Donasi belum diaktifkan pada build ini — periksa lagi nanti.",
+  "donation_not_available": "Opsi dukungan belum diaktifkan pada versi ini — periksa lagi nanti.",
   "donation_not_available_short": "Belum tersedia",
   "travel": "Travel & Journey",
   "shifa": "Healing & Relief",
@@ -350,5 +350,12 @@
   "madhab_hanafi_desc": "Hanafi • Asar lebih lambat (bayangan 2x)",
   "madhab_standard_desc": "Syafi'i, Maliki, Hanbali • Asar lebih awal (bayangan 1x)",
   "calc_method": "Metode Perhitungan",
-  "select_madhab": "Pilih Mazhab"
+  "select_madhab": "Pilih Mazhab",
+  "support_app_dev": "Dukung Pengembangan Aplikasi",
+  "sadaqah_jariyah_tag": "Niat Sedekah Jariyah",
+  "restore_purchases": "Pulihkan Pembelian",
+  "restore_success": "Status dukungan berhasil dipulihkan! JazakAllahu Khairan.",
+  "restore_not_found": "Tidak ada dukungan aktif yang ditemukan.",
+  "disclaimer_ummah": "Kontribusi Anda secara langsung mendukung pengembangan aplikasi independen, pemeliharaan server, dan menjaga Adhkaar 365 tetap 100% gratis dan bebas iklan untuk Ummah di seluruh dunia. Ini adalah sponsor perangkat lunak sukarela, bukan donasi amal.",
+  "subscription_terms": "Langganan diperpanjang secara otomatis kecuali dibatalkan di pengaturan akun setidaknya 24 jam sebelum akhir periode berjalan."
 }
