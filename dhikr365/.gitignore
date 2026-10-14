@@ -61,3 +61,6 @@ scratch/
 
 # Firebase configuration (contains project API keys)
 /android/app/google-services.json
+
+# Local audio original backup
+assets/audio_backup_original/
