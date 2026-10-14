@@ -69,22 +69,19 @@ class MainActivity : FlutterActivity() {
                         val pm = getSystemService(POWER_SERVICE) as PowerManager
                         result.success(pm.isIgnoringBatteryOptimizations(packageName))
                     }
-                    "requestIgnoreBatteryOptimizations" -> {
+                    "openBatterySettings", "openAppDetailsSettings", "requestIgnoreBatteryOptimizations" -> {
                         try {
-                            val pm = getSystemService(POWER_SERVICE) as PowerManager
-                            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-                                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
-                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                                }
-                                startActivity(intent)
+                            val intent = Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.parse("package:$packageName")
+                            ).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             }
+                            startActivity(intent)
                             result.success(true)
                         } catch (e: Exception) {
                             try {
-                                val intent = Intent(
-                                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    Uri.parse("package:$packageName")
-                                ).apply {
+                                val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS).apply {
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
                                 startActivity(intent)

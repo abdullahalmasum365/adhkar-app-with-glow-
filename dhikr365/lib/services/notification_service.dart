@@ -419,22 +419,32 @@ class NotificationService {
     return granted;
   }
 
-  /// Asks Android to exclude this app from battery optimization.
-  /// Without this, the OS can kill scheduled alarms on Samsung/Xiaomi/Oppo
-  /// devices — exactly what Muslim Pro requests on first launch.
-  Future<void> requestBatteryOptimizationExemption() async {
+  /// Opens the app's settings screen where the user can manually configure
+  /// battery usage to 'Unrestricted' for reliable prayer notifications.
+  /// Fully compliant with Google Play Store policies.
+  Future<void> openBatterySettings() async {
     if (!Platform.isAndroid) return;
     try {
-      final bool alreadyExempt = await isIgnoringBatteryOptimizations();
-      if (!alreadyExempt) {
-        await _batteryChannel.invokeMethod('requestIgnoreBatteryOptimizations');
-        debugPrint('[Battery] Requested battery optimization exemption');
-      } else {
-        debugPrint('[Battery] Already exempt from battery optimization');
-      }
+      await _batteryChannel.invokeMethod('openBatterySettings');
+      debugPrint('[Battery] Opened App Info battery settings page');
     } catch (e) {
-      debugPrint('[Battery] Could not request battery optimization: $e');
+      debugPrint('[Battery] Could not open battery settings: $e');
     }
+  }
+
+  /// Opens the general App Info settings screen.
+  Future<void> openAppDetailsSettings() async {
+    if (!Platform.isAndroid) return;
+    try {
+      await _batteryChannel.invokeMethod('openAppDetailsSettings');
+    } catch (e) {
+      debugPrint('[Battery] openAppDetailsSettings error: $e');
+    }
+  }
+
+  /// Legacy helper: safely opens App Info / Battery settings.
+  Future<void> requestBatteryOptimizationExemption() async {
+    await openBatterySettings();
   }
 
   /// True when this app is already whitelisted from Android's Doze/App

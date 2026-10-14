@@ -31,12 +31,43 @@ const Map<String, String> _brandLabels = {
   'honor': 'Honor',
 };
 
-/// Shows the battery-optimization explainer, then the real system dialog if
-/// the user taps Allow. No-op if the app is already exempt.
+Widget _stepItem(int num, String text) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Container(
+        width: 18,
+        height: 18,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AppColors.primary.withValues(alpha: 0.2),
+          shape: BoxShape.circle,
+        ),
+        child: Text(
+          '$num',
+          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: AppColors.primary),
+        ),
+      ),
+      const SizedBox(width: 8),
+      Expanded(
+        child: Text(
+          text,
+          style: AppText.body(color: AppColors.textSlate300).copyWith(fontSize: 12),
+        ),
+      ),
+    ],
+  );
+}
+
+/// Shows the battery-optimization guide, directing the user safely to the
+/// App Info / Settings screen without using restricted system intents.
+/// Complies 100% with Google Play policy.
 Future<void> showBatteryExplainerDialog(BuildContext context) async {
   final svc = NotificationService();
   if (await svc.isIgnoringBatteryOptimizations()) return;
   if (!context.mounted) return;
+
+  final isBn = Localizations.localeOf(context).languageCode == 'bn';
 
   await showDialog(
     context: context,
@@ -49,22 +80,56 @@ Future<void> showBatteryExplainerDialog(BuildContext context) async {
             color: AppColors.primary, size: 22),
         const SizedBox(width: 10),
         Expanded(
-          child: Text('Keep Reminders On Time',
-              style: AppText.heading(16)),
+          child: Text(
+            isBn ? 'নামাজের রিমাইন্ডার সচল রাখুন' : 'Keep Reminders Reliable',
+            style: AppText.heading(16),
+          ),
         ),
       ]),
-      content: Text(
-        'So your prayer and adhkar reminders aren\'t delayed or skipped by '
-        'your phone\'s battery saver, please allow this app to run in the '
-        'background on the next screen.\n\n'
-        'This does not drain your battery — it only lets scheduled '
-        'reminders fire on time.',
-        style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.5),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              isBn
+                  ? 'ফোনের ব্যাকগ্রাউন্ড ব্যাটারি সেভার যাতে নামাজের ওয়াক্ত ও আযকার রিমাইন্ডার বন্ধ না করে, তার জন্য অ্যাপ সেটিংসে ব্যাটারি অপটিমাইজেশন বন্ধ রাখুন:'
+                  : 'To ensure scheduled prayer alerts and adhkar reminders are never delayed or stopped by Android\'s battery saver, please configure App Settings:',
+              style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.5),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.ink(0.06),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.ink(0.12)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _stepItem(1, isBn ? 'নিচের "সেটিংস খুলুন" বাটনে ট্যাপ করুন' : 'Tap "Open Settings" below'),
+                  const SizedBox(height: 8),
+                  _stepItem(2, isBn ? '"Battery" বা "App battery usage"-এ যান' : 'Go to "Battery" or "App battery usage"'),
+                  const SizedBox(height: 8),
+                  _stepItem(3, isBn ? '"Unrestricted" নির্বাচন করুন' : 'Select "Unrestricted" / Allow in Background'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              isBn
+                  ? 'এটি অপ্রয়োজনীয় চার্জ খরচ করে না — শুধু নির্ধারিত সময়ে আযানের নোটিফিকেশন বাজতে সাহায্য করে।'
+                  : 'This does not drain excess battery — it only allows scheduled prayer alarms to wake the device on time.',
+              style: AppText.body(color: AppColors.textSlate400).copyWith(fontSize: 11.5, height: 1.4),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx),
-          child: Text('Later', style: AppText.body(color: AppColors.textSlate500)),
+          child: Text(isBn ? 'পরে' : 'Later', style: AppText.body(color: AppColors.textSlate500)),
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -74,9 +139,12 @@ Future<void> showBatteryExplainerDialog(BuildContext context) async {
           ),
           onPressed: () {
             Navigator.pop(ctx);
-            svc.requestBatteryOptimizationExemption();
+            svc.openBatterySettings();
           },
-          child: Text('Allow', style: AppText.manrope(fontWeight: FontWeight.w700)),
+          child: Text(
+            isBn ? 'সেটিংস খুলুন' : 'Open Settings',
+            style: AppText.manrope(fontWeight: FontWeight.w700),
+          ),
         ),
       ],
     ),
