@@ -63,6 +63,17 @@ class CustomPlanProvider extends ChangeNotifier {
     return _enabledDhikrIds.contains(id);
   }
 
+  /// Clears the custom plan and local settings upon account deletion.
+  Future<void> clearPlan() async {
+    _enabledDhikrIds.clear();
+    _useCustomPlan = false;
+    _uid = null;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('use_custom_plan');
+    await prefs.remove('enabled_dhikr_ids');
+    notifyListeners();
+  }
+
   // ── Cloud sync ────────────────────────────────────────────────────────
 
   DocumentReference<Map<String, dynamic>>? get _cloudDoc {

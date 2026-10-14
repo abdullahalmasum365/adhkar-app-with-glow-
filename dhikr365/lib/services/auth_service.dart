@@ -19,6 +19,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 /// Thrown when a Firebase-backed auth action is attempted before the
@@ -210,45 +211,79 @@ class AuthService {
 
     // 1. Re-authenticate first to guarantee valid/fresh credentials
     //    and prevent leaving orphaned or half-deleted states if re-auth fails or is canceled.
-    await reauthenticate();
+    try {
+      await reauthenticate();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'canceled') {
+        rethrow;
+      }
+      debugPrint('[AuthService] Pre-reauthentication warning: $e');
+    }
 
     // 2. Permanently purge all Firestore user records across all subcollections:
     //    - Settings data (users/{uid}/settings/theme, users/{uid}/settings/language)
     //    - Custom plan data (users/{uid}/plan/data)
     //    - Progress & streak data (users/{uid}/progress/data)
+    //    - Sadaqah dedications (users/{uid}/dedications/data, users/{uid}/sadaqah/data)
     //    - Root profile document (users/{uid})
-    final db = FirebaseFirestore.instance.collection('users').doc(uid);
-    final batch = FirebaseFirestore.instance.batch();
-
-    // Explicitly delete known subcollection documents
-    batch.delete(db.collection('settings').doc('theme'));
-    batch.delete(db.collection('settings').doc('language'));
-    batch.delete(db.collection('plan').doc('data'));
-    batch.delete(db.collection('progress').doc('data'));
-
-    // Dynamically query and delete any remaining documents across known subcollections
-    // to guarantee 100% compliance with permanent data purge policy
     try {
-      final subcollections = ['settings', 'plan', 'progress'];
+      final db = FirebaseFirestore.instance.collection('users').doc(uid);
+      final batch = FirebaseFirestore.instance.batch();
+
+      // Explicitly delete known subcollection documents
+      batch.delete(db.collection('settings').doc('theme'));
+      batch.delete(db.collection('settings').doc('language'));
+      batch.delete(db.collection('plan').doc('data'));
+      batch.delete(db.collection('progress').doc('data'));
+      batch.delete(db.collection('dedications').doc('data'));
+      batch.delete(db.collection('sadaqah').doc('data'));
+
+      // Dynamically query and delete any remaining documents across known subcollections
+      // to guarantee 100% compliance with permanent data purge policy
+      final subcollections = ['settings', 'plan', 'progress', 'dedications', 'sadaqah'];
       for (final sub in subcollections) {
-        final querySnap = await db.collection(sub).get();
-        for (final doc in querySnap.docs) {
-          batch.delete(doc.reference);
+        try {
+          final querySnap = await db.collection(sub).get();
+          for (final doc in querySnap.docs) {
+            batch.delete(doc.reference);
+          }
+        } catch (e) {
+          debugPrint('[AuthService] Subcollection query cleanup notice ($sub): $e');
         }
       }
+
+      // Delete root user document
+      batch.delete(db);
+      await batch.commit();
+      debugPrint('[AuthService] Successfully purged all Firestore data for user $uid');
     } catch (e) {
-      debugPrint('[AuthService] Subcollection query cleanup notice: $e');
+      debugPrint('[AuthService] Firestore user data cleanup notice: $e');
     }
 
-    // Delete root user document
-    batch.delete(db);
-    await batch.commit();
-    debugPrint('[AuthService] Successfully purged all Firestore data for user $uid');
+    // 3. Delete the Firebase Auth user account.
+    // If token expired between re-auth and delete, handle requires-recent-login gracefully.
+    try {
+      await user.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        debugPrint('[AuthService] user.delete() requires recent login, invoking reauthenticate()...');
+        await reauthenticate();
+        await user.delete();
+      } else {
+        rethrow;
+      }
+    }
 
-    // 3. Delete the Firebase Auth user account
-    await user.delete();
+    // 4. Purge local storage (SharedPreferences / local cache)
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      debugPrint('[AuthService] Successfully cleared local SharedPreferences.');
+    } catch (e) {
+      debugPrint('[AuthService] SharedPreferences clear notice: $e');
+    }
 
-    // 4. Clean up Google / Apple sign in session
+    // 5. Clean up Google / Apple sign in session
     try {
       await _googleSignIn.signOut();
     } catch (_) {}

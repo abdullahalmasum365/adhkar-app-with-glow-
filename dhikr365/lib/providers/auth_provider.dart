@@ -163,13 +163,17 @@ class AuthProvider extends ChangeNotifier {
       await _authService.deleteAccount();
       _user = null;
       return true;
+    } on AuthNotConfiguredException catch (e) {
+      _errorMessage = e.message;
+      return false;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'canceled') {
         _errorMessage = null;
       } else if (e.code == 'requires-recent-login') {
-        _errorMessage = 'For security, please sign out, sign in again, and retry account deletion.';
+        _errorMessage =
+            'For security, recent authentication is required before deleting your account. Please sign in again and retry.';
       } else {
-        _errorMessage = 'Failed to delete account. Please try again.';
+        _errorMessage = e.message ?? 'Failed to delete account. Please try again.';
       }
       return false;
     } catch (e) {

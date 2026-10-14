@@ -393,6 +393,11 @@ class DhikrProvider extends ChangeNotifier {
     notifyListeners();
     _syncHomeWidget();
   }
+
+  /// Clears all user progress, streaks, badges, and history upon account deletion.
+  Future<void> clearUserProgress() async {
+    await devResetAllProgress();
+  }
   // ─────────────────────────────────────────────────────────────────────────
 
   Future<void> _updateStreak() async {

@@ -12,6 +12,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -21,6 +22,7 @@ import '../providers/custom_plan_provider.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/user_provider.dart';
 import '../utils/responsive.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -236,40 +238,135 @@ class _SignedInCard extends StatelessWidget {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.bgTeal,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(lp.getText('account_delete'),
-            style: AppText.heading(18).copyWith(color: Colors.redAccent)),
-        content: Text(lp.getText('account_delete_confirm'),
-            style: AppText.body(color: AppColors.textSlate300)),
+        title: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 24),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                lp.getText('account_delete'),
+                style: AppText.heading(18).copyWith(color: Colors.redAccent),
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              lp.getText('account_delete_confirm'),
+              style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.45),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.redAccent.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.redAccent.withValues(alpha: 0.25)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline_rounded, size: 16, color: Colors.redAccent),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      lp.locale.languageCode == 'bn'
+                          ? 'ক্লাউড ব্যাকআপ, কাস্টম রুটিন, স্ট্রিক ও লোকাল ডেটা স্থায়ীভাবে মুছে যাবে।'
+                          : 'Cloud backups, custom routines, streaks, and progress will be permanently erased.',
+                      style: GoogleFonts.publicSans(
+                        fontSize: 11,
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.w600,
+                        height: 1.35,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text(lp.getText('cancel'),
-                style: AppText.body(color: AppColors.textSlate400)),
+            child: Text(
+              lp.getText('cancel'),
+              style: AppText.body(color: AppColors.textSlate400).copyWith(fontWeight: FontWeight.w600),
+            ),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(lp.getText('account_delete_btn'),
-                style: AppText.body(color: Colors.redAccent)
-                    .copyWith(fontWeight: FontWeight.w800)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.redAccent,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+            child: Text(
+              lp.getText('account_delete_btn'),
+              style: AppText.body(color: Colors.white).copyWith(fontWeight: FontWeight.w800),
+            ),
           ),
         ],
       ),
     );
+
     if (ok == true && context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => PopScope(
+          canPop: false,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              decoration: BoxDecoration(
+                color: AppColors.bgTeal,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.redAccent),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    lp.locale.languageCode == 'bn'
+                        ? 'অ্যাকাউন্ট মুছে ফেলা হচ্ছে...'
+                        : 'Deleting account...',
+                    style: AppText.body(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
       final success = await ap.deleteAccount();
       if (!context.mounted) return;
+      Navigator.of(context, rootNavigator: true).pop(); // dismiss loading dialog
+      if (!context.mounted) return;
+
       if (success) {
         final cp = Provider.of<CustomPlanProvider>(context, listen: false);
-        await cp.attachUser(null);
+        await cp.clearPlan();
         if (!context.mounted) return;
         final dp = Provider.of<DhikrProvider>(context, listen: false);
-        await dp.attachUser(null);
+        await dp.clearUserProgress();
         if (!context.mounted) return;
         final tp = Provider.of<ThemeProvider>(context, listen: false);
         await tp.attachUser(null);
         if (!context.mounted) return;
         final lpProvider = Provider.of<LanguageProvider>(context, listen: false);
         await lpProvider.attachUser(null);
+        if (!context.mounted) return;
+        final up = Provider.of<UserProvider>(context, listen: false);
+        await up.resetProfile();
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -282,6 +379,7 @@ class _SignedInCard extends StatelessWidget {
           SnackBar(
             content: Text(ap.errorMessage!),
             backgroundColor: Colors.redAccent,
+            duration: const Duration(seconds: 4),
           ),
         );
       }
@@ -355,35 +453,89 @@ class _SignedInCard extends StatelessWidget {
           ),
         ]),
         const SizedBox(height: 16),
+        // Sign Out Button
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
             onPressed: () => _confirmSignOut(context),
             style: OutlinedButton.styleFrom(
-              side: BorderSide(color: Colors.redAccent.withValues(alpha: 0.5)),
+              side: BorderSide(color: AppColors.ink(0.2)),
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(lp.getText('account_sign_out'),
-                  style: AppText.manrope(
-                      fontWeight: FontWeight.w700, color: Colors.redAccent)),
+              child: Text(
+                lp.getText('account_sign_out'),
+                style: AppText.manrope(
+                    fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+              ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        TextButton.icon(
-          onPressed: () => _confirmDeleteAccount(context),
-          icon: Icon(Icons.delete_forever_rounded,
-              size: 16, color: AppColors.textSlate500),
-          label: Text(
-            lp.getText('account_delete'),
-            style: AppText.body(color: AppColors.textSlate500).copyWith(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+        const SizedBox(height: 16),
+
+        // Dedicated Danger Zone: Delete Account
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.redAccent.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.warning_amber_rounded,
+                      color: Colors.redAccent, size: 18),
+                  const SizedBox(width: 8),
+                  Text(
+                    lp.getText('account_delete'),
+                    style: AppText.manrope(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.redAccent,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                lp.locale.languageCode == 'bn'
+                    ? 'অ্যাকাউন্ট ও সমস্ত ক্লাউড ডেটা স্থায়ীভাবে মুছে ফেলতে নিচের বাটনে চাপ দিন।'
+                    : 'Permanently remove your account, cloud backups, and synced progress.',
+                style: AppText.body(color: AppColors.textSlate400)
+                    .copyWith(fontSize: 11.5, height: 1.4),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: ap.isLoading ? null : () => _confirmDeleteAccount(context),
+                  icon: const Icon(Icons.delete_forever_rounded, size: 18),
+                  label: Text(
+                    lp.getText('account_delete_btn'),
+                    style: AppText.manrope(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ]),

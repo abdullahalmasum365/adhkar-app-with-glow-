@@ -700,21 +700,38 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               // ── Account & Sync ──
               _Lbl(lp.getText('account_title')),
               _Card(
-                child: _Tile(
-                  icon: ap.isSignedIn
-                      ? Icons.cloud_done_rounded
-                      : Icons.cloud_outlined,
-                  color: ap.isSignedIn ? const Color(0xFF10B981) : Colors.blueAccent,
-                  title: ap.isSignedIn
-                      ? (ap.displayName.isNotEmpty
-                          ? ap.displayName
-                          : lp.getText('account_title'))
-                      : lp.getText('account_signed_out_title'),
-                  subtitle: ap.isSignedIn
-                      ? lp.getText('account_sync_active')
-                      : lp.getText('account_tile_subtitle'),
-                  onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const AccountScreen())),
+                child: Column(
+                  children: [
+                    _Tile(
+                      icon: ap.isSignedIn
+                          ? Icons.cloud_done_rounded
+                          : Icons.cloud_outlined,
+                      color: ap.isSignedIn ? const Color(0xFF10B981) : Colors.blueAccent,
+                      title: ap.isSignedIn
+                          ? (ap.displayName.isNotEmpty
+                              ? ap.displayName
+                              : lp.getText('account_title'))
+                          : lp.getText('account_signed_out_title'),
+                      subtitle: ap.isSignedIn
+                          ? lp.getText('account_sync_active')
+                          : lp.getText('account_tile_subtitle'),
+                      onTap: () => Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const AccountScreen())),
+                    ),
+                    if (ap.isSignedIn) ...[
+                      _div(),
+                      _Tile(
+                        icon: Icons.delete_forever_rounded,
+                        color: Colors.redAccent,
+                        title: lp.getText('account_delete'),
+                        subtitle: lp.locale.languageCode == 'bn'
+                            ? 'অ্যাকাউন্ট ও ক্লাউড ডেটা স্থায়ীভাবে মুছুন'
+                            : 'Permanently delete account & cloud data',
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => const AccountScreen())),
+                      ),
+                    ],
+                  ],
                 ),
               ),
               const SizedBox(height: 22),
