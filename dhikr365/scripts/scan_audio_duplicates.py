@@ -15,50 +15,79 @@ import sys
 AUDIO_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "audio")
 
 # Known legitimate duplicates (e.g. Quran Surahs or generic tasbih shared across morning/evening/sleep/salah)
+KNOWN_LEGITIMATE_GROUPS = [
+    ({"evening_e_ayatulkursi.mp3", "morning_m_ayatulkursi.mp3", "protection_5.mp3", "salah_ayatul_kursi.mp3", "sleep_ayatul_kursi.mp3"}, "Ayatul Kursi (Shared across Morning, Evening, Protection, Salah, Sleep)"),
+    ({"evening_e_falaq.mp3", "morning_m_falaq.mp3", "protection_2.mp3", "salah_falaq.mp3", "sleep_falaq.mp3"}, "Surah Al-Falaq (Shared across Morning, Evening, Protection, Salah, Sleep)"),
+    ({"evening_e_nas.mp3", "morning_m_nas.mp3", "protection_3.mp3", "salah_nas.mp3", "sleep_nas.mp3"}, "Surah An-Nas (Shared across Morning, Evening, Protection, Salah, Sleep)"),
+    ({"evening_e_ikhlas.mp3", "morning_m_ikhlas.mp3", "salah_ikhlas.mp3", "sleep_ikhlas.mp3"}, "Surah Al-Ikhlas (Shared across Morning, Evening, Salah, Sleep)"),
+    ({"evening_e_alhamdulillah.mp3", "focus_5.mp3", "morning_m_alhamdulillah.mp3"}, "Alhamdulillah (Shared across Morning, Evening, Focus)"),
+    ({"evening_e_allahumma_fatir.mp3", "morning_m_allahumma_fatir.mp3", "sleep_allahumma_alimal_ghaybi.mp3"}, "Allahumma Fatiras-Samawati (Morning, Evening, Sleep)"),
+    ({"evening_e_bismillah_la_yadurr.mp3", "morning_m_bismillah_la_yadurr.mp3", "protection_1.mp3"}, "Bismillahilladhi la yadurru (Morning, Evening, Protection)"),
+    ({"evening_e_la_ilaha_illa_allah_10.mp3", "focus_7.mp3", "morning_m_la_ilaha_illa_allah_10.mp3"}, "La ilaha illallahu wahdahu la sharika lah (Morning, Evening, Focus)"),
+    ({"evening_e_salawat_alan_nabi.mp3", "focus_8.mp3", "morning_m_salawat_alan_nabi.mp3"}, "Salawat alan-Nabi (Morning, Evening, Focus)"),
+    ({"evening_e_subhanallah.mp3", "focus_4.mp3", "morning_m_subhanallah.mp3"}, "SubhanAllah (Morning, Evening, Focus)"),
+    ({"evening_e_afwa_wal_afiyah.mp3", "morning_m_afwa_wal_afiyah.mp3"}, "Allahumma inni as'alukal-afwa wal-afiyah (Morning & Evening)"),
+    ({"evening_e_allahu_akbar.mp3", "morning_m_allahu_akbar.mp3"}, "Allahu Akbar (Morning & Evening)"),
+    ({"evening_e_allahumma_afini.mp3", "morning_m_allahumma_afini.mp3"}, "Allahumma afini fi badani (Morning & Evening)"),
+    ({"evening_e_allahumma_ajirni_min_nar.mp3", "morning_m_allahumma_ajirni_min_nar.mp3"}, "Allahumma ajirni minan-nar (Morning & Evening)"),
+    ({"evening_e_astaghfirullah.mp3", "morning_m_astaghfirullah.mp3"}, "Astaghfirullah (Morning & Evening)"),
+    ({"evening_e_audhu_bikalimatillah.mp3", "protection_4.mp3"}, "Audhu bikalimatillahit-tammati (Evening & Protection)"),
+    ({"evening_e_hasbiyallah.mp3", "morning_m_hasbiyallah.mp3"}, "Hasbiyallah (Morning & Evening)"),
+    ({"evening_e_radhitu_billah.mp3", "morning_m_radhitu_billah.mp3"}, "Radhitu Billahi Rabba (Morning & Evening)"),
+    ({"evening_e_sayyidul_istighfar.mp3", "morning_m_sayyidul_istighfar.mp3"}, "Sayyidul Istighfar (Morning & Evening)"),
+    ({"evening_e_subhanallah_bihamdihi_100.mp3", "morning_m_subhanallah_bihamdihi_100.mp3"}, "SubhanAllahi wa biHamdihi 100x (Morning & Evening)"),
+    ({"evening_e_ya_hayyu_ya_qayyum.mp3", "morning_m_ya_hayyu_ya_qayyum.mp3"}, "Ya Hayyu Ya Qayyum (Morning & Evening)"),
+    ({"focus_6.mp3", "sleep_tasbih_fatimi.mp3"}, "Tasbih Fatimi (Focus & Sleep)"),
+    ({"morning_m_allahumma_ilman_nafian.mp3", "salah_ilman_nafian.mp3"}, "Allahumma inni as'aluka ilman nafian (Morning & Salah)"),
+]
+
 KNOWN_LEGITIMATE_DUPLICATES = {
-    # Ayatul Kursi
+    # Current 64kbps CBR hashes
+    "24be0a12a95a338d53de85a701b08ad9": "Ayatul Kursi (Shared across Morning, Evening, Protection, Salah, Sleep)",
+    "8e56a11fe2f79ee9c20554b9f8d1f30f": "Surah Al-Falaq (Shared across Morning, Evening, Protection, Salah, Sleep)",
+    "5e40c4a233d7f27df6f09655c675ee0c": "Surah An-Nas (Shared across Morning, Evening, Protection, Salah, Sleep)",
+    "85639cbf711ffa95b1256f63a3c82661": "Surah Al-Ikhlas (Shared across Morning, Evening, Salah, Sleep)",
+    "bfbcf5bffd29fd53a944a21248e3f744": "Alhamdulillah (Shared across Morning, Evening, Focus)",
+    "c2eacd1af29a29bff6f8810c18ca23ab": "SubhanAllah (Morning, Evening, Focus)",
+    "bcaf8277151973a16aad62baf057bf83": "SubhanAllahi wa biHamdihi 100x (Morning & Evening)",
+    "4ae5b9af5e28b962bd30e16728862fcc": "Astaghfirullah (Morning & Evening)",
+    "4db5609e41c5fe182fb685444f60f818": "Allahu Akbar (Morning & Evening)",
+    "74a3d8c572af2a61daa11da2d72e532c": "Hasbiyallah (Morning & Evening)",
+    "3823376537a68493373785c6d4757b0a": "Radhitu Billahi Rabba (Morning & Evening)",
+    "dcc7c56daeb3511191f53fb43a7052f4": "Sayyidul Istighfar (Morning & Evening)",
+    "4711761f8ae1ff9617b1e50b3ec939b7": "Ya Hayyu Ya Qayyum (Morning & Evening)",
+    "9e6041d7492f9b7acbf801907893b6e4": "Allahumma inni as'alukal-afwa wal-afiyah (Morning & Evening)",
+    "6c58d14b07b5fad132cad3a5a2a4b7d4": "Allahumma Fatiras-Samawati (Morning, Evening, Sleep)",
+    "97d5c292ffec562cd28f735d7e0b7b31": "Bismillahilladhi la yadurru (Morning, Evening, Protection)",
+    "a365ca9f8b9c6bcf4baae8f303a15fcb": "Audhu bikalimatillahit-tammati (Evening & Protection)",
+    "82fa2d0b0a380eaa9fb112c2b9217be3": "Allahumma ajirni minan-nar (Morning & Evening)",
+    "3e7df9f8fd971e09e16818b62778cad5": "Salawat alan-Nabi (Morning, Evening, Focus)",
+    "f42dce1a7709aa7abb08ea4e18360e07": "La ilaha illallahu wahdahu la sharika lah (Morning, Evening, Focus)",
+    "547c057fb4b234446debd4c6993cdf85": "Allahumma inni as'aluka ilman nafian (Morning & Salah)",
+    "c6b1b6289f737e917dd83b33c079fba0": "Tasbih Fatimi (Focus & Sleep)",
+    "65eea32a86a9fe68ce2fcfda8b589d58": "Allahumma afini fi badani (Morning & Evening)",
+    # Legacy uncompressed hashes (historical reference)
     "91e75163557bf5bae861628334b04b37": "Ayatul Kursi (Shared across Morning, Evening, Protection, Salah, Sleep)",
-    # Al-Falaq
     "b10d56f493f814a4100b1cd8c23fb0a8": "Surah Al-Falaq (Shared across Morning, Evening, Protection, Salah, Sleep)",
-    # An-Nas
     "a421ab49f436fb324b5de725a75a2cb8": "Surah An-Nas (Shared across Morning, Evening, Protection, Salah, Sleep)",
-    # Al-Ikhlas
     "a4bc855e9291b9f572e20d4a258cddfa": "Surah Al-Ikhlas (Shared across Morning, Evening, Salah, Sleep)",
-    # Alhamdulillah
     "22bed34ee7314a8f6fea3481973de230": "Alhamdulillah (Shared across Morning, Evening, Focus)",
-    # SubhanAllah
     "8280e3eba91050784ed2249622f2b83b": "SubhanAllah (Shared across Morning, Evening)",
-    # Subhanallahi wa bihamdihi 100x
     "09eb52f8bf58f9a5d159b0a5ded3185d": "SubhanAllahi wa biHamdihi 100x (Morning & Evening)",
-    # Astaghfirullah
     "fd7622fd3140a72de0f7f0b97847a2f1": "Astaghfirullah (Morning & Evening)",
-    # Allahu Akbar
     "2f74ba7f2e16460a82909c60f29c5ece": "Allahu Akbar (Morning & Evening)",
-    # Hasbiyallah
     "70c29b8191289eec720b63006f4ab7b5": "Hasbiyallah (Morning & Evening)",
-    # Radhitu Billah
     "5a9f3ffe07d1100a217308c24fb21400": "Radhitu Billahi Rabba (Morning & Evening)",
-    # Sayyidul Istighfar
     "7a942c5160b7cfed3736d7c2ac3f0ed1": "Sayyidul Istighfar (Morning & Evening)",
-    # Ya Hayyu Ya Qayyum
     "f27b2b5382bbb88b49cf55e78358006b": "Ya Hayyu Ya Qayyum (Morning & Evening)",
-    # Afwa wal Afiyah
     "41469c50810e24f7016ea7961c64ec1e": "Allahumma inni as'alukal-afwa wal-afiyah (Morning & Evening)",
-    # Allahumma Fatir
     "4c7ebfda41165d384536b55c78b1d1f5": "Allahumma Fatiras-Samawati (Morning, Evening, Sleep)",
-    # Bismillahilladhi la yadurr
     "845f77f76dc4604db3623475d1fc2f53": "Bismillahilladhi la yadurru (Morning, Evening, Protection)",
-    # Audhu bikalimatillah
     "8be9abbd2508d300e3229dcdda9e3dba": "Audhu bikalimatillahit-tammati (Evening & Protection)",
-    # Allahumma ajirni minan-nar
     "5974175eeed4fc311b3952af86f68971": "Allahumma ajirni minan-nar (Morning & Evening)",
-    # Salawat alan-Nabi
     "1cc525b27d6c8e281100ecbfa4d3f6cc": "Salawat alan-Nabi (Morning, Evening, Focus)",
-    # La ilaha illallahu wahdahu 10x
     "ce4c0132cc2b3d19f56b10233b2f4623": "La ilaha illallahu wahdahu la sharika lah (Morning, Evening, Focus)",
-    # Ilman Nafian
     "1159e61f9b54bb582e8bc8693ece9680": "Allahumma inni as'aluka ilman nafian (Morning & Salah)",
-    # Tasbih Fatimi
     "d87c921a1f2f4495337e11480cef5ea7": "Tasbih Fatimi (Focus & Sleep)",
 }
 
@@ -79,9 +108,10 @@ def analyze_audio_directory(audio_dir):
                 sha256 = hashlib.sha256(content).hexdigest()
                 size = len(content)
 
-                # Detect embedded PNG / JPEG cover art
-                has_png = b"\x89PNG\r\n\x1a\n" in content
-                has_jpg = b"\xff\xd8\xff" in content
+                # Detect embedded PNG / JPEG cover art in ID3 metadata (APIC frame)
+                has_apic = b"APIC" in content
+                has_png = (b"\x89PNG\r\n\x1a\n" in content) and has_apic
+                has_jpg = (b"\xff\xd8\xff" in content) and has_apic
                 
                 art_bytes = 0
                 if has_png:
@@ -127,8 +157,15 @@ def analyze_audio_directory(audio_dir):
     legitimate = []
 
     for h, flist in sorted(duplicates.items(), key=lambda x: len(x[1]), reverse=True):
-        if h in KNOWN_LEGITIMATE_DUPLICATES:
-            legitimate.append((h, flist, KNOWN_LEGITIMATE_DUPLICATES[h]))
+        desc = KNOWN_LEGITIMATE_DUPLICATES.get(h)
+        if not desc:
+            fset = set(flist)
+            for s_files, d in KNOWN_LEGITIMATE_GROUPS:
+                if fset == s_files:
+                    desc = d
+                    break
+        if desc:
+            legitimate.append((h, flist, desc))
         else:
             erroneous.append((h, flist))
 

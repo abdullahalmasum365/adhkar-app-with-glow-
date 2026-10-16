@@ -12,20 +12,114 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
+    function incoming() {
+      return request.resource.data;
+    }
+
     // Root user document and all nested subcollections:
     // - users/{userId} (Profile document)
-    // - users/{userId}/settings/{settingId} (theme, language, notification preferences)
-    // - users/{userId}/plan/{planId} (Custom adhkar plans & routine)
-    // - users/{userId}/progress/{progressId} (Daily counts, completion history, streaks)
-    // - users/{userId}/dedications/{dedicationId} (Sadaqah Jariyah dedications & certificates)
+    // - users/{userId}/settings/theme (Theme preferences)
+    // - users/{userId}/settings/language (Language & transliteration preferences)
+    // - users/{userId}/plan/data (Custom adhkar plans)
+    // - users/{userId}/progress/data (Daily counts, completion history, streaks)
     // - users/{userId}/sadaqah/{docId} (Sponsorship status & active tiers)
+    // - users/{userId}/dedications/{dedicationId} (Sadaqah Jariyah dedications)
     // - users/{userId}/purchases/{purchaseId} (Verified purchase audit logs)
     match /users/{userId} {
-      allow read, write: if isOwner(userId);
+      // Profile document: Owner can read and delete (account deletion).
+      // Limit fields on create/update to prevent bloated documents.
+      allow read, delete: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && incoming().keys().size() <= 10;
 
-      // Recursive match for all subcollections under the user's private namespace
-      match /{allSubcollections=**} {
-        allow read, write: if isOwner(userId);
+      // 1. Settings: Theme preferences (users/{userId}/settings/theme)
+      match /settings/theme {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly([
+            'paletteId', 'showTransliteration', 'showHabitTracker',
+            'reduceGlowAndBlur', 'updatedAt'
+          ])
+          && (!('paletteId' in incoming()) || (incoming().paletteId is string && incoming().paletteId.size() <= 64))
+          && (!('showTransliteration' in incoming()) || incoming().showTransliteration is bool)
+          && (!('showHabitTracker' in incoming()) || incoming().showHabitTracker is bool)
+          && (!('reduceGlowAndBlur' in incoming()) || incoming().reduceGlowAndBlur is bool);
+      }
+
+      // 2. Settings: Language preferences (users/{userId}/settings/language)
+      match /settings/language {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly([
+            'languageCode', 'translationCode', 'transliterationCode', 'updatedAt'
+          ])
+          && (!('languageCode' in incoming()) || (incoming().languageCode is string && incoming().languageCode.size() <= 16))
+          && (!('translationCode' in incoming()) || (incoming().translationCode is string && incoming().translationCode.size() <= 16))
+          && (!('transliterationCode' in incoming()) || (incoming().transliterationCode is string && incoming().transliterationCode.size() <= 16));
+      }
+
+      // 3. Custom Adhkar Plan (users/{userId}/plan/data)
+      match /plan/data {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly(['enabledDhikrIds', 'useCustomPlan', 'updatedAt'])
+          && (!('useCustomPlan' in incoming()) || incoming().useCustomPlan is bool)
+          && (!('enabledDhikrIds' in incoming()) || (incoming().enabledDhikrIds is list && incoming().enabledDhikrIds.size() <= 150));
+      }
+
+      // 4. Progress Tracking: Streaks & Badges (users/{userId}/progress/data)
+      match /progress/data {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly([
+            'streak_days', 'badge_early_bird', 'badge_night_prayer',
+            'last_active_date', 'updatedAt'
+          ])
+          && (!('streak_days' in incoming()) || (incoming().streak_days is int && incoming().streak_days >= 0 && incoming().streak_days <= 100000))
+          && (!('badge_early_bird' in incoming()) || incoming().badge_early_bird is bool)
+          && (!('badge_night_prayer' in incoming()) || incoming().badge_night_prayer is bool)
+          && (!('last_active_date' in incoming()) || (incoming().last_active_date is string && incoming().last_active_date.size() <= 32));
+      }
+
+      // 5. Sadaqah / Voluntary Sponsorship Status (users/{userId}/sadaqah/{docId})
+      match /sadaqah/{docId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly([
+            'activeDonationId', 'hasActiveDonation', 'latestOrderId',
+            'latestReceiptHash', 'isSubscription', 'status', 'lastVerifiedAt',
+            'canceledAt', 'updatedAt', 'userId'
+          ])
+          && incoming().keys().size() <= 12
+          && (!('hasActiveDonation' in incoming()) || incoming().hasActiveDonation is bool)
+          && (!('isSubscription' in incoming()) || incoming().isSubscription is bool)
+          && (!('activeDonationId' in incoming()) || incoming().activeDonationId == null || (incoming().activeDonationId is string && incoming().activeDonationId.size() <= 128))
+          && (!('latestOrderId' in incoming()) || incoming().latestOrderId == null || (incoming().latestOrderId is string && incoming().latestOrderId.size() <= 128))
+          && (!('latestReceiptHash' in incoming()) || incoming().latestReceiptHash == null || (incoming().latestReceiptHash is string && incoming().latestReceiptHash.size() <= 512));
+      }
+
+      // 6. Dedications / Sadaqah Jariyah (users/{userId}/dedications/{dedicationId})
+      match /dedications/{dedicationId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().size() <= 15;
+      }
+
+      // 7. Verified Purchase Audit Logs (users/{userId}/purchases/{purchaseId})
+      match /purchases/{purchaseId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly([
+            'productId', 'orderId', 'receiptHash', 'isSubscription',
+            'transactionDate', 'status', 'platform', 'syncedAt', 'userId'
+          ])
+          && (!('userId' in incoming()) || incoming().userId == userId)
+          && (!('productId' in incoming()) || (incoming().productId is string && incoming().productId.size() <= 128))
+          && (!('orderId' in incoming()) || incoming().orderId == null || (incoming().orderId is string && incoming().orderId.size() <= 128))
+          && (!('receiptHash' in incoming()) || (incoming().receiptHash is string && incoming().receiptHash.size() <= 512))
+          && (!('status' in incoming()) || (incoming().status is string && incoming().status.size() <= 32))
+          && (!('platform' in incoming()) || incoming().platform in ['android', 'ios', 'web', 'unknown'])
+          && (!('isSubscription' in incoming()) || incoming().isSubscription is bool);
       }
     }
 
