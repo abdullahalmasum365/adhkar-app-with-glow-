@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
@@ -54,9 +55,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     R.init(context);
     final lp = Provider.of<LanguageProvider>(context);
 
-    // Bottom nav height adapts to screen
-    final navBottom = R.adaptive(20.0, 28.0, 36.0);
-    final navTop = R.px(10);
+    // Adapt bottom padding to device system navigation bar insets (3-button or gesture bar)
+    final systemBottom = math.max(
+      MediaQuery.paddingOf(context).bottom,
+      MediaQuery.viewPaddingOf(context).bottom,
+    );
+    final navBottom = systemBottom > 0
+        ? systemBottom + R.px(6)
+        : R.adaptive(14.0, 18.0, 22.0);
+    final navTop = R.px(8);
     final iconSize = R.sp(R.adaptive(20.0, 22.0, 26.0));
     final labelSize = R.sp(R.adaptive(8.0, 9.0, 11.0));
     final reduceGlow = Provider.of<ThemeProvider>(context).reduceGlowAndBlur;

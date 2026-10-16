@@ -1352,7 +1352,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ])),
               const SizedBox(height: 14),
               const _DevVersionTap(),
-              const SizedBox(height: 32),
+              SizedBox(height: R.px(100)),
             ],
           )),
         ])),

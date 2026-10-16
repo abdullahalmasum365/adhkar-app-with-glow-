@@ -600,7 +600,7 @@ class _HomeScreenState extends State<HomeScreen>
                     ]).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2);
                   }),
 
-                  SizedBox(height: R.px(24)),
+                  SizedBox(height: R.px(100)),
                 ],
               ),
             ),
