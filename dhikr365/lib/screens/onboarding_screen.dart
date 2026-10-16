@@ -130,9 +130,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         try {
           await up.setTimezone(await FlutterTimezone.getLocalTimezone());
         } catch (_) {}
-        if (!mounted) return;
-
-        await NotificationService().requestPermissions();
         try {
           await np.refreshAllSchedules(up);
         } catch (_) {}
@@ -162,11 +159,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // ── Step 5: Finish Onboarding ─────────────────────────────────────────────
   Future<void> _finishOnboarding() async {
     if (_isLoading) return;
-    setState(() => _isLoading = true);
 
     final up = Provider.of<UserProvider>(context, listen: false);
     final np = Provider.of<NotificationProvider>(context, listen: false);
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
     final nav = Navigator.of(context);
+
+    // If notifications are not yet enabled, politely explain with a pre-permission bottom sheet
+    try {
+      final notifsEnabled =
+          await NotificationService().areNotificationsEnabled();
+      if (!notifsEnabled && mounted) {
+        await _showNotificationPrimerModal(context, lp);
+      }
+    } catch (_) {}
+
+    if (!mounted) return;
+    setState(() => _isLoading = true);
 
     // Save quiz answers permanently
     await up.setOnboardingGoal(_selectedGoal);
@@ -188,7 +197,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             try {
               await up.setTimezone(await FlutterTimezone.getLocalTimezone());
             } catch (_) {}
-            await NotificationService().requestPermissions();
             try {
               await np.refreshAllSchedules(up);
             } catch (_) {}
@@ -196,6 +204,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
       } catch (_) {}
     }
+
+    try {
+      await np.refreshAllSchedules(up);
+    } catch (_) {}
 
     if (!mounted) return;
 
@@ -206,6 +218,106 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         MaterialPageRoute(builder: (_) => const LocationSetupScreen()),
       );
     }
+  }
+
+  Future<void> _showNotificationPrimerModal(
+      BuildContext context, LanguageProvider lp) async {
+    const amberColor = Color(0xFFF59E0B);
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
+        decoration: BoxDecoration(
+          color: AppColors.bgTeal,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          border: Border.all(color: AppColors.ink(0.12)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.ink(0.2),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              width: 58,
+              height: 58,
+              decoration: BoxDecoration(
+                color: amberColor.withValues(alpha: 0.15),
+                shape: BoxShape.circle,
+                border: Border.all(color: amberColor.withValues(alpha: 0.3)),
+              ),
+              child: const Icon(
+                Icons.notifications_active_rounded,
+                color: amberColor,
+                size: 28,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              lp.getText('notif_permission_title'),
+              textAlign: TextAlign.center,
+              style: AppText.heading(18),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              lp.getText('notif_permission_body'),
+              textAlign: TextAlign.center,
+              style: AppText.body(color: AppColors.textSlate300)
+                  .copyWith(height: 1.5, fontSize: 13),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(
+                      lp.getText('notif_battery_skip'),
+                      style: AppText.body(color: AppColors.textSlate400),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(ctx);
+                      await NotificationService().requestPermissions();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: amberColor,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      lp.getText('notif_permission_allow'),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   // ── Top Header with 5-dot Amber Glow Progress Indicator ───────────────────

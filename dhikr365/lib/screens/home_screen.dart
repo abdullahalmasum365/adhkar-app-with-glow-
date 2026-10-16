@@ -16,6 +16,7 @@ import '../utils/responsive.dart';
 import 'dhikr_list_screen.dart';
 import 'donation_screen.dart';
 import 'location_setup_screen.dart';
+import '../services/notification_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,6 +29,8 @@ class _HomeScreenState extends State<HomeScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   bool _isListening = false;
   late final AnimationController _pulseCtrl;
+  bool _notifBannerDismissed = false;
+  bool _notifEnabled = true;
 
   @override
   void initState() {
@@ -37,19 +40,29 @@ class _HomeScreenState extends State<HomeScreen>
       vsync: this,
       duration: const Duration(milliseconds: 2200),
     );
+    _checkNotificationStatus();
+  }
+
+  Future<void> _checkNotificationStatus() async {
+    try {
+      final enabled = await NotificationService().areNotificationsEnabled();
+      if (mounted && _notifEnabled != enabled) {
+        setState(() => _notifEnabled = enabled);
+      }
+    } catch (_) {}
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!_isListening) return;
     if (state == AppLifecycleState.resumed) {
-      if (!_pulseCtrl.isAnimating && mounted) {
+      _checkNotificationStatus();
+      if (_isListening && !_pulseCtrl.isAnimating && mounted) {
         _pulseCtrl.repeat();
       }
     } else if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive ||
         state == AppLifecycleState.hidden) {
-      if (_pulseCtrl.isAnimating) {
+      if (_isListening && _pulseCtrl.isAnimating) {
         _pulseCtrl.stop();
       }
     }
@@ -289,6 +302,13 @@ class _HomeScreenState extends State<HomeScreen>
                       ]),
                     ),
                   ).animate().fadeIn(delay: 200.ms),
+
+                  // ── Soft Notification In-App Banner ──────────────────────────
+                  // Displays gently when notifications are disabled and user hasn't dismissed it.
+                  if (!_notifEnabled && !_notifBannerDismissed) ...[
+                    SizedBox(height: vGap),
+                    _buildSoftNotificationBanner(lp, vGap),
+                  ],
 
                   SizedBox(height: vGap),
 
@@ -608,6 +628,101 @@ class _HomeScreenState extends State<HomeScreen>
         ],
       ),
     );
+  }
+
+  Widget _buildSoftNotificationBanner(LanguageProvider lp, double vGap) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: R.px(12),
+        vertical: R.px(10),
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(R.px(16)),
+        border: Border.all(
+          color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.notifications_off_outlined,
+            color: const Color(0xFFF59E0B),
+            size: R.sp(22),
+          ),
+          SizedBox(width: R.px(10)),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  lp.getText('notif_status_disabled'),
+                  style: AppText.manrope(
+                    fontSize: R.adaptive(12, 13, 14),
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFFF59E0B),
+                  ),
+                ),
+                SizedBox(height: R.px(2)),
+                Text(
+                  lp.getText('notif_status_disabled_sub'),
+                  style: AppText.manrope(
+                    fontSize: R.adaptive(10, 11, 12),
+                    color: AppColors.textSlate300,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: R.px(8)),
+          TextButton(
+            onPressed: () async {
+              await NotificationService().requestPermissions();
+              final granted =
+                  await NotificationService().areNotificationsEnabled();
+              if (!granted && mounted) {
+                await NotificationService().openNotificationSettings();
+              }
+              await _checkNotificationStatus();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: const Color(0xFFF59E0B),
+              foregroundColor: Colors.black,
+              padding: EdgeInsets.symmetric(
+                horizontal: R.px(10),
+                vertical: R.px(6),
+              ),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(R.px(8)),
+              ),
+            ),
+            child: Text(
+              lp.getText('notif_fix_btn'),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: R.adaptive(10, 11, 12),
+              ),
+            ),
+          ),
+          SizedBox(width: R.px(4)),
+          IconButton(
+            icon: Icon(Icons.close_rounded, size: R.sp(16)),
+            color: AppColors.textSlate400,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: () {
+              setState(() => _notifBannerDismissed = true);
+            },
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.1, end: 0);
   }
 }
 
