@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/app_theme.dart';
@@ -139,6 +140,13 @@ void main() async {
   // Apply the user's saved color theme before the first frame so Royal
   // White users never see a dark flash on startup.
   await ThemeProvider.applySavedPalette();
+
+  // Initialize locale date formatting for multilingual Gregorian date display
+  try {
+    await initializeDateFormatting();
+  } catch (e) {
+    debugPrint('[main] initializeDateFormatting failed: $e');
+  }
 
   // 3. Initialize the full notification system
   //    (local channels + timezone db)

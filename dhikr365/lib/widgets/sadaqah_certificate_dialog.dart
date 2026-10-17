@@ -8,12 +8,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart' hide TextDirection;
 import 'package:share_plus/share_plus.dart';
 
 import '../constants/app_theme.dart';
 import '../models/sadaqah_dedication.dart';
 import '../utils/responsive.dart';
+import '../utils/date_formatter.dart';
 
 Future<void> showSadaqahCertificateDialog(
   BuildContext context, {
@@ -44,8 +44,10 @@ class SadaqahCertificateSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     R.init(context);
-    final isBn = Localizations.localeOf(context).languageCode == 'bn';
-    final dateStr = DateFormat('d MMMM yyyy').format(dedication.timestamp);
+    final langCode = Localizations.localeOf(context).languageCode;
+    final isBn = langCode == 'bn';
+    final dateStr = AppDateFormatter.formatGregorian(
+        dedication.timestamp, langCode, pattern: 'd MMMM yyyy');
     final targetLabel = dedication.getDisplayTitle(isBn ? 'bn' : 'en');
     final recipient = dedication.recipientName?.trim();
     final nameLine = (recipient != null && recipient.isNotEmpty)

@@ -10,6 +10,7 @@ import '../providers/language_provider.dart';
 import '../providers/theme_provider.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
+import '../utils/date_formatter.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -946,7 +947,7 @@ class _MonthlyHeatmapSection extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  DateFormat('MMMM yyyy').format(now),
+                  AppDateFormatter.formatGregorian(now, langCode, pattern: 'MMMM yyyy'),
                   style: AppText.body(color: AppColors.textSlate400).copyWith(
                     fontSize: R.sp(R.adaptive(11, 12, 13)),
                     fontWeight: FontWeight.w600,
@@ -957,7 +958,7 @@ class _MonthlyHeatmapSection extends StatelessWidget {
             SizedBox(height: R.px(16)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+              children: AppDateFormatter.getWeekdayHeaders(langCode)
                   .map((d) => Expanded(
                         child: Center(
                           child: Text(
@@ -1002,7 +1003,7 @@ class _MonthlyHeatmapSection extends StatelessWidget {
 
                 return Tooltip(
                   message:
-                      '${R.localizeDigits('$day', langCode)} ${DateFormat('MMM').format(now)}: ${R.localizeDigits('$count', langCode)} ${lp.getText('total_dhikr')}',
+                      '${R.localizeDigits('$day', langCode)} ${AppDateFormatter.formatGregorian(now, langCode, pattern: 'MMM')}: ${R.localizeDigits('$count', langCode)} ${lp.getText('total_dhikr')}',
                   child: Container(
                     decoration: BoxDecoration(
                       color: cellColor,

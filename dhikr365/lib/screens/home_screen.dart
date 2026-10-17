@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:adhan/adhan.dart';
@@ -13,6 +12,7 @@ import '../providers/custom_plan_provider.dart';
 import '../models/dhikr.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
+import '../utils/date_formatter.dart';
 import 'dhikr_list_screen.dart';
 import 'donation_screen.dart';
 import 'location_setup_screen.dart';
@@ -138,12 +138,11 @@ class _HomeScreenState extends State<HomeScreen>
     final now = DateTime.now();
     final isMorning = _isMorningTime(userProvider, now);
     final langCode = lp.locale.languageCode;
-    // Locale-aware date: apply digit localization for languages that use
-    // non-Latin numeral systems (Arabic, Hindi, Bengali, Tamil, Thai, Urdu).
+    // Fully localized Gregorian and Hijri dates
     final formattedDate =
-        R.localizeDigits(DateFormat('EEEE, d MMM yyyy').format(now), langCode);
+        AppDateFormatter.formatGregorian(now, langCode, pattern: 'EEEE, d MMMM yyyy');
     final hijriDate =
-        R.localizeDigits(HijriCalendar.now().toFormat('d MMMM yyyy'), langCode);
+        AppDateFormatter.formatHijri(HijriCalendar.now(), langCode);
 
     final displayName = (userProvider.userName?.isNotEmpty == true)
         ? userProvider.userName!

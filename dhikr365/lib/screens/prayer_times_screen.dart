@@ -13,6 +13,7 @@ import '../services/location_service.dart';
 import '../constants/app_theme.dart';
 import '../providers/theme_provider.dart';
 import '../utils/responsive.dart';
+import '../utils/date_formatter.dart';
 import '../utils/prayer_calculation_helper.dart';
 import 'location_setup_screen.dart';
 import 'madhab_selection_screen.dart';
@@ -377,8 +378,8 @@ class _PrayerTimesScreenState extends State<PrayerTimesScreen> {
 
     final lp = Provider.of<LanguageProvider>(context);
     final langCode = lp.locale.languageCode;
-    final today = R.localizeDigits(
-        DateFormat('EEEE, d MMM').format(DateTime.now()), langCode);
+    final today = AppDateFormatter.formatGregorian(
+        DateTime.now(), langCode, pattern: 'EEEE, d MMMM');
     final titleSize = R.adaptive(18.0, 20.0, 24.0);
 
     // Build translated prayer name map — English keys stay internal,
