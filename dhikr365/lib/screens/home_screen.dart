@@ -17,6 +17,7 @@ import 'dhikr_list_screen.dart';
 import 'donation_screen.dart';
 import 'location_setup_screen.dart';
 import '../services/notification_service.dart';
+import '../widgets/battery_reliability_dialogs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,8 +30,12 @@ class _HomeScreenState extends State<HomeScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   bool _isListening = false;
   late final AnimationController _pulseCtrl;
-  bool _notifBannerDismissed = false;
-  bool _notifEnabled = true;
+  bool _notifGranted = true;
+  bool _exactGranted = true;
+  bool _batteryExempt = true;
+
+  bool get _hasReminderWarning =>
+      !_notifGranted || !_exactGranted || !_batteryExempt;
 
   @override
   void initState() {
@@ -45,9 +50,16 @@ class _HomeScreenState extends State<HomeScreen>
 
   Future<void> _checkNotificationStatus() async {
     try {
-      final enabled = await NotificationService().areNotificationsEnabled();
-      if (mounted && _notifEnabled != enabled) {
-        setState(() => _notifEnabled = enabled);
+      final notif = await NotificationService().areNotificationsEnabled();
+      final exact = await NotificationService().isExactAlarmGranted();
+      final battery =
+          await NotificationService().isIgnoringBatteryOptimizations();
+      if (mounted) {
+        setState(() {
+          _notifGranted = notif;
+          _exactGranted = exact;
+          _batteryExempt = battery;
+        });
       }
     } catch (_) {}
   }
@@ -302,13 +314,6 @@ class _HomeScreenState extends State<HomeScreen>
                       ]),
                     ),
                   ).animate().fadeIn(delay: 200.ms),
-
-                  // ── Soft Notification In-App Banner ──────────────────────────
-                  // Displays gently when notifications are disabled and user hasn't dismissed it.
-                  if (!_notifEnabled && !_notifBannerDismissed) ...[
-                    SizedBox(height: vGap),
-                    _buildSoftNotificationBanner(lp, vGap),
-                  ],
 
                   SizedBox(height: vGap),
 
@@ -608,15 +613,22 @@ class _HomeScreenState extends State<HomeScreen>
                       )),
                       SizedBox(width: R.px(12)),
                       Expanded(
-                          child: _CategoryCard(
-                        icon: secondaryCat.icon,
-                        label: lp.getText(secondaryCat.titleKey),
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    DhikrListScreen(category: secondaryCat))),
-                      )),
+                        child: _hasReminderWarning
+                            ? _ReminderWarningCard(
+                                onTap: () =>
+                                    _showReminderReliabilitySheet(context, lp),
+                              )
+                            : _CategoryCard(
+                                icon: secondaryCat.icon,
+                                label: lp.getText(secondaryCat.titleKey),
+                                isHealthy: true,
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => DhikrListScreen(
+                                            category: secondaryCat))),
+                              ),
+                      ),
                     ]).animate().fadeIn(delay: 700.ms).slideY(begin: 0.2);
                   }),
 
@@ -630,99 +642,331 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildSoftNotificationBanner(LanguageProvider lp, double vGap) {
+  void _showReminderReliabilitySheet(
+      BuildContext context, LanguageProvider lp) {
+    final isBn = lp.locale.languageCode == 'bn';
+    const warningAmber = Color(0xFFF59E0B);
+    const emeraldGreen = Color(0xFF10B981);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            final allSet = _notifGranted && _exactGranted && _batteryExempt;
+
+            return Container(
+              padding: EdgeInsets.fromLTRB(
+                R.px(20),
+                R.px(16),
+                R.px(20),
+                R.px(28) + MediaQuery.paddingOf(context).bottom,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.bgTeal,
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(24)),
+                border: Border.all(color: AppColors.ink(0.12)),
+              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Handle Bar
+                    Center(
+                      child: Container(
+                        width: 44,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.ink(0.2),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: R.px(16)),
+
+                    // Header with Icon
+                    Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: (allSet ? emeraldGreen : warningAmber)
+                                .withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: (allSet ? emeraldGreen : warningAmber)
+                                  .withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Icon(
+                            allSet
+                                ? Icons.verified_rounded
+                                : Icons.notification_important_rounded,
+                            color: allSet ? emeraldGreen : warningAmber,
+                            size: 24,
+                          ),
+                        ),
+                        SizedBox(width: R.px(12)),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                allSet
+                                    ? (isBn
+                                        ? 'আজান ও রিমাইন্ডার সক্রিয়'
+                                        : 'All Reminders Active')
+                                    : (isBn
+                                        ? 'রিমাইন্ডার ও আজান সেটআপ'
+                                        : 'Reminder & Azan Setup'),
+                                style: AppText.heading(17),
+                              ),
+                              SizedBox(height: R.px(2)),
+                              Text(
+                                allSet
+                                    ? (isBn
+                                        ? 'আপনার ফোনে সব অ্যালার্ম ১০০% প্রস্তুত'
+                                        : 'Your phone is 100% ready for on-time alerts')
+                                    : (isBn
+                                        ? 'কেন এই পারমিশনগুলো জরুরি?'
+                                        : 'Why are these permissions essential?'),
+                                style: AppText.manrope(
+                                  fontSize: 12,
+                                  color: allSet
+                                      ? emeraldGreen
+                                      : AppColors.textSlate400,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: R.px(14)),
+
+                    // Explainer paragraph
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.ink(0.04),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: AppColors.ink(0.08)),
+                      ),
+                      child: Text(
+                        isBn
+                            ? 'অ্যান্ড্রয়েড ফোন (বিশেষ করে Samsung, Xiaomi, Vivo, Oppo) ব্যাটারি বাঁচাতে ব্যাকগ্রাউন্ডের অ্যাপ বন্ধ করে দেয়। নিচের ৩টি সেটিংস অন রাখলে প্রতিটি ওয়াক্তের আজান ও সকাল-সন্ধ্যার জিকির সঠিক সেকেন্ডে আপনার ফোনে বাজবে।'
+                            : 'Android battery savers often silence prayer apps in the background. Enabling these 3 settings guarantees every Azan and Adhkar alarm arrives exactly on time without delay.',
+                        style: AppText.body(color: AppColors.textSlate300)
+                            .copyWith(height: 1.45, fontSize: 12),
+                      ),
+                    ),
+                    SizedBox(height: R.px(16)),
+
+                    // Item 1: Notification Permission
+                    _buildPermissionItem(
+                      icon: Icons.notifications_active_rounded,
+                      title: isBn ? 'নোটিফিকেশন অ্যালার্ট' : 'Notification Alerts',
+                      desc: isBn
+                          ? 'আজানের বার্তা ও স্ক্রিন নোটিফিকেশন প্রদর্শন'
+                          : 'Show azan popups & status bar banners',
+                      isGranted: _notifGranted,
+                      actionLabel: isBn ? 'অনুমতি দিন' : 'Allow',
+                      onAction: () async {
+                        await NotificationService().requestPermissions();
+                        final granted =
+                            await NotificationService().areNotificationsEnabled();
+                        if (!granted && context.mounted) {
+                          await NotificationService().openNotificationSettings();
+                        }
+                        await _checkNotificationStatus();
+                        setModalState(() {});
+                      },
+                    ),
+                    SizedBox(height: R.px(10)),
+
+                    // Item 2: Exact Alarm Permission
+                    _buildPermissionItem(
+                      icon: Icons.alarm_on_rounded,
+                      title: isBn ? 'সঠিক সময়ের অ্যালার্ম' : 'Exact Alarms',
+                      desc: isBn
+                          ? 'নির্ধারিত সঠিক মিনিটে আজান বাজার অনুমতি'
+                          : 'Sound azan at the precise prescribed minute',
+                      isGranted: _exactGranted,
+                      actionLabel: isBn ? 'অনুমতি দিন' : 'Allow',
+                      onAction: () async {
+                        await NotificationService().openExactAlarmSettings();
+                        await _checkNotificationStatus();
+                        setModalState(() {});
+                      },
+                    ),
+                    SizedBox(height: R.px(10)),
+
+                    // Item 3: Battery Optimization Unrestricted
+                    _buildPermissionItem(
+                      icon: Icons.battery_charging_full_rounded,
+                      title: isBn ? 'ব্যাকগ্রাউন্ড ব্যাটারি সচল' : 'Battery Unrestricted',
+                      desc: isBn
+                          ? 'স্যামসাং/শাওমি যাতে ঘুমন্ত অবস্থায় আজান না থামায়'
+                          : 'Prevent phone OS from killing background azan',
+                      isGranted: _batteryExempt,
+                      actionLabel: isBn ? 'গাইড দেখুন' : 'Configure',
+                      onAction: () async {
+                        await showBatteryExplainerDialog(context);
+                        await _checkNotificationStatus();
+                        setModalState(() {});
+                      },
+                    ),
+                    SizedBox(height: R.px(20)),
+
+                    // Bottom Action / Close Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              allSet ? emeraldGreen : AppColors.primary,
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: Text(
+                          allSet
+                              ? (isBn ? 'সম্পন্ন (Done)' : 'Done')
+                              : (isBn ? 'ঠিক আছে / বন্ধ করুন' : 'Done for now'),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildPermissionItem({
+    required IconData icon,
+    required String title,
+    required String desc,
+    required bool isGranted,
+    required String actionLabel,
+    required VoidCallback onAction,
+  }) {
+    const emeraldGreen = Color(0xFF10B981);
+    const warningAmber = Color(0xFFF59E0B);
+
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: R.px(12),
-        vertical: R.px(10),
-      ),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(R.px(16)),
+        color: isGranted
+            ? emeraldGreen.withValues(alpha: 0.08)
+            : warningAmber.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
-          width: 1.2,
+          color: isGranted
+              ? emeraldGreen.withValues(alpha: 0.25)
+              : warningAmber.withValues(alpha: 0.25),
         ),
       ),
       child: Row(
         children: [
           Icon(
-            Icons.notifications_off_outlined,
-            color: const Color(0xFFF59E0B),
-            size: R.sp(22),
+            icon,
+            color: isGranted ? emeraldGreen : warningAmber,
+            size: 24,
           ),
-          SizedBox(width: R.px(10)),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  lp.getText('notif_status_disabled'),
-                  style: AppText.manrope(
-                    fontSize: R.adaptive(12, 13, 14),
-                    fontWeight: FontWeight.w700,
-                    color: const Color(0xFFF59E0B),
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      title,
+                      style: AppText.manrope(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    if (isGranted)
+                      const Icon(
+                        Icons.check_circle_rounded,
+                        color: emeraldGreen,
+                        size: 15,
+                      ),
+                  ],
                 ),
-                SizedBox(height: R.px(2)),
+                const SizedBox(height: 2),
                 Text(
-                  lp.getText('notif_status_disabled_sub'),
+                  desc,
                   style: AppText.manrope(
-                    fontSize: R.adaptive(10, 11, 12),
-                    color: AppColors.textSlate300,
+                    fontSize: 11,
+                    color: AppColors.textSlate400,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          SizedBox(width: R.px(8)),
-          TextButton(
-            onPressed: () async {
-              await NotificationService().requestPermissions();
-              final granted =
-                  await NotificationService().areNotificationsEnabled();
-              if (!granted && mounted) {
-                await NotificationService().openNotificationSettings();
-              }
-              await _checkNotificationStatus();
-            },
-            style: TextButton.styleFrom(
-              backgroundColor: const Color(0xFFF59E0B),
-              foregroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(
-                horizontal: R.px(10),
-                vertical: R.px(6),
+          const SizedBox(width: 8),
+          if (isGranted)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: emeraldGreen.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
               ),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(R.px(8)),
+              child: const Text(
+                '✓ Active',
+                style: TextStyle(
+                  color: emeraldGreen,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          else
+            TextButton(
+              onPressed: onAction,
+              style: TextButton.styleFrom(
+                backgroundColor: warningAmber,
+                foregroundColor: Colors.black,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                minimumSize: Size.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                actionLabel,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 11,
+                ),
               ),
             ),
-            child: Text(
-              lp.getText('notif_fix_btn'),
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: R.adaptive(10, 11, 12),
-              ),
-            ),
-          ),
-          SizedBox(width: R.px(4)),
-          IconButton(
-            icon: Icon(Icons.close_rounded, size: R.sp(16)),
-            color: AppColors.textSlate400,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            onPressed: () {
-              setState(() => _notifBannerDismissed = true);
-            },
-          ),
         ],
       ),
-    ).animate().fadeIn(duration: 300.ms).slideY(begin: -0.1, end: 0);
+    );
   }
 }
 
@@ -1353,8 +1597,13 @@ class _CategoryCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _CategoryCard(
-      {required this.icon, required this.label, required this.onTap});
+  final bool isHealthy;
+  const _CategoryCard({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.isHealthy = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1365,13 +1614,126 @@ class _CategoryCard extends StatelessWidget {
         decoration:
             AppDeco.glassCard(borderRadius: BorderRadius.circular(R.px(20))),
         child: Column(children: [
-          Icon(icon, color: AppColors.primary, size: R.sp(26)),
+          Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Icon(icon, color: AppColors.primary, size: R.sp(26)),
+              if (isHealthy)
+                Positioned(
+                  top: -2,
+                  right: -6,
+                  child: Container(
+                    width: 7,
+                    height: 7,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF10B981),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+            ],
+          ),
           SizedBox(height: R.px(8)),
           Text(label,
               style: AppText.manrope(
                   fontSize: R.adaptive(12, 14, 16),
                   fontWeight: FontWeight.w600)),
         ]),
+      ),
+    );
+  }
+}
+
+class _ReminderWarningCard extends StatelessWidget {
+  final VoidCallback onTap;
+  const _ReminderWarningCard({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isBn = Localizations.localeOf(context).languageCode == 'bn';
+    const warningAmber = Color(0xFFF59E0B);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: R.px(14), horizontal: R.px(8)),
+        decoration: BoxDecoration(
+          color: warningAmber.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(R.px(20)),
+          border: Border.all(
+            color: warningAmber.withValues(alpha: 0.5),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: warningAmber.withValues(alpha: 0.18),
+              blurRadius: 14,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  Icons.notifications_active_outlined,
+                  color: warningAmber,
+                  size: R.sp(26),
+                ),
+                Positioned(
+                  top: -2,
+                  right: -4,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFEF4444),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.priority_high_rounded,
+                      color: Colors.white,
+                      size: 9,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: R.px(6)),
+            Text(
+              isBn ? 'সেটআপ প্রয়োজন' : 'Setup Required',
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppText.manrope(
+                fontSize: R.adaptive(12, 13, 14),
+                fontWeight: FontWeight.w800,
+                color: warningAmber,
+              ),
+            ),
+            SizedBox(height: R.px(2)),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+              decoration: BoxDecoration(
+                color: warningAmber.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                isBn ? '⚠️ আজান ঠিক করুন' : '⚠️ Fix Reminders',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: R.adaptive(9, 10, 11),
+                  fontWeight: FontWeight.w600,
+                  color: warningAmber,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
