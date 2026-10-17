@@ -14,16 +14,38 @@ import 'dart:async';
 
 import 'package:in_app_purchase/in_app_purchase.dart';
 
-/// Subscription product IDs for voluntary Sadaqah Jariyah support.
+/// Subscription product IDs for voluntary app maintenance support.
 /// Must exist as subscription base plans in Play Console.
 class DonationProductIds {
-  // Sadaqah Jariyah products (Monthly & Annual Auto-Renewing Subscriptions)
+  // Monthly & Annual App Maintenance Subscriptions (Starting at $2.99/mo)
+  static const maintenanceMonthly = 'app_maintenance_monthly'; // $2.99 / month (Base)
+  static const maintenancePatronMonthly = 'app_maintenance_patron_monthly'; // $5.99 / month (Generous)
+  static const maintenanceAnnual = 'app_maintenance_annual'; // $29.99 / year (Best value)
+
+  // Legacy / alternative product IDs (for Play Console compatibility)
   static const seed = 'donation_seed_monthly';
   static const supporter = 'donation_supporter_monthly';
   static const patron = 'donation_patron_monthly';
   static const annual = 'donation_annual_sponsor';
 
-  static const donationTiers = {seed, supporter, patron, annual};
+  static const maintenanceTiers = {
+    maintenanceMonthly,
+    maintenancePatronMonthly,
+    maintenanceAnnual,
+  };
+
+  static const legacyTiers = {
+    seed,
+    supporter,
+    patron,
+    annual,
+  };
+
+  static const donationTiers = {
+    ...maintenanceTiers,
+    ...legacyTiers,
+  };
+
   static const subscriptionTiers = donationTiers;
   static const all = donationTiers;
 
