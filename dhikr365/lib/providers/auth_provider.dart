@@ -103,16 +103,16 @@ class AuthProvider extends ChangeNotifier {
       return false;
     } on PlatformException catch (e) {
       debugPrint('[AuthProvider] PlatformException: [${e.code}] ${e.message} details: ${e.details}');
-      if (e.message != null && e.message!.contains('10')) {
-        _errorMessage = kDebugMode
-            ? 'Developer Error (ApiException 10): Ensure SHA-1 fingerprint & Support Email are set in Firebase Console.'
-            : 'Unable to connect to Google Sign-In. Please try again later.';
+      final msg = '${e.message ?? ''} ${e.details ?? ''}';
+      if (msg.contains('10') || msg.contains('DEVELOPER_ERROR') || msg.contains('12500')) {
+        _errorMessage =
+            'Google Sign-In configuration error: Release SHA-1 is missing in Firebase Console.';
       } else if (e.code == 'sign_in_canceled' || e.code == 'canceled') {
         _errorMessage = null;
       } else if (e.code == 'network_error') {
         _errorMessage = 'Network error. Please check your internet connection.';
       } else {
-        _errorMessage = 'Sign-in failed. Please try again.';
+        _errorMessage = 'Sign-in failed: ${e.message ?? e.code}';
       }
       return false;
     } catch (e) {
