@@ -57,6 +57,7 @@ class _IDs {
   // bypassed permanently. User MUST uninstall old app before installing this.
   static const String adhkarChannelId = 'adhkaar_adhkar_v2';
   static const String prayerChannelId = 'adhkaar_prayer_v2';
+  static const String announcementsChannelId = 'adhkaar_announcements';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -256,6 +257,55 @@ class NotificationService {
       ),
     );
 
+    // Announcements & Push Notifications channel — max importance, heads-up banner
+    await androidPlugin?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        _IDs.announcementsChannelId,
+        'Announcements & Reminders',
+        description: 'Special Islamic announcements, reminders, and updates',
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+        enableLights: true,
+      ),
+    );
+  }
+
+  /// Displays an announcement / push notification heads-up banner (used by FCM foreground handler)
+  Future<void> showAnnouncementNotification({
+    required int id,
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    final details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        _IDs.announcementsChannelId,
+        'Announcements & Reminders',
+        channelDescription: 'Special Islamic announcements, reminders, and updates',
+        importance: Importance.max,
+        priority: Priority.high,
+        icon: 'ic_stat_notification',
+        playSound: true,
+        enableVibration: true,
+        color: AppColors.primary,
+        styleInformation: BigTextStyleInformation(
+          body,
+          contentTitle: title,
+        ),
+      ),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+
+    try {
+      await _local.show(id, title, body, details, payload: payload);
+    } catch (e) {
+      debugPrint('[NotificationService] showAnnouncementNotification error: $e');
+    }
   }
 
   // ── Notification tap handler (foreground) ──────────────────────────────────
@@ -266,7 +316,7 @@ class NotificationService {
       NotificationService().scheduleSnooze(payload);
       return;
     }
-    _routeForPayload(payload);
+    routeForPayload(payload);
   }
 
   // ── Notification tap handler (background) — must be top-level ─────────────
@@ -278,43 +328,66 @@ class NotificationService {
       NotificationService().scheduleSnooze(payload);
       return;
     }
-    _routeForPayload(payload);
+    routeForPayload(payload);
   }
 
   // ── Shared routing logic ───────────────────────────────────────────────────
   /// Pushes the appropriate screen for a given notification payload.
   /// Safe to call from any context — uses the global [appNavigatorKey].
-  static void _routeForPayload(String payload) {
+  static void routeForPayload(String payload) {
     final nav = appNavigatorKey.currentState;
     if (nav == null) return; // app not ready yet
 
-    if (payload == 'morning' ||
-        payload == 'prayer:fajr' ||
-        payload == 'prayer:sunrise') {
-      // Morning adhkar period (Fajr → sunrise) → open Morning Adhkar screen
+    final p = payload.toLowerCase().trim();
+    if (p == 'morning' || p == 'prayer:fajr' || p == 'prayer:sunrise') {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.morning),
       ));
-    } else if (payload == 'evening' ||
-        payload == 'prayer:asr' ||
-        payload == 'prayer:maghrib') {
-      // Evening adhkar period (Asr → Maghrib) → open Evening Adhkar screen
+    } else if (p == 'evening' || p == 'prayer:asr' || p == 'prayer:maghrib') {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.evening),
       ));
-    } else if (payload == 'sleep' || payload == 'prayer:isha') {
-      // Before sleep period → open Before Sleep Adhkar screen
+    } else if (p == 'sleep' || p == 'before_sleep' || p == 'beforesleep' || p == 'prayer:isha') {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.beforeSleep),
       ));
-    } else if (payload == 'jumuah') {
-      // Jumu'ah Hour of Acceptance → open Protection / General Adhkar
+    } else if (p == 'jumuah' || p == 'protection') {
       nav.push(MaterialPageRoute(
         builder: (_) => const DhikrListScreen(category: DhikrCategory.protection),
       ));
+    } else if (p == 'focus') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.focus),
+      ));
+    } else if (p == 'parents') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.parents),
+      ));
+    } else if (p == 'food') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.food),
+      ));
+    } else if (p == 'graveyard' || p == 'grave') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.graveyard),
+      ));
+    } else if (p == 'after_salah' || p == 'aftersalah') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.afterSalah),
+      ));
+    } else if (p == 'travel') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.travel),
+      ));
+    } else if (p == 'shifa') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.shifa),
+      ));
+    } else if (p == 'distress') {
+      nav.push(MaterialPageRoute(
+        builder: (_) => const DhikrListScreen(category: DhikrCategory.distress),
+      ));
     }
-    // Other prayer alerts (Dhuhr) just bring the app to foreground —
-    // the Dashboard already shows all prayer times.
   }
 
   // ── Cold-start: payload from the notification that launched the app ────────

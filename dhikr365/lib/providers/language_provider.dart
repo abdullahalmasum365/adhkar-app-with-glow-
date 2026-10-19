@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/fcm_service.dart';
 
 class LanguageProvider extends ChangeNotifier {
   Locale _locale               = const Locale('en');
@@ -91,12 +92,14 @@ class LanguageProvider extends ChangeNotifier {
 
   Future<void> setLanguage(String code) async {
     if (!_valid(code)) return;
+    final oldLang = _locale.languageCode;
     await _load(code);
     _locale = Locale(code);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('language_code', code);
     notifyListeners();
     if (_uid != null) unawaited(_pushToCloud());
+    unawaited(FcmService().onLanguageChanged(oldLang, code));
   }
 
   Future<void> setTranslationLanguage(String code) async {

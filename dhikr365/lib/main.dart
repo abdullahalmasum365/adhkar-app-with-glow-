@@ -24,6 +24,7 @@ import 'providers/theme_provider.dart';
 import 'providers/user_provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/audio_service.dart';
+import 'services/fcm_service.dart';
 import 'services/notification_service.dart';
 import 'services/widget_service.dart';
 import 'utils/app_navigator.dart';
@@ -233,6 +234,13 @@ void main() async {
     debugPrint('[main] Firebase App Check activated successfully');
   } catch (e) {
     debugPrint('[main] Firebase App Check activation notice: $e');
+  }
+
+  // 4b. Initialize Firebase Cloud Messaging (FCM) for remote push notifications
+  try {
+    await FcmService().init();
+  } catch (e) {
+    debugPrint('[main] FcmService init notice: $e');
   }
 
   runApp(const MyApp());
