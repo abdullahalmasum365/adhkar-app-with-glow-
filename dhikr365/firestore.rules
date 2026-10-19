@@ -123,7 +123,14 @@ service cloud.firestore {
       }
     }
 
-    // Explicitly deny any read/write access to any document outside /users
+    // Public read-only collection for Over-The-Air dua typo/text corrections.
+    // Client write access is completely denied — only editable through Firebase Console by project admin.
+    match /dua_corrections/{duaId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Explicitly deny any read/write access to any other document outside /users and /dua_corrections
     match /{document=**} {
       allow read, write: false;
     }

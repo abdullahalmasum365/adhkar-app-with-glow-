@@ -166,6 +166,7 @@ class Dhikr {
   Dhikr copyWith({
     int? currentCount,
     String? title,
+    String? arabicText,
     String? translation,
     String? transliteration,
     String? benefit,
@@ -175,7 +176,7 @@ class Dhikr {
   }) => Dhikr(
         id: id,
         title: title ?? this.title,
-        arabicText: arabicText,
+        arabicText: arabicText ?? this.arabicText,
         translation: translation ?? this.translation,
         transliteration: transliteration ?? this.transliteration,
         audioPath: audioPath,

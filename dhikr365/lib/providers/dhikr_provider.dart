@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/dhikr.dart';
 import '../services/audio_service.dart';
+import '../services/dua_correction_service.dart';
 import '../services/widget_service.dart';
 
 /// Milestone categories for tasbih counting and haptic/animation feedback.
@@ -133,6 +134,14 @@ class DhikrProvider extends ChangeNotifier {
       }).toList();
     }
 
+    // Apply cached Over-The-Air dua corrections immediately (offline-safe)
+    final cachedCorrections = DuaCorrectionService.getCachedCorrections(prefs);
+    _dhikrs = DuaCorrectionService.applyCorrections(
+      _dhikrs,
+      cachedCorrections,
+      langCode: transLang,
+    );
+
     // ── FIX #5: Daily reset ───────────────────────────────────────────────────
     // If the date has changed since the last session, wipe all counts so every
     // new day starts fresh. Otherwise restore whatever the user had in progress.
@@ -172,6 +181,25 @@ class DhikrProvider extends ChangeNotifier {
 
     notifyListeners();
     _syncHomeWidget();
+
+    // Background cloud sync for latest dua corrections (non-blocking)
+    _syncDuaCorrectionsFromCloud(transLang);
+  }
+
+  Future<void> _syncDuaCorrectionsFromCloud(String transLang) async {
+    try {
+      final newCorrections = await DuaCorrectionService.syncFromCloud();
+      if (newCorrections != null && newCorrections.isNotEmpty) {
+        _dhikrs = DuaCorrectionService.applyCorrections(
+          _dhikrs,
+          newCorrections,
+          langCode: transLang,
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('[DhikrProvider] Background dua correction sync: $e');
+    }
   }
 
   void _syncHomeWidget() {
@@ -595,6 +623,14 @@ class DhikrProvider extends ChangeNotifier {
         return d.copyWith(transliteration: match.transliteration);
       }).toList();
     }
+
+    // Apply cached Over-The-Air dua corrections for the newly selected language
+    final cachedCorrections = DuaCorrectionService.getCachedCorrections(prefs);
+    _dhikrs = DuaCorrectionService.applyCorrections(
+      _dhikrs,
+      cachedCorrections,
+      langCode: transLang,
+    );
 
     _dhikrs = _dhikrs.map((d) {
       final saved = prefs.getInt('count_${d.id}') ?? 0;
