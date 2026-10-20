@@ -332,8 +332,12 @@ class PurchaseProvider extends ChangeNotifier {
               final now = DateTime.now();
               if (DonationProductIds.isDonationProduct(purchase.productID)) {
                 _activeDonationId = purchase.productID;
-                if (purchase.productID == DonationProductIds.annual) {
+                if (purchase.productID == DonationProductIds.annual ||
+                    purchase.productID == DonationProductIds.maintenanceAnnual) {
                   _donationExpiry = now.add(const Duration(days: 370));
+                } else if (purchase.productID == DonationProductIds.semiAnnual ||
+                    purchase.productID == DonationProductIds.maintenanceSemiAnnual) {
+                  _donationExpiry = now.add(const Duration(days: 190));
                 } else {
                   _donationExpiry = now.add(const Duration(days: 33));
                 }

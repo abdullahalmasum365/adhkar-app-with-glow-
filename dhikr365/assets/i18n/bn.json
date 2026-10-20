@@ -207,10 +207,10 @@
   "donation_most_loved": "সর্বাধিক নির্বাচিত",
   "donation_tier_seed_name": "যত্ন",
   "donation_tier_seed_desc": "প্রয়োজনীয় মাসিক যত্ন",
-  "donation_tier_supporter_name": "অ্যাপ রক্ষণাবেক্ষণ",
-  "donation_tier_supporter_desc": "নিয়মিত রক্ষণাবেক্ষণ ও ১০০% বিজ্ঞাপনমুক্ত ($২.৯৯/মাস)",
-  "donation_tier_patron_name": "উন্নত রক্ষণাবেক্ষণ পৃষ্ঠপোষক",
-  "donation_tier_patron_desc": "নিয়মিত আপডেট ও নিরবচ্ছিন্ন সেবায় অতিরিক্ত সহায়তা ($৫.৯৯/মাস)",
+  "donation_tier_supporter_name": "১ মাসের রক্ষণাবেক্ষণ",
+  "donation_tier_supporter_desc": "১ মাসের নিয়মিত রক্ষণাবেক্ষণ ও ১০০% বিজ্ঞাপনমুক্ত",
+  "donation_tier_patron_name": "৬ মাসের পৃষ্ঠপোষক",
+  "donation_tier_patron_desc": "৬ মাসের ধারাবাহিক সহায়তা ও নিয়মিত আপডেট",
   "donation_per_month": "/মাস",
   "donation_per_year": "/বছর",
   "donation_why_title": "মাসিক রক্ষণাবেক্ষণ সহায়তা কেন গুরুত্বপূর্ণ",
@@ -239,8 +239,8 @@
   "continue_without_account": "অ্যাকাউন্ট ছাড়াই চালিয়ে যান",
   "donation_not_available": "এই বিল্ডে এখনো স্পনসরশিপ অপশন চালু করা হয়নি — শীঘ্রই আবার দেখুন।",
   "donation_not_available_short": "এখনো উপলব্ধ নয়",
-  "donation_tier_annual_name": "বার্ষিক রক্ষণাবেক্ষণ স্পনসর",
-  "donation_tier_annual_desc": "পুরো ১ বছরের রক্ষণাবেক্ষণ নিশ্চয়তা • ১৭% সাশ্রয়ী ($২৯.৯৯/বছর)",
+  "donation_tier_annual_name": "১২ মাস (১ বছর) স্পনসর",
+  "donation_tier_annual_desc": "পুরো ১ বছরের রক্ষণাবেক্ষণ নিশ্চয়তা ও সদকায়ে জারিয়া",
   "dedicate_title": "রক্ষণাবেক্ষণ সহায়তা উৎসর্গ করুন",
   "dedicate_desc": "কার জন্য এই চলমান সওয়াবের (সাদাকাহ জারিয়া নিয়ত) অংশীদার করতে চান?",
   "dedicate_self": "আমার নিজের জন্য",
@@ -372,5 +372,6 @@
   "save_evening_plan": "সন্ধ্যার পরিকল্পনা সংরক্ষণ করুন",
   "save_plan": "পরিকল্পনা সংরক্ষণ করুন",
   "reset_to_default": "ডিফল্টে রিসেট করুন",
-  "plan_saved": "পরিকল্পনা সংরক্ষিত হয়েছে!"
+  "plan_saved": "পরিকল্পনা সংরক্ষিত হয়েছে!",
+  "donation_per_6_months": "/৬ মাস"
 }

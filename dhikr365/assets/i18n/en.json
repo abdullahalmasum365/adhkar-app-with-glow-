@@ -218,10 +218,10 @@
   "donation_most_loved": "MOST CHOSEN",
   "donation_tier_seed_name": "Care",
   "donation_tier_seed_desc": "Essential monthly care",
-  "donation_tier_supporter_name": "App Maintenance",
-  "donation_tier_supporter_desc": "Reliable maintenance & 100% ad-free",
-  "donation_tier_patron_name": "Generous Sustainer",
-  "donation_tier_patron_desc": "Extra care for updates & ongoing stability",
+  "donation_tier_supporter_name": "1 Month Maintenance",
+  "donation_tier_supporter_desc": "1 month of reliable maintenance & 100% ad-free",
+  "donation_tier_patron_name": "6 Months Sustainer",
+  "donation_tier_patron_desc": "6 months continuous care & ongoing blessings",
   "donation_per_month": "/month",
   "donation_per_year": "/year",
   "donation_why_title": "Why Monthly Maintenance Matters",
@@ -250,8 +250,8 @@
   "continue_without_account": "Continue without an account",
   "donation_not_available": "Sponsorship options aren't set up on this build yet — check back soon.",
   "donation_not_available_short": "Not available yet",
-  "donation_tier_annual_name": "Annual Maintenance Sponsor",
-  "donation_tier_annual_desc": "Full year maintenance support • 17% savings",
+  "donation_tier_annual_name": "12 Months (Annual Sponsor)",
+  "donation_tier_annual_desc": "Full 12 months ongoing charity & maintenance support",
   "dedicate_title": "DEDICATE YOUR MAINTENANCE SUPPORT",
   "dedicate_desc": "Who would you like to dedicate this continuous reward (Sadaqah Jariyah intention) for?",
   "dedicate_self": "For Myself",
@@ -372,5 +372,6 @@
   "save_evening_plan": "Save Evening Plan",
   "save_plan": "Save Plan",
   "reset_to_default": "Reset to Default",
-  "plan_saved": "Plan Saved!"
+  "plan_saved": "Plan Saved!",
+  "donation_per_6_months": "/6 months"
 }

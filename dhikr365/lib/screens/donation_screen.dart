@@ -21,7 +21,7 @@ class _Tier {
   final String productId;
   final String? fallbackProductId;
   final String fallbackPrice;
-  final bool isAnnual;
+  final int months;
   final bool featured;
   const _Tier({
     required this.nameKey,
@@ -29,9 +29,32 @@ class _Tier {
     required this.productId,
     this.fallbackProductId,
     required this.fallbackPrice,
-    this.isAnnual = false,
+    required this.months,
     this.featured = false,
   });
+
+  bool get isAnnual => months == 12;
+
+  String durationSuffix(LanguageProvider lp) {
+    if (months == 1) {
+      return lp.getText('donation_per_month');
+    } else if (months == 6) {
+      return lp.getText('donation_per_6_months');
+    } else {
+      return lp.getText('donation_per_year');
+    }
+  }
+
+  String durationCtaSuffix(LanguageProvider lp) {
+    final isBn = lp.locale.languageCode == 'bn';
+    if (months == 1) {
+      return isBn ? '/মাস' : '/MONTH';
+    } else if (months == 6) {
+      return isBn ? '/৬ মাস' : '/6 MONTHS';
+    } else {
+      return isBn ? '/বছর' : '/YEAR';
+    }
+  }
 }
 
 class DonationScreen extends StatefulWidget {
@@ -48,23 +71,25 @@ class _DonationScreenState extends State<DonationScreen> {
       descKey: 'donation_tier_supporter_desc',
       productId: DonationProductIds.maintenanceMonthly,
       fallbackProductId: DonationProductIds.supporter,
-      fallbackPrice: '\$2.99',
-      featured: true,
+      fallbackPrice: '\$5',
+      months: 1,
     ),
     _Tier(
       nameKey: 'donation_tier_patron_name',
       descKey: 'donation_tier_patron_desc',
-      productId: DonationProductIds.maintenancePatronMonthly,
-      fallbackProductId: DonationProductIds.patron,
-      fallbackPrice: '\$5.99',
+      productId: DonationProductIds.maintenanceSemiAnnual,
+      fallbackProductId: DonationProductIds.semiAnnual,
+      fallbackPrice: '\$30',
+      months: 6,
+      featured: true,
     ),
     _Tier(
       nameKey: 'donation_tier_annual_name',
       descKey: 'donation_tier_annual_desc',
       productId: DonationProductIds.maintenanceAnnual,
       fallbackProductId: DonationProductIds.annual,
-      fallbackPrice: '\$29.99',
-      isAnnual: true,
+      fallbackPrice: '\$60',
+      months: 12,
     ),
   ];
 
@@ -244,11 +269,11 @@ class _DonationScreenState extends State<DonationScreen> {
                                 child: Text(
                                   pp.hasActiveDonation
                                       ? (lp.locale.languageCode == 'bn'
-                                          ? 'আলহামদুলিল্লাহ! আপনার মাসিক রক্ষণাবেক্ষণ সহায়তা অ্যাপটিকে বিশ্বজুড়ে মুসলমানদের জন্য সচল ও সম্পূর্ণ বিজ্ঞাপনমুক্ত রাখতে সহায়তা করছে। জাযাকাল্লাহু খাইরান।'
-                                          : 'Alhamdulillah! Your monthly maintenance support helps keep this app running smoothly and 100% ad-free for Muslims worldwide. JazakAllahu Khairan.')
+                                          ? 'আলহামদুলিল্লাহ! আপনার রক্ষণাবেক্ষণ সহায়তা অ্যাপটিকে বিশ্বজুড়ে মুসলমানদের জন্য সচল ও সম্পূর্ণ বিজ্ঞাপনমুক্ত রাখতে সহায়তা করছে। জাযাকাল্লাহু খাইরান।'
+                                          : 'Alhamdulillah! Your maintenance support helps keep this app running smoothly and 100% ad-free for Muslims worldwide. JazakAllahu Khairan.')
                                       : (lp.locale.languageCode == 'bn'
-                                          ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার মাসিক রক্ষণাবেক্ষণ সহায়তা অ্যাপটিকে নিরবচ্ছিন্নভাবে সচল ও আপডেট রাখতে সাহায্য করে।'
-                                          : 'Adhkar 365 is free and 100% ad-free for everyone. Your monthly maintenance support ensures the app remains reliably maintained and updated.'),
+                                          ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার রক্ষণাবেক্ষণ সহায়তা অ্যাপটিকে নিরবচ্ছিন্নভাবে সচল ও আপডেট রাখতে সাহায্য করে।'
+                                          : 'Adhkar 365 is free and 100% ad-free for everyone. Your maintenance support ensures the app remains reliably maintained and updated.'),
                                   style: TextStyle(
                                     fontSize: 12.5,
                                     height: 1.4,
@@ -343,9 +368,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                 TextSpan(
                                     text: '${lp.getText('donation_pitch_1')} '),
                                 TextSpan(
-                                  text: selectedTier.isAnnual
-                                      ? '$priceLabel${lp.locale.languageCode == 'bn' ? '/বছর' : '/year'}'
-                                      : '$priceLabel${lp.getText('donation_per_month')}',
+                                  text: '$priceLabel${selectedTier.durationSuffix(lp)}',
                                   style: TextStyle(
                                       color: textWhite,
                                       fontWeight: FontWeight.w600),
@@ -749,52 +772,45 @@ class _DonationScreenState extends State<DonationScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(children: [
-                                          // Flexible + ellipsis: the tier
-                                          // name shrinks instead of pushing
-                                          // past the badge on narrow screens
-                                          // or with longer translated names
-                                          // (this was the overflow bug —
-                                          // the yellow/black hazard stripes).
-                                          Flexible(
-                                            child: Text(
+                                        Wrap(
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.center,
+                                          spacing: 6,
+                                          runSpacing: 4,
+                                          children: [
+                                            Text(
                                               lp.getText(t.nameKey),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
                                               style: GoogleFonts.spaceMono(
                                                 color: textWhite,
-                                                fontSize: 15,
+                                                fontSize: 14,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          ),
-                                          if (t.featured) ...[
-                                            const SizedBox(width: 8),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 3),
-                                              decoration: BoxDecoration(
-                                                color: primary,
-                                                borderRadius:
-                                                    BorderRadius.circular(6),
-                                              ),
-                                              child: Text(
-                                                lp.getText(
-                                                    'donation_most_loved'),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.spaceMono(
-                                                  color: AppColors.onPrimary,
-                                                  fontSize: 8,
-                                                  fontWeight: FontWeight.bold,
-                                                  letterSpacing: 0.6,
+                                            if (t.featured)
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 7,
+                                                        vertical: 2.5),
+                                                decoration: BoxDecoration(
+                                                  color: primary,
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                ),
+                                                child: Text(
+                                                  lp.getText(
+                                                      'donation_most_loved'),
+                                                  style: GoogleFonts.spaceMono(
+                                                    color: AppColors.onPrimary,
+                                                    fontSize: 8.5,
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                    letterSpacing: 0.6,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
                                           ],
-                                        ]),
+                                        ),
                                         const SizedBox(height: 3),
                                         Text(
                                           lp.getText(t.descKey),
@@ -826,12 +842,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                                       : null) ??
                                                   t.fallbackPrice),
                                           TextSpan(
-                                            text: t.isAnnual
-                                                ? (lp.locale.languageCode == 'bn'
-                                                    ? '/বছর'
-                                                    : '/yr')
-                                                : lp.getText(
-                                                    'donation_per_month'),
+                                            text: t.durationSuffix(lp),
                                             style: GoogleFonts.spaceMono(
                                               color: onSurfaceVariant,
                                               fontSize: 11,
@@ -908,8 +919,8 @@ class _DonationScreenState extends State<DonationScreen> {
                               Expanded(
                                 child: Text(
                                   lp.locale.languageCode == 'bn'
-                                      ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার ঐচ্ছিক মাসিক সহায়তা সামগ্রিক অ্যাপ রক্ষণাবেক্ষণ, ত্রুটি সংশোধন ও নিয়মিত আপডেট বজায় রাখতে সাহায্য করে। অনেকে এটিকে সদকায়ে জারিয়ার নিয়তে সমর্থন করেন।'
-                                      : 'Adhkar 365 is free and ad-free for everyone. Your voluntary monthly support helps with overall app maintenance, bug fixes, and regular updates. Many choose to support with the spiritual intention of Sadaqah Jariyah.',
+                                      ? 'Adhkar 365 সবার জন্য সম্পূর্ণ বিনামূল্যে এবং বিজ্ঞাপনমুক্ত। আপনার ঐচ্ছিক সহায়তা সামগ্রিক অ্যাপ রক্ষণাবেক্ষণ, ত্রুটি সংশোধন ও নিয়মিত আপডেট বজায় রাখতে সাহায্য করে। অনেকে এটিকে সদকায়ে জারিয়ার নিয়তে সমর্থন করেন।'
+                                      : 'Adhkar 365 is free and ad-free for everyone. Your voluntary support helps with overall app maintenance, bug fixes, and regular updates. Many choose to support with the spiritual intention of Sadaqah Jariyah.',
                                   style: GoogleFonts.publicSans(
                                     color:
                                         onSurfaceVariant.withValues(alpha: 0.85),
@@ -966,7 +977,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                           selectedProduct == null
                                               ? lp.getText(
                                                   'donation_not_available_short')
-                                              : '${lp.getText('donation_cta')} • $priceLabel${selectedTier.isAnnual ? (lp.locale.languageCode == 'bn' ? '/বছর' : '/YEAR') : (lp.locale.languageCode == 'bn' ? '/মাস' : '/MONTH')}',
+                                              : '${lp.getText('donation_cta')} • $priceLabel${selectedTier.durationCtaSuffix(lp)}',
                                           maxLines: 1,
                                           style: GoogleFonts.spaceMono(
                                             fontSize: 12,

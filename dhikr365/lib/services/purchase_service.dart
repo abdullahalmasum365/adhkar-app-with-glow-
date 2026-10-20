@@ -17,20 +17,21 @@ import 'package:in_app_purchase/in_app_purchase.dart';
 /// Subscription product IDs for voluntary app maintenance support.
 /// Must exist as subscription base plans in Play Console.
 class DonationProductIds {
-  // Monthly & Annual App Maintenance Subscriptions (Starting at $2.99/mo)
-  static const maintenanceMonthly = 'app_maintenance_monthly'; // $2.99 / month (Base)
-  static const maintenancePatronMonthly = 'app_maintenance_patron_monthly'; // $5.99 / month (Generous)
-  static const maintenanceAnnual = 'app_maintenance_annual'; // $29.99 / year (Best value)
+  // Monthly, Semi-Annual & Annual App Maintenance Subscriptions
+  static const maintenanceMonthly = 'app_maintenance_monthly'; // $5 / month (1 Month)
+  static const maintenanceSemiAnnual = 'app_maintenance_semi_annual'; // $30 / 6 months (6 Months)
+  static const maintenanceAnnual = 'app_maintenance_annual'; // $60 / year (12 Months)
 
   // Legacy / alternative product IDs (for Play Console compatibility)
   static const seed = 'donation_seed_monthly';
   static const supporter = 'donation_supporter_monthly';
   static const patron = 'donation_patron_monthly';
+  static const semiAnnual = 'donation_semi_annual';
   static const annual = 'donation_annual_sponsor';
 
   static const maintenanceTiers = {
     maintenanceMonthly,
-    maintenancePatronMonthly,
+    maintenanceSemiAnnual,
     maintenanceAnnual,
   };
 
@@ -38,6 +39,7 @@ class DonationProductIds {
     seed,
     supporter,
     patron,
+    semiAnnual,
     annual,
   };
 

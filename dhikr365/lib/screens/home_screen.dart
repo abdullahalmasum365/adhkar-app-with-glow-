@@ -244,6 +244,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ],
                       ]),
                       GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
