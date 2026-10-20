@@ -6,8 +6,11 @@
 // Features authentic Qur'anic prayers and a one-tap family share option.
 // ============================================================================
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../constants/app_theme.dart';
@@ -31,7 +34,7 @@ Future<void> showSadaqahCertificateDialog(
   );
 }
 
-class SadaqahCertificateSheet extends StatelessWidget {
+class SadaqahCertificateSheet extends StatefulWidget {
   final SadaqahDedication dedication;
   final String tierName;
 
@@ -42,14 +45,22 @@ class SadaqahCertificateSheet extends StatelessWidget {
   });
 
   @override
+  State<SadaqahCertificateSheet> createState() => _SadaqahCertificateSheetState();
+}
+
+class _SadaqahCertificateSheetState extends State<SadaqahCertificateSheet> {
+  final ScreenshotController _screenshotController = ScreenshotController();
+  bool _isExporting = false;
+
+  @override
   Widget build(BuildContext context) {
     R.init(context);
     final langCode = Localizations.localeOf(context).languageCode;
     final isBn = langCode == 'bn';
     final dateStr = AppDateFormatter.formatGregorian(
-        dedication.timestamp, langCode, pattern: 'd MMMM yyyy');
-    final targetLabel = dedication.getDisplayTitle(isBn ? 'bn' : 'en');
-    final recipient = dedication.recipientName?.trim();
+        widget.dedication.timestamp, langCode, pattern: 'd MMMM yyyy');
+    final targetLabel = widget.dedication.getDisplayTitle(isBn ? 'bn' : 'en');
+    final recipient = widget.dedication.recipientName?.trim();
     final nameLine = (recipient != null && recipient.isNotEmpty)
         ? '$targetLabel — $recipient'
         : targetLabel;
@@ -57,14 +68,14 @@ class SadaqahCertificateSheet extends StatelessWidget {
     final shareText = isBn
         ? '🌙 অ্যাপ রক্ষণাবেক্ষণ ও দোয়ার স্মারক\n'
           'উৎসর্গকৃত: $nameLine\n'
-          'দোয়া: ${dedication.getDuaArabic()}\n'
-          '${dedication.getDuaTranslation("bn")}\n\n'
+          'দোয়া: ${widget.dedication.getDuaArabic()}\n'
+          '${widget.dedication.getDuaTranslation("bn")}\n\n'
           'তারিখ: $dateStr\n'
           '— Adhkaar 365 অ্যাপের মাধ্যমে প্রেরিত'
         : '🌙 App Maintenance & Du\'a Remembrance\n'
           'Dedicated to: $nameLine\n'
-          'Du\'a: ${dedication.getDuaArabic()}\n'
-          '${dedication.getDuaTranslation("en")}\n\n'
+          'Du\'a: ${widget.dedication.getDuaArabic()}\n'
+          '${widget.dedication.getDuaTranslation("en")}\n\n'
           'Date: $dateStr\n'
           '— Shared via Adhkaar 365';
 
@@ -101,175 +112,212 @@ class SadaqahCertificateSheet extends StatelessWidget {
             ),
             SizedBox(height: R.px(16)),
 
-            // Certificate Frame
-            Container(
-              width: double.infinity,
-              padding: EdgeInsets.all(R.px(20)),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF1E2D24),
-                    Color(0xFF121B16),
+            // Certificate Frame (Wrapped in Screenshot for High-Res Image Export)
+            Screenshot(
+              controller: _screenshotController,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(R.px(20)),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [
+                      Color(0xFF1E2D24),
+                      Color(0xFF121B16),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFFE5A93C).withValues(alpha: 0.4),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFE5A93C).withValues(alpha: 0.08),
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                    ),
                   ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
                 ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: const Color(0xFFE5A93C).withValues(alpha: 0.4),
-                  width: 1.5,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFFE5A93C).withValues(alpha: 0.08),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  // Crescent & Stars Badge
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFE5A93C).withValues(alpha: 0.15),
-                      border: Border.all(
-                        color: const Color(0xFFE5A93C).withValues(alpha: 0.5),
+                child: Column(
+                  children: [
+                    // Crescent & Stars Badge
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFE5A93C).withValues(alpha: 0.15),
+                        border: Border.all(
+                          color: const Color(0xFFE5A93C).withValues(alpha: 0.5),
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.nightlight_round,
+                        color: Color(0xFFE5A93C),
+                        size: 28,
+                      ),
+                    ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
+
+                    SizedBox(height: R.px(12)),
+
+                    // Arabic Heading
+                    Text(
+                      'سَدَقَةٌ جَارِيَةٌ',
+                      style: AppText.amiri(
+                        fontSize: 26,
+                        color: const Color(0xFFE5A93C),
                       ),
                     ),
-                    child: const Icon(
-                      Icons.nightlight_round,
-                      color: Color(0xFFE5A93C),
-                      size: 28,
-                    ),
-                  ).animate().scale(duration: 400.ms, curve: Curves.easeOutBack),
 
-                  SizedBox(height: R.px(12)),
-
-                  // Arabic Heading
-                  Text(
-                    'سَدَقَةٌ جَارِيَةٌ',
-                    style: AppText.amiri(
-                      fontSize: 26,
-                      color: const Color(0xFFE5A93C),
-                    ),
-                  ),
-
-                  Text(
-                    isBn ? 'অ্যাপ রক্ষণাবেক্ষণ ও দোয়ার স্মারক' : 'App Maintenance & Du\'a Keepsake',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textSlate400,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-
-                  SizedBox(height: R.px(16)),
-
-                  // Dedication Recipient Box
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.ink(0.1),
+                    Text(
+                      isBn ? 'অ্যাপ রক্ষণাবেক্ষণ ও দোয়ার স্মারক' : 'App Maintenance & Du\'a Keepsake',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textSlate400,
+                        letterSpacing: 1.2,
                       ),
                     ),
-                    child: Column(
+
+                    SizedBox(height: R.px(16)),
+
+                    // Dedication Recipient Box
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppColors.ink(0.1),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            isBn ? 'যার উদ্দেশ্যে উৎসর্গকৃত:' : 'Dedicated In Honor Of:',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.textSlate400,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            nameLine,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: R.px(16)),
+
+                    // Du'a in Arabic
+                    Text(
+                      widget.dedication.getDuaArabic(),
+                      textAlign: TextAlign.center,
+                      textDirection: TextDirection.rtl,
+                      style: AppText.amiri(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: R.px(8)),
+
+                    // Du'a Translation
+                    Text(
+                      widget.dedication.getDuaTranslation(isBn ? 'bn' : 'en'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        color: AppColors.textSlate300,
+                        height: 1.5,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+
+                    SizedBox(height: R.px(16)),
+
+                    // Footer info: Tier & Date
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          isBn ? 'যার উদ্দেশ্যে উৎসর্গকৃত:' : 'Dedicated In Honor Of:',
+                          '${isBn ? "প্যাকেজ:" : "Tier:"} ${widget.tierName}',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: const Color(0xFFE5A93C).withValues(alpha: 0.9),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        Text(
+                          dateStr,
                           style: TextStyle(
                             fontSize: 11,
                             color: AppColors.textSlate400,
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          nameLine,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
                       ],
                     ),
-                  ),
-
-                  SizedBox(height: R.px(16)),
-
-                  // Du'a in Arabic
-                  Text(
-                    dedication.getDuaArabic(),
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: AppText.amiri(
-                      fontSize: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: R.px(8)),
-
-                  // Du'a Translation
-                  Text(
-                    dedication.getDuaTranslation(isBn ? 'bn' : 'en'),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      color: AppColors.textSlate300,
-                      height: 1.5,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-
-                  SizedBox(height: R.px(16)),
-
-                  // Footer info: Tier & Date
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${isBn ? "প্যাকেজ:" : "Tier:"} $tierName',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: const Color(0xFFE5A93C).withValues(alpha: 0.9),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        dateStr,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textSlate400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
 
             SizedBox(height: R.px(20)),
 
-            // Share Button
+            // Download & Share Certificate Button
             SizedBox(
               width: double.infinity,
               height: 48,
               child: ElevatedButton.icon(
-                onPressed: () {
-                  Share.share(shareText);
-                },
-                icon: const Icon(Icons.share_rounded, size: 18),
+                onPressed: _isExporting
+                    ? null
+                    : () async {
+                        setState(() => _isExporting = true);
+                        try {
+                          final bytes = await _screenshotController.capture(
+                            delay: const Duration(milliseconds: 30),
+                            pixelRatio: 3.0,
+                          );
+                          if (bytes != null) {
+                            final tempDir = await getTemporaryDirectory();
+                            final file = File('${tempDir.path}/sadaqah_certificate_${widget.dedication.timestamp.millisecondsSinceEpoch}.png');
+                            await file.writeAsBytes(bytes);
+                            await Share.shareXFiles(
+                              [XFile(file.path)],
+                              text: shareText,
+                              subject: isBn
+                                  ? 'সাদাকাহ জারিয়াহ সনদপত্র • Adhkaar 365'
+                                  : 'Sadaqah Jariyah Certificate • Adhkaar 365',
+                            );
+                            if (mounted) setState(() => _isExporting = false);
+                            return;
+                          }
+                        } catch (e) {
+                          debugPrint('[SadaqahCertificate] Screenshot capture notice: $e');
+                        }
+                        if (mounted) setState(() => _isExporting = false);
+                        await Share.share(shareText);
+                      },
+                icon: _isExporting
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF0F1713)),
+                      )
+                    : const Icon(Icons.download_rounded, size: 19),
                 label: Text(
-                  isBn ? 'প্রিয়জন ও পরিবারের সাথে শেয়ার করুন' : 'Share Keepsake with Family',
+                  _isExporting
+                      ? (isBn ? 'সনদপত্র তৈরি হচ্ছে...' : 'Generating Certificate...')
+                      : (isBn ? 'সার্টিফিকেট ডাউনলোড ও শেয়ার করুন' : 'Download & Share Certificate'),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,

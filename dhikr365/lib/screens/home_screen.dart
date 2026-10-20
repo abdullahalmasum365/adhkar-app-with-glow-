@@ -9,6 +9,7 @@ import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
 import '../providers/custom_plan_provider.dart';
+import '../providers/purchase_provider.dart';
 import '../models/dhikr.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
@@ -18,6 +19,8 @@ import 'donation_screen.dart';
 import 'location_setup_screen.dart';
 import '../services/notification_service.dart';
 import '../widgets/battery_reliability_dialogs.dart';
+import '../widgets/friday_sadaqah_card.dart';
+import '../widgets/muhsin_badge.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -135,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen>
     final lp = Provider.of<LanguageProvider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     final customPlanProvider = Provider.of<CustomPlanProvider>(context);
+    final pp = Provider.of<PurchaseProvider>(context);
     final now = DateTime.now();
     final isMorning = _isMorningTime(userProvider, now);
     final langCode = lp.locale.languageCode;
@@ -234,6 +238,10 @@ class _HomeScreenState extends State<HomeScreen>
                             style: AppText.manrope(
                                 fontSize: R.adaptive(12, 14, 16),
                                 color: AppColors.textSlate400)),
+                        if (userProvider.isMuhsin(pp)) ...[
+                          SizedBox(width: R.px(8)),
+                          const MuhsinBadge(isSmall: true),
+                        ],
                       ]),
                       GestureDetector(
                         onTap: () => Navigator.push(
@@ -313,6 +321,9 @@ class _HomeScreenState extends State<HomeScreen>
                       ]),
                     ),
                   ).animate().fadeIn(delay: 200.ms),
+
+                  // ── Friday Sadaqah Barakah Card (Jumu'ah exclusive) ───────────
+                  const FridaySadaqahCard(),
 
                   SizedBox(height: vGap),
 

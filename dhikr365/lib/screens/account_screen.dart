@@ -21,9 +21,12 @@ import '../providers/auth_provider.dart';
 import '../providers/custom_plan_provider.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
+import '../providers/purchase_provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/user_provider.dart';
 import '../utils/responsive.dart';
+import '../widgets/muhsin_badge.dart';
+import '../widgets/sadaqah_certificate_dialog.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -392,6 +395,9 @@ class _SignedInCard extends StatelessWidget {
     final photoUrl = ap.user?.photoURL;
     final name = ap.displayName.isNotEmpty ? ap.displayName : email;
     final initials = name.isNotEmpty ? name[0].toUpperCase() : '?';
+    final up = Provider.of<UserProvider>(context);
+    final pp = Provider.of<PurchaseProvider>(context);
+    final isMuhsin = up.isMuhsin(pp);
 
     return Container(
       decoration: AppDeco.glassCard(borderRadius: BorderRadius.circular(20)),
@@ -425,11 +431,21 @@ class _SignedInCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.manrope(
-                        fontSize: 15, fontWeight: FontWeight.w700)),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.manrope(
+                              fontSize: 15, fontWeight: FontWeight.w700)),
+                    ),
+                    if (isMuhsin) ...[
+                      const SizedBox(width: 8),
+                      const MuhsinBadge(isSmall: true),
+                    ],
+                  ],
+                ),
                 if (email.isNotEmpty && email != name)
                   Text(email,
                       maxLines: 1,
@@ -452,6 +468,46 @@ class _SignedInCard extends StatelessWidget {
             ),
           ),
         ]),
+        if (isMuhsin) ...[
+          const SizedBox(height: 14),
+          GestureDetector(
+            onTap: () => showSadaqahCertificateDialog(
+              context,
+              dedication: up.savedDedication,
+              tierName: up.savedTierName,
+            ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE5A93C).withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                    color: const Color(0xFFE5A93C).withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.workspace_premium_rounded,
+                      color: Color(0xFFE5A93C), size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      lp.locale.languageCode == 'bn'
+                          ? 'সাদাকাহ জারিয়াহ সনদপত্র দেখুন ও শেয়ার করুন'
+                          : 'View & Share Sadaqah Keepsake Certificate',
+                      style: const TextStyle(
+                        color: Color(0xFFE5A93C),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12.5,
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.arrow_forward_ios_rounded,
+                      color: Color(0xFFE5A93C), size: 12),
+                ],
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         // Sign Out Button
         SizedBox(

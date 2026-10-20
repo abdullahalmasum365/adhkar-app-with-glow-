@@ -17,6 +17,8 @@ import '../providers/notification_provider.dart';
 import '../services/notification_service.dart';
 import '../models/dhikr.dart';
 import '../widgets/battery_reliability_dialogs.dart';
+import '../widgets/muhsin_badge.dart';
+import '../widgets/sadaqah_certificate_dialog.dart';
 import 'donation_screen.dart';
 import 'widget_preview_screen.dart';
 import 'package:adhan/adhan.dart';
@@ -671,11 +673,32 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                        Text(name,
-                            style: AppText.manrope(
-                                fontSize: 15, fontWeight: FontWeight.w700)),
-                        Text(lp.getText('active_member'),
-                            style: AppText.body(color: AppColors.textSlate400)),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(name,
+                                  style: AppText.manrope(
+                                      fontSize: 15, fontWeight: FontWeight.w700),
+                                  overflow: TextOverflow.ellipsis),
+                            ),
+                            if (up.isMuhsin(pp)) ...[
+                              const SizedBox(width: 8),
+                              const MuhsinBadge(isSmall: true),
+                            ],
+                          ],
+                        ),
+                        Text(
+                          up.isMuhsin(pp)
+                              ? (lp.locale.languageCode == 'bn'
+                                  ? 'মুহসিন স্পন্সর • সাদাকাহ জারিয়াহ'
+                                  : 'Muhsin Sponsor • Ongoing Charity')
+                              : lp.getText('active_member'),
+                          style: AppText.body(
+                            color: up.isMuhsin(pp)
+                                ? const Color(0xFFE5A93C)
+                                : AppColors.textSlate400,
+                          ),
+                        ),
                       ])),
                   GestureDetector(
                     onTap: () {
@@ -695,6 +718,28 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                 ]),
               )),
+              if (up.isMuhsin(pp)) ...[
+                const SizedBox(height: 12),
+                _Card(
+                  child: _Tile(
+                    icon: Icons.workspace_premium_rounded,
+                    color: const Color(0xFFE5A93C),
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'আপনার সাদাকাহ জারিয়াহ সনদপত্র'
+                        : 'Your Sadaqah Jariyah Certificate',
+                    subtitle: lp.locale.languageCode == 'bn'
+                        ? 'উৎসর্গ স্মারক দেখুন ও ডাউনলোড করুন'
+                        : 'View & download your keepsake certificate',
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                        size: 14, color: Color(0xFFE5A93C)),
+                    onTap: () => showSadaqahCertificateDialog(
+                      context,
+                      dedication: up.savedDedication,
+                      tierName: up.savedTierName,
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 22),
 
               // ── Account & Sync ──
@@ -1018,20 +1063,20 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 _div(),
                 _Tile(
                     icon: Icons.volunteer_activism_rounded,
-                    color: AppColors.primary,
+                    color: const Color(0xFFE5A93C),
                     title: lp.locale.languageCode == 'bn'
-                        ? 'অ্যাপ রক্ষণাবেক্ষণ সহায়তা (ঐচ্ছিক)'
-                        : 'App Maintenance Support (Voluntary)',
-                    subtitle: pp.hasActiveDonation
+                        ? 'সাদাকাহ জারিয়াহ ও মুহসিন সম্মাননা'
+                        : 'Sadaqah Jariyah & Muhsin Honor',
+                    subtitle: up.isMuhsin(pp)
                         ? (lp.locale.languageCode == 'bn'
-                            ? 'আপনার রক্ষণাবেক্ষণ সহায়তা সক্রিয় • জাযাকাল্লাহু খাইরান'
-                            : 'Active Maintenance Sustainer • JazakAllahu Khairan')
+                            ? 'আপনার সাদাকাহ জারিয়াহ সক্রিয় • জাযাকাল্লাহু খাইরান'
+                            : 'Active Sadaqah Jariyah • JazakAllahu Khairan')
                         : (lp.locale.languageCode == 'bn'
-                            ? 'Adhkar 365 ১০০% বিজ্ঞাপনমুক্ত • অ্যাপটি সচল রাখতে মাসিক সহায়তা করুন'
-                            : 'Adhkar 365 is 100% ad-free • Support monthly app maintenance'),
-                    trailing: pp.hasActiveDonation
+                            ? 'পিতা-মাতার নামে আজীবন চলমান সওয়াব অর্জন করুন'
+                            : 'Support 100% ad-free service • Continuous rewards for parents'),
+                    trailing: up.isMuhsin(pp)
                         ? const Icon(Icons.stars_rounded,
-                            color: Colors.amber, size: 22)
+                            color: Color(0xFFE5A93C), size: 22)
                         : const Icon(Icons.arrow_forward_ios_rounded,
                             size: 14, color: Colors.grey),
                     onTap: () => Navigator.push(

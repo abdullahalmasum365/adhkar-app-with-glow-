@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adhan/adhan.dart';
+import '../models/sadaqah_dedication.dart';
 import '../utils/prayer_calculation_helper.dart';
+import 'purchase_provider.dart';
 
 class UserProvider extends ChangeNotifier {
   String? _userName;
@@ -15,6 +17,10 @@ class UserProvider extends ChangeNotifier {
   double? _lng;
   String? _timezone; // IANA name of the SELECTED location (e.g. "Asia/Dhaka")
   bool _hasDonated = false;
+  String? _dedicationType;
+  String? _dedicationRecipient;
+  String? _dedicationTier;
+  DateTime? _dedicationDate;
   bool _hasCompletedOnboarding = false;
   String? _onboardingGoal;
   String? _preferredDhikrTime;
@@ -28,6 +34,29 @@ class UserProvider extends ChangeNotifier {
   double? get lng => _lng;
   String? get timezone => _timezone;
   bool get hasDonated => _hasDonated;
+
+  /// Returns true if user has donated or has active subscription sponsorship
+  bool isMuhsin(PurchaseProvider pp) => pp.hasActiveDonation || _hasDonated;
+
+  SadaqahDedication get savedDedication {
+    DedicationType type = DedicationType.parents;
+    if (_dedicationType != null) {
+      try {
+        type = DedicationType.values.firstWhere(
+          (e) => e.name == _dedicationType,
+          orElse: () => DedicationType.parents,
+        );
+      } catch (_) {}
+    }
+    return SadaqahDedication(
+      type: type,
+      recipientName: _dedicationRecipient,
+      timestamp: _dedicationDate ?? DateTime.now(),
+    );
+  }
+
+  String get savedTierName => _dedicationTier ?? 'Sadaqah Jariyah';
+
   bool get hasCompletedOnboarding => _hasCompletedOnboarding;
   String? get onboardingGoal => _onboardingGoal;
   String? get preferredDhikrTime => _preferredDhikrTime;
@@ -61,6 +90,13 @@ class UserProvider extends ChangeNotifier {
       _lng = lngStr != null ? double.tryParse(lngStr) : null;
       _timezone = prefs.getString('saved_timezone');
       _hasDonated = prefs.getBool('has_donated') ?? false;
+      _dedicationType = prefs.getString('dedication_type');
+      _dedicationRecipient = prefs.getString('dedication_recipient');
+      final dedMs = prefs.getInt('dedication_timestamp');
+      if (dedMs != null) {
+        _dedicationDate = DateTime.fromMillisecondsSinceEpoch(dedMs);
+      }
+      _dedicationTier = prefs.getString('dedication_tier');
       _hasCompletedOnboarding = prefs.getBool('onboarding_done') ?? false;
       _onboardingGoal = prefs.getString('onboarding_goal');
       _preferredDhikrTime = prefs.getString('preferred_dhikr_time');
@@ -176,6 +212,29 @@ class UserProvider extends ChangeNotifier {
     _hasDonated = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('has_donated', value);
+    notifyListeners();
+  }
+
+  Future<void> saveSadaqahDedication({
+    required SadaqahDedication dedication,
+    required String tierName,
+  }) async {
+    _hasDonated = true;
+    _dedicationType = dedication.type.name;
+    _dedicationRecipient = dedication.recipientName;
+    _dedicationDate = dedication.timestamp;
+    _dedicationTier = tierName;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('has_donated', true);
+    await prefs.setString('dedication_type', dedication.type.name);
+    if (dedication.recipientName != null && dedication.recipientName!.isNotEmpty) {
+      await prefs.setString('dedication_recipient', dedication.recipientName!);
+    } else {
+      await prefs.remove('dedication_recipient');
+    }
+    await prefs.setInt('dedication_timestamp', dedication.timestamp.millisecondsSinceEpoch);
+    await prefs.setString('dedication_tier', tierName);
     notifyListeners();
   }
 }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/purchase_provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/user_provider.dart';
 import '../services/purchase_service.dart';
 import '../models/sadaqah_dedication.dart';
 import '../widgets/sadaqah_certificate_dialog.dart';
@@ -113,16 +114,20 @@ class _DonationScreenState extends State<DonationScreen> {
           );
         } else if (pp.hasActiveDonation) {
           final selectedTier = _tiers[_selected];
+          final dedication = SadaqahDedication(
+            type: _selectedDedication,
+            recipientName: _recipientNameController.text.trim().isNotEmpty
+                ? _recipientNameController.text.trim()
+                : null,
+            timestamp: DateTime.now(),
+          );
+          final tierName = lp.getText(selectedTier.nameKey);
+          final up = Provider.of<UserProvider>(context, listen: false);
+          up.saveSadaqahDedication(dedication: dedication, tierName: tierName);
           showSadaqahCertificateDialog(
             context,
-            dedication: SadaqahDedication(
-              type: _selectedDedication,
-              recipientName: _recipientNameController.text.trim().isNotEmpty
-                  ? _recipientNameController.text.trim()
-                  : null,
-              timestamp: DateTime.now(),
-            ),
-            tierName: lp.getText(selectedTier.nameKey),
+            dedication: dedication,
+            tierName: tierName,
           );
         }
       }
