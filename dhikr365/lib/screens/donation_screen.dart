@@ -1080,8 +1080,10 @@ class _DonationScreenState extends State<DonationScreen> {
                                 ),
                               ),
                               const SizedBox(height: 14),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 8,
                                 children: [
                                   GestureDetector(
                                     onTap: () => launchUrl(
@@ -1098,10 +1100,7 @@ class _DonationScreenState extends State<DonationScreen> {
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    child: Text('•', style: TextStyle(color: onSurfaceVariant, fontSize: 12)),
-                                  ),
+                                  Text('•', style: TextStyle(color: onSurfaceVariant, fontSize: 12)),
                                   GestureDetector(
                                     onTap: () => launchUrl(
                                       Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/terms-of-service.html'),
@@ -1109,6 +1108,22 @@ class _DonationScreenState extends State<DonationScreen> {
                                     ),
                                     child: Text(
                                       lp.getText('terms_of_service'),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: primary,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                  Text('•', style: TextStyle(color: onSurfaceVariant, fontSize: 12)),
+                                  GestureDetector(
+                                    onTap: () => launchUrl(
+                                      Uri.parse('https://abdullahalmasum365.github.io/adhkar-app-with-glow-/refund-policy.html'),
+                                      mode: LaunchMode.externalApplication,
+                                    ),
+                                    child: Text(
+                                      lp.getText('refund_policy'),
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: primary,
