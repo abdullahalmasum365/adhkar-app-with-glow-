@@ -267,11 +267,20 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                     letterSpacing: 1.2,
                                   ),
                                 ),
-                                Text(
-                                  lp.getText('edit_plan_reorder_hint'),
-                                  style: TextStyle(
-                                    color: AppColors.textSlate400,
-                                    fontSize: 11,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: palette.primary.withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    "${_editableList.where((d) => _enabledStatus[d.id] ?? false).length} / ${_editableList.length}",
+                                    style: TextStyle(
+                                      color: palette.primary,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],
