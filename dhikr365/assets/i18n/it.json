@@ -359,5 +359,17 @@
   "disclaimer_ummah": "I contributi supportano direttamente lo sviluppo indipendente dell'app, i server e mantengono Adhkaar 365 al 100% gratuita e senza pubblicità per la Ummah. Questa è una sponsorizzazione software volontaria, non una donazione di beneficenza.",
   "subscription_terms": "Gli abbonamenti si rinnovano automaticamente a meno che non vengano annullati nelle impostazioni dell'account almeno 24 ore prima della fine del periodo corrente.",
   "reduce_glow_blur": "Riduci bagliori e sfocatura (Risparmio energetico)",
-  "reduce_glow_blur_desc": "Disattiva effetti di sfocatura e animazioni per uno scorrimento più fluido e maggiore durata della batteria"
+  "reduce_glow_blur_desc": "Disattiva effetti di sfocatura e animazioni per uno scorrimento più fluido e maggiore durata della batteria",
+  "edit_morning_plan": "Modifica piano del mattino",
+  "edit_evening_plan": "Modifica piano della sera",
+  "edit_protection_plan": "Modifica piano di protezione",
+  "edit_focus_plan": "Modifica piano di concentrazione",
+  "edit_plan_info": "Modifica l'elenco delle suppliche per adattarlo al tuo tempo.",
+  "edit_plan_sequence": "SEQUENZA E ATTIVAZIONE",
+  "edit_plan_reorder_hint": "Tieni premuto per riordinare",
+  "save_morning_plan": "Salva piano del mattino",
+  "save_evening_plan": "Salva piano della sera",
+  "save_plan": "Salva piano",
+  "reset_to_default": "Ripristina predefiniti",
+  "plan_saved": "Piano salvato!"
 }

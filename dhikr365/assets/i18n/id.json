@@ -359,5 +359,17 @@
   "disclaimer_ummah": "Kontribusi Anda secara langsung mendukung pengembangan aplikasi independen, pemeliharaan server, dan menjaga Adhkaar 365 tetap 100% gratis dan bebas iklan untuk Ummah di seluruh dunia. Ini adalah sponsor perangkat lunak sukarela, bukan donasi amal.",
   "subscription_terms": "Langganan diperpanjang secara otomatis kecuali dibatalkan di pengaturan akun setidaknya 24 jam sebelum akhir periode berjalan.",
   "reduce_glow_blur": "Kurangi Cahaya & Blur (Hemat Daya)",
-  "reduce_glow_blur_desc": "Nonaktifkan efek blur dan animasi untuk pengguliran lebih halus dan baterai lebih awet"
+  "reduce_glow_blur_desc": "Nonaktifkan efek blur dan animasi untuk pengguliran lebih halus dan baterai lebih awet",
+  "edit_morning_plan": "Edit Rencana Pagi",
+  "edit_evening_plan": "Edit Rencana Petang",
+  "edit_protection_plan": "Edit Rencana Perlindungan",
+  "edit_focus_plan": "Edit Rencana Fokus",
+  "edit_plan_info": "Sesuaikan daftar doa standar agar sesuai dengan waktu Anda.",
+  "edit_plan_sequence": "URUTAN & AKTIVASI",
+  "edit_plan_reorder_hint": "Tahan gagang untuk mengubah urutan",
+  "save_morning_plan": "Simpan Rencana Pagi",
+  "save_evening_plan": "Simpan Rencana Petang",
+  "save_plan": "Simpan Rencana",
+  "reset_to_default": "Atur Ulang ke Default",
+  "plan_saved": "Rencana Tersimpan!"
 }

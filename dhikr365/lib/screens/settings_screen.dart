@@ -1185,10 +1185,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           final up = Provider.of<UserProvider>(context, listen: false);
                           final np = Provider.of<NotificationProvider>(context, listen: false);
                           await lp.setLanguage(c);
+                          await lp.setTranslationLanguage(c);
+                          await lp.setTransliterationLanguage(c);
                           await dp.reloadDhikrs(
                               uiLanguageCode: c,
-                              transliterationCode: lp.transliterationCode,
-                              translationCode: lp.translationCode);
+                              transliterationCode: c,
+                              translationCode: c);
                           await np.refreshAllSchedules(up);
                         })),
                 _div(),

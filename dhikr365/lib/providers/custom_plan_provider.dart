@@ -14,10 +14,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// phone restores the exact same plan instead of starting from empty.
 class CustomPlanProvider extends ChangeNotifier {
   Set<String> _enabledDhikrIds = {};
+  List<String> _customOrder = [];
   bool _useCustomPlan = false;
   String? _uid;
 
   Set<String> get enabledDhikrIds => _enabledDhikrIds;
+  List<String> get customOrder => _customOrder;
   bool get useCustomPlan => _useCustomPlan;
   bool get isSyncing => _uid != null;
 
@@ -28,6 +30,7 @@ class CustomPlanProvider extends ChangeNotifier {
     _useCustomPlan   = prefs.getBool('use_custom_plan') ?? false;
     final saved      = prefs.getStringList('enabled_dhikr_ids') ?? [];
     _enabledDhikrIds = saved.toSet();
+    _customOrder     = prefs.getStringList('custom_plan_order') ?? [];
     notifyListeners();
   }
 
@@ -35,11 +38,23 @@ class CustomPlanProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('use_custom_plan', _useCustomPlan);
     await prefs.setStringList('enabled_dhikr_ids', _enabledDhikrIds.toList());
+    await prefs.setStringList('custom_plan_order', _customOrder);
     if (_uid != null) unawaited(_pushToCloud());
   }
 
   void setUseCustomPlan(bool value) {
     _useCustomPlan = value;
+    _save();
+    notifyListeners();
+  }
+
+  /// Saves the reordered sequence and toggle states in one unified update.
+  void savePlan({
+    required List<String> orderedIds,
+    required Map<String, bool> enabledMap,
+  }) {
+    _customOrder = List.from(orderedIds);
+    _enabledDhikrIds = orderedIds.where((id) => enabledMap[id] == true).toSet();
     _save();
     notifyListeners();
   }
@@ -66,11 +81,13 @@ class CustomPlanProvider extends ChangeNotifier {
   /// Clears the custom plan and local settings upon account deletion.
   Future<void> clearPlan() async {
     _enabledDhikrIds.clear();
+    _customOrder.clear();
     _useCustomPlan = false;
     _uid = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('use_custom_plan');
     await prefs.remove('enabled_dhikr_ids');
+    await prefs.remove('custom_plan_order');
     notifyListeners();
   }
 

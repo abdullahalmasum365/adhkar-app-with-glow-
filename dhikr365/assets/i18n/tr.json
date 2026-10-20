@@ -359,5 +359,17 @@
   "disclaimer_ummah": "Katkılar doğrudan bağımsız uygulama geliştirmeyi, sunucu bakımını ve Adhkaar 365'in dünya çapındaki Ümmet için %100 ücretsiz ve reklamsız kalmasını destekler. Bu gönüllü bir yazılım sponsorluğudur, hayır kurumu bağışı değildir.",
   "subscription_terms": "Abonelikler, geçerli dönemin bitiminden en az 24 saat önce hesap ayarlarından iptal edilmediği sürece otomatik olarak yenilenir.",
   "reduce_glow_blur": "Parlama ve Bulanıklığı Azalt (Güç Tasarrufu)",
-  "reduce_glow_blur_desc": "Daha akıcı kaydırma ve daha uzun pil ömrü için bulanıklık ve animasyonları devre dışı bırakın"
+  "reduce_glow_blur_desc": "Daha akıcı kaydırma ve daha uzun pil ömrü için bulanıklık ve animasyonları devre dışı bırakın",
+  "edit_morning_plan": "Sabah Planını Düzenle",
+  "edit_evening_plan": "Akşam Planını Düzenle",
+  "edit_protection_plan": "Korunma Planını Düzenle",
+  "edit_focus_plan": "Odak Planını Düzenle",
+  "edit_plan_info": "Dualar listesini zamanınıza uyacak şekilde düzenleyin.",
+  "edit_plan_sequence": "SIRA VE ETKİNLEŞTİRME",
+  "edit_plan_reorder_hint": "Yeniden sıralamak için basılı tutun",
+  "save_morning_plan": "Sabah Planını Kaydet",
+  "save_evening_plan": "Akşam Planını Kaydet",
+  "save_plan": "Planı Kaydet",
+  "reset_to_default": "Varsayılana Sıfırla",
+  "plan_saved": "Plan kaydedildi!"
 }

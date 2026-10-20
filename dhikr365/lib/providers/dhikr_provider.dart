@@ -117,8 +117,12 @@ class DhikrProvider extends ChangeNotifier {
     _monthlyActivity = activity;
 
     final savedUiLang = prefs.getString('language_code') ?? 'en';
-    final savedTransLang = prefs.getString('translation_language') ?? savedUiLang;
-    final savedTranslitLang = prefs.getString('transliteration_language') ?? savedTransLang;
+    final savedTransLang = prefs.getString('translation_code') ??
+        prefs.getString('translation_language') ??
+        savedUiLang;
+    final savedTranslitLang = prefs.getString('transliteration_code') ??
+        prefs.getString('transliteration_language') ??
+        savedTransLang;
 
     _currentLanguageCode = savedUiLang;
     final transLang = _resolveAssetLang(savedTransLang);
@@ -580,6 +584,14 @@ class DhikrProvider extends ChangeNotifier {
 
   List<Dhikr> getDistressDhikrs() =>
       _dhikrs.where((d) => d.category == DhikrCategory.distress).toList();
+
+  Dhikr? getDhikrById(String id) {
+    try {
+      return _dhikrs.firstWhere((d) => d.id == id);
+    } catch (_) {
+      return null;
+    }
+  }
 
   List<Dhikr> getDhikrsByCategory(DhikrCategory category) =>
       _dhikrs.where((d) => d.category == category).toList();

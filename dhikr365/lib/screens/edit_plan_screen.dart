@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../constants/app_theme.dart';
 import 'package:provider/provider.dart';
+
+import '../constants/app_theme.dart';
 import '../models/dhikr.dart';
 import '../providers/custom_plan_provider.dart';
 import '../providers/dhikr_provider.dart';
+import '../providers/language_provider.dart';
+import '../providers/theme_provider.dart';
 
 class EditPlanScreen extends StatefulWidget {
   final DhikrCategory category;
@@ -16,6 +19,7 @@ class EditPlanScreen extends StatefulWidget {
 
 class _EditPlanScreenState extends State<EditPlanScreen> {
   late List<Dhikr> _editableList;
+  late List<Dhikr> _initialOrder;
   late Map<String, bool> _enabledStatus;
 
   @override
@@ -44,55 +48,73 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
         defaultDhikrs = dhikrProvider.getProtectionDhikrs();
     }
 
-    // Initialize state mapping
-    _editableList = List.from(defaultDhikrs);
+    _initialOrder = List.from(defaultDhikrs);
+
+    // If a custom reordered sequence exists, preserve that ordering
+    final customOrder = customPlanProvider.customOrder;
+    if (customOrder.isNotEmpty) {
+      final sortedList = List<Dhikr>.from(defaultDhikrs);
+      sortedList.sort((a, b) {
+        final idxA = customOrder.indexOf(a.id);
+        final idxB = customOrder.indexOf(b.id);
+        if (idxA == -1 && idxB == -1) return 0;
+        if (idxA == -1) return 1;
+        if (idxB == -1) return -1;
+        return idxA.compareTo(idxB);
+      });
+      _editableList = sortedList;
+    } else {
+      _editableList = List.from(defaultDhikrs);
+    }
+
     _enabledStatus = {
       for (var d in _editableList) d.id: customPlanProvider.isDhikrEnabled(d.id)
     };
   }
 
-  String _getTitle() {
+  String _getTitle(LanguageProvider lp) {
     switch (widget.category) {
       case DhikrCategory.morning:
-        return "Edit Regular Morning";
+        return lp.getText('edit_morning_plan');
       case DhikrCategory.evening:
-        return "Edit Regular Evening";
+        return lp.getText('edit_evening_plan');
       case DhikrCategory.protection:
-        return "Edit Daily Protection";
+        return lp.getText('edit_protection_plan');
       case DhikrCategory.focus:
-        return "Edit Focus Selection";
+        return lp.getText('edit_focus_plan');
       default:
-        return "Edit Plan";
+        return lp.getText('edit_my_plan');
     }
   }
 
-  Widget _buildGlassCard({required Widget child, bool isEnabled = true}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: isEnabled ? AppColors.ink(0.03) : AppColors.ink(0.01),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.ink(isEnabled ? 0.1 : 0.05)),
-      ),
-      child: child,
-    );
+  String _getSaveButtonText(LanguageProvider lp) {
+    switch (widget.category) {
+      case DhikrCategory.morning:
+        return lp.getText('save_morning_plan');
+      case DhikrCategory.evening:
+        return lp.getText('save_evening_plan');
+      default:
+        return lp.getText('save_plan');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    const primaryOrange = Color(0xFFF49D25);
-    final bgDark = AppColors.bgDark;
+    final theme = Provider.of<ThemeProvider>(context);
+    final lp = Provider.of<LanguageProvider>(context);
+    final dp = Provider.of<DhikrProvider>(context);
+    final palette = theme.palette;
 
     return Scaffold(
-      backgroundColor: bgDark,
+      backgroundColor: palette.bgDark,
       body: Container(
         decoration: BoxDecoration(
           gradient: RadialGradient(
             center: Alignment.topRight,
             radius: 1.5,
             colors: [
-              AppColors.bgTeal,
-              bgDark,
+              palette.homeGradient[0],
+              palette.homeGradient[1],
             ],
             stops: const [0.0, 1.0],
           ),
@@ -107,9 +129,10 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: bgDark.withValues(alpha: 0.8),
+                      color: palette.bgDark.withValues(alpha: 0.85),
                       border: Border(
-                          bottom: BorderSide(color: AppColors.ink(0.05))),
+                        bottom: BorderSide(color: AppColors.glassBorder),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,16 +142,21 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                               color: AppColors.textPrimary, size: 20),
                           onPressed: () => Navigator.pop(context),
                         ),
-                        Text(
-                          _getTitle(),
-                          style: TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -0.5,
+                        Expanded(
+                          child: Text(
+                            _getTitle(lp),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.3,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(width: 48), // Spacer
+                        const SizedBox(width: 48), // Balanced spacer
                       ],
                     ),
                   ),
@@ -136,9 +164,25 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                   // --- Content ---
                   Expanded(
                     child: ReorderableListView.builder(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 160),
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 170),
                       physics: const BouncingScrollPhysics(),
                       itemCount: _editableList.length,
+                      proxyDecorator: (child, index, animation) {
+                        return AnimatedBuilder(
+                          animation: animation,
+                          builder: (context, child) {
+                            return Material(
+                              color: Colors.transparent,
+                              elevation: 10,
+                              shadowColor:
+                                  palette.primary.withValues(alpha: 0.35),
+                              borderRadius: BorderRadius.circular(16),
+                              child: child,
+                            );
+                          },
+                          child: child,
+                        );
+                      },
                       // ignore: deprecated_member_use
                       onReorder: (int oldIndex, int newIndex) {
                         setState(() {
@@ -152,21 +196,22 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                       header: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Status Banner
+                          // Status Info Banner
                           Container(
                             padding: const EdgeInsets.all(16),
-                            margin: const EdgeInsets.only(bottom: 24),
+                            margin: const EdgeInsets.only(bottom: 20),
                             decoration: BoxDecoration(
-                              color: primaryOrange.withValues(alpha: 0.05),
+                              color: palette.primary.withValues(alpha: 0.08),
                               border: Border.all(
-                                  color: primaryOrange.withValues(alpha: 0.2)),
-                              borderRadius: BorderRadius.circular(12),
+                                color: palette.primary.withValues(alpha: 0.25),
+                              ),
+                              borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.info_outline,
-                                    color: primaryOrange, size: 20),
+                                Icon(Icons.tune_rounded,
+                                    color: palette.primary, size: 22),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
@@ -174,28 +219,29 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Modify the standard set of supplications to fit your time.",
+                                        lp.getText('edit_plan_info'),
                                         style: TextStyle(
                                           color: AppColors.textPrimary,
-                                          fontSize: 14,
+                                          fontSize: 13,
                                           fontWeight: FontWeight.w500,
                                           height: 1.4,
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      const Row(
+                                      const SizedBox(height: 6),
+                                      Row(
                                         children: [
+                                          Icon(Icons.swap_vert_rounded,
+                                              color: palette.primary, size: 16),
+                                          const SizedBox(width: 4),
                                           Text(
-                                            "Learn More",
+                                            lp.getText(
+                                                'edit_plan_reorder_hint'),
                                             style: TextStyle(
-                                              color: primaryOrange,
+                                              color: palette.primary,
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          SizedBox(width: 4),
-                                          Icon(Icons.arrow_forward,
-                                              color: primaryOrange, size: 14),
                                         ],
                                       ),
                                     ],
@@ -208,24 +254,24 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                           // List Header
                           Padding(
                             padding: const EdgeInsets.only(
-                                bottom: 8.0, left: 4, right: 4),
+                                bottom: 10.0, left: 4, right: 4),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "SEQUENCE & TOGGLES",
+                                  lp.getText('edit_plan_sequence'),
                                   style: TextStyle(
-                                    color: AppColors.ink(0.54),
-                                    fontSize: 12,
+                                    color: AppColors.textSlate400,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.5,
+                                    letterSpacing: 1.2,
                                   ),
                                 ),
                                 Text(
-                                  "Hold handle to reorder",
+                                  lp.getText('edit_plan_reorder_hint'),
                                   style: TextStyle(
-                                    color: AppColors.ink(0.38),
-                                    fontSize: 12,
+                                    color: AppColors.textSlate400,
+                                    fontSize: 11,
                                   ),
                                 ),
                               ],
@@ -235,139 +281,128 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                       ),
                       itemBuilder: (context, index) {
                         final dhikr = _editableList[index];
+                        // Resolves dynamically to the active language title & translation
+                        final localizedDhikr =
+                            dp.getDhikrById(dhikr.id) ?? dhikr;
                         final isEnabled = _enabledStatus[dhikr.id] ?? false;
 
                         return Container(
-                          key: Key(dhikr.id),
-                          child: _buildGlassCard(
-                            isEnabled: isEnabled,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                children: [
-                                  // Drag Handle
-                                  ReorderableDragStartListener(
-                                    index: index,
-                                    child: Icon(Icons.drag_indicator,
-                                        color: AppColors.ink(0.38)),
-                                  ),
-                                  const SizedBox(width: 16),
-
-                                  // Text Info
-                                  Expanded(
-                                    child: Opacity(
-                                      opacity: isEnabled ? 1.0 : 0.5,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            dhikr.title,
-                                            style: TextStyle(
-                                              color: AppColors.textPrimary,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            dhikr.translation,
-                                            style: TextStyle(
-                                              color: AppColors.ink(0.54),
-                                              fontSize: 12,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
+                          key: ValueKey(dhikr.id),
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: isEnabled
+                                ? AppColors.bgCard
+                                : AppColors.ink(0.02),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isEnabled
+                                  ? AppColors.glassBorder
+                                  : AppColors.ink(0.06),
+                              width: 1.2,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                // Drag Handle
+                                ReorderableDragStartListener(
+                                  index: index,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    child: Icon(
+                                      Icons.drag_indicator_rounded,
+                                      color: isEnabled
+                                          ? palette.primary
+                                              .withValues(alpha: 0.8)
+                                          : AppColors.textSlate400,
+                                      size: 22,
                                     ),
                                   ),
+                                ),
+                                const SizedBox(width: 12),
 
-                                  // Controls
-                                  Opacity(
-                                    opacity: isEnabled ? 1.0 : 0.5,
-                                    child: Row(
+                                // Text Info (Localized)
+                                Expanded(
+                                  child: Opacity(
+                                    opacity: isEnabled ? 1.0 : 0.45,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        // Counter Adjuster
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 4, vertical: 2),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.ink(0.05),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            border: Border.all(
-                                                color: AppColors.textPrimary
-                                                    .withValues(alpha: 0.1)),
+                                        Text(
+                                          localizedDhikr.title,
+                                          style: TextStyle(
+                                            color: AppColors.textPrimary,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          child: Row(
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(Icons.remove,
-                                                    size: 14),
-                                                color: isEnabled
-                                                    ? primaryOrange.withValues(
-                                                        alpha: 0.8)
-                                                    : AppColors.ink(0.54),
-                                                padding: EdgeInsets.zero,
-                                                constraints:
-                                                    const BoxConstraints(),
-                                                onPressed:
-                                                    isEnabled ? () {} : null,
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 8.0),
-                                                child: Text(
-                                                  "${dhikr.targetCount}x",
-                                                  style: TextStyle(
-                                                    color:
-                                                        AppColors.textPrimary,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ),
-                                              IconButton(
-                                                icon: const Icon(Icons.add,
-                                                    size: 14),
-                                                color: isEnabled
-                                                    ? primaryOrange.withValues(
-                                                        alpha: 0.8)
-                                                    : AppColors.ink(0.54),
-                                                padding: EdgeInsets.zero,
-                                                constraints:
-                                                    const BoxConstraints(),
-                                                onPressed:
-                                                    isEnabled ? () {} : null,
-                                              ),
-                                            ],
-                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(width: 12),
-
-                                        // Toggle Switch
-                                        Switch(
-                                          value: isEnabled,
-                                          activeThumbColor:
-                                              AppColors.textPrimary,
-                                          activeTrackColor: primaryOrange,
-                                          inactiveThumbColor: Colors.grey,
-                                          inactiveTrackColor:
-                                              AppColors.ink(0.10),
-                                          onChanged: (val) {
-                                            setState(() {
-                                              _enabledStatus[dhikr.id] = val;
-                                            });
-                                          },
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          localizedDhikr.translation,
+                                          style: TextStyle(
+                                            color: AppColors.textSlate400,
+                                            fontSize: 12,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+
+                                const SizedBox(width: 10),
+
+                                // Controls: Count Badge & Toggle Switch
+                                Opacity(
+                                  opacity: isEnabled ? 1.0 : 0.45,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.ink(0.06),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          border: Border.all(
+                                            color: AppColors.ink(0.12),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "${localizedDhikr.targetCount}x",
+                                          style: TextStyle(
+                                            color: AppColors.textPrimary,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+
+                                      // Toggle Switch (Theme-reactive)
+                                      Switch(
+                                        value: isEnabled,
+                                        activeThumbColor: palette.onPrimary,
+                                        activeTrackColor: palette.primary,
+                                        inactiveThumbColor: AppColors.ink(0.40),
+                                        inactiveTrackColor: AppColors.ink(0.12),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            _enabledStatus[dhikr.id] = val;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -383,87 +418,93 @@ class _EditPlanScreenState extends State<EditPlanScreen> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  padding: const EdgeInsets.all(24),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   decoration: BoxDecoration(
-                    color: bgDark.withValues(alpha: 0.9),
-                    border: Border(top: BorderSide(color: AppColors.ink(0.1))),
+                    color: palette.bgDark.withValues(alpha: 0.95),
+                    border: Border(
+                      top: BorderSide(color: AppColors.glassBorder, width: 1.2),
+                    ),
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          // Save Logic
                           final planProvider = Provider.of<CustomPlanProvider>(
                               context,
                               listen: false);
 
-                          // Convert states to final map
-                          for (var id in _enabledStatus.keys) {
-                            planProvider.toggleDhikr(
-                                id, _enabledStatus[id] ?? false);
-                          }
+                          planProvider.savePlan(
+                            orderedIds: _editableList.map((d) => d.id).toList(),
+                            enabledMap: _enabledStatus,
+                          );
 
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Plan Saved!'),
-                            backgroundColor: primaryOrange,
-                            duration: Duration(seconds: 2),
-                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(lp.getText('plan_saved')),
+                              backgroundColor: palette.primary,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: primaryOrange,
-                          minimumSize: const Size(double.infinity, 56),
+                          backgroundColor: palette.primary,
+                          foregroundColor: palette.onPrimary,
+                          minimumSize: const Size(double.infinity, 52),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                          elevation: 8,
-                          shadowColor: primaryOrange.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          elevation: 4,
+                          shadowColor: palette.primary.withValues(alpha: 0.4),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.save, color: AppColors.textPrimary),
+                            Icon(Icons.save_rounded, color: palette.onPrimary),
                             const SizedBox(width: 8),
                             Text(
-                              widget.category == DhikrCategory.morning
-                                  ? "Save Morning Plan"
-                                  : "Save Evening Plan",
+                              _getSaveButtonText(lp),
                               style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 16,
+                                color: palette.onPrimary,
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 10),
                       OutlinedButton(
                         onPressed: () {
-                          // Reset Logic
                           setState(() {
+                            _editableList = List.from(_initialOrder);
                             for (var key in _enabledStatus.keys) {
                               _enabledStatus[key] = true;
                             }
                           });
                         },
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: AppColors.ink(0.1)),
-                          minimumSize: const Size(double.infinity, 48),
+                          side: BorderSide(
+                              color: AppColors.glassBorder, width: 1.2),
+                          minimumSize: const Size(double.infinity, 44),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          foregroundColor: AppColors.textPrimary,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.restart_alt,
-                                color: AppColors.ink(0.54), size: 18),
+                            Icon(Icons.restart_alt_rounded,
+                                color: AppColors.textSlate400, size: 18),
                             const SizedBox(width: 8),
                             Text(
-                              "Reset to Default",
+                              lp.getText('reset_to_default'),
                               style: TextStyle(
-                                color: AppColors.ink(0.54),
-                                fontSize: 14,
+                                color: AppColors.textPrimary,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

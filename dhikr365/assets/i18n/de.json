@@ -359,5 +359,17 @@
   "disclaimer_ummah": "Beiträge unterstützen direkt die Weiterentwicklung der App, Serverkosten und das Ziel, Adhkaar 365 weltweit zu 100% kostenlos und werbefrei zu halten. Dies ist ein freiwilliges Software-Sponsoring, keine Spende.",
   "subscription_terms": "Abonnements verlängern sich automatisch, sofern sie nicht mindestens 24 Stunden vor Ablauf des aktuellen Zeitraums in den Kontoeinstellungen gekündigt werden.",
   "reduce_glow_blur": "Leuchten & Unschärfe reduzieren (Energiesparmodus)",
-  "reduce_glow_blur_desc": "Unschärfeeffekte und Animationen für flüssigeres Scrollen und längere Akkulaufzeit deaktivieren"
+  "reduce_glow_blur_desc": "Unschärfeeffekte und Animationen für flüssigeres Scrollen und längere Akkulaufzeit deaktivieren",
+  "edit_morning_plan": "Morgenplan bearbeiten",
+  "edit_evening_plan": "Abendplan bearbeiten",
+  "edit_protection_plan": "Schutzplan bearbeiten",
+  "edit_focus_plan": "Fokusplan bearbeiten",
+  "edit_plan_info": "Passe die Liste der Bittgebete an deine Zeit an.",
+  "edit_plan_sequence": "REIHENFOLGE & AUSWAHL",
+  "edit_plan_reorder_hint": "Ziehen zum Neuanordnen",
+  "save_morning_plan": "Morgenplan speichern",
+  "save_evening_plan": "Abendplan speichern",
+  "save_plan": "Plan speichern",
+  "reset_to_default": "Auf Standard zurücksetzen",
+  "plan_saved": "Plan gespeichert!"
 }

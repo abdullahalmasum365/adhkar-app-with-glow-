@@ -360,5 +360,17 @@
   "disclaimer_ummah": "Subscriptions directly support ongoing app maintenance, bug fixes, mobile OS updates, and keeping Adhkaar 365 100% free and ad-free for the Ummah worldwide. This is a voluntary software maintenance subscription, not a charitable tax-deductible donation.",
   "subscription_terms": "Subscriptions automatically renew unless canceled in store account settings at least 24 hours before the end of the current period.",
   "reduce_glow_blur": "Reduce Glow & Blur (Power Saver)",
-  "reduce_glow_blur_desc": "Disable blur effects & animations for smoother scrolling and longer battery life"
+  "reduce_glow_blur_desc": "Disable blur effects & animations for smoother scrolling and longer battery life",
+  "edit_morning_plan": "Edit Morning Plan",
+  "edit_evening_plan": "Edit Evening Plan",
+  "edit_protection_plan": "Edit Protection Plan",
+  "edit_focus_plan": "Edit Focus Plan",
+  "edit_plan_info": "Modify the standard set of supplications to fit your time.",
+  "edit_plan_sequence": "SEQUENCE & TOGGLES",
+  "edit_plan_reorder_hint": "Hold handle to reorder",
+  "save_morning_plan": "Save Morning Plan",
+  "save_evening_plan": "Save Evening Plan",
+  "save_plan": "Save Plan",
+  "reset_to_default": "Reset to Default",
+  "plan_saved": "Plan Saved!"
 }

@@ -359,5 +359,17 @@
   "disclaimer_ummah": "您的赞助直接用于支持独立应用开发、服务器维护，并确保Adhkaar 365为全球穆斯林同胞保持100%免费且无广告。这是自愿的软件赞助，而非慈善捐款。",
   "subscription_terms": "除非在当前周期结束前至少24小时在账户设置中取消，否则订阅将自动续订。",
   "reduce_glow_blur": "减少发光与模糊（省电模式）",
-  "reduce_glow_blur_desc": "禁用模糊效果和动画以获得更流畅的滚动和更长的电池续航"
+  "reduce_glow_blur_desc": "禁用模糊效果和动画以获得更流畅的滚动和更长的电池续航",
+  "edit_morning_plan": "编辑早晨计划",
+  "edit_evening_plan": "编辑傍晚计划",
+  "edit_protection_plan": "编辑保护计划",
+  "edit_focus_plan": "编辑专注计划",
+  "edit_plan_info": "根据您的时间调整赞念列表。",
+  "edit_plan_sequence": "顺序与开关",
+  "edit_plan_reorder_hint": "按住手柄以重新排序",
+  "save_morning_plan": "保存早晨计划",
+  "save_evening_plan": "保存傍晚计划",
+  "save_plan": "保存计划",
+  "reset_to_default": "恢复默认",
+  "plan_saved": "计划已保存！"
 }

@@ -359,5 +359,17 @@
   "disclaimer_ummah": "ご支援はアプリの独立した開発、サーバーの維持、および世界中のウンマのためにAdhkaar 365を100%無料・広告なしで維持するために直接使用されます。これは自発的なソフトウェアスポンサーシップであり、慈善寄付ではありません。",
   "subscription_terms": "現在の期間が終了する少なくとも24時間前までにアカウント設定でキャンセルされない限り、定期購入は自動的に更新されます。",
   "reduce_glow_blur": "グローとぼかしを軽減（省電力）",
-  "reduce_glow_blur_desc": "より滑らかなスクロールとバッテリー節約のため、ぼかし効果とアニメーションを無効化"
+  "reduce_glow_blur_desc": "より滑らかなスクロールとバッテリー節約のため、ぼかし効果とアニメーションを無効化",
+  "edit_morning_plan": "朝のプランを編集",
+  "edit_evening_plan": "夕方のプランを編集",
+  "edit_protection_plan": "保護プランを編集",
+  "edit_focus_plan": "集中プランを編集",
+  "edit_plan_info": "あなたの時間に合わせて祈りのリストを調整してください。",
+  "edit_plan_sequence": "順序と切り替え",
+  "edit_plan_reorder_hint": "長押しして並べ替え",
+  "save_morning_plan": "朝のプランを保存",
+  "save_evening_plan": "夕方のプランを保存",
+  "save_plan": "プランを保存",
+  "reset_to_default": "デフォルトにリセット",
+  "plan_saved": "プランが保存されました！"
 }

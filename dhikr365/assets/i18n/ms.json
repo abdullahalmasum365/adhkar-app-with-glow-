@@ -359,5 +359,17 @@
   "disclaimer_ummah": "Sumbangan secara langsung menyokong pembangunan aplikasi bebas, penyelenggaraan pelayan dan mengekalkan Adhkaar 365 100% percuma serta tanpa iklan untuk Ummah di seluruh dunia. Ini adalah penajaan perisian sukarela, bukan derma kebajikan.",
   "subscription_terms": "Langganan diperbaharui secara automatik melainkan dibatalkan dalam tetapan akaun sekurang-kurangnya 24 jam sebelum akhir tempoh semasa.",
   "reduce_glow_blur": "Kurangkan Kilauan & Kabur (Penjimat Kuasa)",
-  "reduce_glow_blur_desc": "Nyahaktifkan kesan kabur dan animasi untuk penatalan lebih lancar dan hayat bateri lebih lama"
+  "reduce_glow_blur_desc": "Nyahaktifkan kesan kabur dan animasi untuk penatalan lebih lancar dan hayat bateri lebih lama",
+  "edit_morning_plan": "Edit Pelan Pagi",
+  "edit_evening_plan": "Edit Pelan Petang",
+  "edit_protection_plan": "Edit Pelan Perlindungan",
+  "edit_focus_plan": "Edit Pelan Fokus",
+  "edit_plan_info": "Ubah suai senarai doa standard mengikut masa anda.",
+  "edit_plan_sequence": "TURUTAN & PENGAKTIFAN",
+  "edit_plan_reorder_hint": "Tahan pemegang untuk menyusun semula",
+  "save_morning_plan": "Simpan Pelan Pagi",
+  "save_evening_plan": "Simpan Pelan Petang",
+  "save_plan": "Simpan Pelan",
+  "reset_to_default": "Tetapkan Semula ke Lalai",
+  "plan_saved": "Pelan Disimpan!"
 }

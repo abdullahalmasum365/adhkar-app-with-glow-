@@ -1543,6 +1543,16 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                 .where((d) =>
                                     customPlanProvider.isDhikrEnabled(d.id))
                                 .toList();
+                            if (customPlanProvider.customOrder.isNotEmpty) {
+                              displayList.sort((a, b) {
+                                final idxA = customPlanProvider.customOrder.indexOf(a.id);
+                                final idxB = customPlanProvider.customOrder.indexOf(b.id);
+                                if (idxA == -1 && idxB == -1) return 0;
+                                if (idxA == -1) return 1;
+                                if (idxB == -1) return -1;
+                                return idxA.compareTo(idxB);
+                              });
+                            }
                           }
 
                           final List<Dhikr> allDhikrs = displayList;
@@ -1685,6 +1695,16 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                             .where(
                                 (d) => customPlanProvider.isDhikrEnabled(d.id))
                             .toList();
+                        if (customPlanProvider.customOrder.isNotEmpty) {
+                          displayList.sort((a, b) {
+                            final idxA = customPlanProvider.customOrder.indexOf(a.id);
+                            final idxB = customPlanProvider.customOrder.indexOf(b.id);
+                            if (idxA == -1 && idxB == -1) return 0;
+                            if (idxA == -1) return 1;
+                            if (idxB == -1) return -1;
+                            return idxA.compareTo(idxB);
+                          });
+                        }
                       }
 
                       if (customPlanProvider.useCustomPlan &&
