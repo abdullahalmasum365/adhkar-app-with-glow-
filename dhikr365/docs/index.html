@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adhkaar 365 — Legal & Policies</title>
+  <style>
+    :root {
+      --primary: #0D2924;
+      --accent: #E8B923;
+      --bg: #F4F6F5;
+      --card-bg: #FFFFFF;
+      --text: #1C2826;
+      --text-muted: #667085;
+      --border: #E4E7EC;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #0A211D 0%, #163E37 100%);
+      color: #FFFFFF;
+      padding: 48px 24px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(232, 185, 35, 0.2);
+      color: var(--accent);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      border: 1px solid rgba(232, 185, 35, 0.3);
+    }
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      font-size: 16px;
+      color: #A3B8B3;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .container {
+      max-width: 760px;
+      margin: -24px auto 48px;
+      padding: 0 20px;
+      width: 100%;
+      flex: 1;
+    }
+    .card-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(13, 41, 36, 0.12);
+      border-color: var(--accent);
+    }
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #F0F7F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+    .card-content {
+      flex: 1;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .card-arrow {
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: bold;
+      padding-left: 16px;
+    }
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      background: #FFFFFF;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="badge">Official Documentation</div>
+    <h1>Adhkaar 365</h1>
+    <p>Legal policies, privacy guidelines, terms of service, and refund information.</p>
+  </header>
+
+  <main class="container">
+    <div class="card-grid">
+      <a class="card" href="privacy-policy.html">
+        <div class="card-icon">🛡️</div>
+        <div class="card-content">
+          <div class="card-title">Privacy Policy</div>
+          <div class="card-desc">How we handle your data, prayer alarms, offline storage, and privacy.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="terms-of-service.html">
+        <div class="card-icon">📜</div>
+        <div class="card-content">
+          <div class="card-title">Terms of Service</div>
+          <div class="card-desc">Usage terms, authentic content guidelines, and voluntary maintenance support.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="refund-policy.html">
+        <div class="card-icon">💳</div>
+        <div class="card-content">
+          <div class="card-title">Refund & Cancellation Policy</div>
+          <div class="card-desc">Google Play billing guidelines, patron tiers ($5 / $30 / $60), and cancellations.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+
+      <a class="card" href="cookie-policy.html">
+        <div class="card-icon">🍪</div>
+        <div class="card-content">
+          <div class="card-title">Cookie Policy</div>
+          <div class="card-desc">Information on local storage, offline preferences, and cache handling.</div>
+        </div>
+        <div class="card-arrow">→</div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2026 Adhkaar 365. All core spiritual features are 100% free and ad-free for the Ummah.
+  </footer>
+</body>
+</html>
