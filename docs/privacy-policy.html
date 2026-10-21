@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Adhkar 365</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 36px 20px 80px;
+    line-height: 1.7;
+    color: #1f2937;
+    background: #fff;
+  }
+  h1 { font-size: 30px; margin-bottom: 4px; color: #111827; }
+  .updated { color: #6b7280; font-size: 14px; margin-bottom: 32px; }
+  h2 { font-size: 20px; margin-top: 36px; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; color: #111827; }
+  h3 { font-size: 16px; margin-top: 20px; color: #374151; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  a { color: #0d6efd; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .box {
+    background: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 18px 20px;
+    margin-top: 14px;
+  }
+  .highlight-box {
+    background: #ecfdf5;
+    border-radius: 10px;
+    border-left: 4px solid #10b981;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+  .nav-links {
+    margin: 20px 0 30px;
+    padding: 12px 16px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .nav-links a { margin-right: 16px; font-weight: 600; }
+  footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 13px; color: #6b7280; }
+</style>
+</head>
+<body>
+
+<div class="nav-links">
+  <strong>Quick Links:</strong> 
+  <a href="privacy-policy.html">Privacy Policy</a>
+  <a href="terms-of-service.html">Terms of Service</a>
+  <a href="refund-policy.html">Refund Policy</a>
+  <a href="cookie-policy.html">Cookie Policy</a>
+</div>
+
+<h1>Privacy Policy</h1>
+<p class="updated">Adhkar 365 — Last updated: October 20, 2026</p>
+
+<div class="highlight-box">
+  <strong>Privacy First Commitment:</strong> <strong>Adhkar 365</strong> is designed with privacy at its core. 
+  The app is 100% ad-free, does not track your personal activities, does not profile users, and does not use advertising identifiers. 
+  The core Islamic features (daily adhkar, audio playback, prayer calculations, offline city database, and offline bundled typography) work fully offline without an internet connection. 
+  Network access is used strictly for optional features: optional cloud sync, small-town search fallback via OpenStreetMap Nominatim, and Google Play Billing.
+</div>
+
+<p>
+  This Privacy Policy describes how <strong>Adhkar 365</strong> ("the App", "we", "us", or "our"), 
+  developed and maintained by <strong>Abdullah Al Masum</strong>, collects, protects, and handles information.
+</p>
+
+<h2>1. Information We Collect and Why (Data Minimization)</h2>
+<p>
+  We adhere strictly to the principle of <strong>data minimization</strong>. We only access device resources that are strictly necessary to provide Islamic remembrance, prayer schedules, and optional account synchronization.
+</p>
+
+<h3>1.1 Location Data (Coarse &amp; Precise)</h3>
+<ul>
+  <li><strong>Purpose:</strong> Used exclusively to calculate local Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) and the Qibla compass direction using astronomical calculations (Adhan algorithm).</li>
+  <li><strong>Local Processing:</strong> All mathematical prayer calculations occur <strong>locally on your device</strong>. Your GPS coordinates are never uploaded to our servers, never stored remotely, and never sold or shared with any commercial parties.</li>
+  <li><strong>Offline World City Database:</strong> The app bundles a pre-compiled offline database of over 34,000 cities worldwide (GeoNames cities15000, licensed CC-BY 4.0). You can select your city manually without granting GPS permission or requiring an internet connection.</li>
+  <li><strong>Native Reverse Geocoding (Google Play Services / Apple CoreLocation):</strong> When you tap the auto-detect GPS location button, your device's native platform geocoder (Google Play Services on Android, CoreLocation on iOS) is invoked locally to convert your coordinates into a city/country name for display. This lookup is handled by your operating system and subject to Google's or Apple's privacy policy. Our app servers never receive or store these coordinates.</li>
+  <li><strong>Online Small Town Search Fallback (OpenStreetMap Nominatim):</strong> If you search for an uncommon small town not found in the bundled offline database, the app makes an HTTPS geocoding request to <code>nominatim.openstreetmap.org</code> (operated by the OpenStreetMap Foundation) to resolve the town name into geographic coordinates. In accordance with Nominatim's strict Usage Policy, requests transmit our verified contact User-Agent: <code>Adhkaar365App/1.0 (https://github.com/abdullahalmasum365/adhkar-app-with-glow-; abdullahalmasum365@gmail.com)</code>. Only the user-typed search string is transmitted; your real-time GPS coordinates, user account, and device identifiers are NEVER transmitted to Nominatim. The OpenStreetMap Foundation Privacy Policy applies to these geocoding queries.</li>
+</ul>
+
+<h3>1.2 Local Notifications, Exact Alarms &amp; Battery Optimization</h3>
+<ul>
+  <li><strong>Purpose:</strong> To trigger time-sensitive alerts for Morning &amp; Evening Adhkar, weekly Jummah reminders, and prayer calls at their exact astronomical times.</li>
+  <li><strong>Local Scheduling:</strong> Notification schedules are computed and scheduled locally using your device's native alarm scheduler (<code>AlarmManager</code> on Android). No notification schedules or user alert preferences are sent to external servers.</li>
+  <li><strong>Notification Permission (Android 13+ / POST_NOTIFICATIONS):</strong> Used solely to post local reminder notifications that you enable in Settings.</li>
+  <li><strong>Battery Optimization Exemption (REQUEST_IGNORE_BATTERY_OPTIMIZATIONS):</strong> On modern Android devices with manufacturer-specific background task killers (such as Samsung, Xiaomi, Oppo, and Huawei), background timers are often terminated prematurely to save battery. The app provides an optional prompt allowing you to exempt Adhkar 365 from background restrictions so prayer alerts and alarms arrive reliably. This setting operates strictly through standard Android system intents; the app never accesses, logs, or transmits battery telemetry, hardware stats, or device usage patterns.</li>
+</ul>
+
+<h3>1.3 Optional Account Information (Only If You Choose to Sign In)</h3>
+<p>
+  Signing in with Google or Apple is 100% optional. If you choose to sign in to sync your data across devices, we store:
+</p>
+<ul>
+  <li>Your display name and email address provided by your authentication provider (Google or Apple).</li>
+  <li>A secure, pseudonymous user identifier (UID).</li>
+  <li>Your custom routine list, favorite dhikr IDs, and daily streak progress.</li>
+  <li>Your interface preferences (selected color theme and language settings) to provide a consistent experience across all your logged-in devices.</li>
+</ul>
+
+<h3>1.4 Optional Voluntary Support Transactions &amp; Recognition</h3>
+<ul>
+  <li><strong>100% Free &amp; Ad-Free Core Service:</strong> Adhkar 365 is completely free and 100% ad-free for everyone worldwide. All supplications, audio recitations, color palettes, custom routines, and prayer tools are accessible without paywalls.</li>
+  <li><strong>Voluntary Maintenance Subscriptions:</strong> Users may choose optional voluntary maintenance support to assist with ongoing server costs, bug fixes, and continuous development across three flexible tiers: <strong>1 Month ($5)</strong>, <strong>6 Months Sustainer ($30)</strong>, or <strong>12 Months Sponsor ($60)</strong>.</li>
+  <li><strong>Digital Recognition (Muhsin Badge &amp; Dedication Certificate):</strong> Supporters receive a digital <strong>"Muhsin" (মুহসিন)</strong> patron badge on their user profile and access to an optional personalized digital Du'a Dedication Certificate. Any dedication name entered (e.g. parents or family name) is processed and stored locally on your device (or in your private encrypted Firestore document if you choose cloud sync); it is never shared, indexed, or sold.</li>
+  <li><strong>Secure Google Play Billing:</strong> All transactions are processed exclusively and securely through <strong>Google Play Billing</strong>. We never receive, process, or store your credit card, debit card, or banking details.</li>
+  <li><strong>Developer Patronage (Not a Charitable Donation):</strong> In accordance with Google Play Payments Policy, contributions are digital software in-app purchases supporting independent app maintenance, not tax-exempt charitable donations.</li>
+</ul>
+
+<h3>1.5 Offline Pre-Bundled Typography (Zero Runtime Network Requests)</h3>
+<ul>
+  <li><strong>Pre-Bundled Font Assets:</strong> All font families utilized across the app (including Amiri Arabic, Manrope, Noto Serif diacritic transliteration, Space Mono, and Public Sans) are pre-bundled directly within the application's local asset bundle.</li>
+  <li><strong>Strict Offline Policy:</strong> Runtime remote font fetching is strictly disabled in application code (<code>allowRuntimeFetching = false</code>). The font engine does not make network requests to Google Fonts CDN (<code>fonts.gstatic.com</code>) and does not transmit IP addresses during font rendering.</li>
+</ul>
+
+<h3>1.6 Data We Do NOT Collect</h3>
+<ul>
+  <li><strong>No Advertising IDs:</strong> We do NOT collect Google Advertising ID (GAID) or Apple IDFA.</li>
+  <li><strong>No Cookies or Tracking Pixels:</strong> We do not use web cookies, flash cookies, or tracking beacons in the mobile application. (See our <a href="cookie-policy.html">Cookie Policy</a>).</li>
+  <li><strong>No Biometric or Contact Data:</strong> We do not access your contacts, phone state, microphone, camera, or photo gallery.</li>
+</ul>
+
+<h2>2. Third-Party SDKs &amp; Service Providers Audit</h2>
+<p>
+  We maintain full transparency regarding all third-party software development kits (SDKs) and network endpoints integrated into the App:
+</p>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 14px; margin-top: 10px;">
+  <thead style="background: #f3f4f6;">
+    <tr>
+      <th align="left">Service / SDK</th>
+      <th align="left">Provider</th>
+      <th align="left">Purpose</th>
+      <th align="left">Data Processed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Firebase Authentication</strong></td>
+      <td>Google LLC</td>
+      <td>Optional secure sign-in (Google / Apple)</td>
+      <td>Email, Name, User UID (encrypted in transit)</td>
+    </tr>
+    <tr>
+      <td><strong>Cloud Firestore</strong></td>
+      <td>Google LLC</td>
+      <td>Optional cloud backup of user custom dhikr plans, streak progress, and settings (theme and language)</td>
+      <td>Encrypted user preferences, dhikr IDs, theme/language preferences</td>
+    </tr>
+    <tr>
+      <td><strong>Google Play Billing</strong></td>
+      <td>Google LLC</td>
+      <td>Optional voluntary developer support</td>
+      <td>Purchase tokens, subscription state (no payment card data)</td>
+    </tr>
+    <tr>
+      <td><strong>OpenStreetMap Nominatim</strong></td>
+      <td>OpenStreetMap Foundation</td>
+      <td>Optional geocoding search for small towns not in offline DB</td>
+      <td>Searched city query string, User-Agent, device IP address</td>
+    </tr>
+    <tr>
+      <td><strong>Google Fonts (Bundled Offline)</strong></td>
+      <td>Google LLC / Open Font Authors</td>
+      <td>Pre-bundled open-source typography (Amiri, Manrope, Noto Serif, Space Mono, Public Sans) under SIL OFL 1.1</td>
+      <td>None (runtime network fetching disabled via <code>allowRuntimeFetching = false</code>; no network requests to fonts.gstatic.com)</td>
+    </tr>
+    <tr>
+      <td><strong>Adhan Library</strong></td>
+      <td>Batoul Apps (Open Source)</td>
+      <td>Calculates prayer times mathematically</td>
+      <td>Local coordinates (processed on device only)</td>
+    </tr>
+    <tr>
+      <td><strong>Flutter Local Notifications</strong></td>
+      <td>Dexterous (Open Source)</td>
+      <td>Schedules local prayer and adhkar reminders</td>
+      <td>Local alarm triggers (processed on device only)</td>
+    </tr>
+  </tbody>
+</table>
+<p style="margin-top: 10px;">
+  <strong>Notice:</strong> The App contains <strong>ZERO advertising SDKs</strong>, zero data brokers, and zero commercial tracking networks.
+</p>
+
+<h2>3. User Consent &amp; Transparency (No Dark Patterns)</h2>
+<ul>
+  <li><strong>Clear Consent on Forms:</strong> All sign-in and account creation forms clearly display links to this Privacy Policy and our Terms of Service before submission.</li>
+  <li><strong>100% Free App &amp; Transparency:</strong> Adhkar 365 is 100% free and ad-free. All features, adhkar, audio recitations, palettes, custom routines, and prayer tools are accessible to everyone without charge. Optional voluntary developer maintenance support options (via Google Play subscriptions across 1-month, 6-month, and 12-month plans) are transparently presented with local currency pricing directly via Google Play Billing. Supporters receive a digital Muhsin profile recognition badge and dedication certificate. There are no hidden fees, drip pricing, or deceptive subscription locks.</li>
+</ul>
+
+<h2>4. Email Policy &amp; Unsubscribe Mechanism</h2>
+<ul>
+  <li>We do not send unsolicited promotional emails, newsletters, or marketing campaigns.</li>
+  <li>Any email communication you receive is purely transactional from Google/Apple (such as password resets or purchase receipts).</li>
+  <li>If you contact our support team via email, your email address is used solely to respond to your specific inquiry and is never added to a marketing list.</li>
+</ul>
+
+<h2>5. Data Retention &amp; Permanent Deletion (Google Play Compliance)</h2>
+<p>
+  In full compliance with Google Play's Account Deletion Policy, you have the right to permanently erase your account and all associated cloud data at any time:
+</p>
+
+<div class="box">
+  <p><strong>Option A: Instant In-App Deletion</strong></p>
+  <ol>
+    <li>Open the <strong>Adhkar 365</strong> app.</li>
+    <li>Go to <strong>Settings → Account &amp; Sync</strong>.</li>
+    <li>Tap <strong>"Delete Account"</strong> at the bottom of the card.</li>
+    <li>Confirm the prompt. Your profile, authentication credentials, and synced custom routines are instantly and permanently purged from Google Firebase servers.</li>
+  </ol>
+  <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 16px 0;">
+  <p><strong>Option B: Web / Email Deletion Request (Without Reinstalling the App)</strong></p>
+  <p>
+    If you uninstalled the App or cannot access your device, submit a data deletion request by emailing:
+  </p>
+  <p><strong>Email:</strong> <a href="mailto:abdullahalmasum365@gmail.com?subject=Adhkar%20365%20Account%20Deletion%20Request">abdullahalmasum365@gmail.com</a></p>
+  <p><strong>Subject:</strong> <code>Adhkar 365 Account Deletion Request</code></p>
+  <p>Include the email address associated with your account. We will permanently delete all your data within 7 business days and confirm by email.</p>
+</div>
+
+<h2>6. Children's Privacy (COPPA &amp; GDPR-K)</h2>
+<p>
+  Adhkar 365 is a general-audience spiritual utility. We do not target or knowingly collect personal information from children under the age of 13 (or under 16 in the European Union). If you are a parent or guardian and believe your child has submitted personal data to us, please contact us immediately, and we will promptly erase such records.
+</p>
+
+<h2>7. Audio Recitations &amp; Intellectual Property Notice</h2>
+<ul>
+  <li><strong>Sacred Texts &amp; Du'as:</strong> The prophetic supplications and Qur'anic verses contained in the App are derived from authentic classical Islamic compilations (including <em>Hisn al-Muslim</em>) and constitute shared Islamic cultural and religious heritage.</li>
+  <li><strong>Audio Recitations:</strong> Audio supplications and Qur'anic verses are provided for devotional, pronunciation, and educational guidance. All audio files, supplications, custom routines, palettes, and features are completely free and open to everyone with no gated content. Voluntary support exists solely to support independent app maintenance and development and provides digital patron recognition (Muhsin profile badge and Du'a Dedication Certificate) while keeping all core religious content 100% free for everyone.</li>
+  <li><strong>Notice to Rights Holders &amp; DMCA Takedown Policy:</strong> We respect intellectual property and creative rights. If you are a reciter, content creator, or copyright holder (or an authorized representative) and believe that any audio recording included in this application has been incorporated without proper authorization, or if you request attribution or immediate removal, please contact us at <a href="mailto:abdullahalmasum365@gmail.com?subject=Audio%20Copyright%20Notice">abdullahalmasum365@gmail.com</a> with the relevant details. We are committed to responding promptly and will remove or replace the specified audio file within 48 to 72 hours.</li>
+  <li><strong>Typography:</strong> All typography utilized in the application (including Amiri, Space Mono, Manrope, Public Sans, and Noto Serif) is licensed under the <strong>SIL Open Font License (OFL) 1.1</strong>.</li>
+</ul>
+
+<h2>8. Google Play Console Data Safety Form Reference</h2>
+<div class="box">
+  <p>To assist reviewers and maintain absolute compliance with Google Play's Data Safety requirements, our specific declarations are detailed below:</p>
+  
+  <h3>8.1 Data Collection &amp; Security Overview</h3>
+  <ul>
+    <li><strong>Data Collection:</strong> The app collects specific data types solely to provide app functionality and optional cross-device account synchronization.</li>
+    <li><strong>Data Sharing:</strong> <strong>NO user data is shared with third parties or data brokers for advertising, marketing, or commercial tracking.</strong></li>
+    <li><strong>Encryption in Transit:</strong> <strong>Yes.</strong> All network transmissions are strictly encrypted in transit using industry-standard HTTPS / TLS (Transport Layer Security).</li>
+    <li><strong>Data Deletion:</strong> <strong>Yes.</strong> Users can permanently delete their account and associated data directly in-app (Settings → Account &amp; Sync → Delete Account) or via email request.</li>
+  </ul>
+
+  <h3>8.2 Detailed Data Types &amp; Purpose Breakdown</h3>
+  <table border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 8px;">
+    <thead style="background: #f3f4f6;">
+      <tr>
+        <th align="left">Data Category &amp; Type</th>
+        <th align="left">Collected?</th>
+        <th align="left">Shared?</th>
+        <th align="left">Ephemeral?</th>
+        <th align="left">Optional / Required</th>
+        <th align="left">Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Location: Approximate Location</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes (on-device calculation)</td>
+        <td>Optional (user can select offline city manually)</td>
+        <td>App functionality (calculating prayer times, Qibla direction, local adhan)</td>
+      </tr>
+      <tr>
+        <td><strong>Location: Precise Location</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Yes (on-device calculation)</td>
+        <td>Optional (user-initiated GPS button only)</td>
+        <td>App functionality (astronomical solar calculations for prayer times and Qibla)</td>
+      </tr>
+      <tr>
+        <td><strong>Personal Info: Name</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No (stored in Firebase Auth)</td>
+        <td>Optional (only if signing in with Google/Apple)</td>
+        <td>Account management / personalization</td>
+      </tr>
+      <tr>
+        <td><strong>Personal Info: Email address</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No (stored in Firebase Auth)</td>
+        <td>Optional (only if signing in with Google/Apple)</td>
+        <td>Account management, cloud backup of custom dhikr routines</td>
+      </tr>
+      <tr>
+        <td><strong>Financial Info: Purchase history</strong></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No (stored locally &amp; verified via Google Play Billing)</td>
+        <td>Optional (only if user provides optional voluntary support)</td>
+        <td>App functionality (verifying voluntary supporter status for Muhsin profile badge &amp; dedication certificate; all devotional features remain 100% free)</td>
+      </tr>
+      <tr>
+        <td><strong>Device or Other IDs (Technical IP)</strong></td>
+        <td>No persistent ID collected</td>
+        <td>No</td>
+        <td>Yes (ephemeral transit IP during HTTPS queries)</td>
+        <td>Automatic for network features</td>
+        <td>App functionality (Firebase cloud sync and OpenStreetMap small town geocoding)</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>9. Developer &amp; Business Details</h2>
+<div class="box">
+  <p><strong>Publisher / Developer:</strong> Abdullah Al Masum</p>
+  <p><strong>Application:</strong> Adhkar 365 (Package: <code>com.adhkaar365.app</code>)</p>
+  <p><strong>Country of Operation:</strong> Bangladesh</p>
+  <p><strong>Support &amp; Privacy Inquiries:</strong> <a href="mailto:abdullahalmasum365@gmail.com">abdullahalmasum365@gmail.com</a></p>
+  <p><strong>Open Source Repository:</strong> <a href="https://github.com/abdullahalmasum365/adhkar-app-with-glow-" target="_blank" rel="noopener">github.com/abdullahalmasum365/adhkar-app-with-glow-</a></p>
+</div>
+
+<h2>10. Changes to This Privacy Policy</h2>
+<p>
+  We may update this policy periodically to reflect operational, legal, or regulatory updates. Any changes will be posted on this page with an updated revision date.
+</p>
+
+<footer>
+  <p>&copy; 2026 Abdullah Al Masum — Adhkar 365. All rights reserved.</p>
+  <p>
+    <a href="privacy-policy.html">Privacy Policy</a> &bull; 
+    <a href="terms-of-service.html">Terms of Service</a> &bull; 
+    <a href="refund-policy.html">Refund Policy</a> &bull; 
+    <a href="cookie-policy.html">Cookie Policy</a>
+  </p>
+</footer>
+
+</body>
+</html>
