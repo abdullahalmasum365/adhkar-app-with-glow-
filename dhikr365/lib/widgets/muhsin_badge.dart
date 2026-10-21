@@ -142,8 +142,8 @@ class MuhsinBadge extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 isBn
-                    ? '“নিশ্চয়ই আল্লাহ মুহসিনদের (সৎকর্মশীল ও উত্তম দানকারীদের) ভালোবাসেন।” (সূরা আল-বাকারা: ১৯৫)\n\nAdhkaar 365 অ্যাপের ইলমী খেদমতকে সচল রাখতে আপনার সাদাকাহ জারিয়াহর জন্য জাযাকাল্লাহু খাইরান। আল্লাহ তায়ালা আপনার ও আপনার পরিবারের পক্ষ থেকে কবুল করুন।'
-                    : '“Indeed, Allah loves the doers of good (Al-Muhsinin).” (Surah Al-Baqarah: 195)\n\nJazakAllahu Khairan for supporting Adhkaar 365 as an ongoing charity (Sadaqah Jariyah). May Allah accept it from you and your family.',
+                    ? '“নিশ্চয়ই আল্লাহ মুহসিনদের (সৎকর্মশীল ও উত্তম দানকারীদের) ভালোবাসেন।” (সূরা আল-বাকারা: ১৯৫)\n\nAdhkar 365 অ্যাপের ইলমী খেদমতকে সচল রাখতে আপনার সাদাকাহ জারিয়াহর জন্য জাযাকাল্লাহু খাইরান। আল্লাহ তায়ালা আপনার ও আপনার পরিবারের পক্ষ থেকে কবুল করুন।'
+                    : '“Indeed, Allah loves the doers of good (Al-Muhsinin).” (Surah Al-Baqarah: 195)\n\nJazakAllahu Khairan for supporting Adhkar 365 as an ongoing charity (Sadaqah Jariyah). May Allah accept it from you and your family.',
                 textAlign: TextAlign.center,
                 style: AppText.body(color: AppColors.textSlate300).copyWith(height: 1.45),
               ),

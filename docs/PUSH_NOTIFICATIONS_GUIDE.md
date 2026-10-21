@@ -1,6 +1,6 @@
-# Adhkaar 365 — Custom Push Notifications Guide (FCM)
+# Adhkar 365 — Custom Push Notifications Guide (FCM)
 
-This guide explains how to send custom push notifications, announcements, reminders, and news to all users of **Adhkaar 365** directly from the **Firebase Console**, anytime you want — 100% free with zero Play Store app updates required.
+This guide explains how to send custom push notifications, announcements, reminders, and news to all users of **Adhkar 365** directly from the **Firebase Console**, anytime you want — 100% free with zero Play Store app updates required.
 
 ---
 

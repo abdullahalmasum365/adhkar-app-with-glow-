@@ -126,8 +126,8 @@ class _WidgetPreviewScreenState extends State<WidgetPreviewScreen> {
             _guideStep(
               '3',
               isBn
-                  ? 'তালিকায় "Adhkaar 365" খুঁজে বের করুন।'
-                  : 'Find "Adhkaar 365" in the apps list.',
+                  ? 'তালিকায় "Adhkar 365" খুঁজে বের করুন।'
+                  : 'Find "Adhkar 365" in the apps list.',
             ),
             _guideStep(
               '4',
@@ -476,8 +476,8 @@ class _WidgetPreviewScreenState extends State<WidgetPreviewScreen> {
                           _guideStep(
                             '৩',
                             isBn
-                                ? '"Adhkaar 365" খুঁজুন এবং পছন্দের সাইজটি স্ক্রিনে রাখুন।'
-                                : 'Find "Adhkaar 365" and drag your desired layout.',
+                                ? '"Adhkar 365" খুঁজুন এবং পছন্দের সাইজটি স্ক্রিনে রাখুন।'
+                                : 'Find "Adhkar 365" and drag your desired layout.',
                           ),
                         ],
                       ),

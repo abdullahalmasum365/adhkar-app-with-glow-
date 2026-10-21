@@ -71,13 +71,13 @@ class _SadaqahCertificateSheetState extends State<SadaqahCertificateSheet> {
           'দোয়া: ${widget.dedication.getDuaArabic()}\n'
           '${widget.dedication.getDuaTranslation("bn")}\n\n'
           'তারিখ: $dateStr\n'
-          '— Adhkaar 365 অ্যাপের মাধ্যমে প্রেরিত'
+          '— Adhkar 365 অ্যাপের মাধ্যমে প্রেরিত'
         : '🌙 App Maintenance & Du\'a Remembrance\n'
           'Dedicated to: $nameLine\n'
           'Du\'a: ${widget.dedication.getDuaArabic()}\n'
           '${widget.dedication.getDuaTranslation("en")}\n\n'
           'Date: $dateStr\n'
-          '— Shared via Adhkaar 365';
+          '— Shared via Adhkar 365';
 
     return Container(
       decoration: BoxDecoration(
@@ -295,8 +295,8 @@ class _SadaqahCertificateSheetState extends State<SadaqahCertificateSheet> {
                               [XFile(file.path)],
                               text: shareText,
                               subject: isBn
-                                  ? 'সাদাকাহ জারিয়াহ সনদপত্র • Adhkaar 365'
-                                  : 'Sadaqah Jariyah Certificate • Adhkaar 365',
+                                  ? 'সাদাকাহ জারিয়াহ সনদপত্র • Adhkar 365'
+                                  : 'Sadaqah Jariyah Certificate • Adhkar 365',
                             );
                             if (mounted) setState(() => _isExporting = false);
                             return;

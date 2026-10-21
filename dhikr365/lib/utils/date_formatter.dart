@@ -1,5 +1,5 @@
 // ============================================================================
-// lib/utils/date_formatter.dart — Localized Date Formatting for Adhkaar 365
+// lib/utils/date_formatter.dart — Localized Date Formatting for Adhkar 365
 // ============================================================================
 
 import 'package:hijri/hijri_calendar.dart';

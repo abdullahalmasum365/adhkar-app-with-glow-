@@ -1,6 +1,6 @@
-# Adhkaar 365 — Firebase, App Check & Production Security Setup Guide
+# Adhkar 365 — Firebase, App Check & Production Security Setup Guide
 
-This guide contains the exact step-by-step production setup instructions for Firebase, Firebase App Check (Play Integrity), Google Cloud API key restrictions, and Cloud Firestore security rules for **Adhkaar 365** (`com.adhkaar365.app`).
+This guide contains the exact step-by-step production setup instructions for Firebase, Firebase App Check (Play Integrity), Google Cloud API key restrictions, and Cloud Firestore security rules for **Adhkar 365** (`com.adhkaar365.app`).
 
 > **Note:** This document is internal developer documentation and is **not** linked in the mobile application UI.
 
@@ -119,7 +119,7 @@ Your Firebase Android API key (`AIzaSyBWLKSbVtQ-u5hEr9LXMTL7x0d4MBe5PGg`) should
 ### 4.2 Set API Restrictions (Only Needed APIs)
 1. On the same key settings page, scroll down to **API restrictions**.
 2. Select **Restrict key**.
-3. In the dropdown, select **ONLY** the services Adhkaar 365 utilizes:
+3. In the dropdown, select **ONLY** the services Adhkar 365 utilizes:
    - **Cloud Firestore API**
    - **Identity Toolkit API** (Firebase Auth)
    - **Token Service API** (Firebase Auth Token Refresh)
@@ -135,7 +135,7 @@ When Google Play App Signing is enabled, Google re-signs your app with the App S
 
 ### 5.1 Obtain Play App Signing Fingerprints
 1. Open the [Google Play Console](https://play.google.com/console).
-2. Select **Adhkaar 365** (`com.adhkaar365.app`).
+2. Select **Adhkar 365** (`com.adhkaar365.app`).
 3. In the left menu, navigate to **Test and release** → **Setup** → **App signing**.
 4. Under **App signing key certificate**:
    - Copy the **SHA-1 certificate fingerprint**.
@@ -195,7 +195,7 @@ Prevent unexpected billing spikes from runaway bots, accidental loops, or high t
 1. Open the [Google Cloud Billing Budgets & Alerts Page](https://console.cloud.google.com/billing/budgets?project=adhkar365).
 2. Select your Cloud Billing Account.
 3. Click **Create Budget**:
-   - **Name:** `Adhkaar365-Monthly-Safety-Budget`
+   - **Name:** `Adhkar365-Monthly-Safety-Budget`
    - **Time range:** Monthly
    - **Projects:** Select `adhkar365`
    - **Amount:** Set target amount (e.g., `$5.00` or `$10.00` USD)
@@ -211,7 +211,7 @@ Prevent unexpected billing spikes from runaway bots, accidental loops, or high t
 
 ## Step 8: Offline-First Architecture & Fault Resilience (Verification)
 
-Adhkaar 365 is designed to be **100% functional offline** and completely immune to cloud outages.
+Adhkar 365 is designed to be **100% functional offline** and completely immune to cloud outages.
 
 ### Code Resilience Verification
 

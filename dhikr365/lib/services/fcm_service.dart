@@ -1,7 +1,7 @@
 // ============================================================================
 // lib/services/fcm_service.dart
 //
-// FIREBASE CLOUD MESSAGING (FCM) SERVICE — Adhkaar 365
+// FIREBASE CLOUD MESSAGING (FCM) SERVICE — Adhkar 365
 //
 // Handles:
 //   - Remote Push Notifications from Firebase Console (Announcements, Jumu'ah, Ramadan, etc.)
@@ -152,7 +152,7 @@ class FcmService {
   void _onForegroundMessage(RemoteMessage message) {
     debugPrint('[FcmService] Foreground message received: ${message.messageId}');
     final notification = message.notification;
-    final title = notification?.title ?? message.data['title'] ?? 'Adhkaar 365';
+    final title = notification?.title ?? message.data['title'] ?? 'Adhkar 365';
     final body = notification?.body ?? message.data['body'] ?? '';
     final payload = message.data['route'] ?? message.data['payload'] ?? message.data['category'] ?? '';
 

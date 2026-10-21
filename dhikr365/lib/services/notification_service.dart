@@ -1,7 +1,7 @@
 // ============================================================================
 // lib/services/notification_service.dart
 //
-// LOCAL NOTIFICATION SYSTEM — Adhkaar 365
+// LOCAL NOTIFICATION SYSTEM — Adhkar 365
 //
 // Handles:
 //   [LOCAL]  Morning Adhkar  → scheduled at Sunrise  (adhan package)
@@ -1126,7 +1126,7 @@ class NotificationService {
           color: AppColors.primary,
           styleInformation: const BigTextStyleInformation(
             'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।\nInstant delivery works! Checking 10-second scheduled alarm…',
-            contentTitle: '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+            contentTitle: '☪️ Adhkar 365 — টেস্ট নোটিফিকেশন সফল',
           ),
         ),
         iOS: const DarwinNotificationDetails(
@@ -1140,7 +1140,7 @@ class NotificationService {
       try {
         await _local.show(
           999,
-          '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+          '☪️ Adhkar 365 — টেস্ট নোটিফিকেশন সফল',
           'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।',
           details,
         );
@@ -1157,7 +1157,7 @@ class NotificationService {
         );
         await _local.show(
           999,
-          '☪️ Adhkaar 365 — টেস্ট নোটিফিকেশন সফল',
+          '☪️ Adhkar 365 — টেস্ট নোটিফিকেশন সফল',
           'ইনস্ট্যান্ট নোটিফিকেশন সফল! ১০ সেকেন্ডের মধ্যে পরবর্তী শিডিউল অ্যালার্ম পরীক্ষা সম্পন্ন হবে।',
           fallbackDetails,
         );
@@ -1166,7 +1166,7 @@ class NotificationService {
       // 2. Scheduled notification 10 seconds from now — proves the alarm scheduler works
       await _scheduleLocalNotification(
         id: 998,
-        title: '⏰ Adhkaar 365 — শিডিউল অ্যালার্ম সফল!',
+        title: '⏰ Adhkar 365 — শিডিউল অ্যালার্ম সফল!',
         body: 'আলহামদুলিল্লাহ! শিডিউল অ্যালার্ম সফলভাবে কাজ করেছে। নামাজের ওয়াক্তে সময়মতো নোটিফিকেশন আসবে ইনশাআল্লাহ।',
         scheduledTime: DateTime.now().add(const Duration(seconds: 10)),
         channelId: _IDs.adhkarChannelId,

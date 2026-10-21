@@ -1,6 +1,6 @@
-# Adhkaar 365 — Over-The-Air (OTA) Dua Corrections Guide
+# Adhkar 365 — Over-The-Air (OTA) Dua Corrections Guide
 
-This guide explains how to instantly correct any typo, Arabic harakat, translation, transliteration, or reference in any Dhikr or Dua in **Adhkaar 365** directly from **Firebase Console**, without releasing a new app update to the Google Play Store.
+This guide explains how to instantly correct any typo, Arabic harakat, translation, transliteration, or reference in any Dhikr or Dua in **Adhkar 365** directly from **Firebase Console**, without releasing a new app update to the Google Play Store.
 
 ---
 
