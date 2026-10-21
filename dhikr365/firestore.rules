@@ -132,7 +132,7 @@ service cloud.firestore {
 
     // Explicitly deny any read/write access to any other document outside /users and /dua_corrections
     match /{document=**} {
-      allow read, write: false;
+      allow read, write: if false;
     }
   }
 }
