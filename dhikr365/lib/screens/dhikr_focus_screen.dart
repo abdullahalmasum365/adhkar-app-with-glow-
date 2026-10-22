@@ -255,15 +255,18 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
     required int count,
     required bool isDone,
     required double countSize,
+    required String langCode,
   }) {
+    final textColor = (_isGlowActive || isDone)
+        ? (AppColors.isDark ? ThemeProvider.divineAmber : AppColors.primary)
+        : AppColors.textPrimary;
+
     Widget text = Text(
-      '$count',
+      R.localizeDigits('$count', langCode),
       style: AppText.manrope(
         fontSize: countSize,
         fontWeight: FontWeight.w900,
-        color: (_isGlowActive || isDone)
-            ? ThemeProvider.divineAmber
-            : AppColors.textPrimary,
+        color: textColor,
         height: 1.0,
       ),
     );
@@ -619,7 +622,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
     final target = currentDhikr.targetCount;
     final isDone = target > 0 && count >= target;
     final remaining = target > 0 ? (target - count).clamp(0, target) : 0;
-    final label = target > 0 ? '$target' : '∞';
+    final label = target > 0 ? R.localizeDigits('$target', lp.locale.languageCode) : '∞';
     final prog = target > 0 ? (count / target).clamp(0.0, 1.0) : null;
 
     final arabicSize = R.adaptive(26.0, 32.0, 38.0);
@@ -803,45 +806,51 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      '📿 $count',
+                                      '📿 ${R.localizeDigits('$count', lp.locale.languageCode)}',
                                       style: AppText.manrope(
                                         fontSize: R.adaptive(16.0, 18.0, 20.0),
                                         fontWeight: FontWeight.w900,
                                         color: (_isGlowActive || isDone)
-                                            ? ThemeProvider.divineAmber
+                                            ? (AppColors.isDark
+                                                ? ThemeProvider.divineAmber
+                                                : AppColors.primary)
                                             : AppColors.textPrimary,
                                       ),
                                     ),
                                     Text(
                                       ' / $label',
                                       style: AppText.manrope(
-                                        fontSize: R.adaptive(12.5, 14.0, 15.5),
-                                        fontWeight: FontWeight.w700,
+                                        fontSize: R.adaptive(13.0, 15.0, 16.5),
+                                        fontWeight: FontWeight.w800,
                                         color: AppColors.textSlate400,
                                       ),
                                     ),
                                     SizedBox(width: R.px(8)),
                                     Container(
                                       padding: EdgeInsets.symmetric(
-                                        horizontal: R.px(8),
-                                        vertical: R.px(2),
+                                        horizontal: R.px(10),
+                                        vertical: R.px(3),
                                       ),
                                       decoration: BoxDecoration(
                                         color: isDone
-                                            ? ThemeProvider.divineAmber
-                                                .withValues(alpha: 0.20)
+                                            ? (AppColors.isDark
+                                                    ? ThemeProvider.divineAmber
+                                                    : AppColors.primary)
+                                                .withValues(alpha: 0.18)
                                             : AppColors.ink(0.08),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Text(
                                         isDone
                                             ? '✓ ${lp.getText('completed').toUpperCase()}'
-                                            : '$remaining ${lp.getText('remaining')}',
+                                            : '${R.localizeDigits('$remaining', lp.locale.languageCode)} ${lp.getText('remaining')}',
                                         style: TextStyle(
-                                          fontSize: R.sp(9.5),
+                                          fontSize: R.sp(10.5),
                                           fontWeight: FontWeight.w800,
                                           color: isDone
-                                              ? ThemeProvider.divineAmber
+                                              ? (AppColors.isDark
+                                                  ? ThemeProvider.divineAmber
+                                                  : AppColors.primary)
                                               : AppColors.primary,
                                         ),
                                       ),
@@ -1036,47 +1045,54 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         count: count,
                                         isDone: isDone,
                                         countSize: countSize,
+                                        langCode: lp.locale.languageCode,
                                       ),
                                       SizedBox(height: R.px(4)),
                                       Text(
                                         '/ $label',
                                         style: AppText.manrope(
-                                          fontSize: R.adaptive(12.5, 14.0, 16.0),
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.ink(0.40),
+                                          fontSize: R.adaptive(14.0, 16.0, 18.0),
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.textSlate400,
                                         ),
                                       ),
                                       SizedBox(height: R.px(8)),
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                          horizontal: R.px(10),
-                                          vertical: R.px(3),
+                                          horizontal: R.px(12),
+                                          vertical: R.px(4),
                                         ),
                                         decoration: BoxDecoration(
                                           color: isDone
-                                              ? ThemeProvider.divineAmber
-                                                  .withValues(alpha: 0.16)
+                                              ? (AppColors.isDark
+                                                      ? ThemeProvider.divineAmber
+                                                      : AppColors.primary)
+                                                  .withValues(alpha: 0.18)
                                               : AppColors.primary
-                                                  .withValues(alpha: 0.10),
+                                                  .withValues(alpha: 0.12),
                                           borderRadius: BorderRadius.circular(12),
                                           border: Border.all(
                                             color: isDone
-                                                ? ThemeProvider.divineAmber
-                                                    .withValues(alpha: 0.35)
+                                                ? (AppColors.isDark
+                                                        ? ThemeProvider.divineAmber
+                                                        : AppColors.primary)
+                                                    .withValues(alpha: 0.40)
                                                 : AppColors.primary
-                                                    .withValues(alpha: 0.20),
+                                                    .withValues(alpha: 0.30),
                                           ),
                                         ),
                                         child: Text(
                                           isDone
                                               ? '✓ ${lp.getText('completed').toUpperCase()}'
-                                              : '$remaining ${lp.getText('remaining')}',
+                                              : '${R.localizeDigits('$remaining', lp.locale.languageCode)} ${lp.getText('remaining')}',
                                           style: TextStyle(
-                                            fontSize: R.sp(R.adaptive(9.0, 10.5, 12.0)),
+                                            fontSize: R.sp(R.adaptive(10.5, 12.0, 13.5)),
                                             fontWeight: FontWeight.w800,
-                                            letterSpacing: 0.8,
+                                            letterSpacing: 0.6,
                                             color: isDone
-                                                ? ThemeProvider.divineAmber
+                                                ? (AppColors.isDark
+                                                    ? ThemeProvider.divineAmber
+                                                    : AppColors.primary)
                                                 : AppColors.primary,
                                           ),
                                         ),

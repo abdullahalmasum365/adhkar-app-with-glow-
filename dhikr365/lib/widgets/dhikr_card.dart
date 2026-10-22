@@ -29,6 +29,12 @@ class DhikrCard extends StatefulWidget {
   /// Whether to display a category pill above the title.
   final bool showCategoryBadge;
 
+  /// 1-based index of this dhikr in the current list (e.g. 1 of 29)
+  final int? itemIndex;
+
+  /// Total number of items in the current list
+  final int? totalItems;
+
   const DhikrCard({
     super.key,
     required this.dhikr,
@@ -36,6 +42,8 @@ class DhikrCard extends StatefulWidget {
     this.isActive = false,
     this.isPlaying = false,
     this.showCategoryBadge = false,
+    this.itemIndex,
+    this.totalItems,
   });
 
   @override
@@ -300,16 +308,21 @@ class _DhikrCardState extends State<DhikrCard> {
     required int count,
     required bool isDone,
     required double counterNum,
+    required String langCode,
   }) {
+    final textColor = (_isGlowActive || isDone)
+        ? (isDone
+            ? (AppColors.isDark ? ThemeProvider.divineAmber : AppColors.primary)
+            : ThemeProvider.divineAmber)
+        : AppColors.onPrimary;
+
     Widget text = Text(
-      '$count',
+      R.localizeDigits('$count', langCode),
       style: TextStyle(
         fontSize: counterNum,
         fontWeight: FontWeight.w900,
         height: 1.0,
-        color: (_isGlowActive || isDone)
-            ? ThemeProvider.divineAmber
-            : AppColors.textPrimary,
+        color: textColor,
       ),
     );
 
@@ -384,39 +397,70 @@ class _DhikrCardState extends State<DhikrCard> {
           padding: EdgeInsets.all(cardPad),
           child: Column(
             children: [
-              // ── Optional Category Badge ─────────────────────────────────────
-              if (widget.showCategoryBadge) ...[
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: R.px(10)),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: widget.dhikr.category.color
-                          .withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: widget.dhikr.category.color
-                            .withValues(alpha: 0.35),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(widget.dhikr.category.icon,
-                            size: 13, color: widget.dhikr.category.color),
-                        const SizedBox(width: 6),
-                        Text(
-                          lp.getText(widget.dhikr.category.titleKey),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: widget.dhikr.category.color,
+              // ── Optional Item Index & Category Badges ───────────────────────
+              if (widget.itemIndex != null || widget.showCategoryBadge) ...[
+                Padding(
+                  padding: EdgeInsets.only(bottom: R.px(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (widget.itemIndex != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: AppColors.primary.withValues(alpha: 0.30),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            widget.totalItems != null
+                                ? '${lp.getText('nav_dua')} ${R.localizeDigits('${widget.itemIndex}', lp.locale.languageCode)} / ${R.localizeDigits('${widget.totalItems}', lp.locale.languageCode)}'
+                                : '${lp.getText('nav_dua')} #${R.localizeDigits('${widget.itemIndex}', lp.locale.languageCode)}',
+                            style: TextStyle(
+                              fontSize: R.sp(11),
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.5,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        )
+                      else
+                        const SizedBox.shrink(),
+                      if (widget.showCategoryBadge)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: widget.dhikr.category.color
+                                .withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: widget.dhikr.category.color
+                                  .withValues(alpha: 0.35),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(widget.dhikr.category.icon,
+                                  size: 13, color: widget.dhikr.category.color),
+                              const SizedBox(width: 6),
+                              Text(
+                                lp.getText(widget.dhikr.category.titleKey),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  color: widget.dhikr.category.color,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
               ],
@@ -816,14 +860,16 @@ class _DhikrCardState extends State<DhikrCard> {
                               ? '${lp.getText('completed').toUpperCase()} ✓'
                               : lp.getText('tap_to_count').toUpperCase(),
                           style: TextStyle(
-                            fontSize: R.sp(10),
+                            fontSize: R.sp(11),
                             fontWeight: FontWeight.w900,
                             letterSpacing: 1.8,
                             color: _isGlowActive
                                 ? AppColors.textPrimary
                                 : (isDone
-                                    ? AppColors.ink(0.54)
-                                    : AppColors.ink(0.7)),
+                                    ? (AppColors.isDark
+                                        ? ThemeProvider.divineAmber
+                                        : AppColors.primary)
+                                    : AppColors.onPrimary.withValues(alpha: 0.90)),
                           ),
                         ),
                         SizedBox(height: R.px(6)),
@@ -841,18 +887,21 @@ class _DhikrCardState extends State<DhikrCard> {
                                   count: count,
                                   isDone: isDone,
                                   counterNum: counterNum,
+                                  langCode: lp.locale.languageCode,
                                 ),
                               ),
                             ),
                             if (target > 0) ...[
                               SizedBox(width: R.px(4)),
                               Text(
-                                '/ $target',
+                                '/ ${R.localizeDigits('$target', lp.locale.languageCode)}',
                                 style: TextStyle(
-                                  fontSize: R.sp(13),
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary
-                                      .withValues(alpha: isDone ? 0.3 : 0.5),
+                                  fontSize: R.sp(15),
+                                  fontWeight: FontWeight.w800,
+                                  color: isDone
+                                      ? AppColors.textSlate400
+                                      : AppColors.onPrimary
+                                          .withValues(alpha: 0.85),
                                 ),
                               ),
                             ],

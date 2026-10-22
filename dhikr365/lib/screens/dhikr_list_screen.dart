@@ -1565,66 +1565,103 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                               ? completedDhikrs / totalDhikrs
                               : 0;
 
-                          return Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      lp.getText('your_progress').toUpperCase(),
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.5,
-                                        color: AppColors.ink(0.60),
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Flexible(
-                                    child: Text(
-                                      "$completedDhikrs / $totalDhikrs ${lp.getText('completed').toUpperCase()}",
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.0,
-                                        color: ThemeProvider.divineAmber,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Container(
-                                height: 6,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  color: AppColors.ink(0.1),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: FractionallySizedBox(
-                                  alignment: Alignment.centerLeft,
-                                  widthFactor: progress,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: ThemeProvider.divineAmber,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: ThemeProvider.divineAmber
-                                              .withValues(alpha: 0.5),
-                                          blurRadius: 10,
+                          final progressColor = AppColors.isDark
+                              ? ThemeProvider.divineAmber
+                              : AppColors.primary;
+                          final langCode = lp.locale.languageCode;
+                          final progressText =
+                              "${R.localizeDigits('$completedDhikrs', langCode)} / ${R.localizeDigits('$totalDhikrs', langCode)} ${lp.getText('completed')}";
+
+                          return Container(
+                            padding: EdgeInsets.all(R.px(14)),
+                            decoration: BoxDecoration(
+                              color: AppColors.ink(0.04),
+                              borderRadius: BorderRadius.circular(R.px(16)),
+                              border: Border.all(color: AppColors.ink(0.08)),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.auto_graph_rounded,
+                                          size: R.sp(15),
+                                          color: progressColor,
+                                        ),
+                                        SizedBox(width: R.px(6)),
+                                        Text(
+                                          lp.getText('your_progress').toUpperCase(),
+                                          style: TextStyle(
+                                            fontSize: R.sp(11.5),
+                                            fontWeight: FontWeight.w800,
+                                            letterSpacing: 1.0,
+                                            color: AppColors.textPrimary,
+                                          ),
                                         ),
                                       ],
                                     ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: R.px(10),
+                                        vertical: R.px(3),
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: progressColor.withValues(alpha: 0.14),
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: progressColor.withValues(alpha: 0.35),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        progressText,
+                                        style: TextStyle(
+                                          fontSize: R.sp(12),
+                                          fontWeight: FontWeight.w800,
+                                          color: progressColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: R.px(10)),
+                                Container(
+                                  height: R.px(8),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.ink(0.08),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: FractionallySizedBox(
+                                    alignment: Alignment.centerLeft,
+                                    widthFactor: progress,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            progressColor,
+                                            AppColors.accent,
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: progressColor
+                                                .withValues(alpha: 0.45),
+                                            blurRadius: 8,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         }),
                       ],
@@ -1769,6 +1806,8 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                           final d = displayList[index];
                           return DhikrCard(
                             dhikr: d,
+                            itemIndex: index + 1,
+                            totalItems: displayList.length,
                             onPlayTapped: _onPlayTapped,
                             isActive: _activeDhikr?.id == d.id,
                             isPlaying:

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
+import '../utils/responsive.dart';
 import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
@@ -1406,20 +1407,23 @@ class _CatCard extends StatelessWidget {
                   child: Text(
                     resolvedTitle,
                     style: AppText.manrope(
-                        fontSize: isSmall ? 11 : 12,
-                        fontWeight: FontWeight.w600),
+                        fontSize: isSmall ? 12 : 13.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Row(
                   children: [
                     Flexible(
                       child: Text(
-                        '$count $duasLabel',
+                        '${R.localizeDigits('$count', Provider.of<LanguageProvider>(context, listen: false).locale.languageCode)} $duasLabel',
                         style: AppText.manrope(
-                            fontSize: 10, color: AppColors.textSlate500),
+                            fontSize: isSmall ? 10.5 : 11.5,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textSlate400),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -1427,8 +1431,8 @@ class _CatCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Icon(
                         Icons.arrow_forward_ios,
-                        size: 8,
-                        color: cat.color.withValues(alpha: 0.7),
+                        size: 9,
+                        color: cat.color.withValues(alpha: 0.8),
                       ),
                     ],
                   ],

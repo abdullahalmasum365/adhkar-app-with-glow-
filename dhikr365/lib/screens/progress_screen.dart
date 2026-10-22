@@ -422,16 +422,17 @@ class _ProgressScreenState extends State<ProgressScreen> {
                           decoration: AppDeco.glassCard(
                             borderRadius: BorderRadius.circular(R.px(20)),
                           ).copyWith(
-                            color: AppColors.bgDark.withValues(alpha: 0.92),
+                            color: AppColors.surfaceElevated,
                             border: Border.all(
                                 color:
-                                    AppColors.primary.withValues(alpha: 0.3)),
+                                    AppColors.primary.withValues(alpha: 0.35),
+                                width: 1.5),
                           ),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.favorite,
-                                  color: AppColors.primary, size: R.sp(40)),
+                              Icon(Icons.favorite_rounded,
+                                  color: AppColors.primary, size: R.sp(42)),
                               SizedBox(height: R.px(16)),
                               Text(
                                 lp.getText('note_on_progress'),
@@ -458,26 +459,45 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                   padding:
                                       EdgeInsets.symmetric(vertical: R.px(14)),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary,
+                                    gradient: LinearGradient(
+                                      colors: [AppColors.primary, AppColors.accent],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
                                     borderRadius:
-                                        BorderRadius.circular(R.px(12)),
+                                        BorderRadius.circular(R.px(14)),
+                                    border: Border.all(
+                                      color: AppColors.onPrimary.withValues(alpha: 0.25),
+                                      width: 1.2,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
                                         color: AppColors.primary
-                                            .withValues(alpha: 0.3),
-                                        blurRadius: 12,
+                                            .withValues(alpha: 0.35),
+                                        blurRadius: 14,
+                                        offset: const Offset(0, 4),
                                       )
                                     ],
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      lp.getText('done'),
-                                      style: AppText.manrope(
-                                        fontSize: R.sp(14),
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.textPrimary,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.check_circle_rounded,
+                                        color: AppColors.onPrimary,
+                                        size: R.sp(18),
                                       ),
-                                    ),
+                                      SizedBox(width: R.px(8)),
+                                      Text(
+                                        lp.getText('done'),
+                                        style: AppText.manrope(
+                                          fontSize: R.sp(15),
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.onPrimary,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -729,22 +749,36 @@ class _ContemplativeCard extends StatelessWidget {
             GestureDetector(
               onTap: () => tp.toggleHabitTracker(true),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: R.px(20), vertical: R.px(12)),
+                padding: EdgeInsets.symmetric(horizontal: R.px(22), vertical: R.px(13)),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(R.px(12)),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.18),
+                      AppColors.accent.withValues(alpha: 0.18),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(R.px(14)),
+                  border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.45),
+                      width: 1.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.shadow(0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.insights_rounded, color: AppColors.primary, size: R.sp(18)),
+                    Icon(Icons.insights_rounded, color: AppColors.primary, size: R.sp(19)),
                     SizedBox(width: R.px(8)),
                     Text(
                       lp.getText('enable_tracker_btn'),
                       style: AppText.manrope(
-                        fontSize: R.sp(13),
-                        fontWeight: FontWeight.w700,
+                        fontSize: R.sp(13.5),
+                        fontWeight: FontWeight.w800,
                         color: AppColors.primary,
                       ),
                     ),
