@@ -5,6 +5,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:adhan/adhan.dart';
+import '../providers/auth_provider.dart';
+import '../providers/theme_provider.dart';
+import 'account_screen.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/user_provider.dart';
@@ -148,14 +151,26 @@ class _HomeScreenState extends State<HomeScreen>
     final hijriDate =
         AppDateFormatter.formatHijri(HijriCalendar.now(), langCode);
 
-    final displayName = (userProvider.userName?.isNotEmpty == true)
+    final ap = Provider.of<AuthProvider>(context);
+    context.watch<ThemeProvider>();
+
+    // Resolve name: UserProvider -> Firebase Auth displayName -> Email prefix -> Guest
+    final rawName = (userProvider.userName?.isNotEmpty == true)
         ? userProvider.userName!
-        : lp.getText('guest');
+        : (ap.isSignedIn && ap.displayName.isNotEmpty
+            ? ap.displayName
+            : (ap.user?.email?.isNotEmpty == true
+                ? ap.user!.email!.split('@').first
+                : ''));
+    final displayName = rawName.isNotEmpty ? rawName : lp.getText('guest');
+
     final initials = displayName
         .split(' ')
         .take(2)
         .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
         .join();
+
+    final photoUrl = ap.user?.photoURL;
 
     final location = (userProvider.city?.isNotEmpty == true)
         ? '${userProvider.city}, ${userProvider.country}'
@@ -208,41 +223,104 @@ class _HomeScreenState extends State<HomeScreen>
                       ),
                     ),
 
-                  // ── Header ──────────────────────────────────────────────────
+                  // ── Header (Avatar + User Name -> AccountScreen) ─────────────
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(children: [
-                        Container(
-                          width: avatarSize,
-                          height: avatarSize,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withValues(alpha: 0.2),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color:
-                                    AppColors.primary.withValues(alpha: 0.4)),
-                          ),
-                          child: Center(
-                              child: Text(
-                            initials.isEmpty ? '?' : initials,
-                            style: AppText.manrope(
-                              fontSize: R.adaptive(11, 14, 16),
-                              fontWeight: FontWeight.w800,
-                              color: AppColors.primary,
-                            ),
-                          )),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const AccountScreen()),
                         ),
-                        SizedBox(width: R.px(10)),
-                        Text(displayName,
-                            style: AppText.manrope(
-                                fontSize: R.adaptive(12, 14, 16),
-                                color: AppColors.textSlate400)),
-                        if (userProvider.isMuhsin(pp)) ...[
-                          SizedBox(width: R.px(8)),
-                          const MuhsinBadge(isSmall: true),
-                        ],
-                      ]),
+                        child: Row(children: [
+                          Container(
+                            width: avatarSize,
+                            height: avatarSize,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.18),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.4),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: (photoUrl != null && photoUrl.isNotEmpty)
+                                  ? Image.network(
+                                      photoUrl,
+                                      width: avatarSize,
+                                      height: avatarSize,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (_, __, ___) => Center(
+                                        child: Text(
+                                          initials.isEmpty ? '?' : initials,
+                                          style: AppText.manrope(
+                                            fontSize: R.adaptive(11, 14, 16),
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ),
+                                      loadingBuilder: (ctx, child, progress) {
+                                        if (progress == null) return child;
+                                        return Center(
+                                          child: SizedBox(
+                                            width: R.px(12),
+                                            height: R.px(12),
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        initials.isEmpty ? '?' : initials,
+                                        style: AppText.manrope(
+                                          fontSize: R.adaptive(11, 14, 16),
+                                          fontWeight: FontWeight.w800,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          SizedBox(width: R.px(10)),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    displayName,
+                                    style: AppText.manrope(
+                                      fontSize: R.adaptive(12, 14, 16),
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  if (userProvider.isMuhsin(pp)) ...[
+                                    SizedBox(width: R.px(6)),
+                                    const MuhsinBadge(isSmall: true),
+                                  ],
+                                ],
+                              ),
+                              if (ap.isSignedIn && ap.user?.email != null)
+                                Text(
+                                  ap.user!.email!,
+                                  style: AppText.body(color: AppColors.textSlate400)
+                                      .copyWith(fontSize: R.adaptive(9, 10, 11)),
+                                ),
+                            ],
+                          ),
+                        ]),
+                      ),
                       GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () => Navigator.push(
@@ -293,13 +371,7 @@ class _HomeScreenState extends State<HomeScreen>
                   // to LocationSetupScreen instead of the edit sheet — that screen
                   // is designed for first-time setup and handles GPS + manual entry.
                   GestureDetector(
-                    onTap: () => userProvider.hasSavedCoordinates
-                        ? _showLocationPicker(context)
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const LocationSetupScreen()),
-                          ),
+                    onTap: () => _showLocationPicker(context),
                     behavior: HitTestBehavior.opaque,
                     child: Padding(
                       padding: EdgeInsets.symmetric(vertical: R.px(3)),
@@ -1224,15 +1296,24 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
   Widget build(BuildContext context) {
     R.init(context);
     final lp = Provider.of<LanguageProvider>(context);
+    context.watch<ThemeProvider>();
     final bottom = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottom),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.bgTeal,
+          color: AppColors.surfaceElevated,
           borderRadius:
               const BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border.all(color: AppColors.glassBorder),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadow(0.25),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            )
+          ],
         ),
         child: SafeArea(
           top: false,
@@ -1243,7 +1324,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── Handle ────────────────────────────────────────────────────
+                // ── Handle ──────────────────────────────────────────────────
                 Center(
                   child: Container(
                     width: R.px(40),
@@ -1255,7 +1336,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                 ),
                 SizedBox(height: R.px(20)),
 
-                // ── Title ─────────────────────────────────────────────────────
+                // ── Title ───────────────────────────────────────────────────
                 Row(children: [
                   Container(
                     padding: EdgeInsets.all(R.px(8)),
@@ -1273,7 +1354,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                         Text(lp.getText('set_location'),
                             style: AppText.heading(R.adaptive(16, 18, 22))),
                         Text(lp.getText('location_for_prayer'),
-                            style: AppText.body(color: AppColors.textSlate500)
+                            style: AppText.body(color: AppColors.textSlate400)
                                 .copyWith(fontSize: R.sp(11))),
                       ],
                     ),
@@ -1282,7 +1363,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
 
                 SizedBox(height: R.px(24)),
 
-                // ── GPS Button ────────────────────────────────────────────────
+                // ── GPS Button ──────────────────────────────────────────────
                 GestureDetector(
                   onTap: _loading ? null : _useGPS,
                   child: AnimatedContainer(
@@ -1292,13 +1373,23 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                     decoration: BoxDecoration(
                       gradient: _loading
                           ? null
-                          : const LinearGradient(
-                              colors: [Color(0xFFF97316), Color(0xFFEA580C)]),
-                      color: _loading ? AppColors.ink(0.05) : null,
+                          : LinearGradient(
+                              colors: [AppColors.primary, AppColors.accent],
+                            ),
+                      color: _loading ? AppColors.ink(0.06) : null,
                       borderRadius: BorderRadius.circular(R.px(14)),
                       border: _loading
                           ? Border.all(color: AppColors.ink(0.12))
                           : null,
+                      boxShadow: _loading
+                          ? null
+                          : [
+                              BoxShadow(
+                                color: AppColors.primary.withValues(alpha: 0.35),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3),
+                              )
+                            ],
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -1312,7 +1403,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           )
                         else
                           Icon(Icons.my_location,
-                              color: Colors.white, size: R.sp(17)),
+                              color: AppColors.onPrimary, size: R.sp(17)),
                         SizedBox(width: R.px(8)),
                         Text(
                           _loading
@@ -1321,7 +1412,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           style: AppText.manrope(
                               fontSize: R.sp(13),
                               fontWeight: FontWeight.w700,
-                              color: _loading ? AppColors.textSlate400 : Colors.white),
+                              color: _loading ? AppColors.textSlate400 : AppColors.onPrimary),
                         ),
                       ],
                     ),
@@ -1330,21 +1421,21 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
 
                 SizedBox(height: R.px(20)),
 
-                // ── Divider ───────────────────────────────────────────────────
+                // ── Divider ─────────────────────────────────────────────────
                 Row(children: [
-                  Expanded(child: Divider(color: AppColors.ink(0.08))),
+                  Expanded(child: Divider(color: AppColors.ink(0.1))),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: R.px(12)),
                     child: Text(lp.getText('or_enter_manually'),
                         style: AppText.label(color: AppColors.textSlate500)
                             .copyWith(fontSize: R.sp(9))),
                   ),
-                  Expanded(child: Divider(color: AppColors.ink(0.08))),
+                  Expanded(child: Divider(color: AppColors.ink(0.1))),
                 ]),
 
                 SizedBox(height: R.px(20)),
 
-                // ── City field ────────────────────────────────────────────────
+                // ── City field ──────────────────────────────────────────────
                 _Field(
                   controller: _cityCtrl,
                   label: lp.getText('city'),
@@ -1353,7 +1444,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                 ),
                 SizedBox(height: R.px(12)),
 
-                // ── Country field ─────────────────────────────────────────────
+                // ── Country field ───────────────────────────────────────────
                 _Field(
                   controller: _countryCtrl,
                   label: lp.getText('country'),
@@ -1361,44 +1452,81 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                   icon: Icons.flag_outlined,
                 ),
 
-                // ── GPS coords indicator ──────────────────────────────────────
-                if (_gpsLat != null) ...[
+                // ── GPS coords indicator ────────────────────────────────────
+                if (_gpsLat != null && _gpsLng != null) ...[
                   SizedBox(height: R.px(10)),
-                  Row(children: [
-                    Icon(Icons.check_circle,
-                        color: const Color(0xFF10B981), size: R.sp(13)),
-                    SizedBox(width: R.px(6)),
-                    Text(lp.getText('gps_coords_saved'),
-                        style: AppText.body(color: const Color(0xFF10B981))
-                            .copyWith(fontSize: R.sp(11))),
-                  ]),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: R.px(12), vertical: R.px(8)),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(R.px(8)),
+                      border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.25)),
+                    ),
+                    child: Row(children: [
+                      Icon(Icons.check_circle,
+                          color: AppColors.primary, size: R.sp(14)),
+                      SizedBox(width: R.px(6)),
+                      Expanded(
+                        child: Text(
+                          ': , ',
+                          style: AppText.body(color: AppColors.primary)
+                              .copyWith(fontSize: R.sp(11), fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ]),
+                  ),
                 ],
 
-                // ── Error ─────────────────────────────────────────────────────
+                // ── Error / Permission Denied ───────────────────────────────
                 if (_error != null) ...[
                   SizedBox(height: R.px(10)),
-                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Icon(Icons.error_outline,
-                        color: Colors.redAccent, size: R.sp(14)),
-                    SizedBox(width: R.px(6)),
-                    Flexible(
-                      child: Text(_error!,
-                          style: AppText.body(color: Colors.redAccent)
-                              .copyWith(fontSize: R.sp(11))),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: R.px(12), vertical: R.px(8)),
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(R.px(8)),
+                      border: Border.all(
+                          color: Colors.redAccent.withValues(alpha: 0.3)),
                     ),
-                  ]),
-                  if (_showSettingsLink)
-                    TextButton(
-                      onPressed: () => Geolocator.openAppSettings(),
-                      child: Text(lp.getText('open_settings'),
-                          style: AppText.body(color: AppColors.primary)
-                              .copyWith(fontSize: R.sp(12))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Icon(Icons.error_outline,
+                              color: Colors.redAccent, size: R.sp(15)),
+                          SizedBox(width: R.px(8)),
+                          Expanded(
+                            child: Text(_error!,
+                                style: AppText.body(color: Colors.redAccent)
+                                    .copyWith(fontSize: R.sp(11))),
+                          ),
+                        ]),
+                        if (_showSettingsLink) ...[
+                          SizedBox(height: R.px(6)),
+                          GestureDetector(
+                            onTap: () => Geolocator.openAppSettings(),
+                            child: Text(
+                              lp.getText('open_app_settings'),
+                              style: AppText.body(color: AppColors.primary)
+                                  .copyWith(
+                                fontSize: R.sp(11),
+                                decoration: TextDecoration.underline,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
+                  ),
                 ],
 
                 SizedBox(height: R.px(24)),
 
-                // ── Save Button ───────────────────────────────────────────────
+                // ── Save Button ─────────────────────────────────────────────
                 Row(children: [
                   Expanded(
                     child: GestureDetector(
@@ -1414,6 +1542,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                           child: Text(lp.getText('cancel'),
                               style: AppText.manrope(
                                   fontSize: R.sp(13),
+                                  fontWeight: FontWeight.w600,
                                   color: AppColors.textSlate400)),
                         ),
                       ),
@@ -1427,20 +1556,22 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: R.px(14)),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                              colors: [Color(0xFFF97316), Color(0xFFEA580C)]),
+                          gradient: LinearGradient(
+                              colors: [AppColors.primary, AppColors.accent]),
                           borderRadius: BorderRadius.circular(R.px(14)),
                           boxShadow: [
                             BoxShadow(
-                                color: AppColors.primary.withValues(alpha: 0.3),
-                                blurRadius: 12)
+                                color: AppColors.primary.withValues(alpha: 0.35),
+                                blurRadius: 12,
+                                offset: const Offset(0, 3)),
                           ],
                         ),
                         child: Center(
                           child: Text(lp.getText('save_location'),
                               style: AppText.manrope(
                                   fontSize: R.sp(13),
-                                  fontWeight: FontWeight.w700)),
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.onPrimary)),
                         ),
                       ),
                     ),
@@ -1455,7 +1586,7 @@ class _LocationPickerSheetState extends State<_LocationPickerSheet> {
   }
 }
 
-// ── Reusable input field ───────────────────────────────────────────────────────
+// ── Reusable input field ──────────────────────────────────────────
 
 class _Field extends StatelessWidget {
   final TextEditingController controller;
@@ -1476,34 +1607,34 @@ class _Field extends StatelessWidget {
       children: [
         Text(label.toUpperCase(),
             style: AppText.label(color: AppColors.textSlate500)
-                .copyWith(fontSize: R.sp(9))),
+                .copyWith(fontSize: R.sp(9), fontWeight: FontWeight.w600)),
         SizedBox(height: R.px(6)),
         TextField(
           controller: controller,
-          style: AppText.manrope(fontSize: R.sp(14)),
+          style: AppText.manrope(fontSize: R.sp(14), color: AppColors.textPrimary),
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: AppText.body(color: AppColors.textSlate500)
                 .copyWith(fontSize: R.sp(13)),
             prefixIcon:
-                Icon(icon, color: AppColors.textSlate500, size: R.sp(17)),
+                Icon(icon, color: AppColors.primary.withValues(alpha: 0.75), size: R.sp(17)),
             filled: true,
-            fillColor: AppColors.ink(0.05),
+            fillColor: AppColors.ink(0.04),
             contentPadding:
                 EdgeInsets.symmetric(horizontal: R.px(16), vertical: R.px(14)),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
-              borderSide: BorderSide(color: AppColors.ink(0.1)),
+              borderSide: BorderSide(color: AppColors.ink(0.12)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
-              borderSide: BorderSide(color: AppColors.ink(0.1)),
+              borderSide: BorderSide(color: AppColors.ink(0.12)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(R.px(12)),
               borderSide: BorderSide(
-                  color: AppColors.primary.withValues(alpha: 0.6), width: 1.5),
+                  color: AppColors.primary, width: 1.5),
             ),
           ),
         ),

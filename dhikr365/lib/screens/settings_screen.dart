@@ -628,12 +628,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
     final name = (up.userName?.isNotEmpty == true)
         ? up.userName!
-        : lp.getText('guest_user');
+        : (ap.isSignedIn && ap.displayName.isNotEmpty
+            ? ap.displayName
+            : (ap.user?.email?.isNotEmpty == true
+                ? ap.user!.email!.split('@').first
+                : lp.getText('guest_user')));
     final initials = name
         .split(' ')
         .take(2)
         .map((w) => w.isNotEmpty ? w[0].toUpperCase() : '')
         .join();
+    final photoUrl = ap.user?.photoURL;
 
     return Scaffold(
       backgroundColor: AppColors.bgDark,
@@ -662,12 +667,28 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           shape: BoxShape.circle,
                           border: Border.all(
                               color: AppColors.primary.withValues(alpha: 0.3))),
-                      child: Center(
-                          child: Text(initials.isEmpty ? '?' : initials,
-                              style: AppText.manrope(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.primary)))),
+                      child: ClipOval(
+                        child: (photoUrl != null && photoUrl.isNotEmpty)
+                            ? Image.network(
+                                photoUrl,
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Center(
+                                    child: Text(
+                                        initials.isEmpty ? '?' : initials,
+                                        style: AppText.manrope(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.primary))),
+                              )
+                            : Center(
+                                child: Text(initials.isEmpty ? '?' : initials,
+                                    style: AppText.manrope(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppColors.primary))),
+                      )),
                   const SizedBox(width: 12),
                   Expanded(
                       child: Column(
@@ -692,7 +713,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ? (lp.locale.languageCode == 'bn'
                                   ? 'মুহসিন স্পন্সর • সাদাকাহ জারিয়াহ'
                                   : 'Muhsin Sponsor • Ongoing Charity')
-                              : lp.getText('active_member'),
+                              : (ap.isSignedIn && ap.user?.email != null ? ap.user!.email! : lp.getText('active_member')),
                           style: AppText.body(
                             color: up.isMuhsin(pp)
                                 ? const Color(0xFFE5A93C)
