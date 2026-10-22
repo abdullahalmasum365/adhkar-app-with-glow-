@@ -373,5 +373,12 @@
   "reset_to_default": "إعادة تعيين إلى الافتراضي",
   "plan_saved": "تم حفظ الخطة!",
   "donation_per_6_months": "/٦ أشهر",
-  "donation_per_year": "/سنويًا"
+  "donation_per_year": "/سنويًا",
+  "hijri_adjustment": "تعديل التاريخ الهجري",
+  "hijri_adjustment_desc": "تعديل التاريخ بمقدار ±1 أو ±2 يوم وفقاً لرؤية الهلال المحلية.",
+  "hijri_adjustment_saved": "تم تحديث تعديل التاريخ الهجري بنجاح.",
+  "calc_method_default_badge": "الافتراضي",
+  "calc_method_recommended_badge": "موصى به",
+  "calc_method_reset_btn": "إعادة ضبط",
+  "calc_method_reset_success": "تمت إعادة الضبط إلى طريقة الحساب الافتراضية."
 }

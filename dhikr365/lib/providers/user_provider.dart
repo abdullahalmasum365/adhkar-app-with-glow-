@@ -34,6 +34,16 @@ class UserProvider extends ChangeNotifier {
   double? get lng => _lng;
   String? get timezone => _timezone;
   bool get hasDonated => _hasDonated;
+  int _hijriAdjustment = 0;
+  int get hijriAdjustment => _hijriAdjustment;
+
+  /// Returns the recommended calculation method based on user's current location/country.
+  CalculationMethod get defaultCalculationMethod {
+    if (_country != null && _country!.trim().isNotEmpty) {
+      return getMethodForCountry(_country!);
+    }
+    return CalculationMethod.muslim_world_league;
+  }
 
   /// Returns true if user has donated or has active subscription sponsorship
   bool isMuhsin(PurchaseProvider pp) => pp.hasActiveDonation || _hasDonated;
@@ -100,6 +110,7 @@ class UserProvider extends ChangeNotifier {
       _hasCompletedOnboarding = prefs.getBool('onboarding_done') ?? false;
       _onboardingGoal = prefs.getString('onboarding_goal');
       _preferredDhikrTime = prefs.getString('preferred_dhikr_time');
+      _hijriAdjustment = prefs.getInt('hijri_adjustment') ?? 0;
     } catch (_) {
       // Unexpected error — proceed with defaults so the app isn't stuck.
     } finally {
@@ -149,6 +160,19 @@ class UserProvider extends ChangeNotifier {
     _calculationMethod = method;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('calc_method', method.name);
+    notifyListeners();
+  }
+
+  /// Resets prayer calculation method to the official recommended default for user's country.
+  Future<void> resetCalculationMethodToDefault() async {
+    await setCalculationMethod(defaultCalculationMethod);
+  }
+
+  /// Sets Hijri date adjustment offset (clamped between -2 and +2 days) to match local moon sighting.
+  Future<void> setHijriAdjustment(int offset) async {
+    _hijriAdjustment = offset.clamp(-2, 2);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('hijri_adjustment', _hijriAdjustment);
     notifyListeners();
   }
 

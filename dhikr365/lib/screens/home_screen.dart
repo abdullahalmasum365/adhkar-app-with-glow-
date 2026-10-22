@@ -145,11 +145,15 @@ class _HomeScreenState extends State<HomeScreen>
     final now = DateTime.now();
     final isMorning = _isMorningTime(userProvider, now);
     final langCode = lp.locale.languageCode;
-    // Fully localized Gregorian and Hijri dates
+    // Fully localized Gregorian and Hijri dates (adjusted for local moon sighting)
     final formattedDate =
         AppDateFormatter.formatGregorian(now, langCode, pattern: 'EEEE, d MMMM yyyy');
-    final hijriDate =
-        AppDateFormatter.formatHijri(HijriCalendar.now(), langCode);
+    final adjustedHijriDate =
+        now.add(Duration(days: userProvider.hijriAdjustment));
+    final hijriDate = AppDateFormatter.formatHijri(
+      HijriCalendar.fromDate(adjustedHijriDate),
+      langCode,
+    );
 
     final ap = Provider.of<AuthProvider>(context);
     context.watch<ThemeProvider>();

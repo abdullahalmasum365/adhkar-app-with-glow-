@@ -23,6 +23,8 @@ import 'donation_screen.dart';
 import 'widget_preview_screen.dart';
 import 'package:adhan/adhan.dart';
 import '../utils/prayer_calculation_helper.dart';
+import 'package:hijri/hijri_calendar.dart';
+import '../utils/date_formatter.dart';
 import 'madhab_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -346,12 +348,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       CalculationMethod.qatar,
     ];
 
+    final defaultMethod = up.defaultCalculationMethod;
+    final countryName =
+        (up.country?.trim().isNotEmpty == true) ? up.country!.trim() : null;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (ctx) => Container(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+        constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.8),
         decoration: BoxDecoration(
           color: AppColors.bgTeal,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -373,7 +380,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
               child: Row(
                 children: [
-                  const Icon(Icons.calculate_outlined, color: Colors.tealAccent, size: 22),
+                  const Icon(Icons.calculate_outlined,
+                      color: Colors.tealAccent, size: 22),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -384,28 +392,157 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ],
               ),
             ),
+            if (up.calculationMethod != defaultMethod)
+              Container(
+                margin: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.amber.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: Colors.amber.withValues(alpha: 0.35)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.info_outline,
+                        color: Colors.amber, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            isBn
+                                ? "আপনার লোকেশন ${countryName != null ? "($countryName) " : ""}অনুযায়ী ডিফল্ট:"
+                                : "Default for your location ${countryName != null ? "($countryName)" : ""}:",
+                            style: AppText.manrope(
+                              fontSize: 11,
+                              color: AppColors.textSlate400,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            getMethodName(defaultMethod),
+                            style: AppText.manrope(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.amber,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    TextButton.icon(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.amber.withValues(alpha: 0.2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      icon: const Icon(Icons.refresh,
+                          size: 14, color: Colors.amber),
+                      label: Text(
+                        isBn ? "রিসেট" : "Reset",
+                        style: AppText.manrope(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.amber,
+                        ),
+                      ),
+                      onPressed: () async {
+                        await up.resetCalculationMethodToDefault();
+                        await np.refreshAllSchedules(up);
+                        if (ctx.mounted) Navigator.pop(ctx);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                isBn
+                                    ? "ডিফল্ট হিসাব পদ্ধতি (${getMethodName(defaultMethod)}) এ রিসেট করা হয়েছে।"
+                                    : "Reset to default calculation method (${getMethodName(defaultMethod)}).",
+                              ),
+                              backgroundColor: Colors.green,
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ),
             Flexible(
               child: ListView.builder(
                 shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 8),
                 itemCount: methods.length,
                 itemBuilder: (_, i) {
                   final method = methods[i];
                   final isSel = up.calculationMethod == method;
+                  final isDefault = method == defaultMethod;
                   return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 2),
                     leading: Icon(
-                      isSel ? Icons.radio_button_checked : Icons.radio_button_off,
+                      isSel
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_off,
                       color: isSel ? AppColors.primary : AppColors.ink(0.3),
                       size: 20,
                     ),
-                    title: Text(
-                      getMethodName(method),
-                      style: AppText.manrope(
-                        fontSize: 13.5,
-                        fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
-                        color: isSel ? AppColors.textPrimary : AppColors.ink(0.8),
-                      ),
+                    title: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            getMethodName(method),
+                            style: AppText.manrope(
+                              fontSize: 13.5,
+                              fontWeight:
+                                  isSel ? FontWeight.w700 : FontWeight.w500,
+                              color: isSel
+                                  ? AppColors.textPrimary
+                                  : AppColors.ink(0.8),
+                            ),
+                          ),
+                        ),
+                        if (isDefault) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 7, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(
+                                  color: Colors.amber.withValues(alpha: 0.4)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.star_rounded,
+                                    size: 13, color: Colors.amber),
+                                const SizedBox(width: 3),
+                                Text(
+                                  countryName != null
+                                      ? (isBn
+                                          ? "ডিফল্ট ($countryName)"
+                                          : "Default ($countryName)")
+                                      : (isBn ? "ডিফল্ট" : "Default"),
+                                  style: AppText.manrope(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.amber,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     onTap: () async {
                       await up.setCalculationMethod(method);
@@ -416,8 +553,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           SnackBar(
                             content: Text(
                               isBn
-                                  ? 'হিসাব পদ্ধতি আপডেট করা হয়েছে।'
-                                  : 'Calculation method updated successfully.',
+                                  ? "হিসাব পদ্ধতি আপডেট করা হয়েছে।"
+                                  : "Calculation method updated successfully.",
                             ),
                             backgroundColor: Colors.green,
                             duration: const Duration(seconds: 2),
@@ -432,6 +569,223 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             const SizedBox(height: 16),
           ],
         ),
+      ),
+    );
+  }
+
+  void _hijriAdjustmentSheet(BuildContext context) {
+    final up = Provider.of<UserProvider>(context, listen: false);
+    final lp = Provider.of<LanguageProvider>(context, listen: false);
+    final isBn = lp.locale.languageCode == 'bn';
+    final langCode = lp.locale.languageCode;
+    int tempOffset = up.hijriAdjustment;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          final now = DateTime.now();
+          final previewDate = now.add(Duration(days: tempOffset));
+          final previewHijri = AppDateFormatter.formatHijri(
+            HijriCalendar.fromDate(previewDate),
+            langCode,
+          );
+
+          String offsetLabel(int offset) {
+            if (offset == 0) {
+              return isBn ? "স্বাভাবিক (০ দিন)" : "Standard (0 days)";
+            }
+            final sign = offset > 0 ? "+" : "";
+            return isBn ? "$sign$offset দিন" : "$sign$offset day${offset.abs() > 1 ? 's' : ''}";
+          }
+
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.85,
+            ),
+            decoration: BoxDecoration(
+              color: AppColors.bgTeal,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              border: Border.all(color: AppColors.ink(0.08)),
+            ),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: AppColors.ink(0.24),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        const Icon(Icons.calendar_month_rounded,
+                            color: Colors.amberAccent, size: 24),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            isBn ? "হিজরি তারিখ সমন্বয়" : "Hijri Date Adjustment",
+                            style: AppText.heading(18),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      isBn
+                          ? "ইসলামিক তারিখ চাঁদ দেখার ওপর নির্ভরশীল। আপনার দেশের চাঁদ দেখার সাথে মেলাতে তারিখ ±১ বা ±২ দিন সমন্বয় করুন।"
+                          : "Hijri dates depend on local moon sighting (Ruyat-e-Hilal). Adjust ±1 or ±2 days to match your local Islamic calendar.",
+                      style: AppText.manrope(
+                        fontSize: 12.5,
+                        color: AppColors.textSlate400,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ── Live Preview Box ──
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: AppColors.bgDeep.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.35),
+                          width: 1.2,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.visibility_outlined,
+                                  size: 15, color: AppColors.primary),
+                              const SizedBox(width: 6),
+                              Text(
+                                isBn
+                                    ? "আজকের পরিবর্তিত তারিখ (লাইভ প্রিভিউ):"
+                                    : "Today's Adjusted Date (Live Preview):",
+                                style: AppText.manrope(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            previewHijri,
+                            textAlign: TextAlign.center,
+                            style: AppText.heading(19).copyWith(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "(${offsetLabel(tempOffset)})",
+                            style: AppText.manrope(
+                              fontSize: 11,
+                              color: tempOffset == 0
+                                  ? AppColors.textSlate400
+                                  : Colors.amberAccent,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // ── Offset Options (-2, -1, 0, +1, +2) ──
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      alignment: WrapAlignment.center,
+                      children: [-2, -1, 0, 1, 2].map((offset) {
+                        final isSel = tempOffset == offset;
+                        return ChoiceChip(
+                          selected: isSel,
+                          onSelected: (val) {
+                            if (val) {
+                              setSheetState(() => tempOffset = offset);
+                            }
+                          },
+                          selectedColor: AppColors.primary,
+                          backgroundColor: AppColors.bgCard,
+                          side: BorderSide(
+                            color: isSel ? AppColors.primary : AppColors.ink(0.15),
+                          ),
+                          label: Text(
+                            offsetLabel(offset),
+                            style: AppText.manrope(
+                              fontSize: 12.5,
+                              fontWeight: isSel ? FontWeight.w700 : FontWeight.w500,
+                              color: isSel ? Colors.black87 : AppColors.textPrimary,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // ── Save & Apply Button ──
+                    SizedBox(
+                      width: double.infinity,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.black87,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: () async {
+                          await up.setHijriAdjustment(tempOffset);
+                          if (ctx.mounted) Navigator.pop(ctx);
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  isBn
+                                      ? "হিজরি তারিখ সফলভাবে সমন্বয় করা হয়েছে।"
+                                      : "Hijri date adjustment updated successfully.",
+                                ),
+                                backgroundColor: Colors.green,
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                        },
+                        child: Text(
+                          isBn ? "সংরক্ষণ করুন" : "Save & Apply",
+                          style: AppText.manrope(
+                            fontSize: 14.5,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -1186,6 +1540,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     title: lp.getText('calc_method'),
                     subtitle: getMethodName(up.calculationMethod),
                     onTap: () => _calcMethodSheet(context)),
+                _div(),
+                _Tile(
+                    icon: Icons.calendar_month_rounded,
+                    color: Colors.amberAccent,
+                    title: lp.locale.languageCode == 'bn' ? 'হিজরি তারিখ সমন্বয়' : 'Hijri Date Adjustment',
+                    subtitle: up.hijriAdjustment == 0
+                        ? (lp.locale.languageCode == 'bn' ? 'স্বাভাবিক (০ দিন)' : 'Standard (0 days)')
+                        : (lp.locale.languageCode == 'bn'
+                            ? '${up.hijriAdjustment > 0 ? "+" : ""}${up.hijriAdjustment} দিন'
+                            : '${up.hijriAdjustment > 0 ? "+" : ""}${up.hijriAdjustment} day${up.hijriAdjustment.abs() > 1 ? "s" : ""}'),
+                    onTap: () => _hijriAdjustmentSheet(context)),
               ])),
               const SizedBox(height: 22),
 

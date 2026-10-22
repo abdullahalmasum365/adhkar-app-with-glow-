@@ -373,5 +373,12 @@
   "save_plan": "Save Plan",
   "reset_to_default": "Reset to Default",
   "plan_saved": "Plan Saved!",
-  "donation_per_6_months": "/6 months"
+  "donation_per_6_months": "/6 months",
+  "hijri_adjustment": "Hijri Date Adjustment",
+  "hijri_adjustment_desc": "Adjust date by ±1 or ±2 days according to your local moon sighting.",
+  "hijri_adjustment_saved": "Hijri date adjustment updated successfully.",
+  "calc_method_default_badge": "Default",
+  "calc_method_recommended_badge": "Recommended",
+  "calc_method_reset_btn": "Reset",
+  "calc_method_reset_success": "Reset to default calculation method."
 }

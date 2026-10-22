@@ -373,5 +373,12 @@
   "save_plan": "পরিকল্পনা সংরক্ষণ করুন",
   "reset_to_default": "ডিফল্টে রিসেট করুন",
   "plan_saved": "পরিকল্পনা সংরক্ষিত হয়েছে!",
-  "donation_per_6_months": "/৬ মাস"
+  "donation_per_6_months": "/৬ মাস",
+  "hijri_adjustment": "হিজরি তারিখ সমন্বয়",
+  "hijri_adjustment_desc": "স্থানীয় চাঁদ দেখার ওপর ভিত্তি করে হিজরি তারিখ ±১ বা ±২ দিন সমন্বয় করুন।",
+  "hijri_adjustment_saved": "হিজরি তারিখ সফলভাবে সমন্বয় করা হয়েছে।",
+  "calc_method_default_badge": "ডিফল্ট",
+  "calc_method_recommended_badge": "প্রস্তাবিত",
+  "calc_method_reset_btn": "রিসেট",
+  "calc_method_reset_success": "ডিফল্ট হিসাব পদ্ধতিতে রিসেট করা হয়েছে।"
 }
