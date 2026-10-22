@@ -89,6 +89,9 @@ class DhikrProvider extends ChangeNotifier {
   String _dateKey(DateTime dt) =>
       '${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')}';
 
+  final Completer<void> _loadCompleter = Completer<void>();
+  Future<void> get whenReady => _loadCompleter.future;
+
   DhikrProvider() {
     _loadDhikrs();
   }
@@ -185,6 +188,10 @@ class DhikrProvider extends ChangeNotifier {
 
     notifyListeners();
     _syncHomeWidget();
+
+    if (!_loadCompleter.isCompleted) {
+      _loadCompleter.complete();
+    }
 
     // Background cloud sync for latest dua corrections (non-blocking)
     _syncDuaCorrectionsFromCloud(transLang);
@@ -424,6 +431,9 @@ class DhikrProvider extends ChangeNotifier {
     _monthlyActivity.clear();
     notifyListeners();
     _syncHomeWidget();
+    if (_uid != null) {
+      unawaited(_pushBookmarksToCloud());
+    }
   }
 
   /// Clears all user progress, streaks, badges, and history upon account deletion.
@@ -472,53 +482,76 @@ class DhikrProvider extends ChangeNotifier {
         .doc('data');
   }
 
-  /// Restores progress from Firestore when user logs in with Google/Apple,
-  /// preserving whichever streak or badges are highest/achieved.
+  DocumentReference<Map<String, dynamic>>? get _bookmarksCloudDoc {
+    if (_uid == null || Firebase.apps.isEmpty) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid)
+        .collection('bookmarks')
+        .doc('data');
+  }
+
+  DocumentReference<Map<String, dynamic>>? get _rootUserDoc {
+    if (_uid == null || Firebase.apps.isEmpty) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(_uid);
+  }
+
+  /// Restores progress and bookmarks from Firestore when user logs in with Google/Apple,
+  /// preserving whichever streak or badges are highest/achieved, and syncing bookmarks.
   Future<void> attachUser(String? uid) async {
     if (uid == _uid) return;
     _uid = uid;
     if (uid == null || Firebase.apps.isEmpty) return;
 
+    // Ensure local assets and prefs are finished loading before merging cloud data
+    await whenReady;
+
     try {
       final doc = _cloudDoc;
-      if (doc == null) return;
-      final snap = await doc.get();
+      if (doc != null) {
+        final snap = await doc.get();
 
-      final prefs = await SharedPreferences.getInstance();
+        final prefs = await SharedPreferences.getInstance();
 
-      if (snap.exists) {
-        final data = snap.data()!;
-        final cloudStreak = (data['streak_days'] as num?)?.toInt() ?? 0;
-        final cloudEarlyBird = data['badge_early_bird'] as bool? ?? false;
-        final cloudNightPrayer = data['badge_night_prayer'] as bool? ?? false;
-        final cloudLastActive = data['last_active_date'] as String? ?? '';
+        if (snap.exists) {
+          final data = snap.data()!;
+          final cloudStreak = (data['streak_days'] as num?)?.toInt() ?? 0;
+          final cloudEarlyBird = data['badge_early_bird'] as bool? ?? false;
+          final cloudNightPrayer = data['badge_night_prayer'] as bool? ?? false;
+          final cloudLastActive = data['last_active_date'] as String? ?? '';
 
-        // Merge: keep highest streak and unlocked badges
-        if (cloudStreak > _cachedStreak) {
-          _cachedStreak = cloudStreak;
-          await prefs.setInt('streak_days', _cachedStreak);
-        }
-        if (cloudEarlyBird && !_earlyBirdBadge) {
-          _earlyBirdBadge = true;
-          await prefs.setBool('badge_early_bird', true);
-        }
-        if (cloudNightPrayer && !_nightPrayerBadge) {
-          _nightPrayerBadge = true;
-          await prefs.setBool('badge_night_prayer', true);
-        }
-        if (cloudLastActive.isNotEmpty) {
-          final localLastActive = prefs.getString('last_active_date') ?? '';
-          if (localLastActive.isEmpty) {
-            await prefs.setString('last_active_date', cloudLastActive);
+          // Merge: keep highest streak and unlocked badges
+          if (cloudStreak > _cachedStreak) {
+            _cachedStreak = cloudStreak;
+            await prefs.setInt('streak_days', _cachedStreak);
           }
+          if (cloudEarlyBird && !_earlyBirdBadge) {
+            _earlyBirdBadge = true;
+            await prefs.setBool('badge_early_bird', true);
+          }
+          if (cloudNightPrayer && !_nightPrayerBadge) {
+            _nightPrayerBadge = true;
+            await prefs.setBool('badge_night_prayer', true);
+          }
+          if (cloudLastActive.isNotEmpty) {
+            final localLastActive = prefs.getString('last_active_date') ?? '';
+            if (localLastActive.isEmpty) {
+              await prefs.setString('last_active_date', cloudLastActive);
+            }
+          }
+          notifyListeners();
         }
-        notifyListeners();
-      }
 
-      await _pushToCloud();
+        await _pushToCloud();
+      }
     } catch (e) {
       debugPrint('[DhikrProvider] cloud progress sync on sign-in failed: $e');
     }
+
+    // Cloud bookmarks sync on sign-in / attach
+    await _syncBookmarksOnUserAttach();
   }
 
   Future<void> _pushToCloud() async {
@@ -540,6 +573,120 @@ class DhikrProvider extends ChangeNotifier {
       }, SetOptions(merge: true));
     } catch (e) {
       debugPrint('[DhikrProvider] cloud progress push failed: $e');
+    }
+  }
+
+  Future<void> _pushBookmarksToCloud() async {
+    if (_uid == null || Firebase.apps.isEmpty) return;
+    try {
+      final currentAuthUid = FirebaseAuth.instance.currentUser?.uid;
+      if (currentAuthUid == null || currentAuthUid != _uid) return;
+
+      final bookmarkedIds = _dhikrs
+          .where((d) => d.isBookmarked)
+          .map((d) => d.id)
+          .toList();
+
+      final payload = {
+        'bookmarkedIds': bookmarkedIds,
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      // 1. Try pushing to subcollection doc first: users/{uid}/bookmarks/data
+      final bDoc = _bookmarksCloudDoc;
+      bool subcollectionSuccess = false;
+      if (bDoc != null) {
+        try {
+          await bDoc.set(payload, SetOptions(merge: true));
+          subcollectionSuccess = true;
+        } catch (e) {
+          debugPrint('[DhikrProvider] Subcollection bookmarks push notice: $e');
+        }
+      }
+
+      // 2. If subcollection push failed (e.g. security rules not deployed), fallback to root user doc
+      if (!subcollectionSuccess) {
+        final uDoc = _rootUserDoc;
+        if (uDoc != null) {
+          await uDoc.set(payload, SetOptions(merge: true));
+        }
+      }
+    } catch (e) {
+      debugPrint('[DhikrProvider] cloud bookmarks push failed: $e');
+    }
+  }
+
+  Future<void> _syncBookmarksOnUserAttach() async {
+    if (_uid == null || Firebase.apps.isEmpty) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      Set<String>? cloudBookmarkIds;
+
+      // 1. Check dedicated bookmarks subcollection doc first: users/{uid}/bookmarks/data
+      final bDoc = _bookmarksCloudDoc;
+      if (bDoc != null) {
+        try {
+          final bSnap = await bDoc.get();
+          if (bSnap.exists && bSnap.data() != null) {
+            final list = bSnap.data()!['bookmarkedIds'] as List<dynamic>?;
+            if (list != null) {
+              cloudBookmarkIds = list.map((e) => e.toString()).toSet();
+            }
+          }
+        } catch (e) {
+          debugPrint('[DhikrProvider] Subcollection bookmarks fetch notice: $e');
+        }
+      }
+
+      // 2. Fallback check on root user doc in case rules routed there
+      if (cloudBookmarkIds == null) {
+        final uDoc = _rootUserDoc;
+        if (uDoc != null) {
+          try {
+            final uSnap = await uDoc.get();
+            if (uSnap.exists && uSnap.data() != null) {
+              final list = uSnap.data()!['bookmarkedIds'] as List<dynamic>?;
+              if (list != null) {
+                cloudBookmarkIds = list.map((e) => e.toString()).toSet();
+              }
+            }
+          } catch (e) {
+            debugPrint('[DhikrProvider] Root doc bookmarks fetch notice: $e');
+          }
+        }
+      }
+
+      // 3. Merge cloud bookmarks with local bookmarks (Union)
+      if (cloudBookmarkIds != null) {
+        bool changed = false;
+        final updatedDhikrs = <Dhikr>[];
+        for (final d in _dhikrs) {
+          final shouldBeBookmarked = d.isBookmarked || cloudBookmarkIds.contains(d.id);
+          if (shouldBeBookmarked != d.isBookmarked) {
+            changed = true;
+          }
+          if (shouldBeBookmarked) {
+            await prefs.setBool('bookmark_${d.id}', true);
+          }
+          updatedDhikrs.add(d.copyWith(isBookmarked: shouldBeBookmarked));
+        }
+
+        if (changed) {
+          _dhikrs = updatedDhikrs;
+          notifyListeners();
+        }
+
+        // Push unified bookmarks back to cloud so both sides are in sync
+        await _pushBookmarksToCloud();
+      } else {
+        // No cloud record existed yet — if device has local bookmarks, push them now!
+        final hasLocal = _dhikrs.any((d) => d.isBookmarked);
+        if (hasLocal) {
+          await _pushBookmarksToCloud();
+        }
+      }
+    } catch (e) {
+      debugPrint('[DhikrProvider] _syncBookmarksOnUserAttach error: $e');
     }
   }
 
@@ -604,7 +751,7 @@ class DhikrProvider extends ChangeNotifier {
   bool isBookmarked(String dhikrId) =>
       _dhikrs.any((d) => d.id == dhikrId && d.isBookmarked);
 
-  /// Toggles the bookmark state for [dhikrId] and persists it with key `bookmark_<id>`.
+  /// Toggles the bookmark state for [dhikrId] and persists it locally and to cloud.
   Future<void> toggleBookmark(String dhikrId) async {
     final idx = _dhikrs.indexWhere((d) => d.id == dhikrId);
     if (idx == -1) return;
@@ -613,6 +760,10 @@ class DhikrProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('bookmark_$dhikrId', updated);
     notifyListeners();
+
+    if (_uid != null) {
+      unawaited(_pushBookmarksToCloud());
+    }
   }
 
   Future reloadDhikrs({

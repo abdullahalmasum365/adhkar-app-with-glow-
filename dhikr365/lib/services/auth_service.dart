@@ -235,12 +235,13 @@ class AuthService {
       batch.delete(db.collection('settings').doc('language'));
       batch.delete(db.collection('plan').doc('data'));
       batch.delete(db.collection('progress').doc('data'));
+      batch.delete(db.collection('bookmarks').doc('data'));
       batch.delete(db.collection('dedications').doc('data'));
       batch.delete(db.collection('sadaqah').doc('data'));
 
       // Dynamically query and delete any remaining documents across known subcollections
       // to guarantee 100% compliance with permanent data purge policy
-      final subcollections = ['settings', 'plan', 'progress', 'dedications', 'sadaqah', 'purchases'];
+      final subcollections = ['settings', 'plan', 'progress', 'bookmarks', 'dedications', 'sadaqah', 'purchases'];
       for (final sub in subcollections) {
         try {
           final querySnap = await db.collection(sub).get();

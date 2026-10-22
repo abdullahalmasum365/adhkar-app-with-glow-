@@ -96,6 +96,9 @@ class _SignedOutCard extends StatelessWidget {
     if (ok) {
       await cp.attachUser(ap.user?.uid);
       if (!context.mounted) return;
+      final dp = Provider.of<DhikrProvider>(context, listen: false);
+      await dp.attachUser(ap.user?.uid);
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(lp.getText('account_signed_in_toast')),

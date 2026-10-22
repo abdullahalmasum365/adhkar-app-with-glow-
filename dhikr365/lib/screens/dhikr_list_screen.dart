@@ -1585,26 +1585,33 @@ class _DhikrListScreenState extends State<DhikrListScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.auto_graph_rounded,
-                                          size: R.sp(15),
-                                          color: progressColor,
-                                        ),
-                                        SizedBox(width: R.px(6)),
-                                        Text(
-                                          lp.getText('your_progress').toUpperCase(),
-                                          style: TextStyle(
-                                            fontSize: R.sp(11.5),
-                                            fontWeight: FontWeight.w800,
-                                            letterSpacing: 1.0,
-                                            color: AppColors.textPrimary,
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.auto_graph_rounded,
+                                            size: R.sp(15),
+                                            color: progressColor,
                                           ),
-                                        ),
-                                      ],
+                                          SizedBox(width: R.px(6)),
+                                          Expanded(
+                                            child: Text(
+                                              lp.getText('your_progress').toUpperCase(),
+                                              style: TextStyle(
+                                                fontSize: R.sp(11.5),
+                                                fontWeight: FontWeight.w800,
+                                                letterSpacing: 1.0,
+                                                color: AppColors.textPrimary,
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
+                                    SizedBox(width: R.px(8)),
                                     Container(
                                       padding: EdgeInsets.symmetric(
                                         horizontal: R.px(10),

@@ -111,11 +111,22 @@ void main() {
 
     test('bookmarkedDhikrs getter filters only bookmarked items', () async {
       final provider = DhikrProvider();
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+      await provider.whenReady;
 
       for (final d in provider.bookmarkedDhikrs) {
         expect(d.isBookmarked, isTrue);
       }
+    });
+
+    test('whenReady completer resolves successfully', () async {
+      final provider = DhikrProvider();
+      await expectLater(provider.whenReady, completes);
+    });
+
+    test('attachUser(null) handles sign-out gracefully without error', () async {
+      final provider = DhikrProvider();
+      await provider.whenReady;
+      await expectLater(provider.attachUser(null), completes);
     });
   });
 }

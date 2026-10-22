@@ -19,6 +19,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants/app_theme.dart';
 import '../providers/auth_provider.dart';
 import '../providers/custom_plan_provider.dart';
+import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import 'dashboard_screen.dart';
 import '../utils/first_launch_navigation.dart';
@@ -45,6 +46,9 @@ class WelcomeSignInScreen extends StatelessWidget {
     if (!context.mounted) return;
     if (ok) {
       await cp.attachUser(ap.user?.uid);
+      if (!context.mounted) return;
+      final dp = Provider.of<DhikrProvider>(context, listen: false);
+      await dp.attachUser(ap.user?.uid);
       if (!context.mounted) return;
       await _enterDashboard(context);
     } else if (ap.errorMessage != null) {

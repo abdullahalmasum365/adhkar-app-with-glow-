@@ -121,6 +121,14 @@ service cloud.firestore {
           && (!('platform' in incoming()) || incoming().platform in ['android', 'ios', 'web', 'unknown'])
           && (!('isSubscription' in incoming()) || incoming().isSubscription is bool);
       }
+
+      // 8. Bookmarks: User's saved favorite duas (users/{userId}/bookmarks/{docId})
+      match /bookmarks/{docId} {
+        allow read, delete: if isOwner(userId);
+        allow create, update: if isOwner(userId)
+          && incoming().keys().hasOnly(['bookmarkedIds', 'updatedAt'])
+          && (!('bookmarkedIds' in incoming()) || (incoming().bookmarkedIds is list && incoming().bookmarkedIds.size() <= 300));
+      }
     }
 
     // Public read-only collection for Over-The-Air dua typo/text corrections.

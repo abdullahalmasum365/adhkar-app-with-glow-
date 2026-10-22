@@ -1037,7 +1037,9 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                   scale: _pressed ? 0.94 : 1.0,
                                   duration: const Duration(milliseconds: 100),
                                   curve: Curves.easeOutCubic,
-                                  child: Column(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -1098,6 +1100,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         ),
                                       ),
                                     ],
+                                  ),
                                   ),
                                 ),
                               ],
