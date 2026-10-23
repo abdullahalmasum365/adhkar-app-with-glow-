@@ -9,6 +9,7 @@ import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/user_provider.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
 import '../screens/dhikr_focus_screen.dart';
@@ -359,9 +360,10 @@ class _DhikrCardState extends State<DhikrCard> {
     final target = widget.dhikr.targetCount;
     final isDone = widget.dhikr.isCompleted;
 
+    final up = Provider.of<UserProvider>(context);
     final cardPad = R.px(18);
-    final arabicSize = R.adaptive(22.0, 26.0, 30.0);
-    final transSize = R.adaptive(13.0, 15.0, 17.0);
+    final arabicSize = R.adaptive(22.0, 26.0, 30.0) * up.arabicFontScale;
+    final transSize = R.adaptive(13.0, 15.0, 17.0) * up.translationFontScale;
     final btnSize = R.adaptive(32.0, 36.0, 42.0);
     final counterNum = R.adaptive(38.0, 44.0, 52.0);
     final countBtnV = R.adaptive(16.0, 20.0, 26.0);
@@ -644,7 +646,7 @@ class _DhikrCardState extends State<DhikrCard> {
                     widget.dhikr.transliteration!,
                     textAlign: TextAlign.center,
                     style: AppText.transliteration(
-                      fontSize: R.sp(12),
+                      fontSize: R.sp(12) * up.translationFontScale,
                       color: AppColors.textSlate400,
                     ),
                   ),

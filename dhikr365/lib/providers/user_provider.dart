@@ -37,6 +37,27 @@ class UserProvider extends ChangeNotifier {
   int _hijriAdjustment = 0;
   int get hijriAdjustment => _hijriAdjustment;
 
+  static const double defaultArabicFontSize = 26.0;
+  static const double minArabicFontSize = 18.0;
+  static const double maxArabicFontSize = 38.0;
+
+  static const double defaultTranslationFontSize = 14.5;
+  static const double minTranslationFontSize = 11.0;
+  static const double maxTranslationFontSize = 22.0;
+
+  double _arabicFontSize = defaultArabicFontSize;
+  double _translationFontSize = defaultTranslationFontSize;
+
+  double get arabicFontSize => _arabicFontSize;
+  double get translationFontSize => _translationFontSize;
+
+  double get arabicFontScale => _arabicFontSize / defaultArabicFontSize;
+  double get translationFontScale => _translationFontSize / defaultTranslationFontSize;
+
+  bool get isDefaultFontSize =>
+      (_arabicFontSize - defaultArabicFontSize).abs() < 0.1 &&
+      (_translationFontSize - defaultTranslationFontSize).abs() < 0.1;
+
   /// Returns the recommended calculation method based on user's current location/country.
   CalculationMethod get defaultCalculationMethod {
     if (_country != null && _country!.trim().isNotEmpty) {
@@ -111,6 +132,10 @@ class UserProvider extends ChangeNotifier {
       _onboardingGoal = prefs.getString('onboarding_goal');
       _preferredDhikrTime = prefs.getString('preferred_dhikr_time');
       _hijriAdjustment = prefs.getInt('hijri_adjustment') ?? 0;
+      _arabicFontSize = (prefs.getDouble('arabic_font_size') ?? defaultArabicFontSize)
+          .clamp(minArabicFontSize, maxArabicFontSize);
+      _translationFontSize = (prefs.getDouble('translation_font_size') ?? defaultTranslationFontSize)
+          .clamp(minTranslationFontSize, maxTranslationFontSize);
     } catch (_) {
       // Unexpected error — proceed with defaults so the app isn't stuck.
     } finally {
@@ -174,6 +199,47 @@ class UserProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('hijri_adjustment', _hijriAdjustment);
     notifyListeners();
+  }
+
+  /// Sets custom Arabic reading font size (clamped between 18.0 and 38.0 sp).
+  Future<void> setArabicFontSize(double size) async {
+    final clamped = size.clamp(minArabicFontSize, maxArabicFontSize);
+    if ((_arabicFontSize - clamped).abs() < 0.05) return;
+    _arabicFontSize = clamped;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('arabic_font_size', _arabicFontSize);
+  }
+
+  /// Sets custom translation / transliteration reading font size (clamped between 11.0 and 22.0 sp).
+  Future<void> setTranslationFontSize(double size) async {
+    final clamped = size.clamp(minTranslationFontSize, maxTranslationFontSize);
+    if ((_translationFontSize - clamped).abs() < 0.05) return;
+    _translationFontSize = clamped;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('translation_font_size', _translationFontSize);
+  }
+
+  /// Sets both Arabic and translation font sizes simultaneously.
+  Future<void> setFontSizes({
+    required double arabicSize,
+    required double translationSize,
+  }) async {
+    _arabicFontSize = arabicSize.clamp(minArabicFontSize, maxArabicFontSize);
+    _translationFontSize = translationSize.clamp(minTranslationFontSize, maxTranslationFontSize);
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('arabic_font_size', _arabicFontSize);
+    await prefs.setDouble('translation_font_size', _translationFontSize);
+  }
+
+  /// Resets Arabic and translation reading font sizes to default (26.0 sp and 14.5 sp).
+  Future<void> resetFontSizes() async {
+    await setFontSizes(
+      arabicSize: defaultArabicFontSize,
+      translationSize: defaultTranslationFontSize,
+    );
   }
 
   Future<void> setCoordinates(double lat, double lng) async {

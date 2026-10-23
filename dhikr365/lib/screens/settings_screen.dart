@@ -21,6 +21,7 @@ import '../widgets/muhsin_badge.dart';
 import '../widgets/sadaqah_certificate_dialog.dart';
 import 'donation_screen.dart';
 import 'widget_preview_screen.dart';
+import '../widgets/font_size_sheet.dart';
 import 'package:adhan/adhan.dart';
 import '../utils/prayer_calculation_helper.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -1691,6 +1692,34 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       MaterialPageRoute(
                           builder: (_) => const WidgetPreviewScreen()),
                     ),
+                  ),
+                  _div(),
+                  _Tile(
+                    icon: Icons.format_size_rounded,
+                    color: const Color(0xFF818CF8),
+                    title: lp.locale.languageCode == 'bn'
+                        ? 'ফন্ট ও পড়ার সাইজ'
+                        : 'Font & Reading Size',
+                    subtitle: lp.locale.languageCode == 'bn'
+                        ? 'আরবি ও অনুবাদের পড়ার সাইজ নির্ধারণ করুন'
+                        : 'Adjust Arabic & translation reading size',
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${up.arabicFontSize.toStringAsFixed(0)} / ${up.translationFontSize.toStringAsFixed(1)} sp',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(Icons.chevron_right_rounded,
+                            size: 20, color: AppColors.textSlate400),
+                      ],
+                    ),
+                    onTap: () => FontSizeSheet.show(context),
                   ),
                   _div(),
                   _Tile(

@@ -14,8 +14,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
 import '../models/dua_timestamp.dart';
+import '../providers/user_provider.dart';
 import '../services/audio_service.dart';
 import '../utils/responsive.dart';
 
@@ -242,8 +244,9 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
   @override
   Widget build(BuildContext context) {
     R.init(context);
-    final arabicSize = R.adaptive(23.0, 27.0, 32.0);
-    final transSize = R.adaptive(12.5, 14.0, 16.0);
+    final up = Provider.of<UserProvider>(context);
+    final arabicSize = R.adaptive(23.0, 27.0, 32.0) * up.arabicFontScale;
+    final transSize = R.adaptive(12.5, 14.0, 16.0) * up.translationFontScale;
 
     return NotificationListener<ScrollNotification>(
       onNotification: (notif) {
@@ -397,7 +400,7 @@ class _TimeSyncedDhikrViewState extends State<TimeSyncedDhikrView> {
                         seg.transliteration!,
                         textAlign: TextAlign.left,
                         style: AppText.transliteration(
-                          fontSize: R.sp(R.adaptive(12.0, 13.5, 15.0)),
+                          fontSize: R.sp(R.adaptive(12.0, 13.5, 15.0)) * up.translationFontScale,
                           color: isActive
                               ? AppColors.textPrimary
                               : (isPast

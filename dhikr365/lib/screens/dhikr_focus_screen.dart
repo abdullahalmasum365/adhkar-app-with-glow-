@@ -10,10 +10,12 @@ import '../models/dhikr.dart';
 import '../providers/dhikr_provider.dart';
 import '../providers/language_provider.dart';
 import '../providers/theme_provider.dart';
+import '../providers/user_provider.dart';
 import '../services/audio_service.dart';
 import '../services/tts_service.dart';
 import '../constants/app_theme.dart';
 import '../utils/responsive.dart';
+import '../widgets/font_size_sheet.dart';
 import '../widgets/repeat_picker.dart';
 import '../widgets/social_share_card.dart';
 import '../widgets/time_synced_dhikr_view.dart';
@@ -625,7 +627,10 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
     final label = target > 0 ? R.localizeDigits('$target', lp.locale.languageCode) : '∞';
     final prog = target > 0 ? (count / target).clamp(0.0, 1.0) : null;
 
-    final arabicSize = R.adaptive(26.0, 32.0, 38.0);
+    final up = Provider.of<UserProvider>(context);
+    final arabicScale = up.arabicFontScale;
+    final transScale = up.translationFontScale;
+    final arabicSize = R.adaptive(26.0, 32.0, 38.0) * arabicScale;
     final countSize = R.adaptive(38.0, 46.0, 54.0);
     final ringSize = R.adaptive(145.0, 170.0, 195.0);
     final headerPad = R.px(16);
@@ -709,6 +714,11 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                           ),
                           Row(
                             children: [
+                              _Btn(
+                                Icons.format_size_rounded,
+                                onTap: () => FontSizeSheet.show(context),
+                              ),
+                              SizedBox(width: R.px(8)),
                               _Btn(
                                 Icons.share_rounded,
                                 onTap: () {
@@ -899,7 +909,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         widget.dhikr.transliteration!,
                                         textAlign: TextAlign.center,
                                         style: AppText.transliteration(
-                                          fontSize: R.adaptive(12.5, 14.5, 17.0),
+                                          fontSize: R.adaptive(12.5, 14.5, 17.0) * transScale,
                                           color: AppColors.textSlate400,
                                         ),
                                       ),
@@ -911,7 +921,7 @@ class _DhikrFocusScreenState extends State<DhikrFocusScreen> {
                                         '"${widget.dhikr.translation}"',
                                         textAlign: TextAlign.center,
                                         style: AppText.manrope(
-                                          fontSize: R.adaptive(13, 15, 17),
+                                          fontSize: R.adaptive(13, 15, 17) * transScale,
                                           height: 1.6,
                                           color: AppColors.textSlate300,
                                         ),
