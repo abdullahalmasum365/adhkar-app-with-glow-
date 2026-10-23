@@ -5,6 +5,7 @@
 // at the upper area of HomeScreen.
 // Inspires users to dedicate a Sadaqah Jariyah on the most blessed day of the
 // week, and honors existing Muhsin sponsors.
+// 100% theme-adaptive across all 15 light and dark palettes.
 // ============================================================================
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 import '../constants/app_theme.dart';
 import '../providers/language_provider.dart';
 import '../providers/purchase_provider.dart';
+import '../providers/theme_provider.dart';
 import '../providers/user_provider.dart';
 import '../screens/donation_screen.dart';
 import '../utils/responsive.dart';
@@ -40,36 +42,51 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
     final lp = Provider.of<LanguageProvider>(context);
     final up = Provider.of<UserProvider>(context);
     final pp = Provider.of<PurchaseProvider>(context);
+    // Listen to theme changes so card dynamically recolors with theme switches
+    Provider.of<ThemeProvider>(context);
+
     final isBn = lp.locale.languageCode == 'bn';
     final isDonor = up.isMuhsin(pp);
+
+    final isDark = AppColors.isDark;
+    final primary = AppColors.primary;
+    final onPrimary = AppColors.onPrimary;
+    final accent = AppColors.accent;
 
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(vertical: R.px(8)),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: isDonor
-              ? [
-                  const Color(0xFF132F26),
-                  const Color(0xFF1B4235),
-                  const Color(0xFF112820),
-                ]
+          colors: isDark
+              ? (isDonor
+                  ? [
+                      AppColors.surfaceElevated,
+                      AppColors.bgTeal,
+                      AppColors.bgDeep,
+                    ]
+                  : [
+                      AppColors.surfaceElevated,
+                      AppColors.bgTeal,
+                    ])
               : [
-                  const Color(0xFF0F2B22),
-                  const Color(0xFF184337),
-                  const Color(0xFF122E25),
+                  AppColors.surfaceElevated,
+                  AppColors.surfaceElevated,
+                  AppColors.bgDeep.withValues(alpha: 0.8),
                 ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(R.px(20)),
         border: Border.all(
-          color: const Color(0xFFE5A93C).withValues(alpha: 0.38),
+          color: primary.withValues(alpha: isDark ? 0.35 : 0.28),
           width: 1.3,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFE5A93C).withValues(alpha: 0.08),
+            color: isDark
+                ? primary.withValues(alpha: 0.10)
+                : AppColors.shadow(0.08),
             blurRadius: 18,
             offset: const Offset(0, 4),
           ),
@@ -77,14 +94,14 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
       ),
       child: Stack(
         children: [
-          // Background decorative Islamic arch/crescent tint
+          // Background decorative Islamic arch/mosque silhouette
           Positioned(
             right: -10,
             bottom: -15,
             child: Icon(
               Icons.mosque_rounded,
               size: 110,
-              color: const Color(0xFFE5A93C).withValues(alpha: 0.06),
+              color: primary.withValues(alpha: isDark ? 0.08 : 0.05),
             ),
           ),
 
@@ -100,27 +117,27 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5A93C).withValues(alpha: 0.15),
+                        color: primary.withValues(alpha: isDark ? 0.16 : 0.10),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: const Color(0xFFE5A93C).withValues(alpha: 0.35),
+                          color: primary.withValues(alpha: isDark ? 0.38 : 0.28),
                         ),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.auto_awesome_rounded,
                             size: 13,
-                            color: Color(0xFFE5A93C),
+                            color: primary,
                           ),
                           const SizedBox(width: 5),
                           Text(
                             isDonor
-                                ? (isBn ? 'জুমুআ মোবারক 🕌 • আলহামদুলিল্লাহ' : 'Jumu\'ah Mubarak 🕌 • Alhamdulillah')
-                                : (isBn ? 'জুমুআ মোবারক 🕌 • সুন্নাহ আমল' : 'Jumu\'ah Mubarak 🕌 • Blessed Sunnah'),
-                            style: const TextStyle(
-                              color: Color(0xFFE5A93C),
+                                ? (isBn ? 'জুমুআ মোবারক 🕌 • আলহামদুলিল্লাহ' : "Jumu'ah Mubarak 🕌 • Alhamdulillah")
+                                : (isBn ? 'জুমুআ মোবারক 🕌 • সুন্নাহ আমল' : "Jumu'ah Mubarak 🕌 • Blessed Sunnah"),
+                            style: TextStyle(
+                              color: primary,
                               fontSize: 11.5,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.3,
@@ -146,7 +163,7 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
 
                 SizedBox(height: R.px(12)),
 
-                // Title & Body
+                // Title & Body (High Contrast across all dark & light themes)
                 Text(
                   isDonor
                       ? (isBn ? 'মুহসিন সম্মাননা • জুমার বারাকাহ' : 'Muhsin Sustainer • Friday Barakah')
@@ -154,7 +171,7 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                   style: AppText.manrope(
                     fontSize: R.adaptive(15, 17, 19),
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 SizedBox(height: R.px(5)),
@@ -166,15 +183,16 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                       : (isBn
                           ? '“অন্যান্য দিনের তুলনায় জুমার দিনের সাদাকাহর মর্যাদা শ্রেষ্ঠ।” — পিতা-মাতার নামে আজ একটি সাদাকাহ জারিয়াহ করুন।'
                           : '“Charity given on Friday has greater merit than on any other day.” — Dedicate a Sadaqah Jariyah for your loved ones today.'),
-                  style: AppText.body(color: AppColors.textSlate300).copyWith(
-                    fontSize: R.sp(12),
-                    height: 1.42,
+                  style: AppText.manrope(
+                    fontSize: R.sp(12.5),
+                    height: 1.45,
+                    color: AppColors.textSlate300,
                   ),
                 ),
 
                 SizedBox(height: R.px(14)),
 
-                // Action Button
+                // Action Button (Adapts to palette primary/accent with guaranteed contrast)
                 GestureDetector(
                   onTap: () {
                     if (isDonor) {
@@ -198,16 +216,16 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                       vertical: R.px(9),
                     ),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: [
-                          Color(0xFFE5A93C),
-                          Color(0xFFD4AF37),
+                          primary,
+                          accent,
                         ],
                       ),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFE5A93C).withValues(alpha: 0.3),
+                          color: primary.withValues(alpha: 0.30),
                           blurRadius: 10,
                           offset: const Offset(0, 3),
                         ),
@@ -221,15 +239,15 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                               ? Icons.card_membership_rounded
                               : Icons.favorite_rounded,
                           size: 15,
-                          color: const Color(0xFF0F1713),
+                          color: onPrimary,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           isDonor
                               ? (isBn ? 'সনদপত্র দেখুন 📜' : 'View Keepsake Certificate 📜')
                               : (isBn ? 'সাদাকাহ জারিয়াহ করুন ➔' : 'Give Sadaqah Jariyah ➔'),
-                          style: const TextStyle(
-                            color: Color(0xFF0F1713),
+                          style: TextStyle(
+                            color: onPrimary,
                             fontSize: 12.5,
                             fontWeight: FontWeight.w800,
                           ),
