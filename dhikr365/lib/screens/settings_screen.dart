@@ -1697,12 +1697,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   _Tile(
                     icon: Icons.format_size_rounded,
                     color: const Color(0xFF818CF8),
-                    title: lp.locale.languageCode == 'bn'
-                        ? 'ফন্ট ও পড়ার সাইজ'
-                        : 'Font & Reading Size',
-                    subtitle: lp.locale.languageCode == 'bn'
-                        ? 'আরবি ও অনুবাদের পড়ার সাইজ নির্ধারণ করুন'
-                        : 'Adjust Arabic & translation reading size',
+                    title: lp.getText('font_size_title'),
+                    subtitle: lp.getText('font_size_desc'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

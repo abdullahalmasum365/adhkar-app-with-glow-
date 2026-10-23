@@ -31,7 +31,6 @@ class FontSizeSheet extends StatelessWidget {
     final up = Provider.of<UserProvider>(context);
     final lp = Provider.of<LanguageProvider>(context);
     final tp = Provider.of<ThemeProvider>(context);
-    final isBn = lp.locale.languageCode == 'bn';
     final showTranslit = tp.showTransliteration;
 
     return Container(
@@ -102,14 +101,12 @@ class FontSizeSheet extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isBn ? 'ফন্ট ও পড়ার সাইজ' : 'Font & Reading Size',
+                          lp.getText('font_size_title'),
                           style: AppText.heading(17),
                         ),
                         SizedBox(height: R.px(1)),
                         Text(
-                          isBn
-                              ? 'আরবি ও অনুবাদের লেখা নিজের মতো সাজান'
-                              : 'Customize Arabic & translation sizes',
+                          lp.getText('font_size_desc'),
                           style: AppText.manrope(
                             fontSize: 12,
                             color: AppColors.textSlate400,
@@ -146,7 +143,7 @@ class FontSizeSheet extends StatelessWidget {
                             ),
                             SizedBox(width: R.px(4)),
                             Text(
-                              isBn ? 'রিসেট' : 'Reset',
+                              lp.getText('font_size_reset'),
                               style: TextStyle(
                                 fontSize: R.sp(11.5),
                                 fontWeight: FontWeight.w700,
@@ -184,7 +181,7 @@ class FontSizeSheet extends StatelessWidget {
                         ),
                         SizedBox(width: R.px(5)),
                         Text(
-                          isBn ? 'লাইভ প্রিভিউ' : 'LIVE PREVIEW',
+                          lp.getText('font_size_preview'),
                           style: TextStyle(
                             fontSize: R.sp(9.5),
                             fontWeight: FontWeight.w800,
@@ -240,9 +237,7 @@ class FontSizeSheet extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                       child: Text(
-                        isBn
-                            ? '"আল্লাহর পবিত্রতা ঘোষণা করছি এবং সকল প্রশংসা একমাত্র তাঁরই।"'
-                            : '"Glory be to Allah and all praise is due to Him."',
+                        lp.getText('font_size_preview_text'),
                       ),
                     ),
                   ],
@@ -252,9 +247,10 @@ class FontSizeSheet extends StatelessWidget {
 
               // ── Section 1: Arabic Font Size Control ───────────────────────
               _buildControlCard(
-                title: isBn ? 'আরবি ফন্ট সাইজ' : 'Arabic Font Size',
+                title: lp.getText('font_size_arabic'),
                 currentSizeText: '${up.arabicFontSize.toStringAsFixed(0)} sp',
                 isDefault: (up.arabicFontSize - UserProvider.defaultArabicFontSize).abs() < 0.1,
+                defaultBadge: lp.getText('calc_method_default_badge'),
                 minLabel: 'A',
                 maxLabel: 'A',
                 sliderValue: up.arabicFontSize,
@@ -271,10 +267,10 @@ class FontSizeSheet extends StatelessWidget {
                   up.setArabicFontSize(up.arabicFontSize + 1.0);
                 },
                 presets: [
-                  _Preset('22', isBn ? 'ছোট' : 'Small', 22.0),
-                  _Preset('26', isBn ? 'স্বাভাবিক' : 'Normal', UserProvider.defaultArabicFontSize),
-                  _Preset('30', isBn ? 'বড়' : 'Large', 30.0),
-                  _Preset('34', isBn ? 'বিশাল' : 'Extra', 34.0),
+                  _Preset('22', lp.getText('font_size_small'), 22.0),
+                  _Preset('26', lp.getText('font_size_normal'), UserProvider.defaultArabicFontSize),
+                  _Preset('30', lp.getText('font_size_large'), 30.0),
+                  _Preset('34', lp.getText('font_size_extra'), 34.0),
                 ],
                 currentSelectedValue: up.arabicFontSize,
                 onPresetSelected: (val) {
@@ -286,9 +282,10 @@ class FontSizeSheet extends StatelessWidget {
 
               // ── Section 2: Translation Font Size Control ──────────────────
               _buildControlCard(
-                title: isBn ? 'অর্থ ও উচ্চারণ সাইজ' : 'Translation & Transliteration',
+                title: lp.getText('font_size_translation'),
                 currentSizeText: '${up.translationFontSize.toStringAsFixed(1)} sp',
                 isDefault: (up.translationFontSize - UserProvider.defaultTranslationFontSize).abs() < 0.1,
+                defaultBadge: lp.getText('calc_method_default_badge'),
                 minLabel: 'A',
                 maxLabel: 'A',
                 sliderValue: up.translationFontSize,
@@ -305,10 +302,10 @@ class FontSizeSheet extends StatelessWidget {
                   up.setTranslationFontSize(up.translationFontSize + 0.5);
                 },
                 presets: [
-                  _Preset('13.0', isBn ? 'কমপ্যাক্ট' : 'Compact', 13.0),
-                  _Preset('14.5', isBn ? 'স্বাভাবিক' : 'Normal', UserProvider.defaultTranslationFontSize),
-                  _Preset('16.5', isBn ? 'বড়' : 'Large', 16.5),
-                  _Preset('18.5', isBn ? 'বিশাল' : 'Extra', 18.5),
+                  _Preset('13.0', lp.getText('font_size_compact'), 13.0),
+                  _Preset('14.5', lp.getText('font_size_normal'), UserProvider.defaultTranslationFontSize),
+                  _Preset('16.5', lp.getText('font_size_large'), 16.5),
+                  _Preset('18.5', lp.getText('font_size_extra'), 18.5),
                 ],
                 currentSelectedValue: up.translationFontSize,
                 onPresetSelected: (val) {
@@ -334,7 +331,7 @@ class FontSizeSheet extends StatelessWidget {
                   elevation: 0,
                 ),
                 child: Text(
-                  isBn ? 'সম্পন্ন' : 'Done',
+                  lp.getText('font_size_done'),
                   style: TextStyle(
                     fontSize: R.sp(14.5),
                     fontWeight: FontWeight.w700,
@@ -352,6 +349,7 @@ class FontSizeSheet extends StatelessWidget {
     required String title,
     required String currentSizeText,
     required bool isDefault,
+    required String defaultBadge,
     required String minLabel,
     required String maxLabel,
     required double sliderValue,
@@ -404,7 +402,7 @@ class FontSizeSheet extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  isDefault ? '$currentSizeText (Default)' : currentSizeText,
+                  isDefault ? '$currentSizeText ($defaultBadge)' : currentSizeText,
                   style: TextStyle(
                     fontSize: R.sp(11),
                     fontWeight: FontWeight.w700,

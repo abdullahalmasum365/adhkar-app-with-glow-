@@ -45,7 +45,6 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
     // Listen to theme changes so card dynamically recolors with theme switches
     Provider.of<ThemeProvider>(context);
 
-    final isBn = lp.locale.languageCode == 'bn';
     final isDonor = up.isMuhsin(pp);
 
     final isDark = AppColors.isDark;
@@ -134,8 +133,8 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                           const SizedBox(width: 5),
                           Text(
                             isDonor
-                                ? (isBn ? 'জুমুআ মোবারক 🕌 • আলহামদুলিল্লাহ' : "Jumu'ah Mubarak 🕌 • Alhamdulillah")
-                                : (isBn ? 'জুমুআ মোবারক 🕌 • সুন্নাহ আমল' : "Jumu'ah Mubarak 🕌 • Blessed Sunnah"),
+                                ? lp.getText('friday_card_tag_donor')
+                                : lp.getText('friday_card_tag_sunnah'),
                             style: TextStyle(
                               color: primary,
                               fontSize: 11.5,
@@ -166,8 +165,8 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                 // Title & Body (High Contrast across all dark & light themes)
                 Text(
                   isDonor
-                      ? (isBn ? 'মুহসিন সম্মাননা • জুমার বারাকাহ' : 'Muhsin Sustainer • Friday Barakah')
-                      : (isBn ? 'জুমার দিনের সাদাকাহ বারাকাহ' : 'Friday Sadaqah Barakah'),
+                      ? lp.getText('friday_card_title_donor')
+                      : lp.getText('friday_card_title_normal'),
                   style: AppText.manrope(
                     fontSize: R.adaptive(15, 17, 19),
                     fontWeight: FontWeight.w800,
@@ -177,13 +176,10 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                 SizedBox(height: R.px(5)),
                 Text(
                   isDonor
-                      ? (isBn
-                          ? 'আলহামদুলিল্লাহ! আপনার সাদাকাহ জারিয়াহ সক্রিয় রয়েছে। আল্লাহ আপনার পিতা-মাতা ও পরিবারের পক্ষ থেকে কবুল করুন।'
-                          : 'Alhamdulillah! Your Sadaqah Jariyah is active. May Allah bless your family and reward you in this life and the next.')
-                      : (isBn
-                          ? '“অন্যান্য দিনের তুলনায় জুমার দিনের সাদাকাহর মর্যাদা শ্রেষ্ঠ।” — পিতা-মাতার নামে আজ একটি সাদাকাহ জারিয়াহ করুন।'
-                          : '“Charity given on Friday has greater merit than on any other day.” — Dedicate a Sadaqah Jariyah for your loved ones today.'),
-                  style: AppText.manrope(
+                      ? lp.getText('friday_card_desc_donor')
+                      : lp.getText('friday_card_desc_normal'),
+                  style: TextStyle(
+                    fontFamily: 'Manrope',
                     fontSize: R.sp(12.5),
                     height: 1.45,
                     color: AppColors.textSlate300,
@@ -244,8 +240,8 @@ class _FridaySadaqahCardState extends State<FridaySadaqahCard> {
                         const SizedBox(width: 6),
                         Text(
                           isDonor
-                              ? (isBn ? 'সনদপত্র দেখুন 📜' : 'View Keepsake Certificate 📜')
-                              : (isBn ? 'সাদাকাহ জারিয়াহ করুন ➔' : 'Give Sadaqah Jariyah ➔'),
+                              ? lp.getText('friday_card_btn_donor')
+                              : lp.getText('friday_card_btn_normal'),
                           style: TextStyle(
                             color: onPrimary,
                             fontSize: 12.5,
